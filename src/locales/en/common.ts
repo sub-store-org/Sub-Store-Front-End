@@ -3,6 +3,7 @@ export default {
   navBar: {
     // 切换语言按钮
     langSwitcher: {
+      cellTitle: 'Tap a language which you want to use',
       zh: {
         label: 'zh-CN',
         name: 'Chinese (Simplified)',

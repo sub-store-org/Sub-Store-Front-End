@@ -1,18 +1,13 @@
 <template>
-  <div style="display: flex">
-    <div @click="change('zh')">中文</div>
-    <div @click="change('en')">English</div>
-  </div>
-  <router-view />
+  <NavBar />
+  <main class="page-body">
+    <router-view />
+    <div class="ppp"></div>
+  </main>
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
-  const { locale } = useI18n()
-
-  const change = (type: string) => {
-    locale.value = type
-  }
+  import NavBar from '@/components/NavBar.vue'
 </script>
 <style lang="scss">
   #app {
@@ -23,5 +18,13 @@
       'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp',
       sans-serif;
     color: #303133;
+
+    main.page-body {
+      padding: 56px 12px;
+    }
+    .ppp {
+      width: 100%;
+      height: 3000px;
+    }
   }
 </style>
