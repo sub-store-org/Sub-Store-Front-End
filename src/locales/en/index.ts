@@ -2,7 +2,8 @@ import common from './common';
 
 export default {
   common,
-  btn: {
-    submit: 'Submit',
+  pagesTitle: {
+    sub: 'Subscription Management',
+    notFound: '404 Not Found',
   },
 };
