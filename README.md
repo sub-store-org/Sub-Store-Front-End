@@ -74,6 +74,9 @@ Core functionalities:
 - Pinia v2
 - Typescript v4.6
 
+#### Font Awesome Icon
+This project is using [Font Awesome](https://fontawesome.com/icons/check?s=regular) icons and this is [Documentation](https://fontawesome.com/docs/web/style/size)
+
 #### Start 
 ```bash
 # install dependencies

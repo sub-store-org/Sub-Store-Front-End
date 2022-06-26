@@ -2,13 +2,13 @@
   <NavBar />
   <main class="page-body">
     <router-view />
-    <div class="ppp"></div>
   </main>
 </template>
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue'
 </script>
+
 <style lang="scss">
   #app {
     font-family: -apple-system, 'Noto Sans', 'Helvetica Neue', Helvetica,
@@ -19,12 +19,10 @@
       sans-serif;
     color: #303133;
 
-    main.page-body {
-      padding: 56px 12px;
-    }
-    .ppp {
-      width: 100%;
-      height: 3000px;
+    .page-body {
+      padding-top: 56px;
+      height: 100vh;
+      width: 100vw;
     }
   }
 </style>

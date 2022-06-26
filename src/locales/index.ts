@@ -3,7 +3,7 @@ import zh from './zh';
 import en from './en';
 
 const i18n = createI18n({
-  locale: 'zh', // 初始化配置语言
+  locale: localStorage.getItem('locale') || navigator.language.slice(0, 2), // 初始化配置语言
   messages: {
     zh,
     en,

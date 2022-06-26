@@ -5,12 +5,11 @@
       :left-show="isNeedBack"
       @on-click-back="back"
       @on-click-right="showLangSwitchPopup = true"
-      border
-      title="首页"
+      :title="currentTitle"
     >
       <template #right>
         <font-awesome-icon
-          class="navBar-right-icon"
+          class="navBar-right-icon fa-lg"
           icon="fa-solid fa-language "
         />
       </template>
@@ -20,24 +19,17 @@
   <nut-popup position="top" v-model:visible="showLangSwitchPopup">
     <nut-cell-group :title="$t(`common.navBar.langSwitcher.cellTitle`)">
       <nut-cell
-        :title="$t(`common.navBar.langSwitcher.zh.name`)"
-        @click="changeLang('zh')"
+        v-for="lang in langList"
+        :title="$t(`common.navBar.langSwitcher.${lang}.name`)"
+        @click="changeLang(lang)"
+        :key="lang"
+        :class="{ selected: lang === locale }"
       >
         <template v-slot:icon>
-          <img
-            class="nut-icon"
-            src="https://img11.360buyimg.com/imagetools/jfs/t1/137646/13/7132/1648/5f4c748bE43da8ddd/a3f06d51dcae7b60.png"
-          />
-        </template>
-      </nut-cell>
-      <nut-cell
-        :title="$t(`common.navBar.langSwitcher.en.name`)"
-        @click="changeLang('en')"
-      >
-        <template v-slot:icon>
-          <img
-            class="nut-icon"
-            src="https://img11.360buyimg.com/imagetools/jfs/t1/137646/13/7132/1648/5f4c748bE43da8ddd/a3f06d51dcae7b60.png"
+          <font-awesome-icon
+            v-if="lang === locale"
+            class="fa-lg"
+            icon="fa-solid fa-check"
           />
         </template>
       </nut-cell>
@@ -46,15 +38,24 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
-  const { locale } = useI18n()
+  import { useRoute } from 'vue-router'
 
+  const { t, locale } = useI18n()
+  const route = useRoute()
   const isNeedBack = ref(false)
   const showLangSwitchPopup = ref(false)
+  const langList = ['zh', 'en']
+
+  const currentTitle = computed(() => {
+    const metaTitle = route.meta.title
+    return metaTitle ? t(`pagesTitle.${metaTitle}`) : undefined
+  })
 
   const changeLang = (type: string) => {
     locale.value = type
+    localStorage.setItem('locale', type)
     showLangSwitchPopup.value = false
   }
 
@@ -74,16 +75,22 @@
       height: 56px;
       top: 0;
       box-shadow: none;
-      background: #fffd;
+      background: #f8f8f8dd;
+      border-bottom: #00000006 solid 1px;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
 
       .navBar-right-icon {
         color: #606266;
-        width: 24px;
-        height: 24px;
-        margin-left: 6px;
       }
     }
+  }
+
+  .selected {
+    color: #409eff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
   }
 </style>
