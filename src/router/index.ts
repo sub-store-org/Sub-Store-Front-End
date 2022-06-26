@@ -1,7 +1,11 @@
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Home from '@/views/Home.vue';
+import AppLayout from '@/layout/AppLayout.vue';
+
+import Sub from '@/views/Sub.vue';
+import Sync from '@/views/Sync.vue';
+import My from '@/views/My.vue';
 import NotFound from '@/views/NotFound.vue';
 
 declare module 'vue-router' {
@@ -16,14 +20,28 @@ export default createRouter({
   routes: [
     {
       path: '/',
-      component: Home,
+      component: AppLayout,
       redirect: '/sub',
       children: [
         {
           path: '/sub',
-          component: Home,
+          component: Sub,
           meta: {
             title: 'sub',
+          },
+        },
+        {
+          path: '/sync',
+          component: Sync,
+          meta: {
+            title: 'sync',
+          },
+        },
+        {
+          path: '/my',
+          component: My,
+          meta: {
+            title: 'my',
           },
         },
       ],

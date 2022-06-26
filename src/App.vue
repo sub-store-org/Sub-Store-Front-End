@@ -3,21 +3,10 @@
   <main class="page-body">
     <router-view />
   </main>
-  <div class="safe-area-bottom">
-    <TabBar :safeAreaHeight="tabBarSafeAreaBottom" />
-  </div>
 </template>
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue'
-  import TabBar from '@/components/TabBar.vue'
-
-  // 判断处于pwa时增加底部安全距离
-  type NavigatorExtend = Navigator & {
-    standalone?: boolean
-  }
-  const navigator: NavigatorExtend = window.navigator
-  const tabBarSafeAreaBottom = navigator.standalone ? '32px' : '6px'
 </script>
 
 <style lang="scss">
@@ -30,8 +19,10 @@
       sans-serif;
     color: #303133;
 
-    main.page-body {
-      padding: 56px 12px calc(57px + v-bind(tabBarSafeAreaBottom) + 12px) 12px;
+    .page-body {
+      padding-top: 56px;
+      height: 100vh;
+      width: 100vw;
     }
   }
 </style>
