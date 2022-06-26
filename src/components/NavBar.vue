@@ -55,6 +55,7 @@
 
   const changeLang = (type: string) => {
     locale.value = type
+    localStorage.setItem('locale', type)
     showLangSwitchPopup.value = false
   }
 
