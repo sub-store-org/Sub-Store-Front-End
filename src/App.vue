@@ -29,9 +29,6 @@
       'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp',
       sans-serif;
     color: #303133;
-    width: 100vw;
-    height: 100vh;
-    overflow-y: scroll;
 
     main.page-body {
       padding: 56px 12px calc(57px + v-bind(tabBarSafeAreaBottom) + 12px) 12px;
