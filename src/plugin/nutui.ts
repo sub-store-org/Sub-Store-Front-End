@@ -10,6 +10,8 @@ import {
   OverLay,
   Cell,
   CellGroup,
+  Tabbar,
+  TabbarItem,
 } from '@nutui/nutui';
 
 export default (app) => {
@@ -24,5 +26,7 @@ export default (app) => {
     .use(Popup)
     .use(OverLay)
     .use(Cell)
-    .use(CellGroup);
+    .use(CellGroup)
+    .use(Tabbar)
+    .use(TabbarItem);
 };
