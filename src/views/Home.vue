@@ -1,5 +1,5 @@
 <template>
-  <nut-button type="primary">{{ $t(`message.Home`) }}</nut-button>
+  <nut-button type="primary">{{ $t(`btn.submit`) }}</nut-button>
 </template>
 
 <script lang="ts" setup>
