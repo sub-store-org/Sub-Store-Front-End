@@ -12,6 +12,12 @@ import {
   CellGroup,
   Tabbar,
   TabbarItem,
+  FixedNav,
+  Drag,
+  ActionSheet,
+  Avatar,
+  Notify,
+  Empty,
 } from '@nutui/nutui';
 
 export default (app) => {
@@ -28,5 +34,11 @@ export default (app) => {
     .use(Cell)
     .use(CellGroup)
     .use(Tabbar)
-    .use(TabbarItem);
+    .use(TabbarItem)
+    .use(FixedNav)
+    .use(Drag)
+    .use(ActionSheet)
+    .use(Avatar)
+    .use(Notify)
+    .use(Empty);
 };
