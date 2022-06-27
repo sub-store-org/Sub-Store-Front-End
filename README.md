@@ -67,6 +67,10 @@ Core functionalities:
 
 ### Development
 
+#### Guidelines
+
+Commit message follows [@commitlint/config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular)
+
 #### Created in the following version:
 - pnpm v7.3.0
 - Vite v2.9.9
@@ -74,7 +78,7 @@ Core functionalities:
 - Pinia v2
 - Typescript v4.6
 
-#### Font Awesome Icon
+#### Font Awesome Icon 
 This project is using [Font Awesome](https://fontawesome.com/icons/check?s=regular) icons and this is [Documentation](https://fontawesome.com/docs/web/style/size)
 
 #### Start 
