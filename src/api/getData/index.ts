@@ -8,5 +8,11 @@ export function useGetDataApi() {
         method: 'get',
       });
     },
+    getCollections: () => {
+      return request({
+        url: '/api/collections',
+        method: 'get',
+      });
+    },
   };
 }

@@ -1,5 +1,6 @@
 interface SubsStoreState {
   subs: SubsDict;
+  collections: CollectionsDict;
 }
 
 interface SubsDict {
@@ -15,6 +16,22 @@ interface SubsData {
   icon?: string;
   ua?: string;
   process: SubsProcess[];
+}
+
+interface CollectionsDict {
+  [key: string]: CollectionsData;
+}
+
+interface CollectionProcessId {
+  id: string;
+}
+
+interface CollectionsData {
+  name: string;
+  displayName?: string;
+  process: Array<SubsProcess & CollectionProcessId>;
+  subscriptions: string[];
+  ua?: string;
 }
 
 interface SubsProcess {
