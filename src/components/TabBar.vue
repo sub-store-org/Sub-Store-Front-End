@@ -37,17 +37,22 @@
   const routeList = ['/sub', '/sync', '/my']
   const activeTab = routeList.indexOf(route.path)
 
-  const tabBarSafeAreaBottom = inject('tabBarSafeAreaBottom')
+  const tabBarSafeAreaBottom = inject<number>('tabBarSafeAreaBottom')
+  const style = {
+    height: `${tabBarSafeAreaBottom + 12 + 44}px`,
+    paddingBottom: tabBarSafeAreaBottom + 'px',
+  }
 </script>
 
 <style lang="scss" scoped>
+  $tabBarSafeAreaBottom: v-bind(tabBarSafeAreaBottom);
   .tab-bar-wrapper {
     position: relative;
-    height: calc(v-bind(tabBarSafeAreaBottom) + 12px + 44px);
+    height: v-bind('style.height');
 
     .tabbar {
       padding-top: 12px;
-      padding-bottom: v-bind(tabBarSafeAreaBottom);
+      padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
       background: #f8f8f8dd;
       border-top: #00000006 solid 1px;
