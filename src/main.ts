@@ -3,6 +3,9 @@ import router from '@/router/index';
 import { createPinia } from 'pinia';
 import i18n from '@/locales/index';
 
+import SvgIcon from '@/components/SvgIcon.vue';
+import 'virtual:svg-icons-register';
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import '@/plugin/awesomeIcon';
 
@@ -22,6 +25,7 @@ app
   .use(router)
   .use(pinia)
   .use(i18n)
-  .component('font-awesome-icon', FontAwesomeIcon);
+  .component('font-awesome-icon', FontAwesomeIcon)
+  .component('svg-icon', SvgIcon);
 
 app.mount('#app');

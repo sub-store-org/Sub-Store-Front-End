@@ -3,6 +3,7 @@ import {
   createStyleImportPlugin,
   NutuiResolve,
 } from 'vite-plugin-style-import';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
@@ -18,6 +19,11 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       vue(),
       createStyleImportPlugin({
         resolves: [NutuiResolve()],
+      }),
+      createSvgIconsPlugin({
+        iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+        symbolId: 'icon-[dir]-[name]',
+        customDomId: '__svg__icons__dom__',
       }),
     ],
     root: process.cwd(),
