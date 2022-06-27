@@ -2,11 +2,16 @@ import request from '@/api/index';
 
 export function useGetDataApi() {
   return {
-    getData: (params: object) => {
+    getSubs: () => {
       return request({
-        url: '/getData',
+        url: '/api/subs',
         method: 'get',
-        params,
+      });
+    },
+    getCollections: () => {
+      return request({
+        url: '/api/collections',
+        method: 'get',
       });
     },
   };

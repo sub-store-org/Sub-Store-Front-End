@@ -11,6 +11,7 @@ import NotFound from '@/views/NotFound.vue';
 declare module 'vue-router' {
   interface RouteMeta {
     title: string;
+    needTabBar: boolean;
   }
 }
 
@@ -28,6 +29,7 @@ export default createRouter({
           component: Sub,
           meta: {
             title: 'sub',
+            needTabBar: true,
           },
         },
         {
@@ -35,6 +37,7 @@ export default createRouter({
           component: Sync,
           meta: {
             title: 'sync',
+            needTabBar: true,
           },
         },
         {
@@ -42,6 +45,7 @@ export default createRouter({
           component: My,
           meta: {
             title: 'my',
+            needTabBar: true,
           },
         },
       ],
@@ -51,6 +55,7 @@ export default createRouter({
       component: NotFound,
       meta: {
         title: 'notFound',
+        needTabBar: false,
       },
     },
     {
@@ -58,6 +63,7 @@ export default createRouter({
       component: NotFound,
       meta: {
         title: 'notFound',
+        needTabBar: false,
       },
     },
   ],
