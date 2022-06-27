@@ -7,6 +7,15 @@
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue'
+  import { provide } from 'vue'
+
+  // 判断处于pwa时增加底部安全距离，提供给子组件
+  type NavigatorExtend = Navigator & {
+    standalone?: boolean
+  }
+  const navigator: NavigatorExtend = window.navigator
+  const tabBarSafeAreaBottom = navigator.standalone ? '32px' : '6px'
+  provide('tabBarSafeAreaBottom', tabBarSafeAreaBottom)
 </script>
 
 <style lang="scss">
@@ -20,9 +29,7 @@
     color: #303133;
 
     .page-body {
-      padding-top: 56px;
-      height: 100vh;
-      width: 100vw;
+      padding: 12px;
     }
   }
 </style>
