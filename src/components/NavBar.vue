@@ -39,9 +39,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, watchEffect } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
+  import { banScroll, allowScroll } from '@/utils/switchCanScroll'
 
   const { t, locale } = useI18n()
   const route = useRoute()
@@ -52,6 +53,10 @@
   const currentTitle = computed(() => {
     const metaTitle = route.meta.title
     return metaTitle ? t(`pagesTitle.${metaTitle}`) : undefined
+  })
+
+  watchEffect(() => {
+    showLangSwitchPopup.value ? banScroll() : allowScroll()
   })
 
   const navBarHeight = '56px'
