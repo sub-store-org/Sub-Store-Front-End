@@ -1,19 +1,20 @@
 <template>
   <div class="nav-bar-wrapper">
-    <nut-navbar
-      id="my-nav-bar"
-      :left-show="isNeedBack"
-      @on-click-back="back"
-      @on-click-right="showLangSwitchPopup = true"
-      :title="currentTitle"
-    >
-      <template #right>
-        <font-awesome-icon
-          class="navBar-right-icon fa-lg"
-          icon="fa-solid fa-language "
-        />
-      </template>
-    </nut-navbar>
+    <nav>
+      <nut-navbar
+        :left-show="isNeedBack"
+        @on-click-back="back"
+        @on-click-right="showLangSwitchPopup = true"
+        :title="currentTitle"
+      >
+        <template #right>
+          <font-awesome-icon
+            class="navBar-right-icon fa-lg"
+            icon="fa-solid fa-language "
+          />
+        </template>
+      </nut-navbar>
+    </nav>
   </div>
 
   <nut-popup position="top" v-model:visible="showLangSwitchPopup">
@@ -53,6 +54,7 @@
     return metaTitle ? t(`pagesTitle.${metaTitle}`) : undefined
   })
 
+  const navBarHeight = '56px'
   const changeLang = (type: string) => {
     locale.value = type
     localStorage.setItem('locale', type)
@@ -66,22 +68,27 @@
 
 <style lang="scss" scoped>
   .nav-bar-wrapper {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 20;
+    position: relative;
+    height: v-bind(navBarHeight);
 
-    .nut-navbar {
-      height: 56px;
+    nav {
+      position: fixed;
       top: 0;
-      box-shadow: none;
-      background: #f8f8f8dd;
-      border-bottom: #00000006 solid 1px;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      width: 100%;
+      z-index: 20;
 
-      .navBar-right-icon {
-        color: #606266;
+      .nut-navbar {
+        height: v-bind(navBarHeight);
+        top: 0;
+        box-shadow: none;
+        background: #f8f8f8dd;
+        border-bottom: #00000006 solid 1px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+
+        .navBar-right-icon {
+          color: #606266;
+        }
       }
     }
   }
