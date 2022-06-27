@@ -1,4 +1,26 @@
 body {
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+button {
+  font-family: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
