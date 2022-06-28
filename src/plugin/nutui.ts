@@ -18,6 +18,9 @@ import {
   Avatar,
   Notify,
   Empty,
+  Swipe,
+  Dialog,
+  Ellipsis,
 } from '@nutui/nutui';
 
 export default (app) => {
@@ -40,5 +43,8 @@ export default (app) => {
     .use(ActionSheet)
     .use(Avatar)
     .use(Notify)
-    .use(Empty);
+    .use(Empty)
+    .use(Swipe)
+    .use(Dialog)
+    .use(Ellipsis);
 };

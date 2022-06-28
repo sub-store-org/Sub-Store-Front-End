@@ -1,48 +1,237 @@
 <template>
-  <div class="sub-item-wrapper">
-    <div class="sub-img-wrapper">
-      <nut-avatar
-        size="56"
-        shape="square"
-        color="rgb(245, 106, 0)"
-        bg-color="rgb(253, 227, 207)"
-        :icon="icon"
-      ></nut-avatar>
+  <nut-swipe class="sub-item-swipe" ref="swipe">
+    <div class="sub-item-wrapper">
+      <div class="sub-img-wrapper">
+        <nut-avatar
+          size="60"
+          shape="square"
+          color="rgb(245, 106, 0)"
+          bg-color="rgb(253, 227, 207)"
+          :icon="icon"
+        ></nut-avatar>
+      </div>
+      <div class="sub-item-content">
+        <div class="sub-item-title-wrapper">
+          <h3 class="sub-item-title">{{ name }}</h3>
+          <button class="copy-sub-link" @click="onClickCopyLink">
+            <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
+          </button>
+        </div>
+
+        <p v-if="type === 'sub'" class="sub-item-detail">
+          {{ `detail: ${sub.url || '本地订阅'}` }}
+        </p>
+        <p v-else-if="type === 'collection'" class="sub-item-detail">
+          {{ `detail: ${collection.subscriptions}` }}
+        </p>
+      </div>
     </div>
-    <div class="sub-item-content">
-      <h3>{{ props.sub.name }}</h3>
-      {{ props.sub }}
-    </div>
-  </div>
+    <template #right>
+      <div class="sub-item-swipe-btn-wrapper">
+        <nut-button
+          shape="square"
+          type="warning"
+          class="sub-item-swipe-btn"
+          @click="onClickEdit"
+        >
+          <font-awesome-icon icon="fa-solid fa-pen-nib" />
+        </nut-button>
+      </div>
+      <div class="sub-item-swipe-btn-wrapper">
+        <nut-button
+          shape="square"
+          type="danger"
+          class="sub-item-swipe-btn"
+          @click="onClickDelete"
+        >
+          <font-awesome-icon icon="fa-solid fa-trash-can" />
+        </nut-button>
+      </div>
+    </template>
+  </nut-swipe>
 </template>
 
 <script lang="ts" setup>
   import icon from '@/assets/icons/logo.png'
+  import { Dialog, Notify } from '@nutui/nutui'
+  import { createVNode, ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import useClipboard from 'vue-clipboard3'
+  import { useSubsStore } from '@/store/subs'
+  const { toClipboard } = useClipboard()
 
-  const props = defineProps<{
-    sub: SubsData
+  const { sub, type, collection } = defineProps<{
+    type: 'sub' | 'collection'
+    sub?: SubsData
+    collection?: CollectionsData
   }>()
+
+  const swipe = ref()
+  const router = useRouter()
+  const subsStore = useSubsStore()
+
+  const name = sub?.name || collection?.name
+
+  const onDeleteConfirm = async () => {
+    try {
+      await subsStore.deleteSub(type, name)
+      await subsStore.fetchSubsData()
+      Notify.danger('删除成功！', { duration: 1500 })
+    } catch (e) {
+      Notify.danger(e.message, { duration: 1500 })
+    }
+  }
+
+  const onClickDelete = () => {
+    Dialog({
+      title: '删除订阅确认',
+      content: createVNode(
+        'span',
+        {},
+        `是否确认删除 ${name} 订阅？删除后不可恢复！`
+      ),
+      onCancel: () => {},
+      onOk: onDeleteConfirm,
+      onOpened: () => swipe.value.close(),
+      cancelText: '取消',
+      okText: '确认删除',
+      closeOnPopstate: true,
+      lockScroll: true,
+    })
+  }
+
+  const onClickEdit = () => {
+    router.push(`/edit/${type}/${name}`)
+  }
+
+  const onClickCopyLink = async () => {
+    try {
+      const host = import.meta.env.VITE_API_URL
+      const url = `${host}/download/${
+        type === 'collection' ? 'collection/' : ''
+      }${name}`
+      await toClipboard(url)
+      Notify.success('复制订阅链接成功\n可以前往代理工具使用咯～', {
+        duration: 1500,
+      })
+    } catch (e) {
+      Notify.danger(`复制订阅链接失败\n${e}`, {
+        duration: 1500,
+      })
+      console.error(e)
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/custom_theme_variables.scss';
+
   .sub-item-wrapper {
-    width: 100%;
-    background: #f2f2f2;
+    width: calc(100% - 24px);
+    margin-left: auto;
+    margin-right: auto;
     border-radius: 12px;
     padding: 16px;
     display: flex;
 
-    > .sub-img-wrapper {
+    .dark-mode & {
+      background: $dark-card-color;
+    }
+
+    .light-mode & {
+      background: $light-card-color;
+    }
+
+    :deep(.nut-avatar) {
       flex-shrink: 0;
       width: 56px;
       height: 56px;
       margin-right: 20px;
-      border-radius: 8px;
-      overflow: hidden;
+      border-radius: 12px;
+
+      img {
+        border-radius: 10px;
+      }
     }
 
     > .sub-item-content {
-      color: #303133;
+      flex: 1;
+
+      .sub-item-title-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .sub-item-title {
+          font-size: 16px;
+
+          .dark-mode & {
+            color: $dark-primary-text-color;
+          }
+
+          .light-mode & {
+            color: $light-primary-text-color;
+          }
+        }
+
+        .copy-sub-link {
+          background-color: transparent;
+          border: none;
+          padding: 0 12px;
+
+          svg {
+            width: 16px;
+            height: 16px;
+
+            .dark-mode & {
+              color: $dark-lowest-text-color;
+            }
+
+            .light-mode & {
+              color: $light-lowest-text-color;
+            }
+          }
+        }
+      }
+
+      .sub-item-detail {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow: hidden;
+        margin-top: 10px;
+        font-size: 14px;
+
+        .dark-mode & {
+          color: $dark-comment-text-color;
+        }
+
+        .light-mode & {
+          color: $light-comment-text-color;
+        }
+      }
+    }
+  }
+
+  .sub-item-swipe {
+    :deep(.nut-swipe__right) {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      .sub-item-swipe-btn-wrapper {
+        padding-left: 24px;
+        &:last-child {
+          padding-right: 12px;
+        }
+        .sub-item-swipe-btn {
+          border-radius: 50%;
+          height: 48px;
+          width: 48px;
+        }
+      }
     }
   }
 </style>

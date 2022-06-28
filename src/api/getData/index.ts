@@ -14,5 +14,11 @@ export function useSubsApi() {
         method: 'get',
       });
     },
+    deleteSub: (type: string, name: string) => {
+      return request({
+        url: `/api/${type}/${name}`,
+        method: 'delete',
+      });
+    },
   };
 }
