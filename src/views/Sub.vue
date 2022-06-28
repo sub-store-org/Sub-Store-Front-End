@@ -140,8 +140,6 @@
   const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore)
   const { bottomSafeArea } = storeToRefs(globalStore)
 
-  const timer = ref(null)
-
   const fetchData = () => {
     subsStore
       .fetchSubsData()
