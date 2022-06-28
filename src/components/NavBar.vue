@@ -47,13 +47,17 @@
 <script lang="ts" setup>
   import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
 
   const { t, locale } = useI18n()
+  const router = useRouter()
   const route = useRoute()
-  const isNeedBack = ref(false)
   const showLangSwitchPopup = ref(false)
   const langList = ['zh', 'en']
+
+  const isNeedBack = computed(() => {
+    return route.meta.needNavBack ?? false
+  })
 
   const currentTitle = computed(() => {
     const metaTitle = route.meta.title
@@ -68,7 +72,10 @@
   }
 
   const back = () => {
-    isNeedBack.value ? console.log('Click Back') : null
+    if (isNeedBack.value) {
+      console.log('Click Back')
+      router.back()
+    }
   }
 </script>
 
@@ -87,11 +94,11 @@
         height: v-bind(navBarHeight);
         top: 0;
         box-shadow: none;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(20px);
 
         .dark-mode & {
-          background: $dark-bars-color;
+          background: $dark-nav-bar-color;
           border-bottom: $dark-divider-color solid 1px;
 
           .nut-navbar__title > .title {
@@ -99,7 +106,7 @@
           }
         }
         .light-mode & {
-          background: $light-bars-color;
+          background: $light-nav-bar-color;
           border-bottom: $light-divider-color solid 1px;
 
           .nut-navbar__title > .title {

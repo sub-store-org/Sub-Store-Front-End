@@ -6,6 +6,7 @@ export default {
     sub: 'Subscription Management',
     sync: 'Sync Subscription',
     my: 'My Profile',
+    subEditor: 'Subscription Editor',
     notFound: '404 Not Found',
   },
 };

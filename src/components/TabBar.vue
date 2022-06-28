@@ -10,7 +10,7 @@
       <nut-tabbar-item
         class="tabbar-item"
         tab-title="订阅"
-        to="/sub"
+        to="/subs"
         icon="link"
       ></nut-tabbar-item>
       <nut-tabbar-item
@@ -35,7 +35,7 @@
   import { storeToRefs } from 'pinia'
 
   const route = useRoute()
-  const routeList = ['/sub', '/sync', '/my']
+  const routeList = ['/subs', '/sync', '/my']
   const activeTab = routeList.indexOf(route.path)
 
   const globalStore = useGlobalStore()
@@ -48,23 +48,22 @@
 
 <style lang="scss" scoped>
   @import '@/assets/custom_theme_variables.scss';
-  $tabBarSafeAreaBottom: v-bind(tabBarSafeAreaBottom);
 
   .tab-bar-wrapper {
     .tabbar {
       padding-top: 12px;
       padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
 
       .dark-mode & {
-        background: $dark-bars-color;
+        background: $dark-tab-bar-color;
         border-top: $dark-divider-color solid 1px;
       }
 
       .light-mode & {
-        background: $light-bars-color;
+        background: $light-tab-bar-color;
         border-top: $light-divider-color solid 1px;
       }
     }
