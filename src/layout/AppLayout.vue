@@ -2,7 +2,7 @@
   <div class="app-layout-wrapper">
     <router-view />
   </div>
-  <TabBar />
+  <TabBar v-if="isNeedTabBar" />
 </template>
 
 <script lang="ts" setup>
@@ -16,11 +16,16 @@
   const { bottomSafeArea } = storeToRefs(globalStore)
 
   const route = useRoute()
+
+  const isNeedTabBar = computed(() => {
+    return route.meta?.needTabBar ?? false
+  })
+
   const height = computed(() => {
     if (route.meta.needTabBar) {
-      return 56 + bottomSafeArea.value + 'px'
+      return 44 + bottomSafeArea.value + 'px'
     } else {
-      return '56px'
+      return '16px'
     }
   })
 </script>
@@ -28,7 +33,7 @@
 <style scoped lang="scss">
   .app-layout-wrapper {
     flex: 1;
-    padding: 56px 12px v-bind(height) 12px;
+    padding: 56px 0 v-bind(height) 0;
     overflow: auto;
   }
 </style>
