@@ -1,9 +1,9 @@
 <template>
   <div class="tab-bar-wrapper">
     <nut-tabbar
+      unactive-color=""
       v-model:visible="activeTab"
       :bottom="true"
-      unactive-color="#c0c4cc"
       class="tabbar"
       size="22px"
     >
@@ -31,36 +31,54 @@
 
 <script lang="ts" setup>
   import { useRoute } from 'vue-router'
-  import { inject } from 'vue'
+  import { useGlobalStore } from '@/store/global'
+  import { storeToRefs } from 'pinia'
 
   const route = useRoute()
   const routeList = ['/sub', '/sync', '/my']
   const activeTab = routeList.indexOf(route.path)
 
-  const tabBarSafeAreaBottom = inject<number>('tabBarSafeAreaBottom')
+  const globalStore = useGlobalStore()
+  const { bottomSafeArea } = storeToRefs(globalStore)
   const style = {
-    height: `${tabBarSafeAreaBottom + 12 + 44}px`,
-    paddingBottom: tabBarSafeAreaBottom + 'px',
+    height: `${bottomSafeArea.value + 12 + 44}px`,
+    paddingBottom: bottomSafeArea.value + 'px',
   }
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/custom_theme_variables.scss';
   $tabBarSafeAreaBottom: v-bind(tabBarSafeAreaBottom);
-  .tab-bar-wrapper {
-    position: relative;
-    height: v-bind('style.height');
 
+  .tab-bar-wrapper {
     .tabbar {
       padding-top: 12px;
       padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
-      background: #f8f8f8dd;
-      border-top: #00000006 solid 1px;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+
+      .dark-mode & {
+        background: $dark-bars-color;
+        border-top: $dark-divider-color solid 1px;
+      }
+
+      .light-mode & {
+        background: $light-bars-color;
+        border-top: $light-divider-color solid 1px;
+      }
     }
 
     :deep(.tabbar-item) {
+      &.nut-tabbar-item__icon--unactive {
+        .dark-mode & {
+          color: $dark-lowest-text-color;
+        }
+
+        .light-mode & {
+          color: $light-lowest-text-color;
+        }
+      }
       & > .nut-tabbar-item_icon-box > .nut-tabbar-item_icon-box_nav-word {
         margin-top: 4px;
         font-weight: 600;

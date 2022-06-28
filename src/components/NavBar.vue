@@ -17,7 +17,13 @@
     </nav>
   </div>
 
-  <nut-popup position="top" v-model:visible="showLangSwitchPopup">
+  <nut-popup
+    lock-scroll
+    pop-class="nav-bar-lang-switch-popup"
+    position="top"
+    v-model:visible="showLangSwitchPopup"
+    z-index="1000"
+  >
     <nut-cell-group :title="$t(`common.navBar.langSwitcher.cellTitle`)">
       <nut-cell
         v-for="lang in langList"
@@ -39,10 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watchEffect } from 'vue'
+  import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
-  import { banScroll, allowScroll } from '@/utils/switchCanScroll'
 
   const { t, locale } = useI18n()
   const route = useRoute()
@@ -53,10 +58,6 @@
   const currentTitle = computed(() => {
     const metaTitle = route.meta.title
     return metaTitle ? t(`pagesTitle.${metaTitle}`) : undefined
-  })
-
-  watchEffect(() => {
-    showLangSwitchPopup.value ? banScroll() : allowScroll()
   })
 
   const navBarHeight = '56px'
@@ -71,25 +72,40 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  @import '@/assets/custom_theme_variables.scss';
+
   .nav-bar-wrapper {
-    position: relative;
+    position: fixed;
+    width: 100%;
+    top: 0;
     height: v-bind(navBarHeight);
+    z-index: 20;
 
     nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 20;
-
       .nut-navbar {
         height: v-bind(navBarHeight);
         top: 0;
         box-shadow: none;
-        background: #f8f8f8dd;
-        border-bottom: #00000006 solid 1px;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
+
+        .dark-mode & {
+          background: $dark-bars-color;
+          border-bottom: $dark-divider-color solid 1px;
+
+          .nut-navbar__title > .title {
+            color: $dark-primary-text-color;
+          }
+        }
+        .light-mode & {
+          background: $light-bars-color;
+          border-bottom: $light-divider-color solid 1px;
+
+          .nut-navbar__title > .title {
+            color: $light-primary-text-color;
+          }
+        }
 
         .navBar-right-icon {
           color: #606266;
@@ -98,11 +114,62 @@
     }
   }
 
-  .selected {
-    color: #409eff;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
+  .nav-bar-lang-switch-popup > .nut-cell-group {
+    width: 100%;
+
+    .dark-mode & {
+      background-color: $dark-popup-color;
+      > .nut-cell-group__title {
+        color: $dark-comment-text-color;
+      }
+
+      > .nut-cell-group__warp {
+        background-color: $dark-popup-color;
+
+        > .nut-cell {
+          background-color: $dark-popup-color;
+
+          &::after {
+            border-color: $dark-divider-color;
+          }
+        }
+
+        > .nut-cell:not(.selected) {
+          color: $dark-primary-text-color;
+        }
+      }
+    }
+
+    .light-mode & {
+      background-color: $light-popup-color;
+
+      > .nut-cell-group__title {
+        color: $light-comment-text-color;
+      }
+
+      > .nut-cell-group__warp {
+        background-color: $light-popup-color;
+
+        > .nut-cell {
+          background-color: $light-popup-color;
+
+          &::after {
+            border-color: $light-divider-color;
+          }
+        }
+
+        > .nut-cell:not(.selected) {
+          color: $light-primary-text-color;
+        }
+      }
+    }
+
+    .selected.nut-cell {
+      color: $primary-color;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+    }
   }
 </style>

@@ -2,6 +2,7 @@ body {
   outline: none;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  min-height: 100% !important;
 }
 
 a {

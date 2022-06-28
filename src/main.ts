@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
-import router from '@/router/index';
+import router from '@/router';
 import { createPinia } from 'pinia';
-import i18n from '@/locales/index';
+import i18n from '@/locales';
 
 import SvgIcon from '@/components/SvgIcon.vue';
 import 'virtual:svg-icons-register';
