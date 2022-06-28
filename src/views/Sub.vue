@@ -75,7 +75,7 @@
     <p class="list-title">组合订阅</p>
     <ul>
       <li v-for="collection in collections" :key="collection.name">
-        <SubListItem :sub="collection" type="collection" />
+        <SubListItem :collection="collection" type="collection" />
       </li>
     </ul>
   </div>
@@ -260,6 +260,7 @@
     position: relative;
 
     .list-title {
+      padding-left: 12px;
       font-size: 14px;
       font-weight: bold;
       position: sticky;
@@ -280,6 +281,7 @@
 
     & > ul {
       margin: 8px 0;
+      overflow: hidden;
 
       > li:not(:last-child) {
         margin-bottom: 12px;

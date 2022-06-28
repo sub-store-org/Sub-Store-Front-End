@@ -31,5 +31,18 @@ export const useSubsStore = defineStore('subsStore', {
           });
       });
     },
+    deleteSub(type: SubsType, name: string) {
+      return new Promise(async (resolve, reject) => {
+        subsApi
+          .deleteSub(type, name)
+          .then(() => {
+            resolve('删除成功');
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err);
+          });
+      });
+    },
   },
 });
