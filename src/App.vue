@@ -9,6 +9,7 @@
   import NavBar from '@/components/NavBar.vue'
   import { useGlobalStore } from '@/store/global'
   import { setColorThemeClass } from '@/utils/setColorThemeClass'
+  import { onMounted } from 'vue'
 
   // 判断处于 pwa 时将底部安全距离写入全局 store
   const globalStore = useGlobalStore()
@@ -17,6 +18,15 @@
   }
   const navigator: NavigatorExtend = window.navigator
   globalStore.setBottomSafeArea(navigator.standalone ? 32 : 6)
+
+  // 引入 inoBounce 禁止过度滑动橡皮筋效果
+  onMounted(() => {
+    let externalScript = document.createElement('script')
+    externalScript.src =
+      'https://cdnjs.cloudflare.com/ajax/libs/inobounce/0.2.1/inobounce.min.js'
+    // externalScript.setAttribute('src', import('@/utils/inobounce.min.js'))
+    document.head.appendChild(externalScript)
+  })
 
   setColorThemeClass()
 </script>
@@ -51,7 +61,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .dark-mode & img {
