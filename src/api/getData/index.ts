@@ -1,6 +1,6 @@
-import request from '@/api/index';
+import request from '@/api';
 
-export function useGetDataApi() {
+export function useSubsApi() {
   return {
     getSubs: () => {
       return request({

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { useGetDataApi } from '@/api/getData';
+import { useSubsApi } from '@/api/getData';
 
-const subsApi = useGetDataApi();
+const subsApi = useSubsApi();
 
 export const useSubsStore = defineStore('subsStore', {
   state: (): SubsStoreState => {
@@ -11,22 +11,24 @@ export const useSubsStore = defineStore('subsStore', {
     };
   },
   getters: {
-    hasSubs: (state): boolean => Object.keys(state.subs).length > 0,
-    hasCollections: (state): boolean =>
-      Object.keys(state.collections).length > 0,
+    hasSubs: ({ subs }): boolean => Object.keys(subs).length > 0,
+    hasCollections: ({ collections }): boolean =>
+      Object.keys(collections).length > 0,
   },
   actions: {
     fetchSubsData() {
+      this.subs = {};
+      this.collections = {};
       return new Promise(async (resolve, reject) => {
-        try {
-          const subsRes = await subsApi.getSubs();
-          const collectionsRes = await subsApi.getCollections();
-          this.subs = subsRes.data;
-          this.collections = collectionsRes.data;
-          resolve('');
-        } catch (e) {
-          reject({ msg: e.message });
-        }
+        Promise.all([subsApi.getSubs(), subsApi.getCollections()])
+          .then((res) => {
+            this.subs = res[0].data;
+            this.collections = res[1].data;
+            resolve('');
+          })
+          .catch((err) => {
+            reject(err);
+          });
       });
     },
   },
