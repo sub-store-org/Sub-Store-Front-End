@@ -1,6 +1,6 @@
-import request from '@/api/index';
+import request from '@/api';
 
-export function useGetDataApi() {
+export function useSubsApi() {
   return {
     getSubs: () => {
       return request({
@@ -12,6 +12,12 @@ export function useGetDataApi() {
       return request({
         url: '/api/collections',
         method: 'get',
+      });
+    },
+    deleteSub: (type: string, name: string) => {
+      return request({
+        url: `/api/${type}/${name}`,
+        method: 'delete',
       });
     },
   };
