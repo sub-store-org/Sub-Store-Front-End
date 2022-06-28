@@ -1,21 +1,44 @@
 <template>
+  <!--顶部通知 组件式暂时有bug，先使用函数调用式-->
+  <!--<nut-notify-->
+  <!--  pop-class="pop-notify"-->
+  <!--  v-model:visible="notifySettings.notifyIsVisible"-->
+  <!--  :type="notifySettings.notifyType"-->
+  <!--&gt;-->
+  <!--  <span>{{ notifySettings.notifyMsg }}</span>-->
+  <!--</nut-notify>-->
+
   <!--浮动按钮-->
-  <div class="drag-btn-wrapper" v-if="hasSubs || hasCollections">
-    <nut-drag
-      direction="y"
-      :style="{ right: '0px', bottom: `${tabBarSafeAreaBottom + 44 + 36}px` }"
-    >
-      <div class="drag-btn" @click="addSubBtnIsVisible = true">
-        <font-awesome-icon icon="fa-solid fa-plus" />
-      </div>
-    </nut-drag>
-  </div>
+  <Teleport to="body">
+    <div class="drag-btn-wrapper" v-if="hasSubs || hasCollections">
+      <nut-drag
+        :attract="true"
+        :boundary="{
+          top: 56 + 8,
+          left: 16,
+          bottom: bottomSafeArea + 48 + 12 + 8,
+          right: 16,
+        }"
+        :style="{ right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
+      >
+        <div class="drag-btn" @click="addSubBtnIsVisible = true">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </div>
+      </nut-drag>
+    </div>
+  </Teleport>
 
   <!--添加订阅弹窗-->
   <nut-popup
+    pop-class="add-sub-popup"
+    lock-scroll
     position="bottom"
-    :style="{ height: tabBarSafeAreaBottom + 200 + 'px' }"
+    :style="{
+      height: bottomSafeArea + 200 + 'px',
+      padding: '20px 12px 0 12px',
+    }"
     close-icon="close-little"
+    z-index="1000"
     v-model:visible="addSubBtnIsVisible"
     closeable
     round
@@ -38,8 +61,9 @@
   </nut-popup>
 
   <!--页面内容-->
-  <div v-if="hasSubs">
-    <p class="type-list-title">单条订阅</p>
+  <!--有数据-->
+  <div v-if="hasSubs" class="subs-list-wrapper">
+    <p class="list-title">单条订阅</p>
     <ul>
       <li v-for="sub in subs" :key="sub.name">
         <SubListItem :sub="sub" type="sub" />
@@ -47,17 +71,18 @@
     </ul>
   </div>
 
-  <div v-if="hasCollections">
-    <p class="type-list-title">组合订阅</p>
+  <div v-if="hasCollections" class="subs-list-wrapper">
+    <p class="list-title">组合订阅</p>
     <ul>
-      <li v-for="collection in collections" :key="collection.id">
+      <li v-for="collection in collections" :key="collection.name">
         <SubListItem :sub="collection" type="collection" />
       </li>
     </ul>
   </div>
 
+  <!--没有数据-->
   <div
-    v-if="fetchResult && !hasSubs && !hasCollections"
+    v-if="!isLoading && fetchResult && !hasSubs && !hasCollections"
     class="no-data-wrapper"
   >
     <nut-empty image="empty">
@@ -71,14 +96,15 @@
     </nut-button>
   </div>
 
-  <div v-if="!fetchResult" class="no-data-wrapper">
+  <!--数据加载失败-->
+  <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
     <nut-empty image="error">
       <template #description>
         <h3>数据加载失败</h3>
         <p>请检查代理工具的 MITM、Rewrite 等配置</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="danger" @click="fetchData"
+    <nut-button icon="refresh" type="primary" @click="fetchData"
       >重试</nut-button
     >
     <a
@@ -92,39 +118,57 @@
 
 <script lang="ts" setup>
   import { useSubsStore } from '@/store/subs'
-  import { inject, ref, watchEffect } from 'vue'
-  import { banScroll, allowScroll } from '@/utils/switchCanScroll'
+  import { useGlobalStore } from '@/store/global'
+  import { ref, reactive } from 'vue'
   import SubListItem from '@/components/SubListItem.vue'
   import { storeToRefs } from 'pinia'
   import { Notify } from '@nutui/nutui'
 
-  const tabBarSafeAreaBottom = inject<number>('tabBarSafeAreaBottom')
-
-  const addSubBtnIsVisible = ref(false)
-  watchEffect(() => {
-    addSubBtnIsVisible.value ? banScroll() : allowScroll()
+  const notifySettings = reactive({
+    // notifyIsVisible: false,
+    notifyType: 'primary',
+    notifyDuration: 2500,
+    notifyMsg: '',
   })
 
+  const addSubBtnIsVisible = ref(false)
+  const isLoading = ref(true)
   const fetchResult = ref(true)
-  const store = useSubsStore()
-  const { hasSubs, hasCollections, subs, collections } = storeToRefs(store)
+
+  const subsStore = useSubsStore()
+  const globalStore = useGlobalStore()
+  const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore)
+  const { bottomSafeArea } = storeToRefs(globalStore)
+
+  const timer = ref(null)
 
   const fetchData = () => {
-    store
+    subsStore
       .fetchSubsData()
       .then(() => {
         fetchResult.value = true
-        Notify.success('数据加载成功！', { duration: 1500 })
+        notifySettings.notifyMsg = '数据刷新成功！\n感受大佬的拥抱吧～'
+        notifySettings.notifyType = 'primary'
       })
       .catch(e => {
         fetchResult.value = false
-        Notify.danger(`数据加载失败\n${e.msg}`, { duration: 1500 })
+        notifySettings.notifyMsg = `数据刷新失败\nE: ${e.status} ${
+          e.data?.message ?? ''
+        }`
+        notifySettings.notifyType = 'danger'
+      })
+      .finally(() => {
+        isLoading.value = false
+        Notify[notifySettings.notifyType](notifySettings.notifyMsg, {
+          duration: notifySettings.notifyDuration,
+        })
       })
   }
+
   fetchData()
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '@/assets/custom_theme_variables.scss';
 
   .drag-btn-wrapper {
@@ -132,15 +176,14 @@
     z-index: 999;
 
     .drag-btn {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background-image: linear-gradient(
         to bottom right,
         $primary-color,
         $primary-color-end
       );
-      margin-right: 16px;
       box-shadow: 0 4px 8px #0003;
       display: flex;
       justify-content: center;
@@ -154,49 +197,96 @@
     }
   }
 
-  .add-sub-panel-title {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 20px;
-    font-size: 16px;
-    color: #606266;
-  }
+  .add-sub-popup {
+    .dark-mode & {
+      background-color: $dark-popup-color;
+    }
+    .light-mode & {
+      background-color: $light-popup-color;
+    }
 
-  .add-sub-panel-list {
-    font-size: 16px;
-    font-weight: bold;
-    color: #404244;
-    padding: 64px 12px 0 12px;
-    display: flex;
-    width: 100%;
+    .add-sub-panel-title {
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
 
-    > li {
-      width: 50%;
+      .dark-mode & {
+        color: $dark-comment-text-color;
+      }
+
+      .light-mode & {
+        color: $light-comment-text-color;
+      }
+    }
+
+    .add-sub-panel-list {
+      padding: 16px 0;
+      font-size: 16px;
+      font-weight: bold;
       display: flex;
-      justify-content: center;
+      width: 100%;
 
-      .router-link {
-        width: 100%;
+      .dark-mode & {
+        color: $dark-second-text-color;
+      }
+
+      .light-mode & {
+        color: $light-second-text-color;
+      }
+
+      > li {
+        width: 50%;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
+        justify-content: center;
 
-        > svg {
-          width: 44px;
-          height: 44px;
-          color: $primary-color;
-          margin-bottom: 12px;
+        .router-link {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+
+          > svg {
+            width: 44px;
+            height: 44px;
+            color: $primary-color;
+            margin-bottom: 12px;
+          }
         }
       }
     }
   }
 
-  .type-list-title {
-    font-size: 14px;
-    color: #909399;
-    font-weight: bold;
+  .subs-list-wrapper {
+    margin-bottom: 36px;
+    position: relative;
+
+    .list-title {
+      font-size: 14px;
+      font-weight: bold;
+      position: sticky;
+      z-index: 10;
+      line-height: 36px;
+      top: 0;
+
+      .dark-mode & {
+        color: $dark-comment-text-color;
+        background-color: $dark-background-color;
+      }
+
+      .light-mode & {
+        color: $light-comment-text-color;
+        background-color: $light-background-color;
+      }
+    }
+
+    & > ul {
+      margin: 8px 0;
+
+      > li:not(:last-child) {
+        margin-bottom: 12px;
+      }
+    }
   }
 
   .no-data-wrapper {
@@ -209,19 +299,40 @@
 
     h3 {
       font-size: 18px;
-      color: #303133;
       margin-bottom: 12px;
+
+      .dark-mode & {
+        color: $dark-primary-text-color;
+      }
+
+      .light-mode & {
+        color: $light-primary-text-color;
+      }
     }
 
     p {
       font-size: 14px;
-      color: #909399;
+
+      .dark-mode & {
+        color: $dark-comment-text-color;
+      }
+
+      .light-mode & {
+        color: $light-comment-text-color;
+      }
     }
 
     a {
-      color: #909399;
       font-size: 14px;
       margin-top: 24px;
+
+      .dark-mode & {
+        color: $dark-comment-text-color;
+      }
+
+      .light-mode & {
+        color: $light-comment-text-color;
+      }
 
       span {
         margin-right: 4px;
