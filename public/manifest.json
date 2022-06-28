@@ -15,9 +15,8 @@
   ],
   "start_url": "/",
   "id": "/",
-  "background_color": "#303133",
+  "background_color": "#121212",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#FFFFFF",
   "description": "A sub-converter running in a Progressive Web App"
 }

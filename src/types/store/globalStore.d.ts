@@ -1,0 +1,3 @@
+interface GlobalStoreState {
+  bottomSafeArea: number;
+}
