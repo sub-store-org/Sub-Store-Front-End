@@ -104,7 +104,7 @@
         <p>请检查代理工具的 MITM、Rewrite 等配置</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="primary" @click="fetchData"
+    <nut-button icon="refresh" type="primary" @click="refresh(true)"
       >重试</nut-button
     >
     <a
@@ -119,51 +119,19 @@
 <script lang="ts" setup>
   import { useSubsStore } from '@/store/subs'
   import { useGlobalStore } from '@/store/global'
-  import { ref, reactive } from 'vue'
+  import { ref, inject } from 'vue'
   import SubListItem from '@/components/SubListItem.vue'
   import { storeToRefs } from 'pinia'
-  import { Notify } from '@nutui/nutui'
-
-  const notifySettings = reactive({
-    // notifyIsVisible: false,
-    notifyType: 'primary',
-    notifyDuration: 2500,
-    notifyMsg: '',
-  })
 
   const addSubBtnIsVisible = ref(false)
-  const isLoading = ref(true)
-  const fetchResult = ref(true)
 
   const subsStore = useSubsStore()
   const globalStore = useGlobalStore()
   const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore)
-  const { bottomSafeArea } = storeToRefs(globalStore)
+  const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore)
 
-  const fetchData = () => {
-    subsStore
-      .fetchSubsData()
-      .then(() => {
-        fetchResult.value = true
-        notifySettings.notifyMsg = '数据刷新成功！\n感受大佬的拥抱吧～'
-        notifySettings.notifyType = 'primary'
-      })
-      .catch(e => {
-        fetchResult.value = false
-        notifySettings.notifyMsg = `数据刷新失败\nE: ${e.status} ${
-          e.data?.message ?? ''
-        }`
-        notifySettings.notifyType = 'danger'
-      })
-      .finally(() => {
-        isLoading.value = false
-        Notify[notifySettings.notifyType](notifySettings.notifyMsg, {
-          duration: notifySettings.notifyDuration,
-        })
-      })
-  }
-
-  fetchData()
+  const refresh = inject<Function>('refreshWithNotify')
+  refresh(false)
 </script>
 
 <style lang="scss">

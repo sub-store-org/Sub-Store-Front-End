@@ -14,6 +14,12 @@ export function useSubsApi() {
         method: 'get',
       });
     },
+    getFlow: (name: string) => {
+      return request({
+        url: `/api/sub/flow/${name}`,
+        method: 'get',
+      });
+    },
     deleteSub: (type: string, name: string) => {
       return request({
         url: `/api/${type}/${name}`,
