@@ -111,8 +111,8 @@
 
   const flow = computed(() => {
     const nameList = Object.keys(flows.value)
-    if (isLoading.value) return '加载中...'
     if (!nameList.includes(name)) return '本地订阅'
+    if (isLoading.value) return '加载中...'
 
     const target = flows.value[name]
     if (target.status === 'success') return target.data

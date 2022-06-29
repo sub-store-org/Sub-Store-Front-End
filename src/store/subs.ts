@@ -15,6 +15,14 @@ export const useSubsStore = defineStore('subsStore', {
     hasSubs: ({ subs }): boolean => Object.keys(subs).length > 0,
     hasCollections: ({ collections }): boolean =>
       Object.keys(collections).length > 0,
+    getOneSub:
+      ({ subs }): GetOneData<SubsData> =>
+      (name: string) =>
+        subs[name],
+    getOneCollection:
+      ({ collections }): GetOneData<CollectionsData> =>
+      (name: string): CollectionsData =>
+        collections[name],
   },
   actions: {
     async fetchSubsData() {
@@ -65,7 +73,6 @@ export const useSubsStore = defineStore('subsStore', {
             resolve('删除成功');
           })
           .catch((err) => {
-            console.log(err);
             reject(err);
           });
       });
