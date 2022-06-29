@@ -8,6 +8,7 @@ import {
   faTrashCan,
   faPenNib,
   faClone,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -17,3 +18,4 @@ library.add(faArrowUpRightFromSquare);
 library.add(faTrashCan);
 library.add(faPenNib);
 library.add(faClone);
+library.add(faEye);

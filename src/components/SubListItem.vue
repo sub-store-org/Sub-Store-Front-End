@@ -43,6 +43,16 @@
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button
           shape="square"
+          type="success"
+          class="sub-item-swipe-btn"
+          @click="onClickPreview"
+        >
+          <font-awesome-icon icon="fa-solid fa-eye" />
+        </nut-button>
+      </div>
+      <div class="sub-item-swipe-btn-wrapper">
+        <nut-button
+          shape="square"
           type="warning"
           class="sub-item-swipe-btn"
           @click="onClickEdit"
@@ -65,6 +75,7 @@
 </template>
 
 <script lang="ts" setup>
+  import PreviewPanel from '@/components/PreviewPanel.vue'
   import icon from '@/assets/icons/logo.png'
   import { Dialog, Notify } from '@nutui/nutui'
   import dayjs from 'dayjs'
@@ -111,8 +122,8 @@
 
   const flow = computed(() => {
     const nameList = Object.keys(flows.value)
-    if (isLoading.value) return '加载中...'
     if (!nameList.includes(name)) return '本地订阅'
+    if (isLoading.value) return '加载中...'
 
     const target = flows.value[name]
     if (target.status === 'success') return target.data
@@ -129,19 +140,16 @@
     }
   }
 
-  const onClickDelete = () => {
+  const onClickPreview = () => {
     Dialog({
-      title: '删除订阅确认',
-      content: createVNode(
-        'span',
-        {},
-        `是否确认删除 ${name} 订阅？删除后不可恢复！`
-      ),
-      onCancel: () => {},
-      onOk: onDeleteConfirm,
+      title: '选择想要预览的平台',
+      content: createVNode(PreviewPanel, { name, type }),
       onOpened: () => swipe.value.close(),
-      cancelText: '取消',
-      okText: '确认删除',
+      popClass: 'auto-dialog',
+      // @ts-ignore-next-line  组件库bug，类型错误但功能正常
+      closeOnClickOverlay: true,
+      noOkBtn: true,
+      noCancelBtn: true,
       closeOnPopstate: true,
       lockScroll: true,
     })
@@ -149,6 +157,25 @@
 
   const onClickEdit = () => {
     router.push(`/edit/${type}/${name}`)
+  }
+
+  const onClickDelete = () => {
+    Dialog({
+      title: '删除订阅确认',
+      content: createVNode(
+        'span',
+        {},
+        `是否确认删除 ${displayName} 订阅？删除后不可恢复！`
+      ),
+      onCancel: () => {},
+      onOk: onDeleteConfirm,
+      onOpened: () => swipe.value.close(),
+      popClass: 'auto-dialog',
+      cancelText: '取消',
+      okText: '确认删除',
+      closeOnPopstate: true,
+      lockScroll: true,
+    })
   }
 
   const onClickCopyLink = async () => {
