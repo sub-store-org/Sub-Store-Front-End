@@ -66,7 +66,7 @@
       notify.msg = '数据刷新失败\n'
 
       if (Array.isArray(e)) {
-        const msgList = e.map(i => i?.error?.message ?? '')
+        const msgList = e.map(i => i?.data?.error?.message ?? '')
         notify.msg += msgList.join('\n')
       } else {
         const code = `Code ${e.status}`

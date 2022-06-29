@@ -1,0 +1,43 @@
+// 引入定义变量scss文件
+@import 'custom_theme_variables.scss';
+
+.dark-mode {
+  .auto-dialog {
+    background-color: $dark-dialog-color;
+
+    > .nut-dialog {
+      > .nut-dialog__content {
+        max-height: unset;
+        margin-bottom: 0;
+      }
+      > .nut-dialog__header {
+        color: $dark-primary-text-color;
+        font-weight: bold;
+      }
+      .nut-button--plain {
+        background: $dark-dialog-color;
+      }
+    }
+  }
+}
+
+.light-mode {
+  .auto-dialog {
+    background-color: $light-dialog-color;
+
+    > .nut-dialog {
+      > .nut-dialog__content {
+        max-height: unset;
+        margin-bottom: 0;
+      }
+      > .nut-dialog__header {
+        color: $light-primary-text-color;
+        font-weight: bold;
+      }
+
+      .nut-button--plain {
+        background: $light-dialog-color;
+      }
+    }
+  }
+}
