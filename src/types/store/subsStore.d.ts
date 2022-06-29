@@ -1,6 +1,7 @@
 interface SubsStoreState {
   subs: SubsDict;
   collections: CollectionsDict;
+  flows: FlowsDict;
 }
 
 interface SubsDict {
@@ -41,4 +42,22 @@ interface SubsProcess {
 
 interface SubsProcessArgs {
   [key: string]: any;
+}
+
+type GetOneData<T extends SubsData | CollectionsData> = (name: string) => T;
+
+interface FlowsDict {
+  [key: string]: FlowData | ErrorResponse;
+}
+
+interface FlowData {
+  status: 'success';
+  data: {
+    expires: number;
+    total: number;
+    usage: {
+      upload: number;
+      download: number;
+    };
+  };
 }
