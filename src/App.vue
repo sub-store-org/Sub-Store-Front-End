@@ -7,17 +7,66 @@
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue'
-  import { useGlobalStore } from '@/store/global'
   import { setColorThemeClass } from '@/utils/setColorThemeClass'
-  import { onMounted } from 'vue'
+  import { onMounted, provide } from 'vue'
+  import { Notify } from '@nutui/nutui'
+  import { useSubsStore } from '@/store/subs'
+  import { useGlobalStore } from '@/store/global'
 
-  // 判断处于 pwa 时将底部安全距离写入全局 store
+  const subsStore = useSubsStore()
   const globalStore = useGlobalStore()
+
+  // 处于 pwa 时将底部安全距离写入 global store
   type NavigatorExtend = Navigator & {
     standalone?: boolean
   }
   const navigator: NavigatorExtend = window.navigator
   globalStore.setBottomSafeArea(navigator.standalone ? 32 : 6)
+
+  // 初始化颜色主题
+  setColorThemeClass()
+
+  // 定义初始化应用数据方法
+  const initStores = async () => {
+    const notify = {
+      type: '',
+      msg: '',
+      duration: 2500,
+    }
+    globalStore.setLoading(true)
+    globalStore.setFetchResult(true)
+
+    // 拉取应用数据
+    const fetchAllStoreData = async () => {
+      return new Promise((resolve, reject) => {
+        const list = [subsStore.fetchSubsData()]
+        Promise.all(list)
+          .then(() => {
+            resolve('')
+          })
+          .catch(e => {
+            reject(e)
+          })
+      })
+    }
+
+    try {
+      await fetchAllStoreData()
+      notify.msg = '数据刷新成功！\n感受大佬的拥抱吧～'
+      notify.type = 'primary'
+    } catch (e) {
+      globalStore.setFetchResult(false)
+      notify.msg = `数据刷新失败\nE: ${e.status} ${e.data?.message ?? ''}`
+      notify.type = 'danger'
+    }
+    globalStore.setLoading(false)
+
+    // 发送通知
+    Notify[notify.type](notify.msg, {
+      duration: notify.duration,
+    })
+  }
+  provide<Function>('refreshWithNotify', initStores)
 
   // 引入 inoBounce 禁止过度滑动橡皮筋效果
   onMounted(() => {
@@ -28,7 +77,8 @@
     document.head.appendChild(externalScript)
   })
 
-  setColorThemeClass()
+  // 初始化应用数据（顶部通知）
+  initStores()
 </script>
 
 <style lang="scss">
