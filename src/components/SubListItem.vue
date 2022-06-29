@@ -12,17 +12,30 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 class="sub-item-title">{{ name }}</h3>
+          <h3 class="sub-item-title">{{ displayName }}</h3>
           <button class="copy-sub-link" @click="onClickCopyLink">
             <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
           </button>
         </div>
 
         <p v-if="type === 'sub'" class="sub-item-detail">
-          {{ `detail: ${sub.url || '本地订阅'}` }}
+          <span>
+            {{
+              typeof flow === 'string'
+                ? flow
+                : `已用/总流量：${getString(
+                    flow.usage.upload + flow.usage.download,
+                    flow.total,
+                    'B'
+                  )}`
+            }}
+          </span>
+          <span v-if="typeof flow !== 'string'">
+            {{ `到期时间：${dayjs.unix(flow.expires).format('YYYY-MM-DD')}` }}
+          </span>
         </p>
         <p v-else-if="type === 'collection'" class="sub-item-detail">
-          {{ `detail: ${collection.subscriptions}` }}
+          {{ collectionDetail }}
         </p>
       </div>
     </div>
@@ -54,10 +67,14 @@
 <script lang="ts" setup>
   import icon from '@/assets/icons/logo.png'
   import { Dialog, Notify } from '@nutui/nutui'
-  import { createVNode, ref } from 'vue'
+  import dayjs from 'dayjs'
+  import { createVNode, ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import useClipboard from 'vue-clipboard3'
   import { useSubsStore } from '@/store/subs'
+  import { storeToRefs } from 'pinia'
+  import { useGlobalStore } from '@/store/global'
+  import { getString } from '@/utils/flowTransfer'
   const { toClipboard } = useClipboard()
 
   const { sub, type, collection } = defineProps<{
@@ -68,9 +85,39 @@
 
   const swipe = ref()
   const router = useRouter()
+  const globalStore = useGlobalStore()
   const subsStore = useSubsStore()
+  const displayName =
+    sub?.displayName ||
+    sub?.['display-name'] ||
+    collection?.displayName ||
+    collection?.['display-name']
 
   const name = sub?.name || collection?.name
+  const { flows } = storeToRefs(subsStore)
+  const collectionDetail = computed(() => {
+    const nameList = collection?.subscriptions || []
+    if (nameList.length === 0) {
+      return '没有包含子订阅'
+    } else {
+      const displayNameList = nameList.map(name => {
+        const sub = subsStore.getOneSub(name)
+        return sub?.displayName || sub?.['display-name']
+      })
+      return `包含的订阅：${displayNameList.join('、')}`
+    }
+  })
+  const { isLoading } = storeToRefs(globalStore)
+
+  const flow = computed(() => {
+    const nameList = Object.keys(flows.value)
+    if (isLoading.value) return '加载中...'
+    if (!nameList.includes(name)) return '本地订阅'
+
+    const target = flows.value[name]
+    if (target.status === 'success') return target.data
+    if (target.status === 'failed') return target.error.message
+  })
 
   const onDeleteConfirm = async () => {
     try {
@@ -163,6 +210,12 @@
         align-items: center;
 
         .sub-item-title {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow: hidden;
           font-size: 16px;
 
           .dark-mode & {
@@ -197,12 +250,17 @@
       .sub-item-detail {
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+        -webkit-line-clamp: 3;
         word-wrap: break-word;
         word-break: break-all;
         overflow: hidden;
-        margin-top: 10px;
+        margin-top: 6px;
         font-size: 14px;
+
+        span {
+          display: block;
+          line-height: 1.8;
+        }
 
         .dark-mode & {
           color: $dark-comment-text-color;
@@ -223,9 +281,11 @@
 
       .sub-item-swipe-btn-wrapper {
         padding-left: 24px;
+
         &:last-child {
           padding-right: 12px;
         }
+
         .sub-item-swipe-btn {
           border-radius: 50%;
           height: 48px;
