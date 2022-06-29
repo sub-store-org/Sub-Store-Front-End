@@ -104,7 +104,9 @@
         <p>请检查代理工具的 MITM、Rewrite 等配置</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="primary" @click="refresh">重试</nut-button>
+    <nut-button icon="refresh" type="primary" @click="refresh(true)"
+      >重试</nut-button
+    >
     <a
       href="https://www.notion.so/Sub-Store-6259586994d34c11a4ced5c406264b46"
       target="_blank"
@@ -129,6 +131,7 @@
   const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore)
 
   const refresh = inject<Function>('refreshWithNotify')
+  refresh(false)
 </script>
 
 <style lang="scss">

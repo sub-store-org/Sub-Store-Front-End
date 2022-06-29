@@ -27,7 +27,7 @@
   setColorThemeClass()
 
   // 定义初始化应用数据方法
-  const initStores = async () => {
+  const initStores = async (needNotify: boolean) => {
     const notify = {
       type: '',
       msg: '',
@@ -41,7 +41,12 @@
       return new Promise((resolve, reject) => {
         const list = [subsStore.fetchSubsData()]
         Promise.all(list)
-          .then(() => {
+          .then(async () => {
+            try {
+              await subsStore.fetchFlows()
+            } catch (e) {
+              reject(e)
+            }
             resolve('')
           })
           .catch(e => {
@@ -55,16 +60,28 @@
       notify.msg = '数据刷新成功！\n感受大佬的拥抱吧～'
       notify.type = 'primary'
     } catch (e) {
-      globalStore.setFetchResult(false)
-      notify.msg = `数据刷新失败\nE: ${e.status} ${e.data?.message ?? ''}`
+      console.log('e', e)
       notify.type = 'danger'
+      globalStore.setFetchResult(false)
+      notify.msg = '数据刷新失败\n'
+
+      if (Array.isArray(e)) {
+        const msgList = e.map(i => i?.error?.message ?? '')
+        notify.msg += msgList.join('\n')
+      } else {
+        const code = `Code ${e.status}`
+        const msg = e?.error?.message ?? ''
+        notify.msg += msg ? code + ', ' + msg : code
+      }
     }
     globalStore.setLoading(false)
 
     // 发送通知
-    Notify[notify.type](notify.msg, {
-      duration: notify.duration,
-    })
+    if (needNotify) {
+      Notify[notify.type](notify.msg, {
+        duration: notify.duration,
+      })
+    }
   }
   provide<Function>('refreshWithNotify', initStores)
 
@@ -78,7 +95,7 @@
   })
 
   // 初始化应用数据（顶部通知）
-  initStores()
+  initStores(true)
 </script>
 
 <style lang="scss">
