@@ -8,15 +8,24 @@ export const useSubsStore = defineStore('subsStore', {
     return {
       subs: {},
       collections: {},
+      flows: {},
     };
   },
   getters: {
     hasSubs: ({ subs }): boolean => Object.keys(subs).length > 0,
     hasCollections: ({ collections }): boolean =>
       Object.keys(collections).length > 0,
+    getOneSub:
+      ({ subs }): GetOneData<SubsData> =>
+      (name: string) =>
+        subs[name],
+    getOneCollection:
+      ({ collections }): GetOneData<CollectionsData> =>
+      (name: string): CollectionsData =>
+        collections[name],
   },
   actions: {
-    fetchSubsData() {
+    async fetchSubsData() {
       this.subs = {};
       this.collections = {};
       return new Promise(async (resolve, reject) => {
@@ -31,7 +40,32 @@ export const useSubsStore = defineStore('subsStore', {
           });
       });
     },
-    deleteSub(type: SubsType, name: string) {
+    async fetchFlows() {
+      return new Promise(async (resolve, reject) => {
+        const remoteSubsName = [];
+        const errList = [];
+
+        for (const name in this.subs) {
+          if (this.subs[name].source === 'remote') {
+            remoteSubsName.push(name);
+          }
+        }
+
+        for (let i = 0; i < remoteSubsName.length; i++) {
+          const name = remoteSubsName[i];
+          try {
+            this.flows[name] = await subsApi.getFlow(name);
+          } catch (e) {
+            this.flows[name] = e;
+            errList.push(e);
+          }
+        }
+
+        if (errList.length > 0) reject(errList);
+        resolve('');
+      });
+    },
+    async deleteSub(type: SubsType, name: string) {
       return new Promise(async (resolve, reject) => {
         subsApi
           .deleteSub(type, name)
@@ -39,7 +73,6 @@ export const useSubsStore = defineStore('subsStore', {
             resolve('删除成功');
           })
           .catch((err) => {
-            console.log(err);
             reject(err);
           });
       });

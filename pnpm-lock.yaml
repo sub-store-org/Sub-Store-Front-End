@@ -13,6 +13,7 @@ specifiers:
   '@vitejs/plugin-vue': ^2.3.3
   axios: ^0.27.2
   consola: ^2.15.3
+  dayjs: ^1.11.3
   fast-glob: ^3.2.11
   husky: ^8.0.1
   modern-css-reset: ^1.4.0
@@ -35,6 +36,7 @@ dependencies:
   '@fortawesome/vue-fontawesome': 3.0.1_u4vq2zlnk6o5gih5o4cnqmjgea
   '@nutui/nutui': 3.1.22_vue@3.2.37
   axios: 0.27.2
+  dayjs: 1.11.3
   modern-css-reset: 1.4.0
   pinia: 2.0.14_j6bzmzd4ujpabbp5objtwxyjp4
   vue: 3.2.37
@@ -1117,6 +1119,10 @@ packages:
     resolution: {integrity: sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==}
     engines: {node: '>=8'}
     dev: true
+
+  /dayjs/1.11.3:
+    resolution: {integrity: sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}

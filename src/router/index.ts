@@ -54,7 +54,7 @@ export default createRouter({
           },
         },
         {
-          path: '/edit/sub/:name',
+          path: '/edit/:editType/:id',
           component: SubEditor,
           meta: {
             title: 'subEditor',
