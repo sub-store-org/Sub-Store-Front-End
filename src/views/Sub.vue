@@ -104,7 +104,7 @@
         <p>{{ $t(`subPage.loadFailed.desc`) }}</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="primary" @click="refresh(true)">{{
+    <nut-button icon="refresh" type="primary" @click="refresh(true, false)">{{
       $t(`subPage.loadFailed.btn`)
     }}</nut-button>
     <a

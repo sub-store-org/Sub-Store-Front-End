@@ -29,7 +29,7 @@
   setColorThemeClass()
 
   // 定义初始化应用数据方法
-  const initStores = async (needNotify: boolean) => {
+  const initStores = async (needNotify: boolean, needFetchFlow: boolean) => {
     const notify = {
       type: '',
       msg: '',
@@ -44,7 +44,7 @@
         const list = [subsStore.fetchSubsData()]
         Promise.all(list)
           .then(async () => {
-            await subsStore.fetchFlows()
+            if (needFetchFlow) await subsStore.fetchFlows()
             resolve('')
           })
           .catch(e => {
@@ -93,7 +93,7 @@
   })
 
   // 初始化应用数据（顶部通知）
-  initStores(true)
+  initStores(true, true)
 </script>
 
 <style lang="scss">
