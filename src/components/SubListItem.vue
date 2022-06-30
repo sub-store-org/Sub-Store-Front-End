@@ -79,7 +79,7 @@
   import icon from '@/assets/icons/logo.png'
   import { Dialog, Notify } from '@nutui/nutui'
   import dayjs from 'dayjs'
-  import { createVNode, ref, computed } from 'vue'
+  import { createVNode, ref, computed, toRaw } from 'vue'
   import { useRouter } from 'vue-router'
   import useClipboard from 'vue-clipboard3'
   import { useSubsStore } from '@/store/subs'
@@ -126,8 +126,8 @@
       if (props.sub.source === 'local') return t('subPage.subItem.local')
       if (isLoading.value) return t('subPage.subItem.loading')
 
-      const target = flows.value[props.sub.url]
-      if (target.status === 'success') {
+      const target = toRaw(flows.value[props.sub.url])
+      if (target?.status === 'success') {
         const {
           expires,
           total,
@@ -143,7 +143,7 @@
             .unix(expires)
             .format('YYYY-MM-DD')}`,
         }
-      } else if (target.status === 'failed') {
+      } else if (target?.status === 'failed') {
         return {
           firstLine: `${target.error?.message}`,
           secondLine: '',
