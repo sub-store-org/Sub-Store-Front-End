@@ -86,7 +86,9 @@
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '@/store/global'
   import { getString } from '@/utils/flowTransfer'
+  import { useI18n } from 'vue-i18n'
   const { toClipboard } = useClipboard()
+  const { t } = useI18n()
 
   const props = defineProps<{
     type: 'sub' | 'collection'
@@ -106,21 +108,23 @@
   const collectionDetail = computed(() => {
     const nameList = props?.collection.subscriptions || []
     if (nameList.length === 0) {
-      return '没有包含子订阅'
+      return t('subPage.collectionItem.noSub')
     } else {
       const displayNameList = nameList.map(name => {
         const sub = subsStore.getOneSub(name)
         return sub?.displayName || sub?.['display-name']
       })
-      return `包含的订阅：${displayNameList.join('、')}`
+      return `${t('subPage.collectionItem.contain')}：${displayNameList.join(
+        '、'
+      )}`
     }
   })
   const { isLoading } = storeToRefs(globalStore)
 
   const flow = computed(() => {
     if (props.type === 'sub') {
-      if (props.sub.source === 'local') return '本地订阅'
-      if (isLoading.value) return '加载中...'
+      if (props.sub.source === 'local') return t('subPage.subItem.local')
+      if (isLoading.value) return t('subPage.subItem.loading')
 
       const target = flows.value[props.sub.url]
       if (target.status === 'success') {
@@ -130,8 +134,14 @@
           usage: { upload, download },
         } = target.data
         return {
-          firstLine: `已用/总流量：${getString(upload + download, total, 'B')}`,
-          secondLine: `到期时间：${dayjs.unix(expires).format('YYYY-MM-DD')}`,
+          firstLine: `${t('subPage.subItem.flow')}：${getString(
+            upload + download,
+            total,
+            'B'
+          )}`,
+          secondLine: `${t('subPage.subItem.expires')}：${dayjs
+            .unix(expires)
+            .format('YYYY-MM-DD')}`,
         }
       } else if (target.status === 'failed') {
         return {
@@ -154,7 +164,7 @@
     try {
       await subsStore.deleteSub(props.type, name)
       await subsStore.fetchSubsData()
-      Notify.danger('删除成功！', { duration: 1500 })
+      Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 })
     } catch (e) {
       Notify.danger(e.message, { duration: 1500 })
     }
@@ -162,7 +172,7 @@
 
   const onClickPreview = () => {
     Dialog({
-      title: '选择想要预览的平台',
+      title: t('subPage.previewTitle'),
       content: createVNode(PreviewPanel, { name, type: props.type }),
       onOpened: () => swipe.value.close(),
       popClass: 'auto-dialog',
@@ -181,18 +191,18 @@
 
   const onClickDelete = () => {
     Dialog({
-      title: '删除订阅确认',
+      title: t('subPage.deleteSub.title'),
       content: createVNode(
         'span',
         {},
-        `是否确认删除 ${displayName} 订阅？删除后不可恢复！`
+        t('subPage.deleteSub.desc', { displayName })
       ),
       onCancel: () => {},
       onOk: onDeleteConfirm,
       onOpened: () => swipe.value.close(),
       popClass: 'auto-dialog',
-      cancelText: '取消',
-      okText: '确认删除',
+      cancelText: t('subPage.deleteSub.btn.cancel'),
+      okText: t('subPage.deleteSub.btn.confirm'),
       closeOnPopstate: true,
       lockScroll: true,
     })
@@ -205,11 +215,11 @@
         props.type === 'collection' ? 'collection/' : ''
       }${name}`
       await toClipboard(url)
-      Notify.success('复制订阅链接成功\n可以前往代理工具使用咯～', {
+      Notify.success(t('subPage.copyNotify.succeed'), {
         duration: 1500,
       })
     } catch (e) {
-      Notify.danger(`复制订阅链接失败\n${e}`, {
+      Notify.danger(t('subPage.copyNotify.succeed', { e }), {
         duration: 1500,
       })
       console.error(e)

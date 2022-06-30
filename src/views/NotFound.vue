@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <h3>啊哦～ URL 错误！</h3>
-    <router-link to="/">回首页</router-link>
+    <h3>{{ $t('notFoundPage.title') }}</h3>
+    <router-link to="/">{{ $t('notFoundPage.desc') }}</router-link>
   </div>
 </template>
 

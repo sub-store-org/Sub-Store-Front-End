@@ -24,10 +24,10 @@
     v-model:visible="showLangSwitchPopup"
     z-index="1000"
   >
-    <nut-cell-group :title="$t(`common.navBar.langSwitcher.cellTitle`)">
+    <nut-cell-group :title="$t(`navBar.langSwitcher.cellTitle`)">
       <nut-cell
         v-for="lang in langList"
-        :title="$t(`common.navBar.langSwitcher.${lang}.name`)"
+        :title="$t(`navBar.langSwitcher.${lang}`)"
         @click="changeLang(lang)"
         :key="lang"
         :class="{ selected: lang === locale }"
@@ -61,7 +61,7 @@
 
   const currentTitle = computed(() => {
     const metaTitle = route.meta.title
-    return metaTitle ? t(`pagesTitle.${metaTitle}`) : undefined
+    return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined
   })
 
   const navBarHeight = '56px'
