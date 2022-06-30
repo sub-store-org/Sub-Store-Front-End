@@ -26,8 +26,6 @@ export const useSubsStore = defineStore('subsStore', {
   },
   actions: {
     async fetchSubsData() {
-      this.subs = {};
-      this.collections = {};
       return new Promise(async (resolve, reject) => {
         Promise.all([subsApi.getSubs(), subsApi.getCollections()])
           .then((res) => {
@@ -41,27 +39,34 @@ export const useSubsStore = defineStore('subsStore', {
       });
     },
     async fetchFlows() {
-      return new Promise(async (resolve, reject) => {
-        const remoteSubsName = [];
-        const errList = [];
+      // 提取所有的 remote 的 url，储存为 hash 表
+      const values = Object.values(this.subs) as Sub[];
+      const flowNameHash = {};
+      for (const sub of values) {
+        if (sub.source === 'remote') {
+          flowNameHash[sub.url]
+            ? flowNameHash[sub.url].push(sub.name)
+            : (flowNameHash[sub.url] = [sub.name]);
+        }
+      }
 
-        for (const name in this.subs) {
-          if (this.subs[name].source === 'remote') {
-            remoteSubsName.push(name);
-          }
+      return new Promise(async (resolve) => {
+        const nameList = [];
+
+        // 取出每个 hash 表里每个 url 的第一个 name
+        for (const url in flowNameHash) {
+          nameList.push([url, flowNameHash[url][0]]);
         }
 
-        for (let i = 0; i < remoteSubsName.length; i++) {
-          const name = remoteSubsName[i];
+        // 用该 name 请求流量信息 并按 url 存入 store 中
+        for (let i = 0; i < nameList.length; i++) {
+          const [url, name] = nameList[i];
           try {
-            this.flows[name] = await subsApi.getFlow(name);
+            this.flows[url] = await subsApi.getFlow(name);
           } catch (e) {
-            this.flows[name] = e;
-            errList.push(e);
+            this.flows[url] = e;
           }
         }
-
-        if (errList.length > 0) reject(errList);
         resolve('');
       });
     },
