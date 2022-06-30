@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useSubsApi } from '@/api/getData';
+import { useSubsApi } from '@/api/subs';
 
 const subsApi = useSubsApi();
 
@@ -16,12 +16,12 @@ export const useSubsStore = defineStore('subsStore', {
     hasCollections: ({ collections }): boolean =>
       Object.keys(collections).length > 0,
     getOneSub:
-      ({ subs }): GetOneData<SubsData> =>
+      ({ subs }): GetOne<Sub> =>
       (name: string) =>
         subs[name],
     getOneCollection:
-      ({ collections }): GetOneData<CollectionsData> =>
-      (name: string): CollectionsData =>
+      ({ collections }): GetOne<Collection> =>
+      (name: string): Collection =>
         collections[name],
   },
   actions: {

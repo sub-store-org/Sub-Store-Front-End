@@ -1,14 +1,26 @@
 interface SubsStoreState {
-  subs: SubsDict;
-  collections: CollectionsDict;
+  subs: SubsDict<Sub>;
+  collections: SubsDict<Collection>;
   flows: FlowsDict;
 }
 
-interface SubsDict {
-  [key: string]: SubsData;
+interface SubsDict<T> {
+  [key: string]: T;
 }
 
-interface SubsData {
+interface FlowsDict {
+  [key: string]: Flow | ErrorResponse;
+}
+
+interface ProcessArg {
+  [key: string]: any;
+}
+
+interface Process {
+  type: string;
+  args: ProcessArg[];
+}
+interface Sub {
   name: string;
   content?: string;
   displayName?: string;
@@ -16,41 +28,18 @@ interface SubsData {
   source: 'remote' | 'local';
   icon?: string;
   ua?: string;
-  process: SubsProcess[];
+  process: Process[];
 }
 
-interface CollectionsDict {
-  [key: string]: CollectionsData;
-}
-
-interface CollectionProcessId {
-  id: string;
-}
-
-interface CollectionsData {
+interface Collection {
   name: string;
   displayName?: string;
-  process: Array<SubsProcess & CollectionProcessId>;
+  process: Process[];
   subscriptions: string[];
   ua?: string;
 }
 
-interface SubsProcess {
-  type: string;
-  args: SubsProcessArgs[];
-}
-
-interface SubsProcessArgs {
-  [key: string]: any;
-}
-
-type GetOneData<T extends SubsData | CollectionsData> = (name: string) => T;
-
-interface FlowsDict {
-  [key: string]: FlowData | ErrorResponse;
-}
-
-interface FlowData {
+interface Flow {
   status: 'success';
   data: {
     expires: number;
@@ -61,3 +50,5 @@ interface FlowData {
     };
   };
 }
+
+type GetOne<T extends Sub | Collection> = (name: string) => T;

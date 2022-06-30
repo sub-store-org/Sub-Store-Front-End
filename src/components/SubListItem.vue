@@ -90,8 +90,8 @@
 
   const { sub, type, collection } = defineProps<{
     type: 'sub' | 'collection'
-    sub?: SubsData
-    collection?: CollectionsData
+    sub?: Sub
+    collection?: Collection
   }>()
 
   const swipe = ref()

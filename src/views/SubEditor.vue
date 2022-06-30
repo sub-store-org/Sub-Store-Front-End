@@ -8,8 +8,8 @@
   const route = useRoute()
   const { params } = route
   const { editType, id } = params
-  const sub = ref<SubsData>()
-  const collection = ref<CollectionsData>()
+  const sub = ref<Sub>()
+  const collection = ref<Collection>()
 
   const subsStore = useSubsStore()
   watchEffect(() => {
