@@ -12,6 +12,8 @@
   import { Notify } from '@nutui/nutui'
   import { useSubsStore } from '@/store/subs'
   import { useGlobalStore } from '@/store/global'
+  import { useI18n } from 'vue-i18n'
+  const { t } = useI18n()
 
   const subsStore = useSubsStore()
   const globalStore = useGlobalStore()
@@ -42,11 +44,7 @@
         const list = [subsStore.fetchSubsData()]
         Promise.all(list)
           .then(async () => {
-            try {
-              await subsStore.fetchFlows()
-            } catch (e) {
-              reject(e)
-            }
+            await subsStore.fetchFlows()
             resolve('')
           })
           .catch(e => {
@@ -57,13 +55,13 @@
 
     try {
       await fetchAllStoreData()
-      notify.msg = '数据刷新成功！\n感受大佬的拥抱吧～'
+      notify.msg = t('globalNotify.refresh.succeed')
       notify.type = 'primary'
     } catch (e) {
       console.log('e', e)
       notify.type = 'danger'
       globalStore.setFetchResult(false)
-      notify.msg = '数据刷新失败\n'
+      notify.msg = t('globalNotify.refresh.failed')
 
       if (Array.isArray(e)) {
         const msgList = e.map(i => i?.data?.error?.message ?? '')
@@ -102,12 +100,9 @@
   @import '@/assets/custom_theme_variables.scss';
 
   #app {
-    font-family: -apple-system, 'Noto Sans', 'Helvetica Neue', Helvetica,
-      'Nimbus Sans L', Arial, 'Liberation Sans', 'PingFang SC',
-      'Hiragino Sans GB', 'Noto Sans CJK SC', 'Source Han Sans SC',
-      'Source Han Sans CN', 'Microsoft YaHei', 'Wenquanyi Micro Hei',
-      'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp',
-      sans-serif;
+    font-family: 'Roboto', 'Noto Sans', Arial, 'PingFang SC',
+      'Source Han Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', 'ST Heiti',
+      SimHei, sans-serif;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -130,10 +125,6 @@
       flex-direction: column;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
-    }
-
-    .dark-mode & img {
-      filter: brightness(0.6);
     }
   }
 </style>

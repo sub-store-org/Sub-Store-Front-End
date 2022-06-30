@@ -13,6 +13,7 @@ import nutUi from '@/plugin/nutui';
 
 import '@/assets/remove_default_style.scss';
 import 'modern-css-reset/dist/reset.min.css';
+import '@/assets/fonts.scss';
 import '@/assets/global_overwritten_nutui.scss';
 
 import App from './App.vue';

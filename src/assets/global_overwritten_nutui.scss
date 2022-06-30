@@ -2,13 +2,15 @@
 @import 'custom_theme_variables.scss';
 
 .dark-mode {
+  img.auto-reverse {
+    filter: brightness(1000%);
+  }
   .auto-dialog {
     background-color: $dark-dialog-color;
 
     > .nut-dialog {
       > .nut-dialog__content {
         max-height: unset;
-        margin-bottom: 0;
       }
       > .nut-dialog__header {
         color: $dark-primary-text-color;
@@ -22,13 +24,15 @@
 }
 
 .light-mode {
+  img.auto-reverse {
+    filter: brightness(0);
+  }
   .auto-dialog {
     background-color: $light-dialog-color;
 
     > .nut-dialog {
       > .nut-dialog__content {
         max-height: unset;
-        margin-bottom: 0;
       }
       > .nut-dialog__header {
         color: $light-primary-text-color;

@@ -43,18 +43,18 @@
     closeable
     round
   >
-    <p class="add-sub-panel-title">选择要创建的订阅类型</p>
+    <p class="add-sub-panel-title">{{ $t(`subPage.addSubTitle`) }}</p>
     <ul class="add-sub-panel-list">
       <li>
         <router-link to="/editor/single" class="router-link">
           <svg-icon name="singleSubs" />
-          <span>单条订阅</span>
+          <span>{{ $t(`specificWord.singleSub`) }}</span>
         </router-link>
       </li>
       <li>
         <router-link to="/editor/collection" class="router-link">
           <svg-icon name="collectionSubs" />
-          <span>组合订阅</span>
+          <span>{{ $t(`specificWord.collectionSub`) }}</span>
         </router-link>
       </li>
     </ul>
@@ -63,7 +63,7 @@
   <!--页面内容-->
   <!--有数据-->
   <div v-if="hasSubs" class="subs-list-wrapper">
-    <p class="list-title">单条订阅</p>
+    <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
     <ul>
       <li v-for="sub in subs" :key="sub.name">
         <SubListItem :sub="sub" type="sub" />
@@ -72,7 +72,7 @@
   </div>
 
   <div v-if="hasCollections" class="subs-list-wrapper">
-    <p class="list-title">组合订阅</p>
+    <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
     <ul>
       <li v-for="collection in collections" :key="collection.name">
         <SubListItem :collection="collection" type="collection" />
@@ -87,12 +87,12 @@
   >
     <nut-empty image="empty">
       <template #description>
-        <h3>还没有添加订阅</h3>
-        <p>添加后即可尽情享受 YM Peng 大佬的关爱～</p>
+        <h3>{{ $t(`subPage.emptySub.title`) }}</h3>
+        <p>{{ $t(`subPage.emptySub.desc`) }}</p>
       </template>
     </nut-empty>
     <nut-button @click="addSubBtnIsVisible = true" type="primary"
-      >立即添加
+      >{{ $t(`subPage.emptySub.btn`) }}
     </nut-button>
   </div>
 
@@ -100,17 +100,17 @@
   <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
     <nut-empty image="error">
       <template #description>
-        <h3>数据加载失败</h3>
-        <p>请检查代理工具的 MITM、Rewrite 等配置</p>
+        <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
+        <p>{{ $t(`subPage.loadFailed.desc`) }}</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="primary" @click="refresh(true)"
-      >重试</nut-button
-    >
+    <nut-button icon="refresh" type="primary" @click="refresh(true)">{{
+      $t(`subPage.loadFailed.btn`)
+    }}</nut-button>
     <a
       href="https://www.notion.so/Sub-Store-6259586994d34c11a4ced5c406264b46"
       target="_blank"
-      ><span>查看 Sub-Store 教程</span>
+      ><span>{{ $t(`subPage.loadFailed.doc`) }}</span>
       <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square"
     /></a>
   </div>

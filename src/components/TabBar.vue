@@ -9,19 +9,19 @@
     >
       <nut-tabbar-item
         class="tabbar-item"
-        tab-title="订阅"
+        :tab-title="$t(`tabBar.sub`)"
         to="/subs"
         icon="link"
       ></nut-tabbar-item>
       <nut-tabbar-item
         class="tabbar-item"
-        tab-title="同步"
+        :tab-title="$t(`tabBar.sync`)"
         to="/sync"
         icon="refresh2"
       ></nut-tabbar-item>
       <nut-tabbar-item
         class="tabbar-item"
-        tab-title="我的"
+        :tab-title="$t(`tabBar.my`)"
         to="/my"
         icon="my"
       ></nut-tabbar-item>

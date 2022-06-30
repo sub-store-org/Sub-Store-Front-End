@@ -8,7 +8,7 @@
         target="_blank"
       >
         <div>
-          <img :src="platform.icon" alt="" />
+          <img :src="platform.icon" alt="" class="auto-reverse" />
         </div>
         <p>{{ platform.name }}</p>
       </a>
@@ -92,14 +92,6 @@
           width: 40px;
           height: 40px;
           margin-right: 16px;
-
-          .dark-mode & {
-            filter: brightness(100);
-          }
-
-          .light-mode & {
-            filter: brightness(0);
-          }
         }
 
         p {
