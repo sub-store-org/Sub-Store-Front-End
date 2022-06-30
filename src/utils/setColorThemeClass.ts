@@ -17,6 +17,6 @@ export const setColorThemeClass = () => {
       } else {
         body.classList.add('light-mode');
       }
-      console.log(e.matches);
+      console.log('dark mode: ', e.matches);
     });
 };

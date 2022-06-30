@@ -2,6 +2,9 @@
 @import 'custom_theme_variables.scss';
 
 .dark-mode {
+  img.auto-reverse {
+    filter: brightness(100);
+  }
   .auto-dialog {
     background-color: $dark-dialog-color;
 
@@ -22,6 +25,9 @@
 }
 
 .light-mode {
+  img.auto-reverse {
+    filter: brightness(0);
+  }
   .auto-dialog {
     background-color: $light-dialog-color;
 
