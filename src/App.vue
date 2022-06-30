@@ -42,11 +42,7 @@
         const list = [subsStore.fetchSubsData()]
         Promise.all(list)
           .then(async () => {
-            try {
-              await subsStore.fetchFlows()
-            } catch (e) {
-              reject(e)
-            }
+            await subsStore.fetchFlows()
             resolve('')
           })
           .catch(e => {
@@ -130,10 +126,6 @@
       flex-direction: column;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
-    }
-
-    .dark-mode & img {
-      filter: brightness(0.6);
     }
   }
 </style>
