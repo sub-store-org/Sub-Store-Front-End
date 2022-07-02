@@ -9,6 +9,8 @@ import {
   faPenNib,
   faClone,
   faEye,
+  faGrip,
+  faCircleQuestion,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -19,3 +21,5 @@ library.add(faTrashCan);
 library.add(faPenNib);
 library.add(faClone);
 library.add(faEye);
+library.add(faGrip);
+library.add(faCircleQuestion);

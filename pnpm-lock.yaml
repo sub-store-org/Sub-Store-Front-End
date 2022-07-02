@@ -28,6 +28,7 @@ specifiers:
   vue-i18n: ^9.2.0-beta.36
   vue-router: ^4.0.16
   vue-tsc: ^0.35.2
+  vuedraggable: ^4.1.0
 
 dependencies:
   '@fortawesome/fontawesome-svg-core': 6.1.1
@@ -43,6 +44,7 @@ dependencies:
   vue-clipboard3: 2.0.0
   vue-i18n: 9.2.0-beta.36_vue@3.2.37
   vue-router: 4.0.16_vue@3.2.37
+  vuedraggable: 4.1.0_vue@3.2.37
 
 devDependencies:
   '@commitlint/cli': 17.0.3
@@ -3018,6 +3020,10 @@ packages:
       - supports-color
     dev: true
 
+  /sortablejs/1.14.0:
+    resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
+    dev: false
+
   /source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
@@ -3551,6 +3557,15 @@ packages:
       '@vue/runtime-dom': 3.2.37
       '@vue/server-renderer': 3.2.37_vue@3.2.37
       '@vue/shared': 3.2.37
+
+  /vuedraggable/4.1.0_vue@3.2.37:
+    resolution: {integrity: sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==}
+    peerDependencies:
+      vue: ^3.0.1
+    dependencies:
+      sortablejs: 1.14.0
+      vue: 3.2.37
+    dev: false
 
   /which/2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
