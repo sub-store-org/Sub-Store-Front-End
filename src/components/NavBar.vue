@@ -94,8 +94,8 @@
         height: v-bind(navBarHeight);
         top: 0;
         box-shadow: none;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
 
         .dark-mode & {
           background: $dark-nav-bar-color;

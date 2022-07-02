@@ -1,10 +1,35 @@
 // 引入定义变量scss文件
 @import 'custom_theme_variables.scss';
 
+// 顶部粘性定位标题样式
+.sticky-title-wrapper {
+  position: sticky;
+  display: block;
+  z-index: 10;
+  top: 0;
+  margin-top: $safe-area-side;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 2;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  .dark-mode & {
+    color: $dark-comment-text-color;
+    background-color: $dark-nav-bar-color;
+  }
+
+  .light-mode & {
+    color: $light-comment-text-color;
+    background-color: $light-nav-bar-color;
+  }
+}
+
 .dark-mode {
   img.auto-reverse {
     filter: brightness(1000%);
   }
+
   .auto-dialog {
     background-color: $dark-dialog-color;
 
@@ -12,14 +37,70 @@
       > .nut-dialog__content {
         max-height: unset;
       }
+
       > .nut-dialog__header {
         color: $dark-primary-text-color;
         font-weight: bold;
       }
+
       .nut-button--plain {
         background: $dark-dialog-color;
       }
     }
+  }
+
+  // 表单 相关
+  .nut-cell-group__warp {
+    background-color: $dark-card-color;
+
+    .nut-form-item,
+    .nut-textarea {
+      background: $dark-card-color;
+
+      .nut-form-item__label {
+        color: $dark-comment-text-color;
+      }
+
+      &::after {
+        border-color: $dark-divider-color;
+      }
+    }
+  }
+
+  .nut-radio__button.false {
+    color: $dark-comment-text-color;
+    background-color: $dark-divider-color;
+    border-color: transparent;
+  }
+
+  .nut-radio__icon--unchecked {
+    color: $dark-lowest-text-color;
+  }
+
+  .nut-radio__label {
+    color: $dark-second-text-color;
+  }
+
+  .nut-input-text {
+    color: $dark-second-text-color !important;
+  }
+
+  :-moz-placeholder {
+    color: $dark-lowest-text-color;
+  }
+
+  ::-moz-placeholder {
+    color: $dark-lowest-text-color;
+  }
+
+  input:-ms-input-placeholder,
+  textarea:-ms-input-placeholder {
+    color: $dark-lowest-text-color;
+  }
+
+  input::-webkit-input-placeholder,
+  textarea::-webkit-input-placeholder {
+    color: $dark-lowest-text-color;
   }
 }
 
@@ -27,6 +108,7 @@
   img.auto-reverse {
     filter: brightness(0);
   }
+
   .auto-dialog {
     background-color: $light-dialog-color;
 
@@ -34,6 +116,7 @@
       > .nut-dialog__content {
         max-height: unset;
       }
+
       > .nut-dialog__header {
         color: $light-primary-text-color;
         font-weight: bold;
@@ -43,5 +126,59 @@
         background: $light-dialog-color;
       }
     }
+  }
+
+  // 表单相关
+  .nut-cell-group__warp {
+    background-color: $light-card-color;
+
+    .nut-form-item,
+    .nut-textarea {
+      background: $light-card-color;
+
+      .nut-form-item__label {
+        color: $light-comment-text-color;
+      }
+
+      &::after {
+        border-color: $light-divider-color;
+      }
+    }
+  }
+
+  .nut-radio__button.false {
+    color: $light-comment-text-color;
+    background-color: $light-divider-color;
+  }
+
+  .nut-radio__icon--unchecked {
+    color: $light-lowest-text-color;
+  }
+
+  .nut-radio__label {
+    color: $light-second-text-color;
+  }
+
+  // input 相关
+  .nut-input-text {
+    color: $light-second-text-color !important;
+  }
+
+  :-moz-placeholder {
+    color: $light-lowest-text-color;
+  }
+
+  ::-moz-placeholder {
+    color: $light-lowest-text-color;
+  }
+
+  input:-ms-input-placeholder,
+  textarea:-ms-input-placeholder {
+    color: $light-lowest-text-color;
+  }
+
+  input::-webkit-input-placeholder,
+  textarea::-webkit-input-placeholder {
+    color: $light-lowest-text-color;
   }
 }

@@ -1,11 +1,13 @@
 // light mode 颜色变量
 $light-background-color: #f4f4f4;
-$light-nav-bar-color: #f4f4f4;
+$light-nav-bar-color: #f4f4f4bb;
 $light-tab-bar-color: #f4f4f4bb;
 $light-popup-color: #f4f4f4;
 $light-divider-color: #00000006;
 $light-card-color: #fafafa;
 $light-dialog-color: #f8f8f8;
+$light-switch-background-color: #00000012;
+$light-unimportant-icon-color: #00000034;
 
 $light-primary-text-color: #303133;
 $light-second-text-color: #606266;
@@ -14,17 +16,23 @@ $light-lowest-text-color: #c0c4cc;
 
 // dark mode 颜色变量
 $dark-background-color: #121212;
-$dark-nav-bar-color: #121212;
+$dark-nav-bar-color: #12121299;
 $dark-tab-bar-color: #121212aa;
 $dark-popup-color: #121212;
 $dark-divider-color: #ffffff08;
 $dark-card-color: #202020;
 $dark-dialog-color: #202020;
+$dark-switch-background-color: #ffffff14;
+$dark-unimportant-icon-color: #ffffff34;
 
 $dark-primary-text-color: #ffffffee;
 $dark-second-text-color: #ffffffbb;
 $dark-comment-text-color: #ffffff88;
 $dark-lowest-text-color: #ffffff36;
+
+// 全局变量
+$safe-area-side: 16px;
+$item-card-radios: 12px;
 
 // 主题变量名 查看 -> https://nutui.jd.com/theme/#/base
 

@@ -8,11 +8,12 @@
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue'
   import { setColorThemeClass } from '@/utils/setColorThemeClass'
-  import { onMounted, provide } from 'vue'
+  import { provide, onMounted } from 'vue'
   import { Notify } from '@nutui/nutui'
   import { useSubsStore } from '@/store/subs'
   import { useGlobalStore } from '@/store/global'
   import { useI18n } from 'vue-i18n'
+
   const { t } = useI18n()
 
   const subsStore = useSubsStore()
@@ -71,6 +72,9 @@
         const msg = e?.error?.message ?? ''
         notify.msg += msg ? code + ', ' + msg : code
       }
+
+      subsStore.subs = {}
+      subsStore.collections = {}
     }
     globalStore.setLoading(false)
 
