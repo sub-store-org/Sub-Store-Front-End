@@ -38,6 +38,22 @@ export const useSubsStore = defineStore('subsStore', {
           });
       });
     },
+    async updateOneData(type: string, name: string) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let data;
+          if (type === 'subs') {
+            data = await useSubsApi().getOne('sub', name);
+          } else if (type === 'collections') {
+            data = await useSubsApi().getOne('collection', name);
+          }
+          this[type][name] = data.data;
+          resolve('');
+        } catch {
+          reject('');
+        }
+      });
+    },
     async fetchFlows() {
       // 提取所有的 remote 的 url，储存为 hash 表
       const values = Object.values(this.subs) as Sub[];

@@ -15,7 +15,9 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 class="sub-item-title">{{ displayName }}</h3>
+          <h3 class="sub-item-title">
+            {{ displayName || name }}
+          </h3>
           <button class="copy-sub-link" @click="onClickCopyLink">
             <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
           </button>
@@ -87,6 +89,7 @@
   import { useGlobalStore } from '@/store/global'
   import { getString } from '@/utils/flowTransfer'
   import { useI18n } from 'vue-i18n'
+
   const { toClipboard } = useClipboard()
   const { t } = useI18n()
 
@@ -186,7 +189,7 @@
   }
 
   const onClickEdit = () => {
-    router.push(`/edit/${props.type}/${name}`)
+    router.push(`/edit/${props.type}s/${name}`)
   }
 
   const onClickDelete = () => {
@@ -256,8 +259,8 @@
     width: calc(100% - 24px);
     margin-left: auto;
     margin-right: auto;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: $item-card-radios;
+    padding: $safe-area-side;
     display: flex;
 
     .dark-mode & {

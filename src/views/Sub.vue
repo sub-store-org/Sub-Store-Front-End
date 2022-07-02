@@ -46,13 +46,13 @@
     <p class="add-sub-panel-title">{{ $t(`subPage.addSubTitle`) }}</p>
     <ul class="add-sub-panel-list">
       <li>
-        <router-link to="/editor/single" class="router-link">
+        <router-link to="/edit/subs/UNTITLED" class="router-link">
           <svg-icon name="singleSubs" />
           <span>{{ $t(`specificWord.singleSub`) }}</span>
         </router-link>
       </li>
       <li>
-        <router-link to="/editor/collection" class="router-link">
+        <router-link to="/edit/collections/UNTITLED" class="router-link">
           <svg-icon name="collectionSubs" />
           <span>{{ $t(`specificWord.collectionSub`) }}</span>
         </router-link>
@@ -63,7 +63,9 @@
   <!--页面内容-->
   <!--有数据-->
   <div v-if="hasSubs" class="subs-list-wrapper">
-    <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
+    <div class="sticky-title-wrapper">
+      <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
+    </div>
     <ul>
       <li v-for="sub in subs" :key="sub.name">
         <SubListItem :sub="sub" type="sub" />
@@ -72,7 +74,9 @@
   </div>
 
   <div v-if="hasCollections" class="subs-list-wrapper">
-    <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
+    <div class="sticky-title-wrapper">
+      <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
+    </div>
     <ul>
       <li v-for="collection in collections" :key="collection.name">
         <SubListItem :collection="collection" type="collection" />
@@ -228,23 +232,7 @@
     position: relative;
 
     .list-title {
-      padding-left: 12px;
-      font-size: 14px;
-      font-weight: bold;
-      position: sticky;
-      z-index: 10;
-      line-height: 36px;
-      top: 0;
-
-      .dark-mode & {
-        color: $dark-comment-text-color;
-        background-color: $dark-background-color;
-      }
-
-      .light-mode & {
-        color: $light-comment-text-color;
-        background-color: $light-background-color;
-      }
+      padding-left: $safe-area-side;
     }
 
     & > ul {

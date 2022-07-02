@@ -8,6 +8,7 @@ import Sync from '@/views/Sync.vue';
 import My from '@/views/My.vue';
 import SubEditor from '@/views/SubEditor.vue';
 import NotFound from '@/views/NotFound.vue';
+import { useSubsApi } from '@/api/subs';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -18,7 +19,7 @@ declare module 'vue-router' {
 }
 
 const history = createWebHistory();
-export default createRouter({
+const router = createRouter({
   history,
   routes: [
     {
@@ -54,7 +55,7 @@ export default createRouter({
           },
         },
         {
-          path: '/edit/:editType/:id',
+          path: '/edit/:editType(subs|collections)/:id',
           component: SubEditor,
           meta: {
             title: 'subEditor',
@@ -84,3 +85,27 @@ export default createRouter({
     },
   ],
 });
+
+// 全局前置守卫
+router.beforeResolve(async (to) => {
+  // 进入编辑页面前查询是否存在订阅
+  if (to.fullPath.startsWith('/edit/')) {
+    const name = to.params.id as string;
+    if (name !== 'UNTITLED') {
+      try {
+        if (to.params.editType === 'subs') {
+          await useSubsApi().getOne('sub', name);
+        } else if (to.params.editType === 'collections') {
+          await useSubsApi().getOne('collection', name);
+        }
+      } catch {
+        router.replace('/404');
+      }
+    }
+  }
+
+  // 允许跳转
+  return true;
+});
+
+export default router;
