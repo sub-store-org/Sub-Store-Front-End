@@ -21,6 +21,14 @@ import {
   Swipe,
   Dialog,
   Ellipsis,
+  Form,
+  FormItem,
+  TextArea,
+  Radio,
+  RadioGroup,
+  Switch,
+  Popover,
+  Picker,
 } from '@nutui/nutui';
 
 export default (app) => {
@@ -46,5 +54,13 @@ export default (app) => {
     .use(Empty)
     .use(Swipe)
     .use(Dialog)
-    .use(Ellipsis);
+    .use(Ellipsis)
+    .use(Form)
+    .use(FormItem)
+    .use(TextArea)
+    .use(Radio)
+    .use(RadioGroup)
+    .use(Switch)
+    .use(Popover)
+    .use(Picker);
 };

@@ -15,7 +15,9 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 class="sub-item-title">{{ displayName }}</h3>
+          <h3 class="sub-item-title">
+            {{ displayName || name }}
+          </h3>
           <button class="copy-sub-link" @click="onClickCopyLink">
             <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
           </button>
@@ -79,7 +81,7 @@
   import icon from '@/assets/icons/logo.png'
   import { Dialog, Notify } from '@nutui/nutui'
   import dayjs from 'dayjs'
-  import { createVNode, ref, computed } from 'vue'
+  import { createVNode, ref, computed, toRaw } from 'vue'
   import { useRouter } from 'vue-router'
   import useClipboard from 'vue-clipboard3'
   import { useSubsStore } from '@/store/subs'
@@ -87,6 +89,7 @@
   import { useGlobalStore } from '@/store/global'
   import { getString } from '@/utils/flowTransfer'
   import { useI18n } from 'vue-i18n'
+
   const { toClipboard } = useClipboard()
   const { t } = useI18n()
 
@@ -126,8 +129,8 @@
       if (props.sub.source === 'local') return t('subPage.subItem.local')
       if (isLoading.value) return t('subPage.subItem.loading')
 
-      const target = flows.value[props.sub.url]
-      if (target.status === 'success') {
+      const target = toRaw(flows.value[props.sub.url])
+      if (target?.status === 'success') {
         const {
           expires,
           total,
@@ -143,7 +146,7 @@
             .unix(expires)
             .format('YYYY-MM-DD')}`,
         }
-      } else if (target.status === 'failed') {
+      } else if (target?.status === 'failed') {
         return {
           firstLine: `${target.error?.message}`,
           secondLine: '',
@@ -186,7 +189,7 @@
   }
 
   const onClickEdit = () => {
-    router.push(`/edit/${props.type}/${name}`)
+    router.push(`/edit/${props.type}s/${name}`)
   }
 
   const onClickDelete = () => {
@@ -256,8 +259,8 @@
     width: calc(100% - 24px);
     margin-left: auto;
     margin-right: auto;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: $item-card-radios;
+    padding: $safe-area-side;
     display: flex;
 
     .dark-mode & {

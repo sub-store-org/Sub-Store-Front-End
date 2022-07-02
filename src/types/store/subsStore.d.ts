@@ -12,14 +12,24 @@ interface FlowsDict {
   [key: string]: Flow | ErrorResponse;
 }
 
-interface ProcessArg {
-  [key: string]: any;
-}
+// 结构有点乱 太难定义
+// type Process1 = {
+//   key: string;
+//   value: boolean;
+// };
+//
+// type Process2 = {
+//   [key: string]: string;
+// };
+
+type ProcessArg = any;
 
 interface Process {
   type: string;
-  args: ProcessArg[];
+  id?: string;
+  args?: ProcessArg;
 }
+
 interface Sub {
   name: string;
   content?: string;
@@ -36,7 +46,7 @@ interface Collection {
   displayName?: string;
   process: Process[];
   subscriptions: string[];
-  ua?: string;
+  icon?: string;
 }
 
 interface Flow {
