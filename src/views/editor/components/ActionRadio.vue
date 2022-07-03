@@ -44,7 +44,7 @@
           value.value = item.args ? 0 : 1
           break
         case 'Sort Operator':
-          value.value = item.args
+          value.value = item.args ?? 'asc'
           break
         case 'Resolve Domain Operator':
           value.value = item.args?.provider ?? 'Google'

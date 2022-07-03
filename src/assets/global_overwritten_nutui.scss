@@ -25,6 +25,41 @@
   }
 }
 
+// picker 组件 dark mode 样式覆盖
+.nut-popup {
+  .dark-mode & {
+    .nut-picker__bar,
+    .nut-picker__column {
+      background-color: $dark-popup-color;
+    }
+
+    .nut-picker__hairline {
+      border-color: $dark-divider-color;
+    }
+
+    .nut-picker__title {
+      color: $dark-primary-text-color;
+    }
+
+    .nut-picker-roller-item {
+      color: $dark-second-text-color;
+    }
+
+    .nut-picker-roller-mask {
+      background-image: linear-gradient(
+          180deg,
+          $dark-picker-mask-far-color,
+          $dark-picker-mask-near-color
+        ),
+        linear-gradient(
+          0deg,
+          $dark-picker-mask-far-color,
+          $dark-picker-mask-near-color
+        );
+    }
+  }
+}
+
 .dark-mode {
   img.auto-reverse {
     filter: brightness(1000%);

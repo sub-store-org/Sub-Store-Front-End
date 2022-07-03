@@ -11,6 +11,8 @@ import {
   faEye,
   faGrip,
   faCircleQuestion,
+  faFloppyDisk,
+  faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -23,3 +25,5 @@ library.add(faClone);
 library.add(faEye);
 library.add(faGrip);
 library.add(faCircleQuestion);
+library.add(faFloppyDisk);
+library.add(faCircleXmark);
