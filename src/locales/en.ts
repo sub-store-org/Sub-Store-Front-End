@@ -78,6 +78,10 @@ export default {
   },
   editorPage: {
     subConfig: {
+      btn: {
+        compare: 'Compare',
+        save: 'Save',
+      },
       pop: {
         helpTitle: '订阅配置',
         helpContent:
@@ -115,6 +119,9 @@ export default {
           placeholder: '填入机场原始订阅链接',
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
+        },
+        subscription: {
+          label: 'select include subs',
         },
         content: {
           label: 'Content',
@@ -201,6 +208,18 @@ export default {
           tipsDes: '节点域名解析操作说明',
         },
       },
+    },
+  },
+  comparePage: {
+    title: 'Conversion results comparison',
+    remain: {
+      title: 'remain nodes',
+      beforeIndicator: 'before',
+      afterIndicator: 'after',
+    },
+    divider: 'Following is filtered nodes',
+    filter: {
+      title: 'filtered nodes',
     },
   },
 };

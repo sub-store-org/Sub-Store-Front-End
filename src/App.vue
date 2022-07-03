@@ -92,7 +92,6 @@
     let externalScript = document.createElement('script')
     externalScript.src =
       'https://cdnjs.cloudflare.com/ajax/libs/inobounce/0.2.1/inobounce.min.js'
-    // externalScript.setAttribute('src', import('@/utils/inobounce.min.js'))
     document.head.appendChild(externalScript)
   })
 

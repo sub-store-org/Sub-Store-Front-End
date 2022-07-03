@@ -29,6 +29,11 @@ import {
   Switch,
   Popover,
   Picker,
+  Checkbox,
+  CheckboxGroup,
+  Table,
+  Toast,
+  Divider,
 } from '@nutui/nutui';
 
 export default (app) => {
@@ -62,5 +67,10 @@ export default (app) => {
     .use(RadioGroup)
     .use(Switch)
     .use(Popover)
-    .use(Picker);
+    .use(Picker)
+    .use(Checkbox)
+    .use(CheckboxGroup)
+    .use(Table)
+    .use(Toast)
+    .use(Divider);
 };
