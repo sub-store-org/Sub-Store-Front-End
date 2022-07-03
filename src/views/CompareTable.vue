@@ -17,10 +17,10 @@
           </div>
           <div class="compare-des">
             <span class="processed-point-item processed-indicator">{{
-              $t(`comparePage.remain.beforeIndicator`)
+              $t(`comparePage.remain.afterIndicator`)
             }}</span>
             <span class="original-point-item original-indicator">{{
-              $t(`comparePage.remain.afterIndicator`)
+              $t(`comparePage.remain.beforeIndicator`)
             }}</span>
           </div>
           <div

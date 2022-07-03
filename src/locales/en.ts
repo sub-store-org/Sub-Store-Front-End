@@ -120,7 +120,7 @@ export default {
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },
-        subscription: {
+        subscriptions: {
           label: 'select include subs',
         },
         content: {
