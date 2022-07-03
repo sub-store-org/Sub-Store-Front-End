@@ -1,6 +1,6 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe">
-    <div class="sub-item-wrapper">
+    <div class="sub-item-wrapper" @click="compareSub">
       <!--TODO: Add compare feature-->
 
       <div class="sub-img-wrapper">
@@ -18,7 +18,7 @@
           <h3 class="sub-item-title">
             {{ displayName || name }}
           </h3>
-          <button class="copy-sub-link" @click="onClickCopyLink">
+          <button class="copy-sub-link" @click.stop="onClickCopyLink">
             <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
           </button>
         </div>
@@ -74,12 +74,18 @@
       </div>
     </template>
   </nut-swipe>
+  <CompareTable
+    v-if="compareTableIsVisible"
+    :compareData="compareData"
+    @closeCompare="closeCompare"
+  />
 </template>
 
 <script lang="ts" setup>
+  import CompareTable from '@/views/CompareTable.vue'
   import PreviewPanel from '@/components/PreviewPanel.vue'
   import icon from '@/assets/icons/logo.png'
-  import { Dialog, Notify } from '@nutui/nutui'
+  import { Dialog, Notify, Toast } from '@nutui/nutui'
   import dayjs from 'dayjs'
   import { createVNode, ref, computed, toRaw } from 'vue'
   import { useRouter } from 'vue-router'
@@ -89,6 +95,7 @@
   import { useGlobalStore } from '@/store/global'
   import { getString } from '@/utils/flowTransfer'
   import { useI18n } from 'vue-i18n'
+  import { useSubsApi } from '@/api/subs'
 
   const { toClipboard } = useClipboard()
   const { t } = useI18n()
@@ -100,6 +107,8 @@
   }>()
 
   const swipe = ref()
+  const compareTableIsVisible = ref(false)
+  const compareData = ref()
   const router = useRouter()
   const globalStore = useGlobalStore()
   const subsStore = useSubsStore()
@@ -162,6 +171,21 @@
       }
     }
   })
+
+  const closeCompare = () => {
+    compareTableIsVisible.value = false
+  }
+
+  const compareSub = async () => {
+    Toast.loading('生成节点对比中...', { id: 'compare' })
+    const res = await useSubsApi().compareSub(
+      props.type,
+      props.sub ?? props.collection
+    )
+    compareData.value = res.data
+    Toast.hide('compare')
+    compareTableIsVisible.value = true
+  }
 
   const onDeleteConfirm = async () => {
     try {
