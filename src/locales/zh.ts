@@ -78,6 +78,10 @@ export default {
   },
   editorPage: {
     subConfig: {
+      btn: {
+        compare: '即时预览',
+        save: '保存',
+      },
       pop: {
         helpTitle: '节点操作帮助',
         helpContent:
@@ -115,6 +119,9 @@ export default {
           placeholder: '填入机场原始订阅链接',
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
+        },
+        subscriptions: {
+          label: '包含的订阅',
         },
         content: {
           label: '内容',
@@ -201,6 +208,18 @@ export default {
           tipsDes: '节点域名解析操作说明',
         },
       },
+    },
+  },
+  comparePage: {
+    title: '即时预览',
+    remain: {
+      title: '保留的节点',
+      beforeIndicator: '操作前',
+      afterIndicator: '操作后',
+    },
+    divider: '以下为被过滤的节点',
+    filter: {
+      title: '被过滤的节点',
     },
   },
 };

@@ -16,6 +16,7 @@ export const addItem = (
     tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
     component: null,
   };
+
   actionsChecked.push([id, true]);
 
   switch (type) {
@@ -31,8 +32,6 @@ export const addItem = (
   // 添加后将页面置底
   nextTick(() => {
     const container = document.querySelector('.app-layout-wrapper');
-    console.log(container.scrollHeight);
-    console.log(container.scrollTop + container.clientHeight);
     container.scrollTo({
       top: container.scrollHeight,
       left: 0,

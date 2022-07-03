@@ -8,6 +8,7 @@ $light-card-color: #fafafa;
 $light-dialog-color: #f8f8f8;
 $light-switch-background-color: #00000012;
 $light-unimportant-icon-color: #00000034;
+$light-compare-item-background-color: #eee;
 
 $light-primary-text-color: #303133;
 $light-second-text-color: #606266;
@@ -24,6 +25,9 @@ $dark-card-color: #202020;
 $dark-dialog-color: #202020;
 $dark-switch-background-color: #ffffff14;
 $dark-unimportant-icon-color: #ffffff34;
+$dark-picker-mask-near-color: #12121248;
+$dark-picker-mask-far-color: #121212;
+$dark-compare-item-background-color: #191919;
 
 $dark-primary-text-color: #ffffffee;
 $dark-second-text-color: #ffffffbb;
@@ -35,6 +39,5 @@ $safe-area-side: 16px;
 $item-card-radios: 12px;
 
 // 主题变量名 查看 -> https://nutui.jd.com/theme/#/base
-
 $primary-color: #478ef2;
 $primary-color-end: #496af2;

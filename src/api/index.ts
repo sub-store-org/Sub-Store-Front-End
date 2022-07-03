@@ -28,8 +28,12 @@ service.interceptors.response.use(
     // 对响应数据做点什么
     return Promise.resolve(response.data);
   },
-  (error) => {
-    return Promise.reject(error.response);
+  (e) => {
+    // Notify.danger(e.response.error.message, {
+    //   duration: 2500,
+    // });
+    //
+    return Promise.reject(e.response);
   }
 );
 

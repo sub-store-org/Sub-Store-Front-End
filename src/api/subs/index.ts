@@ -46,5 +46,12 @@ export function useSubsApi() {
         method: 'delete',
       });
     },
+    compareSub: (type: string, data: Sub | Collection) => {
+      return request({
+        url: `/api/preview/${type}`,
+        method: 'post',
+        data,
+      });
+    },
   };
 }
