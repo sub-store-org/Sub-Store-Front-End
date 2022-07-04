@@ -1,7 +1,7 @@
 printWidth :                 80      # 显示宽度
 tabWidth :                   2       # tab 宽度
 useTabs :                    false   # 使用 tab 而不是空格
-semi :                       false   # 使用分号
+semi :                       true   # 使用分号
 singleQuote :                true    # 使用单引号
 jsxSingleQuote :             false   # 在 JSX 中使用单引号而不是双引号
 bracketSpacing :             true    # 在对象花括号内打印空格  true { foo: bar }  false {foo: bar}
@@ -29,19 +29,10 @@ requirePragma :              false
 # "as-needed"    仅在需要时在对象属性周围添加引号
 # "consistent"   如果对象中至少一个属性需要引号，则所有属性都使用引号
 # "preserve"     尊重对象属性中的引号
-quoteProps :                 "consistent"
+quoteProps :                 "as-needed"
 
 # 在多行逗号分隔的句法结构中尽可能打印尾随逗号
 # "es5"          在 ES5 中有效的尾随逗号（对象、数组等），TypeScript 中的类型参数中没有尾随逗号
 # "none"         没有尾随逗号。
 # "all"          尽可能使用尾随逗号（包括函数参数和调用）。要运行，以这种方式格式化的 JavaScript 代码需要一个支持 ES2017（Node.js 8+ 或现代浏览器）或下级编译的引擎。这还可以在 TypeScript 中的类型参数中启用尾随逗号（自 2018 年 1 月发布的 TypeScript 2.7 起支持）
 trailingComma :              "es5"
-
-# 例外配置覆盖
-overrides :
-  - files :
-      - "*.ts"
-      - "*.tsx"
-    options :
-      semi :        true
-      arrowParens : "always"
