@@ -206,9 +206,9 @@
 </template>
 
 <script lang="ts" setup>
-  import icon from '@/assets/icons/logo.png'
-  import { useRoute, useRouter } from 'vue-router'
-  import { useSubsStore } from '@/store/subs'
+  import icon from '@/assets/icons/logo.png';
+  import { useRoute, useRouter } from 'vue-router';
+  import { useSubsStore } from '@/store/subs';
   import {
     watchEffect,
     ref,
@@ -217,56 +217,57 @@
     provide,
     reactive,
     shallowRef,
-  } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import CommonBlock from '@/views/editor/CommonBlock.vue'
-  import { useGlobalStore } from '@/store/global'
-  import ActionBlock from '@/views/editor/ActionBlock.vue'
-  import ActionRadio from '@/views/editor/components/ActionRadio.vue'
-  import { actionsToProcess } from '@/utils/actionsToPorcess'
-  import { deleteItem, addItem } from '@/utils/actionsOperate'
-  import { Dialog, Notify, Toast } from '@nutui/nutui'
-  import { useSubsApi } from '@/api/subs'
-  import CompareTable from '@/views/CompareTable.vue'
+  } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import CommonBlock from '@/views/editor/CommonBlock.vue';
+  import { useGlobalStore } from '@/store/global';
+  import ActionBlock from '@/views/editor/ActionBlock.vue';
+  import ActionRadio from '@/views/editor/components/ActionRadio.vue';
+  import FilterSelect from '@/views/editor/components/FilterSelect.vue';
+  import { actionsToProcess } from '@/utils/actionsToPorcess';
+  import { deleteItem, addItem } from '@/utils/actionsOperate';
+  import { Dialog, Notify, Toast } from '@nutui/nutui';
+  import { useSubsApi } from '@/api/subs';
+  import CompareTable from '@/views/CompareTable.vue';
 
-  const { t } = useI18n()
-  const route = useRoute()
-  const router = useRouter()
-  const subsApi = useSubsApi()
-  const { editType, id: configName } = route.params
-  const subsStore = useSubsStore()
+  const { t } = useI18n();
+  const route = useRoute();
+  const router = useRouter();
+  const subsApi = useSubsApi();
+  const { editType, id: configName } = route.params;
+  const subsStore = useSubsStore();
 
-  const { bottomSafeArea } = useGlobalStore()
-  const padding = bottomSafeArea + 'px'
+  const { bottomSafeArea } = useGlobalStore();
+  const padding = bottomSafeArea + 'px';
 
-  const sub = computed(() => subsStore.getOneSub(configName as string))
+  const sub = computed(() => subsStore.getOneSub(configName as string));
   const collection = computed(() =>
     subsStore.getOneCollection(configName as string)
-  )
+  );
 
   const subsSelectList = computed(() => {
-    const result = []
+    const result = [];
     for (const key in subsStore.subs) {
-      const item = subsStore.subs[key]
-      const display = item.displayName || item['display-name'] || key
-      result.push([key, display, item.icon || null])
+      const item = subsStore.subs[key];
+      const display = item.displayName || item['display-name'] || key;
+      result.push([key, display, item.icon || null]);
     }
-    return result
-  })
+    return result;
+  });
 
-  const compareTableIsVisible = ref(false)
-  const compareData = ref()
+  const compareTableIsVisible = ref(false);
+  const compareData = ref();
 
-  const isInit = ref(false)
-  const ruleForm = ref<any>(null)
-  const actionsChecked = reactive([])
-  const actionsList = reactive([])
+  const isInit = ref(false);
+  const ruleForm = ref<any>(null);
+  const actionsChecked = reactive([]);
+  const actionsList = reactive([]);
 
-  const form = reactive({ process: [] })
-  provide('form', form)
+  const form = reactive({ process: [] });
+  provide('form', form);
 
   // 排除非动作卡片
-  const ignoreList = ['Useless Filter', 'Set Property Operator']
+  const ignoreList = ['Useless Filter', 'Set Property Operator'];
 
   watchEffect(() => {
     // 新建时，初始化表单
@@ -277,7 +278,7 @@
           displayName: '',
           icon: '',
           subscriptions: [],
-        })
+        });
       } else if (editType === 'subs') {
         Object.assign(form, {
           name: '',
@@ -287,63 +288,67 @@
           content: '',
           ua: '',
           icon: '',
-        })
+        });
       }
     } else {
       // 如果没有初始化过数据，则初始化数据
       if (!isInit.value) {
-        Object.assign(form, sub.value, collection.value)
+        Object.assign(form, sub.value, collection.value);
 
         // 兼容旧版本的数据格式
         //@ts-ignore
         form.displayName = !form.displayName
           ? form['display-name']
           : //@ts-ignore
-            form.displayName
+            form.displayName;
       }
     }
 
     // 将后端数据格式转为前端数据格式
     if (!isInit.value && form.process) {
       form.process.forEach(item => {
-        const { type, id } = item
+        const { type, id } = item;
 
         if (!ignoreList.includes(type)) {
-          actionsChecked.push([id, true])
+          actionsChecked.push([id, true]);
           const action = {
             type,
             id,
             tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
             component: null,
-          }
+          };
           switch (type) {
             case 'Flag Operator':
             case 'Sort Operator':
             case 'Resolve Domain Operator':
-              action.component = shallowRef(ActionRadio)
-              break
+              action.component = shallowRef(ActionRadio);
+              break;
+            case 'Region Filter':
+            case 'Type Filter':
+              action.component = shallowRef(FilterSelect);
+              break;
             default:
-              break
+              break;
           }
-          actionsList.push(action)
+          actionsList.push(action);
         }
-      })
+      });
       // 标记 加载完成
-      isInit.value = true
+      isInit.value = true;
     }
-  })
+  });
 
   const addAction = val => {
-    addItem(form, actionsList, actionsChecked, val, t)
-  }
+    addItem(form, actionsList, actionsChecked, val, t);
+  };
 
   const deleteAction = id => {
-    deleteItem(form, actionsList, actionsChecked, id)
-  }
+    deleteItem(form, actionsList, actionsChecked, id);
+  };
 
   const closeCompare = () => {
-    compareTableIsVisible.value = false
-  }
+    compareTableIsVisible.value = false;
+  };
 
   const compare = () => {
     ruleForm.value.validate().then(async ({ valid, errors }: any) => {
@@ -357,32 +362,32 @@
           okText: t(`editorPage.subConfig.pop.errorBtn`),
           // @ts-ignore
           closeOnClickOverlay: true,
-        })
-        return
+        });
+        return;
       }
 
-      Toast.loading('生成节点对比中...', { id: 'compare' })
-      const data: any = JSON.parse(JSON.stringify(toRaw(form)))
-      data.process = actionsToProcess(data.process, actionsList, ignoreList)
+      Toast.loading('生成节点对比中...', { id: 'compare' });
+      const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+      data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
       // 过滤掉预览开关关闭的操作
       actionsChecked.forEach(item => {
         if (!item[1]) {
-          const index = data.process.findIndex(i => i.id === item[0])
+          const index = data.process.findIndex(i => i.id === item[0]);
           if (index > -1) {
-            data.process.splice(index, 1)
+            data.process.splice(index, 1);
           }
         }
-      })
+      });
 
-      console.log('compare.....\n', data)
-      const type = editType === 'collections' ? 'collection' : 'sub'
-      const res = await subsApi.compareSub(type, data)
-      compareData.value = res.data
-      Toast.hide('compare')
-      compareTableIsVisible.value = true
-    })
-  }
+      console.log('compare.....\n', data);
+      const type = editType === 'collections' ? 'collection' : 'sub';
+      const res = await subsApi.compareSub(type, data);
+      compareData.value = res.data;
+      Toast.hide('compare');
+      compareTableIsVisible.value = true;
+    });
+  };
 
   const submit = () => {
     ruleForm.value.validate().then(async ({ valid, errors }: any) => {
@@ -396,68 +401,68 @@
           okText: t(`editorPage.subConfig.pop.errorBtn`),
           // @ts-ignore
           closeOnClickOverlay: true,
-        })
-        return
+        });
+        return;
       }
 
       // 如果验证成功，开始保存/修改
-      const data: any = JSON.parse(JSON.stringify(toRaw(form)))
-      data['display-name'] = data.displayName
-      data.process = actionsToProcess(data.process, actionsList, ignoreList)
+      const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+      data['display-name'] = data.displayName;
+      data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
-      console.log('submit.....\n', data)
+      console.log('submit.....\n', data);
 
-      const duration = 1500
+      const duration = 1500;
 
       try {
         if (configName === 'UNTITLED') {
-          await subsApi.createSub(editType as string, data)
+          await subsApi.createSub(editType as string, data);
         } else {
-          let apiType = ''
+          let apiType = '';
           if (editType === 'subs') {
-            apiType = 'sub'
+            apiType = 'sub';
           } else if (editType === 'collections') {
-            apiType = 'collection'
+            apiType = 'collection';
           }
-          await subsApi.editSub(apiType, configName as string, data)
+          await subsApi.editSub(apiType, configName as string, data);
         }
         // @ts-ignore
-        await subsStore.updateOneData(editType as string, form.name)
+        await subsStore.updateOneData(editType as string, form.name);
 
-        Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), duration)
-        router.replace('/')
+        Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), duration);
+        router.replace('/');
       } catch (e) {
         Notify.danger(e.error.message, {
           duration: 1500,
-        })
+        });
       }
-    })
-  }
+    });
+  };
 
   // 唯一名称验证器
   const nameValidator = (val: string) => {
     return new Promise(resolve => {
-      if (val === 'UNTITLED') resolve(false)
+      if (val === 'UNTITLED') resolve(false);
       const nameList = Object.keys(subsStore.subs).concat(
         Object.keys(subsStore.collections)
-      )
+      );
       nameList.includes(val) && configName !== val
         ? resolve(false)
-        : resolve(true)
-    })
-  }
+        : resolve(true);
+    });
+  };
 
   // url 格式验证器
   const urlValidator = (val: string) => {
     return new Promise(resolve => {
-      resolve(/^(http|https):\/\/\S+$/.test(val))
-    })
-  }
+      resolve(/^(http|https):\/\/\S+$/.test(val));
+    });
+  };
 
   // 失去焦点触发验证
   const customerBlurValidate = (prop: string) => {
-    ruleForm.value.validate(prop)
-  }
+    ruleForm.value.validate(prop);
+  };
 </script>
 
 <style lang="scss" scoped>

@@ -207,6 +207,18 @@ export default {
           tipsTitle: 'domain Tips',
           tipsDes: '节点域名解析操作说明',
         },
+        'Region Filter': {
+          label: 'Region Filter',
+          options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US'],
+          tipsTitle: 'Region Filter Tips',
+          tipsDes: '区域过滤器操作说明',
+        },
+        'Type Filter': {
+          label: 'Node Type Filter',
+          options: ['Google', 'IP-API', 'Cloudflare'],
+          tipsTitle: 'Node Type Filter Tips',
+          tipsDes: '节点类型过滤器操作说明',
+        },
       },
     },
   },
