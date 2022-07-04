@@ -221,5 +221,12 @@ export default {
     filter: {
       title: 'filtered nodes',
     },
+    tableHead: {
+      name: 'Name&Server',
+      udp: 'UDP',
+      'skip-cert-verify': 'SCV',
+      tfo: 'TFO',
+      aead: 'AEAD',
+    },
   },
 };

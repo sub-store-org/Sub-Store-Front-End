@@ -221,5 +221,12 @@ export default {
     filter: {
       title: '被过滤的节点',
     },
+    tableHead: {
+      name: '节点名&服务器',
+      udp: 'UDP',
+      'skip-cert-verify': 'SCV',
+      tfo: 'TFO',
+      aead: 'AEAD',
+    },
   },
 };
