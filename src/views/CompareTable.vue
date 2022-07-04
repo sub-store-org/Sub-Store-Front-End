@@ -129,6 +129,7 @@
         </div>
 
         <nut-divider
+          v-if="originalData.length > 0"
           class="divider"
           dashed
           hairline
@@ -138,7 +139,7 @@
           >{{ $t(`comparePage.divider`) }}
         </nut-divider>
 
-        <div class="block-wrapper">
+        <div class="block-wrapper" v-if="originalData.length > 0">
           <!--块标题-->
           <div class="sticky-title-wrapper compare-title">
             <p>{{ $t(`comparePage.filter.title`) }}</p>
@@ -230,9 +231,6 @@
       result.push(item);
       originalData.splice(originalIndex, 1);
     }
-    console.log(processedData);
-    console.log(result);
-    console.log(originalData);
     return result;
   });
 
