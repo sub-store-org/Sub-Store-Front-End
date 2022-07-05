@@ -147,43 +147,43 @@ export default {
         label: '常用配置',
         useless: {
           label: '过滤非法节点',
-          keep: '保留',
-          remove: '删除',
+          disabled: '保留',
+          enabled: '删除',
         },
         udp: {
           label: 'UDP转发',
           default: '默认',
-          open: '强制开启',
-          close: '强制关闭',
+          enabled: '强制开启',
+          disabled: '强制关闭',
         },
-        scv: {
+        scert: {
           label: '跳过证书验证',
           default: '默认',
-          open: '强制开启',
-          close: '强制关闭',
+          enabled: '强制开启',
+          disabled: '强制关闭',
         },
         tfo: {
           label: 'TCP Fast Open',
           default: '默认',
-          open: '强制开启',
-          close: '强制关闭',
+          enabled: '强制开启',
+          disabled: '强制关闭',
         },
-        aead: {
+        'vmess aead': {
           label: 'Vmess AEAD',
           default: '默认',
-          open: '强制开启',
-          close: '强制关闭',
+          enabled: '强制开启',
+          disabled: '强制关闭',
         },
       },
-      surgeOptions: {
-        label: 'Surge 配置',
-        hybrid: {
-          label: 'Hybrid 策略',
-          default: '默认',
-          open: '强制开启',
-          close: '强制关闭',
-        },
-      },
+      // surgeOptions: {
+      //   label: 'Surge 配置',
+      //   hybrid: {
+      //     label: 'Hybrid 策略',
+      //     default: '默认',
+      //     open: '强制开启',
+      //     close: '强制关闭',
+      //   },
+      // },
       actions: {
         label: '节点操作',
         addAction: {

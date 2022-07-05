@@ -141,8 +141,6 @@
   const refresh = () => {
     initStores(true, true);
   };
-
-  initStores(false, true);
 </script>
 
 <style lang="scss">
