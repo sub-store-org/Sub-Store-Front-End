@@ -16,14 +16,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, onMounted, ref, watch } from 'vue'
+  import { inject, onMounted, ref, watch } from 'vue';
 
   const { type, id } = defineProps<{
-    type: string
-    id: string
-  }>()
+    type: string;
+    id: string;
+  }>();
 
-  const form = inject<Sub | Collection>('form')
+  const form = inject<Sub | Collection>('form');
 
   // 此处 key 需要与 i18n 的 actions 中的 key 相同
   // 值的次序需要与该选项的 options 值 顺序相同
@@ -31,46 +31,45 @@
     'Flag Operator': [0, 1],
     'Sort Operator': ['asc', 'desc', 'random'],
     'Resolve Domain Operator': ['Google', 'IP-API', 'Cloudflare'],
-  }
+  };
 
-  const value = ref()
+  const value = ref();
 
   // 挂载时读取当前数据，赋值初始状态
   onMounted(() => {
-    const item = form.process.find(item => item.id === id)
+    const item = form.process.find(item => item.id === id);
     if (item) {
       switch (type) {
         case 'Flag Operator':
-          value.value = item.args ? 0 : 1
-          break
+          value.value = item.args ? 0 : 1;
+          break;
         case 'Sort Operator':
-          value.value = item.args ?? 'asc'
-          break
+          value.value = item.args ?? 'asc';
+          break;
         case 'Resolve Domain Operator':
-          value.value = item.args?.provider ?? 'Google'
-          break
+          value.value = item.args?.provider ?? 'Google';
+          break;
       }
     }
-  })
+  });
 
   // 值变化时实时修改 form 的数据
-  watch(value, val => {
-    console.log('watch value', val)
-    const item = form.process.find(item => item.id === id)
+  watch(value, () => {
+    const item = form.process.find(item => item.id === id);
     switch (type) {
       case 'Flag Operator':
-        item.args = !value.value
-        break
+        item.args = !value.value;
+        break;
       case 'Sort Operator':
-        item.args = value.value
-        break
+        item.args = value.value;
+        break;
       case 'Resolve Domain Operator':
         item.args = {
           provider: value.value,
-        }
-        break
+        };
+        break;
     }
-  })
+  });
 </script>
 
 <style lang="scss" scoped>

@@ -34,9 +34,11 @@ import {
   Table,
   Toast,
   Divider,
+  Tag,
+  Input,
 } from '@nutui/nutui';
 
-export default (app) => {
+export default app => {
   app
     .use(Button)
     .use(Icon)
@@ -72,5 +74,7 @@ export default (app) => {
     .use(CheckboxGroup)
     .use(Table)
     .use(Toast)
-    .use(Divider);
+    .use(Divider)
+    .use(Tag)
+    .use(Input);
 };

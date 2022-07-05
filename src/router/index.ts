@@ -87,7 +87,7 @@ const router = createRouter({
 });
 
 // 全局前置守卫
-router.beforeResolve(async (to) => {
+router.beforeResolve(async to => {
   // 进入编辑页面前查询是否存在订阅
   if (to.fullPath.startsWith('/edit/')) {
     const name = to.params.id as string;

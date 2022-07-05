@@ -3,7 +3,8 @@
     <div class="sticky-title-wrapper actions-title-wrapper">
       <p>{{ $t(`editorPage.subConfig.actions.label`) }}</p>
       <button @click="popActionsHelp">
-        <font-awesome-icon icon="fa-solid fa-circle-question" />节点操作帮助
+        <font-awesome-icon icon="fa-solid fa-circle-question" />
+        {{ $t(`editorPage.subConfig.basic.nodeActionsHelp`) }}
       </button>
     </div>
 
@@ -47,7 +48,9 @@
             </div>
             <div class="right">
               <div class="preview-switch">
-                <span>预览</span>
+                <span>
+                  {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
+                </span>
                 <nut-switch
                   class="my-switch"
                   v-model="getItem(element.id)[1]"
@@ -92,34 +95,34 @@
 </template>
 
 <script lang="ts" setup>
-  import Draggable from 'vuedraggable'
-  import { ref } from 'vue'
-  import { Dialog } from '@nutui/nutui'
-  import { useI18n } from 'vue-i18n'
-  import i18nFile from '@/locales/zh'
+  import Draggable from 'vuedraggable';
+  import { ref } from 'vue';
+  import { Dialog } from '@nutui/nutui';
+  import { useI18n } from 'vue-i18n';
+  import i18nFile from '@/locales/zh';
 
-  const { t } = useI18n()
-  const drag = ref(true)
+  const { t } = useI18n();
+  const drag = ref(true);
 
   // 通过 i18n 构造 picker 选项
-  const showAddPicker = ref(false)
-  const types = Object.keys(i18nFile.editorPage.subConfig.nodeActions)
+  const showAddPicker = ref(false);
+  const types = Object.keys(i18nFile.editorPage.subConfig.nodeActions);
   const items = types.map(type => {
     return {
       text: t(`editorPage.subConfig.nodeActions['${type}'].label`),
       value: type,
-    }
-  })
-  const columns = ref(items)
+    };
+  });
+  const columns = ref(items);
 
   // 列表渲染的数据
   // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
   const { checked, list } = defineProps<{
-    checked: Array<[string, boolean]>
-    list: ActionModuleProps[]
-  }>()
+    checked: Array<[string, boolean]>;
+    list: ActionModuleProps[];
+  }>();
 
-  const emit = defineEmits(['addAction', 'deleteAction'])
+  const emit = defineEmits(['addAction', 'deleteAction']);
   // 示例数据
   // const checked = reactive([
   //   ['12839211', true],
@@ -136,8 +139,8 @@
 
   // 获取绑定的对应预览开关
   const getItem = (id: string) => {
-    return checked.find(item => item[0] === id)
-  }
+    return checked.find(item => item[0] === id);
+  };
 
   // 删除条目，actionsList 中记录的顺序 和 对应预览开关
   const deleteItem = id => {
@@ -148,17 +151,17 @@
       okText: t(`editorPage.subConfig.pop.deleteConfirm`),
       cancelText: t(`editorPage.subConfig.pop.deleteCancel`),
       onOk: () => {
-        emit('deleteAction', id)
+        emit('deleteAction', id);
       },
       // @ts-ignore
       closeOnClickOverlay: true,
-    })
-  }
+    });
+  };
 
   // 确认添加时 向渲染数组和预览数组添加对应项目
   const confirm = ({ _, selectedOptions }) => {
-    emit('addAction', selectedOptions)
-  }
+    emit('addAction', selectedOptions);
+  };
 
   // 节点帮助弹窗
   const popActionsHelp = () => {
@@ -169,8 +172,8 @@
       noCancelBtn: true,
       // @ts-ignore
       closeOnClickOverlay: true,
-    })
-  }
+    });
+  };
 
   // tips 弹窗
   const pop = (type: string, tipsDes: string) => {
@@ -181,8 +184,8 @@
       noCancelBtn: true,
       // @ts-ignore
       closeOnClickOverlay: true,
-    })
-  }
+    });
+  };
 </script>
 
 <style lang="scss" scoped>

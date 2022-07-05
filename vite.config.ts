@@ -3,6 +3,7 @@ import {
   createStyleImportPlugin,
   NutuiResolve,
 } from 'vite-plugin-style-import';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
@@ -25,6 +26,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
         symbolId: 'icon-[dir]-[name]',
         customDomId: '__svg__icons__dom__',
       }),
+      monacoEditorPlugin({}),
     ],
     root: process.cwd(),
     resolve: { alias },
