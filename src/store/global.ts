@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia';
+import { useEnvApi } from '@/api/env';
+
+const envApi = useEnvApi();
 
 export const useGlobalStore = defineStore('globalStore', {
   state: (): GlobalStoreState => {
@@ -7,6 +10,7 @@ export const useGlobalStore = defineStore('globalStore', {
       fetchResult: false,
       bottomSafeArea: 0,
       isDarkMode: false,
+      env: {},
     };
   },
   getters: {},
@@ -22,6 +26,10 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
+    },
+    async getEnv() {
+      const { data } = await envApi.getEnv();
+      this.env = data;
     },
   },
 });
