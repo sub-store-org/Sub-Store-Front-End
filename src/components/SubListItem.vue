@@ -1,8 +1,6 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe">
     <div class="sub-item-wrapper" @click="compareSub">
-      <!--TODO: Add compare feature-->
-
       <div class="sub-img-wrapper">
         <nut-avatar
           class="sub-item-customer-icon"
@@ -18,9 +16,19 @@
           <h3 class="sub-item-title">
             {{ displayName || name }}
           </h3>
-          <button class="copy-sub-link" @click.stop="onClickCopyLink">
-            <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
-          </button>
+          <div>
+            <button class="copy-sub-link" @click.stop="onClickCopyLink">
+              <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
+            </button>
+            <button
+              class="copy-sub-link"
+              @click.stop="swipeController"
+              v-if="!isMobile()"
+              ref="moreAction"
+            >
+              <font-awesome-icon icon="fa-solid fa-angles-right" />
+            </button>
+          </div>
         </div>
 
         <p v-if="type === 'sub'" class="sub-item-detail">
@@ -82,69 +90,72 @@
 </template>
 
 <script lang="ts" setup>
-  import CompareTable from '@/views/CompareTable.vue'
-  import PreviewPanel from '@/components/PreviewPanel.vue'
-  import icon from '@/assets/icons/logo.png'
-  import { Dialog, Notify, Toast } from '@nutui/nutui'
-  import dayjs from 'dayjs'
-  import { createVNode, ref, computed, toRaw } from 'vue'
-  import { useRouter } from 'vue-router'
-  import useClipboard from 'vue-clipboard3'
-  import { useSubsStore } from '@/store/subs'
-  import { storeToRefs } from 'pinia'
-  import { useGlobalStore } from '@/store/global'
-  import { getString } from '@/utils/flowTransfer'
-  import { useI18n } from 'vue-i18n'
-  import { useSubsApi } from '@/api/subs'
+  import CompareTable from '@/views/CompareTable.vue';
+  import PreviewPanel from '@/components/PreviewPanel.vue';
+  import icon from '@/assets/icons/logo.png';
+  import { isMobile } from '@/utils/isMobile';
+  import { Dialog, Notify, Toast } from '@nutui/nutui';
+  import dayjs from 'dayjs';
+  import { createVNode, ref, computed, toRaw } from 'vue';
+  import { useRouter } from 'vue-router';
+  import useClipboard from 'vue-clipboard3';
+  import { useSubsStore } from '@/store/subs';
+  import { storeToRefs } from 'pinia';
+  import { useGlobalStore } from '@/store/global';
+  import { getString } from '@/utils/flowTransfer';
+  import { useI18n } from 'vue-i18n';
+  import { useSubsApi } from '@/api/subs';
 
-  const { toClipboard } = useClipboard()
-  const { t } = useI18n()
+  const { toClipboard } = useClipboard();
+  const { t } = useI18n();
 
   const props = defineProps<{
-    type: 'sub' | 'collection'
-    sub?: Sub
-    collection?: Collection
-  }>()
+    type: 'sub' | 'collection';
+    sub?: Sub;
+    collection?: Collection;
+  }>();
 
-  const swipe = ref()
-  const compareTableIsVisible = ref(false)
-  const compareData = ref()
-  const router = useRouter()
-  const globalStore = useGlobalStore()
-  const subsStore = useSubsStore()
+  const moreAction = ref();
+  const swipe = ref();
+  const swipeIsOpen = ref(false);
+  const compareTableIsVisible = ref(false);
+  const compareData = ref();
+  const router = useRouter();
+  const globalStore = useGlobalStore();
+  const subsStore = useSubsStore();
   const displayName =
-    props[props.type].displayName || props[props.type]['display-name']
+    props[props.type].displayName || props[props.type]['display-name'];
 
-  const name = props[props.type].name
-  const { flows } = storeToRefs(subsStore)
+  const name = props[props.type].name;
+  const { flows } = storeToRefs(subsStore);
   const collectionDetail = computed(() => {
-    const nameList = props?.collection.subscriptions || []
+    const nameList = props?.collection.subscriptions || [];
     if (nameList.length === 0) {
-      return t('subPage.collectionItem.noSub')
+      return t('subPage.collectionItem.noSub');
     } else {
       const displayNameList = nameList.map(name => {
-        const sub = subsStore.getOneSub(name)
-        return sub?.displayName || sub?.['display-name']
-      })
+        const sub = subsStore.getOneSub(name);
+        return sub?.displayName || sub?.['display-name'];
+      });
       return `${t('subPage.collectionItem.contain')}：${displayNameList.join(
         '、'
-      )}`
+      )}`;
     }
-  })
-  const { isLoading } = storeToRefs(globalStore)
+  });
+  const { isLoading } = storeToRefs(globalStore);
 
   const flow = computed(() => {
     if (props.type === 'sub') {
-      if (props.sub.source === 'local') return t('subPage.subItem.local')
-      if (isLoading.value) return t('subPage.subItem.loading')
+      if (props.sub.source === 'local') return t('subPage.subItem.local');
+      if (isLoading.value) return t('subPage.subItem.loading');
 
-      const target = toRaw(flows.value[props.sub.url])
+      const target = toRaw(flows.value[props.sub.url]);
       if (target?.status === 'success') {
         const {
           expires,
           total,
           usage: { upload, download },
-        } = target.data
+        } = target.data;
         return {
           firstLine: `${t('subPage.subItem.flow')}：${getString(
             upload + download,
@@ -154,12 +165,12 @@
           secondLine: `${t('subPage.subItem.expires')}：${dayjs
             .unix(expires)
             .format('YYYY-MM-DD')}`,
-        }
+        };
       } else if (target?.status === 'failed') {
         return {
           firstLine: `${target.error?.message}`,
           secondLine: '',
-        }
+        };
       } else {
         return {
           // TODO: API 暂未升级，额外判断当前出错情况跑通代码
@@ -167,35 +178,48 @@
           firstLine: `Code: ${target?.status}`,
           // @ts-ignore
           secondLine: `Msg: ${target?.statusText}`,
-        }
+        };
       }
     }
-  })
+  });
 
   const closeCompare = () => {
-    compareTableIsVisible.value = false
-  }
+    compareTableIsVisible.value = false;
+  };
 
   const compareSub = async () => {
-    Toast.loading('生成节点对比中...', { id: 'compare' })
+    Toast.loading('生成节点对比中...', { id: 'compare' });
     const res = await useSubsApi().compareSub(
       props.type,
       props.sub ?? props.collection
-    )
-    compareData.value = res.data
-    Toast.hide('compare')
-    compareTableIsVisible.value = true
-  }
+    );
+    compareData.value = res.data;
+    Toast.hide('compare');
+    compareTableIsVisible.value = true;
+  };
+
+  const swipeController = () => {
+    // console.log(moreAction.value.style);
+    if (swipeIsOpen.value) {
+      swipe.value.close();
+      swipeIsOpen.value = false;
+      moreAction.value.style.transform = 'rotate(0deg)';
+    } else {
+      swipe.value.open('left');
+      swipeIsOpen.value = true;
+      moreAction.value.style.transform = 'rotate(180deg)';
+    }
+  };
 
   const onDeleteConfirm = async () => {
     try {
-      await subsStore.deleteSub(props.type, name)
-      await subsStore.fetchSubsData()
-      Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 })
+      await subsStore.deleteSub(props.type, name);
+      await subsStore.fetchSubsData();
+      Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
     } catch (e) {
-      Notify.danger(e.message, { duration: 1500 })
+      Notify.danger(e.message, { duration: 1500 });
     }
-  }
+  };
 
   const onClickPreview = () => {
     Dialog({
@@ -209,12 +233,12 @@
       noCancelBtn: true,
       closeOnPopstate: true,
       lockScroll: true,
-    })
-  }
+    });
+  };
 
   const onClickEdit = () => {
-    router.push(`/edit/${props.type}s/${name}`)
-  }
+    router.push(`/edit/${props.type}s/${name}`);
+  };
 
   const onClickDelete = () => {
     Dialog({
@@ -232,26 +256,26 @@
       okText: t('subPage.deleteSub.btn.confirm'),
       closeOnPopstate: true,
       lockScroll: true,
-    })
-  }
+    });
+  };
 
   const onClickCopyLink = async () => {
     try {
-      const host = import.meta.env.VITE_API_URL
+      const host = import.meta.env.VITE_API_URL;
       const url = `${host}/download/${
         props.type === 'collection' ? 'collection/' : ''
-      }${name}`
-      await toClipboard(url)
+      }${name}`;
+      await toClipboard(url);
       Notify.success(t('subPage.copyNotify.succeed'), {
         duration: 1500,
-      })
+      });
     } catch (e) {
       Notify.danger(t('subPage.copyNotify.succeed', { e }), {
         duration: 1500,
-      })
-      console.error(e)
+      });
+      console.error(e);
     }
-  }
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -338,6 +362,10 @@
           background-color: transparent;
           border: none;
           padding: 0 12px;
+          cursor: pointer;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
 
           svg {
             width: 16px;
