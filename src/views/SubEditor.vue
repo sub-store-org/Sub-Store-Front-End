@@ -249,13 +249,13 @@
   );
 
   const subsSelectList = computed(() => {
-    const result = [];
-    for (const key in subsStore.subs) {
-      const item = subsStore.subs[key];
-      const display = item.displayName || item['display-name'] || key;
-      result.push([key, display, item.icon || null]);
-    }
-    return result;
+    return subsStore.subs.map(item => {
+      return [
+        item.name,
+        item.displayName || item['display-name'] || item.name,
+        item.icon || null,
+      ];
+    });
   });
 
   const compareTableIsVisible = ref(false);
@@ -270,7 +270,7 @@
   provide('form', form);
 
   // 排除非动作卡片
-  const ignoreList = ['Useless Filter', 'Set Property Operator'];
+  const ignoreList = ['Quick Setting Operator'];
 
   watchEffect(() => {
     // 新建时，初始化表单
@@ -308,7 +308,7 @@
     }
 
     // 将后端数据格式转为前端数据格式
-    if (!isInit.value && form.process) {
+    if (!isInit.value && form.process.length > 0) {
       form.process.forEach(item => {
         const { type, id } = item;
 
@@ -433,6 +433,7 @@
       try {
         if (configName === 'UNTITLED') {
           await subsApi.createSub(editType as string, data);
+          await subsStore.fetchSubsData();
         } else {
           let apiType = '';
           if (editType === 'subs') {
@@ -441,9 +442,9 @@
             apiType = 'collection';
           }
           await subsApi.editSub(apiType, configName as string, data);
+          // @ts-ignore
+          await subsStore.updateOneData(editType as string, form.name);
         }
-        // @ts-ignore
-        await subsStore.updateOneData(editType as string, form.name);
 
         Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), duration);
         router.replace('/');

@@ -6,34 +6,33 @@ const subsApi = useSubsApi();
 export const useSubsStore = defineStore('subsStore', {
   state: (): SubsStoreState => {
     return {
-      subs: {},
-      collections: {},
+      subs: [],
+      collections: [],
       flows: {},
     };
   },
   getters: {
-    hasSubs: ({ subs }): boolean => Object.keys(subs).length > 0,
-    hasCollections: ({ collections }): boolean =>
-      Object.keys(collections).length > 0,
+    hasSubs: ({ subs }): boolean => subs.length > 0,
+    hasCollections: ({ collections }): boolean => collections.length > 0,
     getOneSub:
       ({ subs }): GetOne<Sub> =>
       (name: string) =>
-        subs[name],
+        subs.find(sub => sub.name === name),
     getOneCollection:
       ({ collections }): GetOne<Collection> =>
       (name: string): Collection =>
-        collections[name],
+        collections.find(collection => collection.name === name),
   },
   actions: {
     async fetchSubsData() {
       return new Promise(async (resolve, reject) => {
         Promise.all([subsApi.getSubs(), subsApi.getCollections()])
-          .then((res) => {
+          .then(res => {
             this.subs = res[0].data;
             this.collections = res[1].data;
             resolve('');
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });
@@ -43,11 +42,12 @@ export const useSubsStore = defineStore('subsStore', {
         try {
           let data;
           if (type === 'subs') {
-            data = await useSubsApi().getOne('sub', name);
+            data = await subsApi.getOne('sub', name);
           } else if (type === 'collections') {
-            data = await useSubsApi().getOne('collection', name);
+            data = await subsApi.getOne('collection', name);
           }
-          this[type][name] = data.data;
+          const index = this[type].findIndex(item => item.name === name);
+          this[type][index] = data.data;
           resolve('');
         } catch {
           reject('');
@@ -56,17 +56,16 @@ export const useSubsStore = defineStore('subsStore', {
     },
     async fetchFlows() {
       // 提取所有的 remote 的 url，储存为 hash 表
-      const values = Object.values(this.subs) as Sub[];
       const flowNameHash = {};
-      for (const sub of values) {
+      this.subs.forEach(sub => {
         if (sub.source === 'remote') {
           flowNameHash[sub.url]
             ? flowNameHash[sub.url].push(sub.name)
             : (flowNameHash[sub.url] = [sub.name]);
         }
-      }
+      });
 
-      return new Promise(async (resolve) => {
+      return new Promise(async resolve => {
         const nameList = [];
 
         // 取出每个 hash 表里每个 url 的第一个 name
@@ -93,7 +92,7 @@ export const useSubsStore = defineStore('subsStore', {
           .then(() => {
             resolve('删除成功');
           })
-          .catch((err) => {
+          .catch(err => {
             reject(err);
           });
       });
