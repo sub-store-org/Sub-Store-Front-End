@@ -25,7 +25,7 @@
             class="upload-btn"
             type="info"
             plain
-            :disabled="uploadIsLoading || downloadIsLoading"
+            :disabled="syncIsDisabled"
             size="small"
             :loading="uploadIsLoading"
             @click="sync('upload')"
@@ -40,7 +40,7 @@
             class="download-btn"
             type="primary"
             size="small"
-            :disabled="uploadIsLoading || downloadIsLoading"
+            :disabled="syncIsDisabled"
             :loading="downloadIsLoading"
             @click="sync('download')"
           >
