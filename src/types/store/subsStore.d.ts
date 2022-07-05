@@ -1,11 +1,7 @@
 interface SubsStoreState {
-  subs: SubsDict<Sub>;
-  collections: SubsDict<Collection>;
+  subs: Sub[];
+  collections: Collection[];
   flows: FlowsDict;
-}
-
-interface SubsDict<T> {
-  [key: string]: T;
 }
 
 interface FlowsDict {
