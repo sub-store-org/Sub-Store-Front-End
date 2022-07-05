@@ -16,6 +16,7 @@ import {
   faLocationArrow,
   faCode,
   faArrowRotateRight,
+  faAnglesRight,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -33,3 +34,4 @@ library.add(faCircleXmark);
 library.add(faLocationArrow);
 library.add(faCode);
 library.add(faArrowRotateRight);
+library.add(faAnglesRight);
