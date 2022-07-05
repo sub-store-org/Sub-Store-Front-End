@@ -19,12 +19,16 @@
 
           <!--指示器说明-->
           <div class="compare-des">
-            <span class="processed-item indicator">{{
-              $t(`comparePage.remain.afterIndicator`)
-            }}</span>
-            <span class="original-item indicator">{{
-              $t(`comparePage.remain.beforeIndicator`)
-            }}</span>
+            <span
+              @click="toggleProcessedVisible"
+              class="processed-item indicator"
+              >{{ $t(`comparePage.remain.afterIndicator`) }}</span
+            >
+            <span
+              @click="toggleOriginalVisible"
+              class="original-item indicator"
+              >{{ $t(`comparePage.remain.beforeIndicator`) }}</span
+            >
           </div>
 
           <!--表格标题-->
@@ -37,7 +41,10 @@
           <!--表格内容-->
           <table class="compare-table-body">
             <template v-for="[processed, original] in data" :key="processed.id">
-              <tr class="compare-table-row processed-tr">
+              <tr
+                v-if="isProcessedVisible"
+                class="compare-table-row processed-tr"
+              >
                 <td class="processed-item">
                   <div class="name-wrapper">
                     <div>
@@ -81,7 +88,10 @@
                   /></span>
                 </td>
               </tr>
-              <tr class="compare-table-row original-tr">
+              <tr
+                v-if="isOriginalVisible"
+                class="compare-table-row original-tr"
+              >
                 <td class="original-item">
                   <div class="name-wrapper">
                     <div>
@@ -208,7 +218,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   const { compareData } = defineProps<{
     compareData: any;
@@ -217,6 +227,31 @@
   const titleList = ['name', 'udp', 'tfo', 'skip-cert-verify', 'aead'];
 
   const emit = defineEmits(['closeCompare']);
+
+  const isOriginalVisible = ref(true);
+  const isProcessedVisible = ref(true);
+
+  const toggleProcessedVisible = () => {
+    if (isProcessedVisible.value && !isOriginalVisible.value) {
+      isOriginalVisible.value = true;
+    } else if (isProcessedVisible.value && isOriginalVisible.value) {
+      isOriginalVisible.value = false;
+    } else if (!isProcessedVisible.value && isOriginalVisible.value) {
+      isProcessedVisible.value = true;
+      isOriginalVisible.value = false;
+    }
+  };
+
+  const toggleOriginalVisible = () => {
+    if (!isProcessedVisible.value && isOriginalVisible.value) {
+      isProcessedVisible.value = true;
+    } else if (isProcessedVisible.value && isOriginalVisible.value) {
+      isProcessedVisible.value = false;
+    } else if (isProcessedVisible.value && !isOriginalVisible.value) {
+      isProcessedVisible.value = false;
+      isOriginalVisible.value = true;
+    }
+  };
 
   const originalData = compareData.original;
   const processedData = compareData.processed;
