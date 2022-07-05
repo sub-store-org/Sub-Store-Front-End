@@ -266,7 +266,7 @@
   const actionsChecked = reactive([]);
   const actionsList = reactive([]);
 
-  const form = reactive({ process: [] });
+  const form = reactive<any>({ process: [] });
   provide('form', form);
 
   // 排除非动作卡片
@@ -428,7 +428,7 @@
 
       console.log('submit.....\n', data);
 
-      const duration = 1500;
+      const duration = 1000;
 
       try {
         if (configName === 'UNTITLED') {
@@ -446,11 +446,14 @@
           await subsStore.updateOneData(editType as string, form.name);
         }
 
-        Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), duration);
-        router.replace('/');
+        router.replace('/').then(() => {
+          Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), {
+            duration,
+          });
+        });
       } catch (e) {
         Notify.danger(e.error.message, {
-          duration: 1500,
+          duration,
         });
       }
     });
