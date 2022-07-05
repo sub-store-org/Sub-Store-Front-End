@@ -1,17 +1,16 @@
 <template>
   <div class="editor-action-card">
-    <div>
-      <nut-checkboxgroup v-model="value">
-        <nut-checkbox
-          v-for="(item, index) in opt[type]"
-          :key="item"
-          :label="item"
-          >{{
-            $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
-          }}</nut-checkbox
-        >
-      </nut-checkboxgroup>
-    </div>
+    <nut-checkboxgroup class="checkbox-group" v-model="value">
+      <nut-checkbox
+        :icon-size="16"
+        v-for="(item, index) in opt[type]"
+        :key="item"
+        :label="item"
+        >{{
+          $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
+        }}</nut-checkbox
+      >
+    </nut-checkboxgroup>
   </div>
 </template>
 
@@ -50,4 +49,26 @@
   });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  @import '@/assets/custom_theme_variables.scss';
+
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    view {
+      margin-bottom: 16px;
+
+      :deep(.nut-checkbox__label) {
+        font-size: 14px;
+        .dark-mode & {
+          color: $dark-second-text-color;
+        }
+
+        .light-mode & {
+          color: $light-second-text-color;
+        }
+      }
+    }
+  }
+</style>

@@ -35,6 +35,7 @@ import {
   Toast,
   Divider,
   Tag,
+  Input,
 } from '@nutui/nutui';
 
 export default app => {
@@ -74,5 +75,6 @@ export default app => {
     .use(Table)
     .use(Toast)
     .use(Divider)
-    .use(Tag);
+    .use(Tag)
+    .use(Input);
 };
