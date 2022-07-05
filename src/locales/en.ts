@@ -96,9 +96,16 @@ export default {
           '是否确认删除此操作？删除后不可恢复！\ntips: 可使用开关控制即时预览时是否生效',
         deleteConfirm: 'Delete it',
         deleteCancel: 'Cancel',
+        leaveCancel: '继续编辑',
+        leaveConfirm: '确认离开',
+        leaveConfirmTitle: '有内容未保存',
+        leaveContent:
+          '输入框存在未保存内容，离开后未保存的操作将丢失\n\n请确认是否离开？',
       },
       basic: {
         label: 'Subscription Config',
+        previewSwitch: 'Preview',
+        nodeActionsHelp: 'Node Actions Help',
         name: {
           label: 'Name',
           placeholder: '请输入唯一的标识名称',
@@ -120,7 +127,7 @@ export default {
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },
-        subscription: {
+        subscriptions: {
           label: 'select include subs',
         },
         content: {
@@ -207,6 +214,80 @@ export default {
           tipsTitle: 'domain Tips',
           tipsDes: '节点域名解析操作说明',
         },
+        'Region Filter': {
+          label: 'Region Filter',
+          options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US'],
+          tipsTitle: 'Region Filter Tips',
+          tipsDes: '区域过滤器操作说明',
+        },
+        'Type Filter': {
+          label: 'Node Type Filter',
+          options: ['Google', 'IP-API', 'Cloudflare'],
+          tipsTitle: 'Node Type Filter Tips',
+          tipsDes: '节点类型过滤器操作说明',
+        },
+        'Regex Filter': {
+          label: 'Regex Filter',
+          des: ['正则表达式', '工作模式'],
+          options: ['保留模式', '过滤模式'],
+          placeholder: ['填入正则表达式'],
+          tipsTitle: 'Regex Filter Tips',
+          tipsDes: '正则过滤操作说明',
+        },
+        'Regex Sort Operator': {
+          label: 'Regex Sort',
+          des: ['正则表达式'],
+          placeholder: ['填入正则表达式'],
+          tipsTitle: 'Regex Sort Tips',
+          tipsDes: '正则排序操作说明',
+        },
+        'Regex Delete Operator': {
+          label: 'Regex Delete',
+          des: ['正则表达式'],
+          placeholder: ['填入正则表达式'],
+          tipsTitle: 'Regex Delete Tips',
+          tipsDes: '正则删除操作说明',
+        },
+        'Regex Rename Operator': {
+          label: 'Regex Rename',
+          des: ['正则表达式'],
+          placeholder: ['填入正则表达式', '替换为'],
+          tipsTitle: 'Regex Rename Tips',
+          tipsDes: '正则重命名操作说明',
+        },
+        'Handle Duplicate Operator': {
+          label: 'Handle Duplicate',
+          action: { options: ['Rename', 'Delete'], des: 'Operate' },
+          position: { options: ['Prefix', 'Suffix'], des: 'Number Position' },
+          template: {
+            des: 'Number Format',
+            placeholder: '序号显示格式，用空格分隔',
+          },
+          link: {
+            des: 'Separator',
+            placeholder: '节点名和序号之间的连接符',
+          },
+          tipsTitle: 'Handle Duplicate Tips',
+          tipsDes: '节点去重操作说明',
+        },
+        'Script Filter': {
+          label: 'Script Filter',
+          options: ['Link', 'Script'],
+          des: ['Type', 'Content'],
+          placeholder: 'Input Script Link',
+          openEditorBtn: 'Open Code Editor',
+          tipsTitle: 'Script Filter Tips',
+          tipsDes: '脚本操作操作说明',
+        },
+        'Script Operator': {
+          label: 'Script Operator',
+          options: ['Link', 'Script'],
+          des: ['Type', 'Content'],
+          placeholder: 'Input Script Link',
+          openEditorBtn: 'Open Code Editor',
+          tipsTitle: 'Script Operator Tips',
+          tipsDes: '脚本操作操作说明',
+        },
       },
     },
   },
@@ -221,5 +302,16 @@ export default {
     filter: {
       title: 'filtered nodes',
     },
+    tableHead: {
+      name: 'Name&Server',
+      udp: 'UDP',
+      'skip-cert-verify': 'SCV',
+      tfo: 'TFO',
+      aead: 'AEAD',
+    },
+  },
+  codePage: {
+    title: 'Code Editor',
+    des: 'Auto save when exit',
   },
 };
