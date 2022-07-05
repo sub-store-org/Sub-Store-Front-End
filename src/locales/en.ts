@@ -291,6 +291,34 @@ export default {
       },
     },
   },
+  myPage: {
+    placeholder: {
+      name: 'Gist Sync not set',
+      des: 'Sync available after Gist configuration',
+      syncTime: 'Last sync time ',
+      haveNotSync: 'Not sync yet',
+      githubUser: 'Please input Github username',
+      gistToken: 'Please input Gist Token',
+    },
+    btn: {
+      sync: 'Sync',
+      upload: 'Upload',
+      cancel: 'Cancel',
+      edit: 'Edit',
+      save: 'Save',
+    },
+    notify: {
+      download: {
+        succeed: 'Download succeed',
+        failed: 'Download failed',
+      },
+      upload: {
+        succeed: 'Upload succeed',
+        failed: 'Upload failed',
+      },
+    },
+    config: 'Gist Configuration',
+  },
   comparePage: {
     title: 'Conversion results comparison',
     remain: {

@@ -17,6 +17,10 @@ import {
   faCode,
   faArrowRotateRight,
   faAnglesRight,
+  faCloudArrowDown,
+  faCloudArrowUp,
+  faBan,
+  faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -35,3 +39,7 @@ library.add(faLocationArrow);
 library.add(faCode);
 library.add(faArrowRotateRight);
 library.add(faAnglesRight);
+library.add(faCloudArrowDown);
+library.add(faCloudArrowUp);
+library.add(faBan);
+library.add(faPenToSquare);

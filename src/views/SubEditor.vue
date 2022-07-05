@@ -266,7 +266,7 @@
   const actionsChecked = reactive([]);
   const actionsList = reactive([]);
 
-  const form = reactive({ process: [] });
+  const form = reactive<any>({ process: [] });
   provide('form', form);
 
   // 排除非动作卡片

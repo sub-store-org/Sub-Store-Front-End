@@ -300,6 +300,34 @@ export default {
       },
     },
   },
+  myPage: {
+    placeholder: {
+      name: '未设置 Gist 同步',
+      des: '同步功能配置 Gist 后可用',
+      syncTime: '上次同步 ',
+      haveNotSync: '暂无同步记录',
+      githubUser: '请输入 Github 用户名',
+      gistToken: '请输入 Gist Token',
+    },
+    notify: {
+      download: {
+        succeed: '下载成功',
+        failed: '下载失败',
+      },
+      upload: {
+        succeed: '同步成功',
+        failed: '同步失败',
+      },
+    },
+    btn: {
+      sync: '同步',
+      upload: '上传',
+      cancel: '取消',
+      edit: '编辑',
+      save: '保存',
+    },
+    config: 'Gist 配置',
+  },
   comparePage: {
     title: '即时预览',
     remain: {
