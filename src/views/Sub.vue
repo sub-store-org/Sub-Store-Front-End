@@ -21,6 +21,9 @@
         }"
         :style="{ right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
       >
+        <div class="drag-btn refresh" @click="refresh">
+          <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
+        </div>
         <div class="drag-btn" @click="addSubBtnIsVisible = true">
           <font-awesome-icon icon="fa-solid fa-plus" />
         </div>
@@ -108,7 +111,7 @@
         <p>{{ $t(`subPage.loadFailed.desc`) }}</p>
       </template>
     </nut-empty>
-    <nut-button icon="refresh" type="primary" @click="refresh(true, false)">{{
+    <nut-button icon="refresh" type="primary" @click="refresh">{{
       $t(`subPage.loadFailed.btn`)
     }}</nut-button>
     <a
@@ -121,21 +124,25 @@
 </template>
 
 <script lang="ts" setup>
-  import { useSubsStore } from '@/store/subs'
-  import { useGlobalStore } from '@/store/global'
-  import { ref, inject } from 'vue'
-  import SubListItem from '@/components/SubListItem.vue'
-  import { storeToRefs } from 'pinia'
+  import { useSubsStore } from '@/store/subs';
+  import { useGlobalStore } from '@/store/global';
+  import { ref } from 'vue';
+  import SubListItem from '@/components/SubListItem.vue';
+  import { storeToRefs } from 'pinia';
+  import { initStores } from '@/utils/initApp';
 
-  const addSubBtnIsVisible = ref(false)
+  const addSubBtnIsVisible = ref(false);
 
-  const subsStore = useSubsStore()
-  const globalStore = useGlobalStore()
-  const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore)
-  const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore)
+  const subsStore = useSubsStore();
+  const globalStore = useGlobalStore();
+  const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
+  const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
 
-  const refresh = inject<Function>('refreshWithNotify')
-  refresh(false)
+  const refresh = () => {
+    initStores(true, true);
+  };
+
+  initStores(false, true);
 </script>
 
 <style lang="scss">
@@ -159,6 +166,10 @@
       justify-content: center;
       align-items: center;
 
+      &.refresh {
+        background: #fa6419;
+        margin-bottom: 12px;
+      }
       > svg {
         width: 20px;
         height: 20px;

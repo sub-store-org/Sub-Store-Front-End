@@ -3,9 +3,10 @@ import { defineStore } from 'pinia';
 export const useGlobalStore = defineStore('globalStore', {
   state: (): GlobalStoreState => {
     return {
-      isLoading: false,
+      isLoading: true,
       fetchResult: false,
       bottomSafeArea: 0,
+      isDarkMode: false,
     };
   },
   getters: {},
@@ -18,6 +19,9 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setFetchResult(fetchResult: boolean) {
       this.fetchResult = fetchResult;
+    },
+    setDarkMode(isDarkMode: boolean) {
+      this.isDarkMode = isDarkMode;
     },
   },
 });

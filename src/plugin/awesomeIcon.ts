@@ -13,6 +13,9 @@ import {
   faCircleQuestion,
   faFloppyDisk,
   faCircleXmark,
+  faLocationArrow,
+  faCode,
+  faArrowRotateRight,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -27,3 +30,6 @@ library.add(faGrip);
 library.add(faCircleQuestion);
 library.add(faFloppyDisk);
 library.add(faCircleXmark);
+library.add(faLocationArrow);
+library.add(faCode);
+library.add(faArrowRotateRight);

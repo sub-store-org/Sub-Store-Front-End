@@ -224,6 +224,9 @@
   import ActionBlock from '@/views/editor/ActionBlock.vue';
   import ActionRadio from '@/views/editor/components/ActionRadio.vue';
   import FilterSelect from '@/views/editor/components/FilterSelect.vue';
+  import HandleDuplicate from '@/views/editor/components/HandleDuplicate.vue';
+  import Script from '@/views/editor/components/Script.vue';
+  import Regex from '@/views/editor/components/Regex.vue';
   import { actionsToProcess } from '@/utils/actionsToPorcess';
   import { deleteItem, addItem } from '@/utils/actionsOperate';
   import { Dialog, Notify, Toast } from '@nutui/nutui';
@@ -326,6 +329,19 @@
             case 'Region Filter':
             case 'Type Filter':
               action.component = shallowRef(FilterSelect);
+              break;
+            case 'Regex Filter':
+            case 'Regex Sort Operator':
+            case 'Regex Delete Operator':
+            case 'Regex Rename Operator':
+              action.component = shallowRef(Regex);
+              break;
+            case 'Handle Duplicate Operator':
+              action.component = shallowRef(HandleDuplicate);
+              break;
+            case 'Script Filter':
+            case 'Script Operator':
+              action.component = shallowRef(Script);
               break;
             default:
               break;
