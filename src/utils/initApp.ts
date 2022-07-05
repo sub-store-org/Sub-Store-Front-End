@@ -13,7 +13,7 @@ export const initStores = async (
   const notify = {
     type: '',
     msg: '',
-    duration: 2500,
+    duration: 2000,
   };
 
   globalStore.setLoading(true);
@@ -53,8 +53,8 @@ export const initStores = async (
       notify.msg += msg ? code + ', ' + msg : code;
     }
 
-    subsStore.subs = {};
-    subsStore.collections = {};
+    subsStore.subs = [];
+    subsStore.collections = [];
   }
   globalStore.setLoading(false);
 
