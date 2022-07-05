@@ -534,6 +534,11 @@
 
     .btn {
       border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       svg {
         margin-right: 4px;
