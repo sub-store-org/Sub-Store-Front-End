@@ -27,11 +27,8 @@ export const useSettingsStore = defineStore('settingsStore', {
     },
     async editSettings(data: SettingsPostData) {
       const { data: res } = await settingsApi.setSettings(data);
-      console.log(res);
       this.gistToken = res.gistToken || '';
       this.githubUser = res.githubUser || '';
-      this.syncTime = res.syncTime || 0;
-      this.theme = res.theme || { darkMode: false };
       this.avatarUrl = res.avatarUrl || '';
     },
   },
