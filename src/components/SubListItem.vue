@@ -127,6 +127,7 @@
     props[props.type].displayName || props[props.type]['display-name'];
 
   const name = props[props.type].name;
+  console.log(name);
   const { flows } = storeToRefs(subsStore);
   const collectionDetail = computed(() => {
     const nameList = props?.collection.subscriptions || [];

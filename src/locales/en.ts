@@ -299,6 +299,8 @@ export default {
       haveNotSync: 'Not sync yet',
       githubUser: 'Please input Github username',
       gistToken: 'Please input Gist Token',
+      noGithubUser: 'Not set Github username',
+      noGistToken: 'Not set Gist Token',
     },
     btn: {
       sync: 'Sync',
@@ -308,6 +310,10 @@ export default {
       save: 'Save',
     },
     notify: {
+      save: {
+        succeed: 'Save succeed',
+        failed: 'Save failed',
+      },
       download: {
         succeed: 'Download succeed',
         failed: 'Download failed',

@@ -60,7 +60,7 @@
 function filter(proxies, targetPlatform) {
   return proxies.map( proxy => {
     // Return true if the current proxy is selected
-    
+
     return true;
   });
 }
@@ -93,7 +93,7 @@ function filter(proxies, targetPlatform) {
         formatOnPaste: true,
         glyphMargin: true,
         lineDecorationsWidth: '0.6ch',
-        lineNumbersMinChars: 4,
+        lineNumbersMinChars: 2,
         lineHeight: 1.8,
         minimap: {
           // 关闭代码缩略图
