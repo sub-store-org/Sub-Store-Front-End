@@ -25,38 +25,32 @@ export const useSubsStore = defineStore('subsStore', {
   },
   actions: {
     async fetchSubsData() {
-      return new Promise(async (resolve, reject) => {
-        Promise.all([subsApi.getSubs(), subsApi.getCollections()])
-          .then(res => {
-            this.subs = res[0].data;
-            this.collections = res[1].data;
-            resolve('');
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
-    },
-    async updateOneData(type: string, name: string) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          let data;
-          if (type === 'subs') {
-            data = await subsApi.getOne('sub', name);
-          } else if (type === 'collections') {
-            data = await subsApi.getOne('collection', name);
-          }
-          const index = this[type].findIndex(item => item.name === name);
-          this[type][index] = data.data;
-          resolve('');
-        } catch {
-          reject('');
+      Promise.all([subsApi.getSubs(), subsApi.getCollections()]).then(res => {
+        if ('data' in res[0].data) {
+          this.subs = res[0].data.data;
+        }
+        if ('data' in res[1].data) {
+          this.collections = res[1].data.data;
         }
       });
     },
+    async updateOneData(type: string, name: string) {
+      let res;
+      if (type === 'subs') {
+        res = await subsApi.getOne('sub', name);
+      } else if (type === 'collections') {
+        res = await subsApi.getOne('collection', name);
+      }
+      if (res.data.status === 'success') {
+        const index = this[type].findIndex(item => item.name === name);
+        this[type][index] = res.data.data;
+      }
+    },
     async fetchFlows() {
-      // 提取所有的 remote 的 url，储存为 hash 表
       const flowNameHash = {};
+      const nameList = [];
+
+      // 提取所有的 remote 的 url，储存为 hash 表
       this.subs.forEach(sub => {
         if (sub.source === 'remote') {
           flowNameHash[sub.url]
@@ -65,37 +59,23 @@ export const useSubsStore = defineStore('subsStore', {
         }
       });
 
-      return new Promise(async resolve => {
-        const nameList = [];
+      // 取出每个 hash 表里每个 url 的第一个 name
+      for (const url in flowNameHash) {
+        nameList.push([url, flowNameHash[url][0]]);
+      }
 
-        // 取出每个 hash 表里每个 url 的第一个 name
-        for (const url in flowNameHash) {
-          nameList.push([url, flowNameHash[url][0]]);
-        }
-
-        // 用该 name 请求流量信息 并按 url 存入 store 中
-        for (let i = 0; i < nameList.length; i++) {
-          const [url, name] = nameList[i];
-          try {
-            this.flows[url] = await subsApi.getFlow(name);
-          } catch (e) {
-            this.flows[url] = e;
-          }
-        }
-        resolve('');
-      });
+      // 用该 name 请求流量信息 并按 url 存入 store 中
+      for (let i = 0; i < nameList.length; i++) {
+        const [url, name] = nameList[i];
+        const { data } = await subsApi.getFlow(name);
+        this.flows[url] = data;
+      }
     },
     async deleteSub(type: SubsType, name: string) {
-      return new Promise(async (resolve, reject) => {
-        subsApi
-          .deleteSub(type, name)
-          .then(() => {
-            resolve('删除成功');
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+      const { data } = await subsApi.deleteSub(type, name);
+      if (data.status === 'success') {
+        await this.fetchSubsData();
+      }
     },
   },
 });

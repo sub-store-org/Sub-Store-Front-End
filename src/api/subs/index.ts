@@ -1,52 +1,63 @@
 import request from '@/api';
+import { AxiosPromise } from 'axios';
 
 export function useSubsApi() {
   return {
-    getSubs: () => {
+    getSubs: (): AxiosPromise<MyAxiosRes> => {
       return request({
         url: '/api/subs',
         method: 'get',
       });
     },
-    getCollections: () => {
+    getCollections: (): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/collections`,
         method: 'get',
       });
     },
-    getOne: (type: string, name: string) => {
+    getOne: (type: string, name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/${type}/${name}`,
         method: 'get',
       });
     },
-    getFlow: (name: string) => {
+    getFlow: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/sub/flow/${name}`,
         method: 'get',
       });
     },
-    createSub: (type: string, data: Sub | Collection) => {
+    createSub: (
+      type: string,
+      data: Sub | Collection
+    ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/${type}`,
         method: 'post',
         data,
       });
     },
-    editSub: (type: string, name: string, data: Sub | Collection) => {
+    editSub: (
+      type: string,
+      name: string,
+      data: Sub | Collection
+    ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/${type}/${name}`,
         method: 'patch',
         data,
       });
     },
-    deleteSub: (type: string, name: string) => {
+    deleteSub: (type: string, name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/${type}/${name}`,
         method: 'delete',
       });
     },
-    compareSub: (type: string, data: Sub | Collection) => {
+    compareSub: (
+      type: string,
+      data: Sub | Collection
+    ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/preview/${type}`,
         method: 'post',
