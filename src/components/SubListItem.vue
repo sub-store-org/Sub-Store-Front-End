@@ -4,12 +4,10 @@
       <div class="sub-img-wrapper">
         <nut-avatar
           class="sub-item-customer-icon"
-          v-if="props[props.type].icon"
           size="60"
-          :url="props[props.type].icon"
+          :url="props[props.type].icon || icon"
           bg-color=""
         ></nut-avatar>
-        <nut-avatar v-else :icon="icon"></nut-avatar>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -212,13 +210,8 @@
   };
 
   const onDeleteConfirm = async () => {
-    try {
-      await subsStore.deleteSub(props.type, name);
-      await subsStore.fetchSubsData();
-      Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
-    } catch (e) {
-      Notify.danger(e.message, { duration: 1500 });
-    }
+    await subsStore.deleteSub(props.type, name);
+    // Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
   };
 
   const onClickPreview = () => {

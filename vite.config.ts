@@ -1,14 +1,12 @@
 import * as path from 'path';
-import {
-  createStyleImportPlugin,
-} from 'vite-plugin-style-import';
+import { createStyleImportPlugin } from 'vite-plugin-style-import';
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 const alias: Record<string, string> = {
-  '@': path.resolve(__dirname, 'src'),
+  '@': path.resolve(__dirname, '/src'),
 };
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
@@ -23,7 +21,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           {
             libraryName: '@nutui/nutui',
             esModule: true,
-            resolveStyle: (name) => {
+            resolveStyle: name => {
               name = name.toLowerCase().replace('-', ''); //NutuiResolve官方版目前在linux会造成大小写不一致问题无法加载资源
               return `@nutui/nutui/dist/packages/${name}/index.scss`;
             },
