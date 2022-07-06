@@ -17,17 +17,17 @@
 </template>
 
 <script lang="ts" setup>
-  import surge from '@/assets/icons/surge.png?url'
-  import clash from '@/assets/icons/clash.png?url'
-  import quanx from '@/assets/icons/quanx.png?url'
-  import loon from '@/assets/icons/loon.png?url'
-  import stash from '@/assets/icons/stash.png?url'
+  import surge from '@/assets/icons/surge.png';
+  import clash from '@/assets/icons/clash.png';
+  import quanx from '@/assets/icons/quanx.png';
+  import loon from '@/assets/icons/loon.png';
+  import stash from '@/assets/icons/stash.png';
 
   const { name, type } = defineProps<{
-    name: string
-    type: 'sub' | 'collection'
-  }>()
-  const host = import.meta.env.VITE_API_URL
+    name: string;
+    type: 'sub' | 'collection';
+  }>();
+  const host = import.meta.env.VITE_API_URL;
   const platformList = [
     {
       name: 'Clash',
@@ -55,7 +55,7 @@
       path: 'Stash',
       icon: stash,
     },
-  ]
+  ];
 </script>
 
 <style lang="scss" scoped>
