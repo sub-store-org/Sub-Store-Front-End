@@ -121,8 +121,8 @@
 </template>
 
 <script lang="ts" setup>
-  import iconKey from '@/assets/icons/key-solid.svg?url';
-  import iconUser from '@/assets/icons/user-solid.svg?url';
+  import iconKey from '@/assets/icons/key-solid.svg';
+  import iconUser from '@/assets/icons/user-solid.svg';
 
   import surge from '@/assets/icons/surge.png?url';
   import clash from '@/assets/icons/clash.png?url';
