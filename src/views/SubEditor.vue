@@ -204,13 +204,13 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useSubsStore } from '@/store/subs';
   import {
-    watchEffect,
     ref,
     toRaw,
     computed,
     provide,
     reactive,
     shallowRef,
+    watchEffect,
   } from 'vue';
   import { useI18n } from 'vue-i18n';
   import CommonBlock from '@/views/editor/CommonBlock.vue';
@@ -219,8 +219,8 @@
   import ActionRadio from '@/views/editor/components/ActionRadio.vue';
   import FilterSelect from '@/views/editor/components/FilterSelect.vue';
   import HandleDuplicate from '@/views/editor/components/HandleDuplicate.vue';
-  import Script from '@/views/editor/components/Script.vue';
   import Regex from '@/views/editor/components/Regex.vue';
+  import Script from '@/views/editor/components/Script.vue';
   import { actionsToProcess } from '@/utils/actionsToPorcess';
   import { deleteItem, addItem } from '@/utils/actionsOperate';
   import { Dialog, Notify, Toast } from '@nutui/nutui';
@@ -260,49 +260,68 @@
   const actionsChecked = reactive([]);
   const actionsList = reactive([]);
 
-  const form = reactive<any>({ process: [] });
+  const form = reactive<any>({
+    name: '',
+    displayName: '',
+    icon: '',
+    process: [
+      {
+        type: 'Quick Setting Operator',
+        args: {},
+      },
+    ],
+  });
   provide('form', form);
 
   // 排除非动作卡片
   const ignoreList = ['Quick Setting Operator'];
 
   watchEffect(() => {
-    // 新建时，初始化表单
+    if (isInit.value) return;
     if (configName === 'UNTITLED') {
-      if (editType === 'collections') {
-        Object.assign(form, {
-          name: '',
-          displayName: '',
-          icon: '',
-          subscriptions: [],
-        });
-      } else if (editType === 'subs') {
-        Object.assign(form, {
-          name: '',
-          displayName: '',
-          source: 'remote',
-          url: '',
-          content: '',
-          ua: '',
-          icon: '',
-        });
+      // 新建时，初始化表单
+      switch (editType) {
+        case 'collections':
+          form.subscriptions = [];
+          break;
+        case 'subs':
+          form.source = 'remote';
+          form.url = '';
+          form.content = '';
+          form.ua = '';
+          break;
       }
-    } else {
-      // 如果没有初始化过数据，则初始化数据
-      if (!isInit.value) {
-        Object.assign(form, sub.value, collection.value);
-
-        // 兼容旧版本的数据格式
-        //@ts-ignore
-        form.displayName = !form.displayName
-          ? form['display-name']
-          : //@ts-ignore
-            form.displayName;
-      }
+      // 标记 加载完成
+      isInit.value = true;
+      return;
     }
 
-    // 将后端数据格式转为前端数据格式
-    if (!isInit.value && form.process.length > 0) {
+    const sourceData: any = toRaw(sub.value) || toRaw(collection.value);
+    const newProcess = JSON.parse(JSON.stringify(sourceData.process));
+    form.name = sourceData.name;
+    form.displayName = sourceData.displayName || sourceData['display-name'];
+    form.icon = sourceData.icon;
+    form.process = newProcess;
+
+    switch (editType) {
+      case 'collections':
+        form.subscriptions = [];
+        form.subscriptions.push(...sourceData.subscriptions);
+        break;
+      case 'subs':
+        form.source = sourceData.source;
+        form.url = sourceData.url;
+        form.content = sourceData.content;
+        form.ua = sourceData.ua;
+        break;
+    }
+
+    if (sourceData.process.length === 0) {
+      form.process.push({
+        type: 'Quick Setting Operator',
+        args: {},
+      });
+    } else if (sourceData.process.length > 0) {
       form.process.forEach(item => {
         const { type, id } = item;
 
@@ -343,9 +362,10 @@
           actionsList.push(action);
         }
       });
-      // 标记 加载完成
-      isInit.value = true;
     }
+    // 标记 加载完成
+    isInit.value = true;
+    return;
   });
 
   const addAction = val => {

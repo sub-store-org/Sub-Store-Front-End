@@ -11,7 +11,7 @@
           {{ $t(`editorPage.subConfig.commonOptions.useless.label`) }}
         </p>
         <div class="radio-wrapper options-radio">
-          <nut-radiogroup direction="horizontal" v-model="options.useless">
+          <nut-radiogroup direction="horizontal" v-model="quick.args.useless">
             <nut-radio :label="item[2]"
               >{{ $t(`editorPage.subConfig.commonOptions.useless.disabled`) }}
             </nut-radio>
@@ -26,7 +26,7 @@
           {{ $t(`editorPage.subConfig.commonOptions.udp.label`) }}
         </p>
         <div class="radio-wrapper options-radio">
-          <nut-radiogroup direction="horizontal" v-model="options.udp">
+          <nut-radiogroup direction="horizontal" v-model="quick.args.udp">
             <nut-radio :label="item[0]"
               >{{ $t(`editorPage.subConfig.commonOptions.udp.default`) }}
             </nut-radio>
@@ -44,7 +44,7 @@
           {{ $t(`editorPage.subConfig.commonOptions.scert.label`) }}
         </p>
         <div class="radio-wrapper options-radio">
-          <nut-radiogroup direction="horizontal" v-model="options.scert">
+          <nut-radiogroup direction="horizontal" v-model="quick.args.scert">
             <nut-radio :label="item[0]"
               >{{ $t(`editorPage.subConfig.commonOptions.scert.default`) }}
             </nut-radio>
@@ -62,7 +62,7 @@
           {{ $t(`editorPage.subConfig.commonOptions.tfo.label`) }}
         </p>
         <div class="radio-wrapper options-radio">
-          <nut-radiogroup direction="horizontal" v-model="options.tfo">
+          <nut-radiogroup direction="horizontal" v-model="quick.args.tfo">
             <nut-radio :label="item[0]"
               >{{ $t(`editorPage.subConfig.commonOptions.tfo.default`) }}
             </nut-radio>
@@ -82,7 +82,7 @@
         <div class="radio-wrapper options-radio">
           <nut-radiogroup
             direction="horizontal"
-            v-model="options['vmess aead']"
+            v-model="quick.args['vmess aead']"
           >
             <nut-radio :label="item[0]"
               >{{
@@ -137,50 +137,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, reactive, watch, watchEffect, ref, toRaw } from 'vue';
+  import { inject } from 'vue';
 
-  const fetchComplete = ref(false);
   const item = ['DEFAULT', 'ENABLED', 'DISABLED'];
-  const options = reactive({
-    useless: 'DISABLED',
-    udp: 'DEFAULT',
-    scert: 'DEFAULT',
-    tfo: 'DEFAULT',
-    'vmess aead': 'DEFAULT',
-    // 'surge-hybrid': 'DEFAULT',
-  });
 
   const form = inject<Sub | Collection>('form');
-
-  watchEffect(() => {
-    if (!fetchComplete.value) {
-      // 初始化 UI 显示的选项
-      const item = form.process.find(
-        item => item.type === 'Quick Setting Operator'
-      );
-      if (item) {
-        Object.assign(options, item.args);
-        // 标记 flag
-        fetchComplete.value = true;
-      } else {
-        form.process.push({
-          type: 'Quick Setting Operator',
-          args: toRaw(options),
-        });
-      }
-    }
-  });
-
-  watch(options, () => {
-    // 选项转换为表单 process 逻辑
-    // 初始化成功后再监听，否则会出现重复初始化的情况
-    if (fetchComplete.value) {
-      const item = form.process.find(
-        item => item.type === 'Quick Setting Operator'
-      );
-      item.args = toRaw(options);
-    }
-  });
+  const quick = form.process.find(
+    item => item.type === 'Quick Setting Operator'
+  );
 </script>
 
 <style lang="scss" scoped>
