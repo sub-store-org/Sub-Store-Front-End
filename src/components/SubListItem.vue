@@ -212,13 +212,8 @@
   };
 
   const onDeleteConfirm = async () => {
-    try {
-      await subsStore.deleteSub(props.type, name);
-      await subsStore.fetchSubsData();
-      Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
-    } catch (e) {
-      Notify.danger(e.message, { duration: 1500 });
-    }
+    await subsStore.deleteSub(props.type, name);
+    // Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
   };
 
   const onClickPreview = () => {
