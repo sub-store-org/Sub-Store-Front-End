@@ -7,6 +7,7 @@ export default {
   globalNotify: {
     refresh: {
       succeed: 'Refresh Successful!\nEnjoy the feeling',
+      flowFailed: 'Refresh flow of {name} failed！',
       failed: 'Refresh Failed\n',
     },
   },
@@ -61,6 +62,7 @@ export default {
       loading: 'Loading...',
       flow: 'Usage / Total',
       expires: 'Expires',
+      noRecord: 'Refresh to get usage',
     },
     deleteSub: {
       title: 'Delete Subscription',
@@ -136,7 +138,7 @@ export default {
         },
         icon: {
           label: 'Icon',
-          placeholder: '填入想要展示的图标链接，png最佳',
+          placeholder: '填入图标链接，不要使用jpg',
         },
         ua: {
           label: 'User-Agent',
