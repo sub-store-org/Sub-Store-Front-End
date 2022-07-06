@@ -154,12 +154,6 @@
                     :url="item[2]"
                     bg-color=""
                   ></nut-avatar>
-                  <nut-avatar
-                    class="sub-item-customer-icon"
-                    size="32"
-                    v-else
-                    :icon="icon"
-                  ></nut-avatar>
                   <span>{{ item[1] }}</span>
                 </div>
               </nut-checkbox>
@@ -206,7 +200,7 @@
 </template>
 
 <script lang="ts" setup>
-  import icon from '@/assets/icons/logo.png?url';
+  import icon from '@/assets/icons/logo.png';
   import { useRoute, useRouter } from 'vue-router';
   import { useSubsStore } from '@/store/subs';
   import {
@@ -253,7 +247,7 @@
       return [
         item.name,
         item.displayName || item['display-name'] || item.name,
-        item.icon || null,
+        item.icon || icon,
       ];
     });
   });
