@@ -1,6 +1,7 @@
 import { Notify } from '@nutui/nutui';
 import { useGlobalStore } from '@/store/global';
 import { useSubsStore } from '@/store/subs';
+import { useSettingsStore } from '@/store/settings';
 import i18n from '@/locales';
 
 export const initStores = async (
@@ -9,59 +10,34 @@ export const initStores = async (
 ) => {
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
+  const settingsStore = useSettingsStore();
   const { t } = i18n.global;
-  const notify = {
-    type: '',
-    msg: '',
-    duration: 2000,
-  };
+  let isSucceed = true;
 
   globalStore.setLoading(true);
   globalStore.setFetchResult(true);
 
-  // 拉取应用数据
-  const fetchAllStoreData = async () => {
-    return new Promise((resolve, reject) => {
-      const list = [subsStore.fetchSubsData()];
-      Promise.all(list)
-        .then(async () => {
-          if (needFetchFlow) await subsStore.fetchFlows();
-          resolve('');
-        })
-        .catch(e => {
-          reject(e);
-        });
-    });
-  };
-
+  // 更新所有数据
   try {
-    await fetchAllStoreData();
-    notify.msg = t('globalNotify.refresh.succeed');
-    notify.type = 'primary';
+    await subsStore.fetchSubsData();
+    await settingsStore.fetchSettings();
+    await globalStore.getEnv();
   } catch (e) {
-    console.log('e', e);
-    notify.type = 'danger';
     globalStore.setFetchResult(false);
-    notify.msg = t('globalNotify.refresh.failed');
-
-    if (Array.isArray(e)) {
-      const msgList = e.map(i => i?.data?.error?.message ?? '');
-      notify.msg += msgList.join('\n');
-    } else {
-      const code = `Code ${e.status}`;
-      const msg = e?.error?.message ?? '';
-      notify.msg += msg ? code + ', ' + msg : code;
-    }
-
     subsStore.subs = [];
     subsStore.collections = [];
+    isSucceed = false;
   }
-  globalStore.setLoading(false);
+
+  // 更新流量
+  if (needFetchFlow) await subsStore.fetchFlows();
 
   // 发送通知
-  if (needNotify) {
-    Notify[notify.type](notify.msg, {
-      duration: notify.duration,
+  if (isSucceed && needNotify) {
+    Notify.primary(t('globalNotify.refresh.succeed'), {
+      duration: 2000,
     });
   }
+
+  globalStore.setLoading(false);
 };

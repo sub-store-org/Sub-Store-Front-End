@@ -28,8 +28,10 @@ export const useGlobalStore = defineStore('globalStore', {
       this.isDarkMode = isDarkMode;
     },
     async getEnv() {
-      const { data } = await envApi.getEnv();
-      this.env = data;
+      const res = await envApi.getEnv();
+      if (res.data.status === 'success') {
+        this.env = res.data.data;
+      }
     },
   },
 });

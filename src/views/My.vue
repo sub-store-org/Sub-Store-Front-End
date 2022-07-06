@@ -1,12 +1,12 @@
 <template>
-  <div class="my-page-wrapper" v-if="!isFetching">
+  <div class="my-page-wrapper">
     <div class="profile-block">
       <div class="info">
         <div class="avatar-wrapper">
           <nut-avatar
-            :class="{ 'avatar-normal': !avatarUrl }"
+            :class="{ 'avatar-normal': !githubUser }"
             size="72"
-            :icon="avatarUrl || avatar"
+            :icon="displayAvatar"
           />
           <div class="name">
             <p class="title">
@@ -62,6 +62,7 @@
             :placeholder="$t(`myPage.placeholder.githubUser`)"
             type="text"
             input-align="left"
+            :left-icon="iconUser"
           />
           <nut-input
             class="input"
@@ -70,6 +71,7 @@
             :placeholder="$t(`myPage.placeholder.gistToken`)"
             type="text"
             input-align="left"
+            :left-icon="iconKey"
           />
         </div>
         <div class="config-btn-wrapper">
@@ -119,6 +121,9 @@
 </template>
 
 <script lang="ts" setup>
+  import iconKey from '@/assets/icons/key-solid.svg?url';
+  import iconUser from '@/assets/icons/user-solid.svg?url';
+
   import surge from '@/assets/icons/surge.png?url';
   import clash from '@/assets/icons/clash.png?url';
   import quanx from '@/assets/icons/quanx.png?url';
@@ -127,13 +132,14 @@
   import node from '@/assets/icons/node.svg?url';
   import avatar from '@/assets/icons/avatar.svg?url';
   import dayjs from 'dayjs';
-  import { ref, computed } from 'vue';
+  import { ref, computed, watchEffect } from 'vue';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
   import { useI18n } from 'vue-i18n';
   import { useSettingsApi } from '@/api/settings';
   import { Notify } from '@nutui/nutui';
+  import { initStores } from '@/utils/initApp';
 
   const { t } = useI18n();
   const settingsStore = useSettingsStore();
@@ -141,6 +147,10 @@
   const { env } = storeToRefs(globalStore);
   const { githubUser, gistToken, syncTime, avatarUrl } =
     storeToRefs(settingsStore);
+
+  const displayAvatar = computed(() => {
+    return !githubUser.value ? avatar : avatarUrl.value;
+  });
 
   const backendIcon = () => {
     switch (env.value.backend) {
@@ -159,13 +169,12 @@
     }
   };
 
-  const isFetching = ref(true);
-
   // 编辑 更新
   const userInput = ref('');
   const tokenInput = ref('');
   const isEditing = ref(false);
   const isEditLoading = ref(false);
+  const isInit = ref(false);
 
   const toggleEditMode = async () => {
     isEditLoading.value = true;
@@ -174,16 +183,26 @@
         githubUser: userInput.value,
         gistToken: tokenInput.value,
       });
+      setDisplayInfo();
+    } else {
+      userInput.value = githubUser.value;
+      tokenInput.value = gistToken.value;
     }
     isEditLoading.value = false;
     isEditing.value = !isEditing.value;
   };
 
   const exitEditMode = () => {
-    userInput.value = githubUser.value;
-    tokenInput.value = gistToken.value;
+    setDisplayInfo();
     isEditing.value = false;
     isEditLoading.value = false;
+  };
+
+  const setDisplayInfo = () => {
+    userInput.value = githubUser.value || t(`myPage.placeholder.noGithubUser`);
+    tokenInput.value = gistToken.value
+      ? gistToken.value.slice(0, 6) + '************'
+      : t(`myPage.placeholder.noGistToken`);
   };
 
   // 同步 上传
@@ -220,26 +239,25 @@
         break;
     }
 
-    try {
-      await useSettingsApi().syncSettings(query);
-      await settingsStore.fetchSettings();
-      Notify.success(t(`myPage.notify.${query}.succeed`), { duration: 2000 });
-    } catch (e) {
-      console.log(e);
-      await settingsStore.fetchSettings();
-      Notify.danger(t(`myPage.notify.${query}.failed`), { duration: 2000 });
+    const res = await useSettingsApi().syncSettings(query);
+
+    if (query === 'download' && res?.data?.status === 'success') {
+      await initStores(true, true);
     }
+    if (res) Notify.success(t(`myPage.notify.${query}.succeed`));
 
     downloadIsLoading.value = false;
     uploadIsLoading.value = false;
   };
 
-  settingsStore.fetchSettings().then(() => {
-    userInput.value = githubUser.value;
-    tokenInput.value = gistToken.value;
-    isFetching.value = false;
+  // store 刷新数据完成后 复制内容给 input 绑定
+  const { isLoading: storeIsLoading } = storeToRefs(useGlobalStore());
+  watchEffect(() => {
+    if (!storeIsLoading.value && !isInit.value) {
+      setDisplayInfo();
+      isInit.value = true;
+    }
   });
-  globalStore.getEnv();
 </script>
 
 <style lang="scss" scoped>
@@ -295,6 +313,21 @@
           .input {
             background: transparent;
             padding: 16px;
+
+            :deep(img) {
+              width: 16px;
+              height: 16px;
+              margin-right: 6px;
+              opacity: 0.2;
+
+              .dark-mode & {
+                filter: brightness(1000%);
+              }
+
+              .light-mode & {
+                filter: brightness(0);
+              }
+            }
 
             &:not(:first-child) {
               margin-top: 8px;
@@ -382,7 +415,7 @@
           .upload-btn,
           .download-btn {
             padding: 0 12px;
-            width: 96px;
+            width: 104px;
           }
 
           .upload-btn {

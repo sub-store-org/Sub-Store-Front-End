@@ -7,6 +7,7 @@ export default {
   globalNotify: {
     refresh: {
       succeed: '数据刷新成功！\n感受大佬的拥抱吧～',
+      flowFailed: '刷新 {name} 流量失败！',
       failed: '数据刷新失败\n',
     },
   },
@@ -61,6 +62,7 @@ export default {
       loading: '加载中...',
       flow: '已用/总流量',
       expires: '到期时间',
+      noRecord: '刷新后可获取流量情况',
     },
     deleteSub: {
       title: '删除订阅',
@@ -136,7 +138,7 @@ export default {
         },
         icon: {
           label: '图标链接',
-          placeholder: '填入想要展示的图标链接，png最佳',
+          placeholder: '填入图标链接，不要使用jpg',
         },
         ua: {
           label: 'User-Agent',
@@ -308,8 +310,14 @@ export default {
       haveNotSync: '暂无同步记录',
       githubUser: '请输入 Github 用户名',
       gistToken: '请输入 Gist Token',
+      noGithubUser: '未配置 Github 用户名',
+      noGistToken: '未配置 Gist Token',
     },
     notify: {
+      save: {
+        succeed: '保存成功',
+        failed: '保存失败',
+      },
       download: {
         succeed: '下载成功',
         failed: '下载失败',
