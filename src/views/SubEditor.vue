@@ -206,7 +206,7 @@
 </template>
 
 <script lang="ts" setup>
-  import icon from '@/assets/icons/logo.png';
+  import icon from '@/assets/icons/logo.png?url';
   import { useRoute, useRouter } from 'vue-router';
   import { useSubsStore } from '@/store/subs';
   import {
@@ -399,9 +399,11 @@
       console.log('compare.....\n', data);
       const type = editType === 'collections' ? 'collection' : 'sub';
       const res = await subsApi.compareSub(type, data);
-      compareData.value = res.data;
-      Toast.hide('compare');
-      compareTableIsVisible.value = true;
+      if (res.data.status === 'success') {
+        compareData.value = res.data.data;
+        compareTableIsVisible.value = true;
+        Toast.hide('compare');
+      }
     });
   };
 
@@ -429,41 +431,37 @@
       console.log('submit.....\n', data);
 
       const duration = 1000;
+      let res = null;
 
-      try {
-        if (configName === 'UNTITLED') {
-          await subsApi.createSub(editType as string, data);
-          await subsStore.fetchSubsData();
-        } else {
-          let apiType = '';
-          if (editType === 'subs') {
-            apiType = 'sub';
-          } else if (editType === 'collections') {
-            apiType = 'collection';
-          }
-          await subsApi.editSub(apiType, configName as string, data);
-
-          if (configName === data.name) {
-            // @ts-ignore
-            await subsStore.updateOneData(
-              editType as string,
-              configName as string
-            );
-          } else {
-            await subsStore.fetchSubsData();
-          }
+      if (configName === 'UNTITLED') {
+        res = await subsApi.createSub(editType as string, data);
+        await subsStore.fetchSubsData();
+      } else {
+        let apiType = '';
+        if (editType === 'subs') {
+          apiType = 'sub';
+        } else if (editType === 'collections') {
+          apiType = 'collection';
         }
+        res = await subsApi.editSub(apiType, configName as string, data);
 
-        router.replace('/').then(() => {
+        if (configName === data.name) {
+          // @ts-ignore
+          await subsStore.updateOneData(
+            editType as string,
+            configName as string
+          );
+        } else {
+          await subsStore.fetchSubsData();
+        }
+      }
+
+      router.replace('/').then(() => {
+        if (res)
           Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), {
             duration,
           });
-        });
-      } catch (e) {
-        Notify.danger(e.error.message, {
-          duration,
-        });
-      }
+      });
     });
   };
 

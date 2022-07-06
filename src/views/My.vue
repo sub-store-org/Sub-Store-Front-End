@@ -179,19 +179,10 @@
   const toggleEditMode = async () => {
     isEditLoading.value = true;
     if (isEditing.value) {
-      try {
-        await settingsStore.editSettings({
-          githubUser: userInput.value,
-          gistToken: tokenInput.value,
-        });
-        Notify.success(t(`myPage.notify.save.succeed`), {
-          duration: 1000,
-        });
-      } catch (e) {
-        Notify.success(t(`myPage.notify.save.failed`), {
-          duration: 1000,
-        });
-      }
+      await settingsStore.editSettings({
+        githubUser: userInput.value,
+        gistToken: tokenInput.value,
+      });
       setDisplayInfo();
     } else {
       userInput.value = githubUser.value;
@@ -248,16 +239,12 @@
         break;
     }
 
-    try {
-      await useSettingsApi().syncSettings(query);
-      if (query === 'download') {
-        await initStores(true, true);
-      }
-      Notify.success(t(`myPage.notify.${query}.succeed`), { duration: 2000 });
-    } catch (e) {
-      console.log(e);
-      Notify.danger(t(`myPage.notify.${query}.failed`), { duration: 2000 });
+    const res = await useSettingsApi().syncSettings(query);
+
+    if (query === 'download' && res?.data?.status === 'success') {
+      await initStores(true, true);
     }
+    if (res) Notify.success(t(`myPage.notify.${query}.succeed`));
 
     downloadIsLoading.value = false;
     uploadIsLoading.value = false;
@@ -268,7 +255,6 @@
   watchEffect(() => {
     if (!storeIsLoading.value && !isInit.value) {
       setDisplayInfo();
-      console.log('init settings');
       isInit.value = true;
     }
   });
