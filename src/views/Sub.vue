@@ -1,12 +1,14 @@
 <template>
-  <!--顶部通知 组件式暂时有bug，先使用函数调用式-->
+  <!--顶部通知 组件式暂时有 bug，先使用函数调用式-->
   <!--<nut-notify-->
   <!--  pop-class="pop-notify"-->
-  <!--  v-model:visible="notifySettings.notifyIsVisible"-->
-  <!--  :type="notifySettings.notifyType"-->
+  <!--  v-model:visible="visible"-->
+  <!--  type="primary"-->
+  <!--  :duration="1000"-->
   <!--&gt;-->
-  <!--  <span>{{ notifySettings.notifyMsg }}</span>-->
+  <!--  <span>{{ '通知' }}</span>-->
   <!--</nut-notify>-->
+  <!--<button @click="visible = true">点击</button>-->
 
   <!--浮动按钮-->
   <Teleport to="body">
