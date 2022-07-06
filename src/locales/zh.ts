@@ -308,8 +308,14 @@ export default {
       haveNotSync: '暂无同步记录',
       githubUser: '请输入 Github 用户名',
       gistToken: '请输入 Gist Token',
+      noGithubUser: '未配置 Github 用户名',
+      noGistToken: '未配置 Gist Token',
     },
     notify: {
+      save: {
+        succeed: '保存成功',
+        failed: '保存失败',
+      },
       download: {
         succeed: '下载成功',
         failed: '下载失败',

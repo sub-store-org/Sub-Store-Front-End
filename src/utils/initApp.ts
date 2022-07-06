@@ -1,6 +1,7 @@
 import { Notify } from '@nutui/nutui';
 import { useGlobalStore } from '@/store/global';
 import { useSubsStore } from '@/store/subs';
+import { useSettingsStore } from '@/store/settings';
 import i18n from '@/locales';
 
 export const initStores = async (
@@ -9,6 +10,8 @@ export const initStores = async (
 ) => {
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
+  const settingsStore = useSettingsStore();
+
   const { t } = i18n.global;
   const notify = {
     type: '',
@@ -22,7 +25,12 @@ export const initStores = async (
   // 拉取应用数据
   const fetchAllStoreData = async () => {
     return new Promise((resolve, reject) => {
-      const list = [subsStore.fetchSubsData()];
+      // 更新所有数据
+      const list = [
+        subsStore.fetchSubsData(),
+        settingsStore.fetchSettings(),
+        globalStore.getEnv(),
+      ];
       Promise.all(list)
         .then(async () => {
           if (needFetchFlow) await subsStore.fetchFlows();

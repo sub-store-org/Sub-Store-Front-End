@@ -442,8 +442,16 @@
             apiType = 'collection';
           }
           await subsApi.editSub(apiType, configName as string, data);
-          // @ts-ignore
-          await subsStore.updateOneData(editType as string, form.name);
+
+          if (configName === data.name) {
+            // @ts-ignore
+            await subsStore.updateOneData(
+              editType as string,
+              configName as string
+            );
+          } else {
+            await subsStore.fetchSubsData();
+          }
         }
 
         router.replace('/').then(() => {
