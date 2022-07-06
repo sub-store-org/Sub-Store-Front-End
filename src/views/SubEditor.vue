@@ -463,9 +463,7 @@
   const nameValidator = (val: string) => {
     return new Promise(resolve => {
       if (val === 'UNTITLED') resolve(false);
-      const nameList = Object.keys(subsStore.subs).concat(
-        Object.keys(subsStore.collections)
-      );
+      const nameList = subsStore.subs.map(item => item.name);
       nameList.includes(val) && configName !== val
         ? resolve(false)
         : resolve(true);
