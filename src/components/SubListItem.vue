@@ -173,8 +173,8 @@
         };
       } else if (target?.status === 'failed') {
         return {
-          firstLine: `Type: ${target.error?.type}`,
-          secondLine: `Msg: ${target.error?.message}`,
+          firstLine: `${target.error?.type}`,
+          secondLine: `${target.error?.message}`,
         };
       }
     }
