@@ -1,7 +1,6 @@
 import * as path from 'path';
 import {
   createStyleImportPlugin,
-  NutuiResolve,
 } from 'vite-plugin-style-import';
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
@@ -19,7 +18,17 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     plugins: [
       vue(),
       createStyleImportPlugin({
-        resolves: [NutuiResolve()],
+        // resolves: [NutuiResolve()],
+        libs: [
+          {
+            libraryName: '@nutui/nutui',
+            esModule: true,
+            resolveStyle: (name) => {
+              name = name.toLowerCase().replace('-', ''); //NutuiResolve官方版目前在linux会造成大小写不一致问题无法加载资源
+              return `@nutui/nutui/dist/packages/${name}/index.scss`;
+            },
+          },
+        ],
       }),
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
