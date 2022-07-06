@@ -127,7 +127,6 @@
     props[props.type].displayName || props[props.type]['display-name'];
 
   const name = props[props.type].name;
-  console.log(name);
   const { flows } = storeToRefs(subsStore);
   const collectionDetail = computed(() => {
     const nameList = props?.collection.subscriptions || [];
@@ -151,7 +150,14 @@
       if (isLoading.value) return t('subPage.subItem.loading');
 
       const target = toRaw(flows.value[props.sub.url]);
-      if (target?.status === 'success') {
+      if (!target) {
+        return {
+          firstLine: t('subPage.subItem.noRecord'),
+          secondLine: ``,
+        };
+      }
+
+      if (target.status === 'success') {
         const {
           expires,
           total,
@@ -169,16 +175,8 @@
         };
       } else if (target?.status === 'failed') {
         return {
-          firstLine: `${target.error?.message}`,
-          secondLine: '',
-        };
-      } else {
-        return {
-          // TODO: API 暂未升级，额外判断当前出错情况跑通代码
-          // @ts-ignore
-          firstLine: `Code: ${target?.status}`,
-          // @ts-ignore
-          secondLine: `Msg: ${target?.statusText}`,
+          firstLine: `Type: ${target.error?.type}`,
+          secondLine: `Msg: ${target.error?.message}`,
         };
       }
     }
@@ -194,13 +192,14 @@
       props.type,
       props.sub ?? props.collection
     );
-    compareData.value = res.data;
-    Toast.hide('compare');
-    compareTableIsVisible.value = true;
+    if (res.data.status === 'success') {
+      compareData.value = res.data.data;
+      compareTableIsVisible.value = true;
+      Toast.hide('compare');
+    }
   };
 
   const swipeController = () => {
-    // console.log(moreAction.value.style);
     if (swipeIsOpen.value) {
       swipe.value.close();
       swipeIsOpen.value = false;
