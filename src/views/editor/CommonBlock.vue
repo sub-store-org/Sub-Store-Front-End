@@ -137,7 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject } from 'vue';
+  import { inject, watchEffect } from 'vue';
 
   const item = ['DEFAULT', 'ENABLED', 'DISABLED'];
 
@@ -145,6 +145,17 @@
   const quick = form.process.find(
     item => item.type === 'Quick Setting Operator'
   );
+  watchEffect(() => {
+    if (!quick.args) {
+      quick.args = {
+        useless: 'DISABLED',
+        udp: 'DEFAULT',
+        scert: 'DEFAULT',
+        tfo: 'DEFAULT',
+        'vmess aead': 'DEFAULT',
+      };
+    }
+  });
 </script>
 
 <style lang="scss" scoped>

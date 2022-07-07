@@ -387,7 +387,7 @@
 
         span {
           display: block;
-          line-height: 1.8;
+          line-height: 2.2;
         }
 
         .dark-mode & {

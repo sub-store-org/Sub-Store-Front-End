@@ -28,6 +28,40 @@
 // picker 组件 dark mode 样式覆盖
 .nut-popup {
   .dark-mode & {
+    .nut-cascader__bar {
+      color: $dark-primary-text-color;
+      background-color: $dark-popup-color;
+    }
+
+    .nut-cascader.nut-tabs {
+      .nut-tabs__titles {
+        background: $dark-popup-color;
+
+        .nut-tabs__titles-item.active {
+          color: $dark-primary-text-color;
+        }
+
+        .nut-tabs__titles-item {
+          color: $dark-comment-text-color;
+        }
+      }
+
+      .nut-tabs__content {
+        background: $dark-popup-color;
+        .nut-tabpane {
+          background-color: $dark-popup-color;
+
+          .nut-cascader-item.active {
+            color: $primary-color;
+          }
+
+          .nut-cascader-item {
+            color: $dark-primary-text-color;
+          }
+        }
+      }
+    }
+
     .nut-picker__bar,
     .nut-picker__column {
       background-color: $dark-popup-color;

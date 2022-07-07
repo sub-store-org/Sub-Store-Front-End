@@ -350,4 +350,69 @@ export default {
     title: 'Code Editor',
     des: 'Auto save when exit',
   },
+  syncPage: {
+    title: '同步配置',
+    syncSwitcher: '定时',
+    syncAllSucceed: 'Sync succeed',
+    emptySub: {
+      title: '你还没有添加同步',
+      desc: '添加后即可在其他工具使用 gist 链接',
+      btn: '立即添加',
+    },
+    detail: {
+      firstLine: 'Type: {type}, Sub: {name}',
+      secondLine: 'Last Time: {time}',
+      notSync: 'Not sync yet',
+    },
+    deleteSub: {
+      title: 'Delete Sync Configuration',
+      desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!',
+      succeedNotify: 'Successfully deleted!',
+      btn: {
+        confirm: 'Delete',
+        cancel: 'Cancel',
+      },
+    },
+    copyNotify: {
+      succeed: '复制 gist 链接成功\n可以前往代理工具使用咯～',
+      failed: '复制 gist 链接失败\n{e}',
+    },
+    addArtForm: {
+      title: '添加同步配置',
+      cancel: '取消',
+      confirm: '确定',
+      name: {
+        label: '名称',
+        placeholder: '请输入名称',
+        isRequired: '名称不能为空',
+        isExist: '名称已存在',
+      },
+      displayName: {
+        label: '显示名称',
+        placeholder: '请输入显示名称',
+      },
+      source: {
+        label: '来源',
+        isRequired: '来源不能为空',
+        placeholder: '请选择来源',
+      },
+      platform: {
+        label: '目标平台',
+        isRequired: '目标平台不能为空',
+      },
+      pop: {
+        errorTitle: '提交出错',
+        errorBtn: '去修改',
+      },
+      succeedNotify: '添加同步配置成功！',
+      submitLoading: '保存中...',
+    },
+    editArtForm: {
+      title: '编辑同步配置',
+      succeedNotify: '编辑同步配置成功！',
+    },
+    selectSource: {
+      title: 'Select Source',
+    },
+  },
 };

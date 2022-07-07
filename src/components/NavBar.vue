@@ -45,38 +45,37 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import { useRoute, useRouter } from 'vue-router'
+  import { ref, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRoute, useRouter } from 'vue-router';
 
-  const { t, locale } = useI18n()
-  const router = useRouter()
-  const route = useRoute()
-  const showLangSwitchPopup = ref(false)
-  const langList = ['zh', 'en']
+  const { t, locale } = useI18n();
+  const router = useRouter();
+  const route = useRoute();
+  const showLangSwitchPopup = ref(false);
+  const langList = ['zh', 'en'];
 
   const isNeedBack = computed(() => {
-    return route.meta.needNavBack ?? false
-  })
+    return route.meta.needNavBack ?? false;
+  });
 
   const currentTitle = computed(() => {
-    const metaTitle = route.meta.title
-    return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined
-  })
+    const metaTitle = route.meta.title;
+    return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
+  });
 
-  const navBarHeight = '56px'
+  const navBarHeight = '56px';
   const changeLang = (type: string) => {
-    locale.value = type
-    localStorage.setItem('locale', type)
-    showLangSwitchPopup.value = false
-  }
+    locale.value = type;
+    localStorage.setItem('locale', type);
+    showLangSwitchPopup.value = false;
+  };
 
   const back = () => {
     if (isNeedBack.value) {
-      console.log('Click Back')
-      router.back()
+      router.back();
     }
-  }
+  };
 </script>
 
 <style lang="scss">
