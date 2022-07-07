@@ -21,7 +21,7 @@ export const initStores = async (
   try {
     await subsStore.fetchSubsData();
     await settingsStore.fetchSettings();
-    await globalStore.getEnv();
+    await globalStore.setEnv();
   } catch (e) {
     globalStore.setFetchResult(false);
     subsStore.subs = [];
