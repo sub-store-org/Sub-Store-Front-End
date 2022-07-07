@@ -6,6 +6,7 @@ interface SettingsStoreState {
     darkMode: boolean;
   };
   avatarUrl: string;
+  artifactStore: string;
 }
 
 interface SettingsPostData {

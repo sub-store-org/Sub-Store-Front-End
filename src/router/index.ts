@@ -103,8 +103,6 @@ router.beforeResolve(async to => {
       const backend = envNow.data.data.backend;
       const version = envNow.data.data.version;
       if (backend !== storeEnv.backend || version !== storeEnv.version) {
-        console.log('storeEnv', storeEnv);
-        console.log('nowEnv', envNow.data.data);
         await initStores(false, true);
       }
     }
