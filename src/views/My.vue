@@ -131,7 +131,6 @@
   import stash from '@/assets/icons/stash.png?url';
   import node from '@/assets/icons/node.svg?url';
   import avatar from '@/assets/icons/avatar.svg?url';
-  import dayjs from 'dayjs';
   import { ref, computed, watchEffect } from 'vue';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
@@ -140,6 +139,7 @@
   import { useSettingsApi } from '@/api/settings';
   import { Notify } from '@nutui/nutui';
   import { initStores } from '@/utils/initApp';
+  import { butifyDate } from '@/utils/butifyDate';
 
   const { t } = useI18n();
   const settingsStore = useSettingsStore();
@@ -222,10 +222,7 @@
       return [t(`myPage.placeholder.des`), ''];
     } else {
       if (!syncTime.value) return [t(`myPage.placeholder.haveNotSync`), ''];
-      return [
-        t(`myPage.placeholder.syncTime`),
-        dayjs(syncTime.value).format('YYYY-MM-DD HH:mm:ss'),
-      ];
+      return [t(`myPage.placeholder.syncTime`), butifyDate(syncTime.value)];
     }
   });
 

@@ -267,7 +267,6 @@
     process: [
       {
         type: 'Quick Setting Operator',
-        args: {},
       },
     ],
   });
@@ -316,12 +315,7 @@
         break;
     }
 
-    if (sourceData.process.length === 0) {
-      form.process.push({
-        type: 'Quick Setting Operator',
-        args: {},
-      });
-    } else if (sourceData.process.length > 0) {
+    if (sourceData.process.length > 0) {
       form.process.forEach(item => {
         const { type, id } = item;
 
@@ -410,7 +404,6 @@
         }
       });
 
-      console.log('compare.....\n', data);
       const type = editType === 'collections' ? 'collection' : 'sub';
       const res = await subsApi.compareSub(type, data);
       if (res.data.status === 'success') {

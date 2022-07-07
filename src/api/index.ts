@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
 import { Notify } from '@nutui/nutui';
 
 const notifyConfig = {
-  duration: 2000,
+  duration: 3000,
 };
 
 // 配置新建一个 axios 实例
@@ -14,13 +14,13 @@ const service = axios.create({
 
 service.interceptors.response.use(
   (response: AxiosResponse<SucceedResponse>): AxiosPromise<SucceedResponse> => {
-    console.log('ddddddddd', response.data);
+    // console.log('ddddddddd', response.data);
     return Promise.resolve(response);
   },
   (e: AxiosError<ErrorResponse>): AxiosPromise<ErrorResponse | undefined> => {
-    console.log('eeeeeeeee', e.response);
+    // console.log('eeeeeeeee', e.response);
 
-    // 流量信息接口的报错 返回错误
+    // 流量信息接口的报错,不通知，直接返回
     if (e.config.url.startsWith('/api/sub/flow'))
       return Promise.resolve(e.response);
 
@@ -32,13 +32,12 @@ service.interceptors.response.use(
       Notify.danger(msg, notifyConfig);
       return Promise.reject(e.response);
     } else {
-      msg += e.response.data.error.message + '\n';
-      msg += 'type: ' + e.response.data.error.type + '\n';
-      msg += e.response.data.error.details;
+      msg += e.response.data.error?.message + '\n';
+      msg += 'type: ' + e.response.data.error?.type + '\n';
+      msg += e.response.data.error?.details;
       Notify.danger(msg, notifyConfig);
+      return Promise.resolve(e.response);
     }
-
-    return undefined;
   }
 );
 

@@ -3,6 +3,7 @@ import { useGlobalStore } from '@/store/global';
 import { useSubsStore } from '@/store/subs';
 import { useSettingsStore } from '@/store/settings';
 import i18n from '@/locales';
+import { useArtifactsStore } from '@/store/artifacts';
 
 export const initStores = async (
   needNotify: boolean,
@@ -10,6 +11,7 @@ export const initStores = async (
 ) => {
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
+  const artifactsStore = useArtifactsStore();
   const settingsStore = useSettingsStore();
   const { t } = i18n.global;
   let isSucceed = true;
@@ -20,8 +22,9 @@ export const initStores = async (
   // 更新所有数据
   try {
     await subsStore.fetchSubsData();
+    await artifactsStore.fetchArtifactsData();
     await settingsStore.fetchSettings();
-    await globalStore.getEnv();
+    await globalStore.setEnv();
   } catch (e) {
     globalStore.setFetchResult(false);
     subsStore.subs = [];

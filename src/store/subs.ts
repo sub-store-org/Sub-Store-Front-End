@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { useSubsApi } from '@/api/subs';
+import { Notify } from '@nutui/nutui';
+import i18n from '@/locales';
 
+const { t } = i18n.global;
 const subsApi = useSubsApi();
 
 export const useSubsStore = defineStore('subsStore', {
@@ -75,6 +78,7 @@ export const useSubsStore = defineStore('subsStore', {
       const { data } = await subsApi.deleteSub(type, name);
       if (data.status === 'success') {
         await this.fetchSubsData();
+        Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
       }
     },
   },

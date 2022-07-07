@@ -9,6 +9,12 @@ import My from '@/views/My.vue';
 import SubEditor from '@/views/SubEditor.vue';
 import NotFound from '@/views/NotFound.vue';
 import { useSubsApi } from '@/api/subs';
+import { useEnvApi } from '@/api/env';
+import { useGlobalStore } from '@/store/global';
+import { toRaw } from 'vue';
+import { initStores } from '@/utils/initApp';
+
+let globalStore = null;
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -88,6 +94,22 @@ const router = createRouter({
 
 // 全局前置守卫
 router.beforeResolve(async to => {
+  // 路由跳转时查询环境，决定是否更新数据
+  if (globalStore !== null) {
+    const envNow = await useEnvApi().getEnv();
+    const storeEnv = toRaw(globalStore.env);
+
+    if (envNow.data.status === 'success') {
+      const backend = envNow.data.data.backend;
+      const version = envNow.data.data.version;
+      if (backend !== storeEnv.backend || version !== storeEnv.version) {
+        await initStores(false, true);
+      }
+    }
+  } else {
+    globalStore = useGlobalStore();
+  }
+
   // 进入编辑页面前查询是否存在订阅
   if (to.fullPath.startsWith('/edit/')) {
     const name = to.params.id as string;

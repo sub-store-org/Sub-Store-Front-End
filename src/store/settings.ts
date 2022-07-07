@@ -16,6 +16,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         darkMode: false,
       },
       avatarUrl: '',
+      artifactStore: '',
     };
   },
   getters: {},
@@ -28,6 +29,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.syncTime = res.data.syncTime || 0;
         this.theme = res.data.theme || { darkMode: false };
         this.avatarUrl = res.data.avatarUrl || '';
+        this.artifactStore = res.data.artifactStore || '';
       }
     },
     async editSettings(data: SettingsPostData) {
@@ -36,6 +38,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.gistToken = res.data.gistToken || '';
         this.githubUser = res.data.githubUser || '';
         this.avatarUrl = res.data.avatarUrl || '';
+        this.artifactStore = res.data.artifactStore || '';
         Notify.success(t(`myPage.notify.save.succeed`));
       }
     },

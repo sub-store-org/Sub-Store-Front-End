@@ -27,7 +27,7 @@ export const useGlobalStore = defineStore('globalStore', {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    async getEnv() {
+    async setEnv() {
       const res = await envApi.getEnv();
       if (res.data.status === 'success') {
         this.env = res.data.data;
