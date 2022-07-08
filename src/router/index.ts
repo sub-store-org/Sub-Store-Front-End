@@ -10,9 +10,10 @@ import SubEditor from '@/views/SubEditor.vue';
 import NotFound from '@/views/NotFound.vue';
 import { useSubsApi } from '@/api/subs';
 import { useEnvApi } from '@/api/env';
-import { useGlobalStore } from '@/store/global';
 import { toRaw } from 'vue';
 import { initStores } from '@/utils/initApp';
+import { useGlobalStore } from '@/store/global';
+import { Toast } from '@nutui/nutui';
 
 let globalStore = null;
 
@@ -96,16 +97,26 @@ const router = createRouter({
 router.beforeResolve(async to => {
   // 路由跳转时查询环境，决定是否更新数据
   if (globalStore !== null) {
-    const envNow = await useEnvApi().getEnv();
-    const storeEnv = toRaw(globalStore.env);
-
-    if (envNow.data.status === 'success') {
-      const backend = envNow.data.data.backend;
-      const version = envNow.data.data.version;
-      if (backend !== storeEnv.backend || version !== storeEnv.version) {
-        await initStores(false, true);
-      }
-    }
+    useEnvApi()
+      .getEnv()
+      .then(async res => {
+        const envNow = res;
+        const storeEnv = toRaw(globalStore.env);
+        if (envNow.data.status === 'success') {
+          const backend = envNow.data.data.backend;
+          const version = envNow.data.data.version;
+          if (backend !== storeEnv.backend || version !== storeEnv.version) {
+            const fetchLoading = Toast.loading(
+              '检测到后端变化，更新数据中...',
+              {
+                cover: true,
+              }
+            );
+            await initStores(false, true);
+            fetchLoading.hide();
+          }
+        }
+      });
   } else {
     globalStore = useGlobalStore();
   }
