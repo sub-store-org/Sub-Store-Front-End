@@ -140,12 +140,14 @@
       )}`;
     }
   });
-  const { isLoading } = storeToRefs(globalStore);
+  const { isFlowFetching } = storeToRefs(globalStore);
 
   const flow = computed(() => {
     if (props.type === 'sub') {
+      const urlList = Object.keys(flows.value);
       if (props.sub.source === 'local') return t('subPage.subItem.local');
-      if (isLoading.value) return t('subPage.subItem.loading');
+      if (isFlowFetching.value && !urlList.includes(props.sub.url))
+        return t('subPage.subItem.loading');
 
       const target = toRaw(flows.value[props.sub.url]);
       if (!target) {

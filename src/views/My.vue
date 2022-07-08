@@ -238,10 +238,17 @@
 
     const res = await useSettingsApi().syncSettings(query);
 
-    if (query === 'download' && res?.data?.status === 'success') {
-      await initStores(true, true);
+    if (res.data.status === 'success') {
+      switch (query) {
+        case 'download':
+          await initStores(false, true);
+          break;
+        case 'upload':
+          await useSettingsStore().fetchSettings();
+          break;
+      }
+      Notify.success(t(`myPage.notify.${query}.succeed`));
     }
-    if (res) Notify.success(t(`myPage.notify.${query}.succeed`));
 
     downloadIsLoading.value = false;
     uploadIsLoading.value = false;
