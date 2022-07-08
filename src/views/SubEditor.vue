@@ -435,7 +435,7 @@
       data['display-name'] = data.displayName;
       data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
-      console.log('submit.....\n', data);
+      // console.log('submit.....\n', data);
 
       const duration = 1000;
       let res = null;
