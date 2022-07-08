@@ -7,6 +7,7 @@ export const useGlobalStore = defineStore('globalStore', {
   state: (): GlobalStoreState => {
     return {
       isLoading: true,
+      isFlowFetching: true,
       fetchResult: false,
       bottomSafeArea: 0,
       isDarkMode: false,
@@ -20,6 +21,9 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setLoading(isLoading: boolean) {
       this.isLoading = isLoading;
+    },
+    setFlowFetching(isFlowFetching: boolean) {
+      this.isFlowFetching = isFlowFetching;
     },
     setFetchResult(fetchResult: boolean) {
       this.fetchResult = fetchResult;
