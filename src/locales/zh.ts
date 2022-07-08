@@ -6,7 +6,7 @@ export default {
   },
   globalNotify: {
     refresh: {
-      succeed: '数据刷新成功！\n感受大佬的拥抱吧～',
+      succeed: '数据刷新成功！',
       flowFailed: '刷新 {name} 流量失败！',
       failed: '数据刷新失败\n',
     },
@@ -44,7 +44,7 @@ export default {
 
     emptySub: {
       title: '你还没有添加订阅',
-      desc: '添加后即可尽情享受 YM Peng 大佬的关爱～',
+      desc: '添加后开始使用 Sub-Store',
       btn: '立即添加',
     },
     loadFailed: {
@@ -75,7 +75,7 @@ export default {
       },
     },
     copyNotify: {
-      succeed: '复制订阅链接成功\n可以前往代理工具使用咯～',
+      succeed: '复制订阅链接成功\n请导入代理工具使用',
       failed: '复制订阅链接失败\n{e}',
     },
   },
@@ -201,27 +201,27 @@ export default {
           des: '工作模式',
           options: ['添加', '移除'],
           tipsTitle: '国旗操作提示',
-          tipsDes: '国旗操作说明',
+          tipsDes: '为节点添加或者移除国旗',
         },
         'Sort Operator': {
           label: '节点排序',
-          des: '模式',
+          des: '顺序',
           options: ['正序', '逆序', '随机'],
           tipsTitle: '排序操作提示',
-          tipsDes: '节点排序操作说明',
+          tipsDes: '按照节点名字进行排序',
         },
         'Resolve Domain Operator': {
           label: '节点域名解析',
           des: '服务提供商',
           options: ['Google', 'IP-API', 'Cloudflare'],
           tipsTitle: '域名解析操作提示',
-          tipsDes: '节点域名解析操作说明',
+          tipsDes: '将节点域名解析成为 IP 地址，减少一次额外的 DNS 请求',
         },
         'Region Filter': {
           label: '区域过滤',
           options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US'],
           tipsTitle: '区域过滤操作提示',
-          tipsDes: '区域过滤器操作说明',
+          tipsDes: '按照国家和区域过滤节点',
         },
         'Type Filter': {
           label: '节点类型过滤',
@@ -236,7 +236,7 @@ export default {
             'Snell',
           ],
           tipsTitle: '节点类型过滤操作提示',
-          tipsDes: '节点类型过滤器操作说明',
+          tipsDes: '按照代理协议类型过滤节点',
         },
         'Regex Filter': {
           label: '正则过滤',
@@ -244,28 +244,28 @@ export default {
           options: ['保留模式', '过滤模式'],
           placeholder: ['填入正则表达式'],
           tipsTitle: '正则过滤操作提示',
-          tipsDes: '正则过滤操作说明',
+          tipsDes: '按照正则表达式过滤节点。保留模式下，节点名匹配到任何一个正则表达式的都会被保留；过滤模式下，节点名匹配到任何一个正则表达式的都会被移除',
         },
         'Regex Sort Operator': {
           label: '正则排序',
           des: ['正则表达式'],
           placeholder: ['填入正则表达式'],
           tipsTitle: '正则排序操作提示',
-          tipsDes: '正则排序操作说明',
+          tipsDes: '按照正则表达式进行排序。节点名匹配到第一个正则表达式的会排在最前面，匹配到第二个正则表达式的会排在第二个位置，以此类推',
         },
         'Regex Delete Operator': {
           label: '正则删除',
           des: ['正则表达式'],
           placeholder: ['填入正则表达式'],
           tipsTitle: '正则删除操作提示',
-          tipsDes: '正则删除操作说明',
+          tipsDes: '按照正则表达式删除节点名中的字段',
         },
         'Regex Rename Operator': {
           label: '正则重命名',
           des: ['正则表达式'],
           placeholder: ['填入正则表达式', '替换为'],
           tipsTitle: '正则重命名操作提示',
-          tipsDes: '正则重命名操作说明',
+          tipsDes: '按照正则表达式对节点进行重命名。',
         },
         'Handle Duplicate Operator': {
           label: '节点去重',
@@ -273,14 +273,14 @@ export default {
           position: { options: ['前缀', '后缀'], des: '序号位置' },
           template: {
             des: '序号格式',
-            placeholder: '序号显示格式，用空格分隔',
+            placeholder: '序号显示格式，用空格分隔，如：1 2 3 4 5 6 7 8 9',
           },
           link: {
             des: '连接符',
-            placeholder: '节点名和序号之间的连接符',
+            placeholder: '节点名和序号之间的连接符，如：- ',
           },
           tipsTitle: '节点去重操作提示',
-          tipsDes: '节点去重操作说明',
+          tipsDes: '对名字重复的节点进行操作（移除/重命名）。重命名模式下，会自动为重名节点添加序号，序号样式和位置可以自定义。同时序号和名字之间的连接符也可以自定义',
         },
         'Script Filter': {
           label: '脚本过滤器',
@@ -289,7 +289,7 @@ export default {
           placeholder: '填入脚本链接',
           openEditorBtn: '打开脚本编辑器',
           tipsTitle: '脚本过滤器操作提示',
-          tipsDes: '脚本过滤器操作说明',
+          tipsDes: '使用一段 JavaScript 脚本来过滤节点',
         },
         'Script Operator': {
           label: '脚本操作',
@@ -298,21 +298,21 @@ export default {
           placeholder: '填入脚本链接',
           openEditorBtn: '打开脚本编辑器',
           tipsTitle: '脚本操作操作提示',
-          tipsDes: '脚本操作操作说明',
+          tipsDes: '使用一段 JavaScript 脚本来修改节点信息',
         },
       },
     },
   },
   myPage: {
     placeholder: {
-      name: '未设置 Gist 同步',
-      des: '同步功能配置 Gist 后可用',
+      name: '未设置 GitHub 同步',
+      des: '同步功能配置 GitHub 用户名以及 Token 后可用',
       syncTime: '上次同步 ',
       haveNotSync: '暂无同步记录',
       githubUser: '请输入 Github 用户名',
-      gistToken: '请输入 Gist Token',
+      gistToken: '请输入 GitHub 令牌',
       noGithubUser: '未配置 Github 用户名',
-      noGistToken: '未配置 Gist Token',
+      noGistToken: '未配置 GitHub 令牌',
     },
     notify: {
       save: {
@@ -335,7 +335,7 @@ export default {
       edit: '编辑',
       save: '保存',
     },
-    config: 'Gist 配置',
+    config: 'GitHub 配置',
   },
   comparePage: {
     title: '即时预览',
@@ -351,7 +351,7 @@ export default {
     tableHead: {
       name: '节点名&服务器',
       udp: 'UDP',
-      'skip-cert-verify': 'SCV',
+      'skip-cert-verify': 'SCERT',
       tfo: 'TFO',
       aead: 'AEAD',
     },
@@ -384,8 +384,8 @@ export default {
       },
     },
     copyNotify: {
-      succeed: '复制 gist 链接成功\n可以前往代理工具使用咯～',
-      failed: '复制 gist 链接失败\n{e}',
+      succeed: '复制 Gist 链接成功\n可以前往代理工具使用咯～',
+      failed: '复制 Gist 链接失败\n{e}',
     },
     addArtForm: {
       title: '添加同步配置',
