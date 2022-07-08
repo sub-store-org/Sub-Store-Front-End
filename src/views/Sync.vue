@@ -135,7 +135,7 @@
   };
 
   const preview = () => {
-    console.log(artifactStoreUrl.value);
+    // console.log(artifactStoreUrl.value);
     window.open(artifactStoreUrl.value);
   };
 
