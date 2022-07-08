@@ -174,10 +174,17 @@
             .format('YYYY-MM-DD')}`,
         };
       } else if (target?.status === 'failed') {
-        return {
-          firstLine: `${target.error?.type}`,
-          secondLine: `${target.error?.message}`,
-        };
+        if (target.error.code === 'NO_FLOW_INFO') {
+          return {
+            firstLine: t('subPage.subItem.noFlowInfo'),
+            secondLine: ``,
+          };
+        } else {
+          return {
+            firstLine: `${target.error?.type}`,
+            secondLine: `${target.error?.message}`,
+          };
+        }
       }
     }
   });
