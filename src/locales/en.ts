@@ -82,7 +82,7 @@ export default {
   editorPage: {
     subConfig: {
       btn: {
-        compare: 'Instant Preview',
+        compare: 'Preview',
         save: 'Save',
       },
       pop: {
@@ -142,7 +142,8 @@ export default {
         },
         ua: {
           label: 'User-Agent',
-          placeholder: 'The User-Agent for downloading the original subscription',
+          placeholder:
+            'The User-Agent for downloading the original subscription',
         },
       },
       commonOptions: {
@@ -224,7 +225,16 @@ export default {
         },
         'Type Filter': {
           label: 'Node Type Filter',
-          options: ['Google', 'IP-API', 'Cloudflare'],
+          options: [
+            'ShadowSocks',
+            'ShadowSocks R',
+            'VMess',
+            'VLess',
+            'Trojan',
+            'Http(s)',
+            'Socks5',
+            'Snell',
+          ],
           tipsTitle: 'Node Type Filter Tips',
           tipsDes: '节点类型过滤器操作说明',
         },
@@ -355,7 +365,7 @@ export default {
     syncSwitcher: 'Enable Sync',
     syncAllSucceed: 'Sync succeed',
     emptySub: {
-      title: 'You haven\' add any synced artifacts',
+      title: "You haven' add any synced artifacts",
       desc: 'You can access the artifact anywhere via Gist',
       btn: 'Add an artifact',
     },
@@ -386,7 +396,8 @@ export default {
         placeholder: 'Name',
         isRequired: 'Name is required',
         isExist: 'Name is already taken',
-        isValid: 'Name should only include letters, numbers, underscores, and dashes',
+        isValid:
+          'Name should only include letters, numbers, underscores, and dashes',
       },
       displayName: {
         label: 'Display Name',
