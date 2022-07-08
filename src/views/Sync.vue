@@ -49,6 +49,7 @@
           plain
           size="small"
           @click="preview"
+          v-if="artifactStoreUrl"
         >
           <font-awesome-icon icon="fa-solid fa-eye" />
         </nut-button>
@@ -110,9 +111,11 @@
 
   const { t } = useI18n();
   const globalStore = useGlobalStore();
-  const artifactStore = useArtifactsStore();
+  const artifactsStore = useArtifactsStore();
+  const settingsStore = useSettingsStore();
   const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
-  const { artifacts } = storeToRefs(artifactStore);
+  const { artifacts } = storeToRefs(artifactsStore);
+  const { artifactStore: artifactStoreUrl } = storeToRefs(settingsStore);
 
   const isEditPanelVisible = ref(false);
   const editTargetName = ref('');
@@ -123,7 +126,7 @@
   const uploadAllIsLoading = ref(false);
   const uploadAll = async () => {
     uploadAllIsLoading.value = true;
-    await artifactStore.syncAllArtifact();
+    await artifactsStore.syncAllArtifact();
     uploadAllIsLoading.value = false;
   };
 
@@ -132,7 +135,8 @@
   };
 
   const preview = () => {
-    window.open(useSettingsStore().artifactStore);
+    console.log(artifactStoreUrl.value);
+    window.open(artifactStoreUrl.value);
   };
 
   const onClickEdit = (artifact: Artifact) => {

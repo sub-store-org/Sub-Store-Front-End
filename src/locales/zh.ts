@@ -63,6 +63,7 @@ export default {
       flow: '已用/总流量',
       expires: '到期时间',
       noRecord: '刷新后可获取流量情况',
+      noFlowInfo: '无流量信息',
     },
     deleteSub: {
       title: '删除订阅',
@@ -395,6 +396,7 @@ export default {
         placeholder: '请输入名称',
         isRequired: '名称不能为空',
         isExist: '名称已存在',
+        isValid: '只能包含字母数字、下划线、中划线、点号',
       },
       displayName: {
         label: '显示名称',

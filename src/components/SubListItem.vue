@@ -140,12 +140,14 @@
       )}`;
     }
   });
-  const { isLoading } = storeToRefs(globalStore);
+  const { isFlowFetching } = storeToRefs(globalStore);
 
   const flow = computed(() => {
     if (props.type === 'sub') {
+      const urlList = Object.keys(flows.value);
       if (props.sub.source === 'local') return t('subPage.subItem.local');
-      if (isLoading.value) return t('subPage.subItem.loading');
+      if (isFlowFetching.value && !urlList.includes(props.sub.url))
+        return t('subPage.subItem.loading');
 
       const target = toRaw(flows.value[props.sub.url]);
       if (!target) {
@@ -172,10 +174,17 @@
             .format('YYYY-MM-DD')}`,
         };
       } else if (target?.status === 'failed') {
-        return {
-          firstLine: `${target.error?.type}`,
-          secondLine: `${target.error?.message}`,
-        };
+        if (target.error.code === 'NO_FLOW_INFO') {
+          return {
+            firstLine: t('subPage.subItem.noFlowInfo'),
+            secondLine: ``,
+          };
+        } else {
+          return {
+            firstLine: `${target.error?.type}`,
+            secondLine: `${target.error?.message}`,
+          };
+        }
       }
     }
   });

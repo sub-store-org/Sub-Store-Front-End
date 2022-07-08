@@ -63,6 +63,7 @@ export default {
       flow: 'Usage / Total',
       expires: 'Expires',
       noRecord: 'Refresh to get usage',
+      noFlowInfo: 'No flow info',
     },
     deleteSub: {
       title: 'Delete Subscription',
@@ -386,6 +387,7 @@ export default {
         placeholder: '请输入名称',
         isRequired: '名称不能为空',
         isExist: '名称已存在',
+        isValid: '只能包含字母数字、下划线、中划线、点号',
       },
       displayName: {
         label: '显示名称',

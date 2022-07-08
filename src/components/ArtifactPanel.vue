@@ -22,7 +22,11 @@
             message: $t(`syncPage.addArtForm.name.isRequired`),
           },
           {
-            validator: customNameValidator,
+            validator: nameValidator,
+            message: $t(`syncPage.addArtForm.name.isValid`),
+          },
+          {
+            validator: duplicateNameValidator,
             message: $t(`syncPage.addArtForm.name.isExist`),
           },
         ]"
@@ -150,24 +154,29 @@
       };
     });
 
-    return [
-      {
+    const options = [];
+    if (subsNameList.length > 0) {
+      options.push({
         value: 'subscription',
         text: t('specificWord.singleSub'),
         children: subsNameList.map(item => ({
           value: item.name,
           text: item.displayName,
         })),
-      },
-      {
+      });
+    }
+
+    if (collectionNameList.length > 0) {
+      options.push({
         value: 'collection',
         text: t('specificWord.collectionSub'),
         children: collectionNameList.map(item => ({
           value: item.name,
           text: item.displayName,
         })),
-      },
-    ];
+      });
+    }
+    return options;
   });
 
   const displayType = computed(() => {
@@ -224,13 +233,21 @@
     });
   };
 
-  const customNameValidator = (val: string) => {
+  const nameValidator = () => {
     return new Promise(resolve => {
       if (isEditMode.value) resolve(true);
-      const dup = artifactsStore.artifacts.find(
+      const isValid = /^[a-zA-Z\d._-]*$/.test(editPanelData.value.name);
+      isValid ? resolve(true) : resolve(false);
+    });
+  };
+
+  const duplicateNameValidator = () => {
+    return new Promise(resolve => {
+      if (isEditMode.value) resolve(true);
+      const duplicate = artifactsStore.artifacts.find(
         artifact => artifact.name === editPanelData.value.name
       );
-      dup ? resolve(false) : resolve(true);
+      duplicate ? resolve(false) : resolve(true);
     });
   };
 

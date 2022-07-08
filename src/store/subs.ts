@@ -50,6 +50,7 @@ export const useSubsStore = defineStore('subsStore', {
       }
     },
     async fetchFlows() {
+      this.flows = {};
       const flowNameHash = {};
       const nameList = [];
 
