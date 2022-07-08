@@ -1,6 +1,6 @@
 {
   "short_name": "Sub Store",
-  "name": "Sub-Store Progressive Web App",
+  "name": "Sub Store",
   "icons": [
     {
       "src": "/appicons/appicon-192.webp",
@@ -16,6 +16,7 @@
   "start_url": "/",
   "id": "/",
   "background_color": "#121212",
+  "theme_color": "#121212",
   "display": "standalone",
   "scope": "/",
   "description": "A sub-converter running in a Progressive Web App"
