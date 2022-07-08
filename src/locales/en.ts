@@ -63,6 +63,7 @@ export default {
       flow: 'Usage / Total',
       expires: 'Expires',
       noRecord: 'Refresh to get usage',
+      noFlowInfo: 'No flow info',
     },
     deleteSub: {
       title: 'Delete Subscription',
