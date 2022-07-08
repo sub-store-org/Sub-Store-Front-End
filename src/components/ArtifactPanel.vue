@@ -150,24 +150,29 @@
       };
     });
 
-    return [
-      {
+    const options = [];
+    if (subsNameList.length > 0) {
+      options.push({
         value: 'subscription',
         text: t('specificWord.singleSub'),
         children: subsNameList.map(item => ({
           value: item.name,
           text: item.displayName,
         })),
-      },
-      {
+      });
+    }
+
+    if (collectionNameList.length > 0) {
+      options.push({
         value: 'collection',
         text: t('specificWord.collectionSub'),
         children: collectionNameList.map(item => ({
           value: item.name,
           text: item.displayName,
         })),
-      },
-    ];
+      });
+    }
+    return options;
   });
 
   const displayType = computed(() => {
@@ -224,7 +229,7 @@
     });
   };
 
-  const customNameValidator = (val: string) => {
+  const customNameValidator = () => {
     return new Promise(resolve => {
       if (isEditMode.value) resolve(true);
       const dup = artifactsStore.artifacts.find(

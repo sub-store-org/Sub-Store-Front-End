@@ -1,5 +1,6 @@
 interface GlobalStoreState {
   isLoading: boolean;
+  isFlowFetching: boolean;
   fetchResult: boolean;
   bottomSafeArea: number;
   isDarkMode: boolean;
