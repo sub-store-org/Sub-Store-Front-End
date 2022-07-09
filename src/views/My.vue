@@ -374,6 +374,7 @@
         .avatar-wrapper {
           display: flex;
           align-items: center;
+          max-width: 64%;
 
           .avatar-normal {
             :deep(img) {
@@ -385,9 +386,15 @@
             margin-left: 12px;
             font-size: 18px;
             font-weight: bold;
+            max-width: 64%;
             display: flex;
             flex-direction: column;
-            max-width: 64%;
+
+            p.title {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
 
             .des {
               margin-top: 6px;
