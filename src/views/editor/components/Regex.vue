@@ -17,15 +17,18 @@
     </p>
     <div class="tag-wrapper">
       <nut-tag
+        @click="onClickTag"
+        class="tag-item"
         v-for="(content, index) in value"
         closeable
         @close="deleteRegexItem(index)"
         type="primary"
-        >{{
+      >
+        <span>{{
           type === 'Regex Rename Operator'
             ? `${content.expr}  ⇒  ${content.now}`
             : content
-        }}
+        }}</span>
       </nut-tag>
     </div>
     <div class="input-wrapper">
@@ -75,6 +78,39 @@
 
   const mode = ref();
   const value = ref();
+
+  const onClickTag = el => {
+    const index = [...el.currentTarget.parentElement.children].indexOf(
+      el.currentTarget
+    );
+    if (input1.value || input2.value) {
+      Dialog({
+        title: t('editorPage.subConfig.pop.clickTag.title'),
+        content: t('editorPage.subConfig.pop.clickTag.content'),
+        popClass: 'auto-dialog',
+        okText: t(`editorPage.subConfig.pop.clickTag.confirm`),
+        cancelText: t(`editorPage.subConfig.pop.clickTag.cancel`),
+        onOk: () => editTag(index),
+        // onCancel: () => resolve(false),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+    } else {
+      editTag(index);
+    }
+  };
+
+  const editTag = index => {
+    const oldValue = value.value[index];
+
+    value.value.splice(index, 1);
+    if (type === 'Regex Rename Operator') {
+      input1.value = oldValue.expr;
+      input2.value = oldValue.now;
+    } else {
+      input1.value = oldValue;
+    }
+  };
 
   const deleteRegexItem = index => {
     value.value.splice(index, 1);
@@ -171,10 +207,23 @@
 
   .tag-wrapper {
     margin-bottom: 12px;
+    max-width: 100%;
 
-    view {
+    .tag-item {
+      max-width: 100%;
       margin-right: 8px;
       margin-bottom: 8px;
+
+      span {
+        max-width: 95%;
+        display: -webkit-box;
+        white-space: normal !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
 
       .dark-mode & {
         background-color: $dark-compare-item-background-color;
