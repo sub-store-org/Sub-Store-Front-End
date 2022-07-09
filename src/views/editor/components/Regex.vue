@@ -17,6 +17,7 @@
     </p>
     <div class="tag-wrapper">
       <nut-tag
+        @click="onClickTag"
         class="tag-item"
         v-for="(content, index) in value"
         closeable
@@ -77,6 +78,39 @@
 
   const mode = ref();
   const value = ref();
+
+  const onClickTag = el => {
+    const index = [...el.currentTarget.parentElement.children].indexOf(
+      el.currentTarget
+    );
+    if (input1.value || input2.value) {
+      Dialog({
+        title: t('editorPage.subConfig.pop.clickTag.title'),
+        content: t('editorPage.subConfig.pop.clickTag.content'),
+        popClass: 'auto-dialog',
+        okText: t(`editorPage.subConfig.pop.clickTag.confirm`),
+        cancelText: t(`editorPage.subConfig.pop.clickTag.cancel`),
+        onOk: () => editTag(index),
+        // onCancel: () => resolve(false),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+    } else {
+      editTag(index);
+    }
+  };
+
+  const editTag = index => {
+    const oldValue = value.value[index];
+
+    value.value.splice(index, 1);
+    if (type === 'Regex Rename Operator') {
+      input1.value = oldValue.expr;
+      input2.value = oldValue.now;
+    } else {
+      input1.value = oldValue;
+    }
+  };
 
   const deleteRegexItem = index => {
     value.value.splice(index, 1);
