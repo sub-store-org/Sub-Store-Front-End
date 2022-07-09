@@ -17,7 +17,7 @@ import { Toast } from '@nutui/nutui';
 import { useAsyncRouteStoreWidthOut } from '@/store/modules/asyncRoute';
 
 let globalStore = null;
-
+const asyncRouteStore = useAsyncRouteStoreWidthOut();
 declare module 'vue-router' {
   interface RouteMeta {
     title: string;
@@ -44,6 +44,13 @@ const router = createRouter({
             needTabBar: true,
             needNavBack: false,
             keepAlive: false,
+          },
+          beforeEnter: (to, from) => {
+            console.log(to, from);
+            if (from.name === 'editRoute') {
+              asyncRouteStore.setEditRoute(from);
+              // swipe.value.open('left');
+            }
           },
         },
         {
@@ -154,7 +161,6 @@ router.beforeResolve(async to => {
   return true;
 });
 router.afterEach((to, _, failure) => {
-  const asyncRouteStore = useAsyncRouteStoreWidthOut();
   // 在这里设置需要缓存的组件名称
   const keepAliveComponents = asyncRouteStore.keepAliveComponents;
   const currentComName: any = to.matched.find(

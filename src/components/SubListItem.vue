@@ -94,8 +94,8 @@
   import { isMobile } from '@/utils/isMobile';
   import { Dialog, Notify, Toast } from '@nutui/nutui';
   import dayjs from 'dayjs';
-  import { createVNode, ref, computed, toRaw } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { createVNode, ref, computed, toRaw, onMounted } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import useClipboard from 'vue-clipboard3';
   import { useSubsStore } from '@/store/modules/subs';
   import { storeToRefs } from 'pinia';
@@ -103,6 +103,7 @@
   import { getString } from '@/utils/flowTransfer';
   import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
+  import { useAsyncRouteStore } from '@/store/modules/asyncRoute';
 
   const { toClipboard } = useClipboard();
   const { t } = useI18n();
@@ -111,6 +112,7 @@
     type: 'sub' | 'collection';
     sub?: Sub;
     collection?: Collection;
+    open?: boolean;
   }>();
 
   const moreAction = ref();
@@ -121,6 +123,7 @@
   const router = useRouter();
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
+  const routerStore = useAsyncRouteStore();
   const displayName =
     props[props.type].displayName || props[props.type]['display-name'];
 
@@ -279,6 +282,12 @@
       console.error(e);
     }
   };
+  onMounted(() => {
+    if (routerStore.editRoute && routerStore.editRoute.params?.id === name) {
+      swipe.value.open('left');
+      routerStore.setEditRoute(null);
+    }
+  });
 </script>
 
 <style lang="scss" scoped>
