@@ -6,7 +6,7 @@ import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 const alias: Record<string, string> = {
-  '@': path.resolve(__dirname, '/src'),
+  '@': path.resolve(__dirname, 'src'),
 };
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
