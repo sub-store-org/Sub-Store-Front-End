@@ -83,7 +83,11 @@
         <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
       </div>
       <ul>
-        <li v-for="collection in collections" :key="collection.name">
+        <li
+          v-for="collection in collections"
+          :key="collection.name"
+          :id="collection.name"
+        >
           <SubListItem :collection="collection" type="collection" />
         </li>
       </ul>

@@ -105,7 +105,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (from.name === 'editRoute' && to.name === 'Subs') {
       const fromId = from.params.id;
-      (document.querySelector(`#${fromId}`) as HTMLElement).scrollIntoView({
+      (document.querySelector(`#${fromId}`) as HTMLElement)?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
       });

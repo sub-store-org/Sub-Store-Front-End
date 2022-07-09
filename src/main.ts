@@ -27,6 +27,4 @@ app
   .use(i18n)
   .component('font-awesome-icon', FontAwesomeIcon)
   .component('svg-icon', SvgIcon);
-// // 挂载状态管理
-// setupStore(app);
 app.mount('#app');
