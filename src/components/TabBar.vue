@@ -30,20 +30,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRoute } from 'vue-router'
-  import { useGlobalStore } from '@/store/global'
-  import { storeToRefs } from 'pinia'
+  import { useRoute } from 'vue-router';
+  import { useGlobalStore } from '@/store/modules/global';
+  import { storeToRefs } from 'pinia';
 
-  const route = useRoute()
-  const routeList = ['/subs', '/sync', '/my']
-  const activeTab = routeList.indexOf(route.path)
+  const route = useRoute();
+  const routeList = ['/subs', '/sync', '/my'];
+  const activeTab = routeList.indexOf(route.path);
 
-  const globalStore = useGlobalStore()
-  const { bottomSafeArea } = storeToRefs(globalStore)
+  const globalStore = useGlobalStore();
+  const { bottomSafeArea } = storeToRefs(globalStore);
   const style = {
     height: `${bottomSafeArea.value + 12 + 44}px`,
     paddingBottom: bottomSafeArea.value + 'px',
-  }
+  };
 </script>
 
 <style lang="scss" scoped>

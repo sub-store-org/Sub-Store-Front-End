@@ -1,4 +1,4 @@
-import { useGlobalStore } from '@/store/global';
+import { useGlobalStore } from '@/store/modules/global';
 
 export const setColorThemeClass = () => {
   const themeList = ['light-mode', 'dark-mode'];

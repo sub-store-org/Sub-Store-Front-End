@@ -1,9 +1,9 @@
 import { Notify } from '@nutui/nutui';
-import { useGlobalStore } from '@/store/global';
-import { useSubsStore } from '@/store/subs';
-import { useSettingsStore } from '@/store/settings';
+import { useGlobalStore } from '@/store/modules/global';
+import { useSubsStore } from '@/store/modules/subs';
+import { useSettingsStore } from '@/store/modules/settings';
 import i18n from '@/locales';
-import { useArtifactsStore } from '@/store/artifacts';
+import { useArtifactsStore } from '@/store/modules/artifacts';
 
 export const initStores = async (
   needNotify: boolean,
@@ -43,5 +43,5 @@ export const initStores = async (
   globalStore.setLoading(false);
   // 更新流量
   if (needFetchFlow) await subsStore.fetchFlows();
-  globalStore.setFlowFetching(false);
+  // globalStore.setFlowFetching(false);
 };

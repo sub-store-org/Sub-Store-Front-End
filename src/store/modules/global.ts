@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useEnvApi } from '@/api/env';
-
+import { store } from '@/store';
 const envApi = useEnvApi();
 
 export const useGlobalStore = defineStore('globalStore', {
@@ -39,3 +39,7 @@ export const useGlobalStore = defineStore('globalStore', {
     },
   },
 });
+// Need to be used outside the setup
+export function useGlobalStoreWidthOut() {
+  return useGlobalStore(store);
+}

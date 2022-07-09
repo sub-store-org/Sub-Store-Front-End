@@ -1,6 +1,13 @@
 <template>
   <div class="app-layout-wrapper">
-    <router-view />
+    <router-view>
+      <template #default="{ Component, route }">
+        <keep-alive :include="keepAliveComponents">
+          <component :is="Component" :key="route.fullPath" />
+        </keep-alive>
+        <!-- <component v-else :is="Component" :key="route.fullPath" /> -->
+      </template>
+    </router-view>
   </div>
   <TabBar v-if="isNeedTabBar" />
 </template>
@@ -10,9 +17,10 @@
   import { useRoute } from 'vue-router';
   import { computed } from 'vue';
   import { storeToRefs } from 'pinia';
-  import { useGlobalStore } from '@/store/global';
+  import { useGlobalStore } from '@/store/modules/global';
   import router from '@/router';
-
+  import { useAsyncRouteStore } from '@/store/modules/asyncRoute';
+  const asyncRouteStore = useAsyncRouteStore();
   const globalStore = useGlobalStore();
   const { bottomSafeArea } = storeToRefs(globalStore);
 
@@ -29,6 +37,9 @@
       return '16px';
     }
   });
+  const keepAliveComponents = computed(
+    () => asyncRouteStore.keepAliveComponents
+  );
 
   // 每次切换路由后，将页面位置置顶
   router.afterEach(() => {

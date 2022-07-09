@@ -158,6 +158,14 @@
                 </div>
               </nut-checkbox>
             </nut-checkboxgroup>
+            <nut-button
+              type="primary"
+              block
+              class="order-button"
+              @click="showCollectionSortModal"
+            >
+              调整顺序
+            </nut-button>
           </nut-form-item>
         </template>
       </nut-form>
@@ -191,6 +199,10 @@
       {{ $t('editorPage.subConfig.btn.save') }}
     </nut-button>
   </div>
+  <CollectionSortModal
+    ref="collectionSortModalRef"
+    v-model:subs="form.subscriptions"
+  />
 
   <CompareTable
     v-if="compareTableIsVisible"
@@ -202,8 +214,9 @@
 <script lang="ts" setup>
   import icon from '@/assets/icons/logo.png';
   import { useRoute, useRouter } from 'vue-router';
-  import { useSubsStore } from '@/store/subs';
+  import { useSubsStore } from '@/store/modules/subs';
   import {
+    h,
     ref,
     toRaw,
     computed,
@@ -214,7 +227,7 @@
   } from 'vue';
   import { useI18n } from 'vue-i18n';
   import CommonBlock from '@/views/editor/CommonBlock.vue';
-  import { useGlobalStore } from '@/store/global';
+  import { useGlobalStore } from '@/store/modules/global';
   import ActionBlock from '@/views/editor/ActionBlock.vue';
   import ActionRadio from '@/views/editor/components/ActionRadio.vue';
   import FilterSelect from '@/views/editor/components/FilterSelect.vue';
@@ -226,17 +239,30 @@
   import { Dialog, Notify, Toast } from '@nutui/nutui';
   import { useSubsApi } from '@/api/subs';
   import CompareTable from '@/views/CompareTable.vue';
-
+  import CollectionSortModal from '@/components/CollectionSort';
   const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
   const subsApi = useSubsApi();
   const { editType, id: configName } = route.params;
   const subsStore = useSubsStore();
+  const collectionSortModalRef = ref<InstanceType<
+    typeof CollectionSortModal
+  > | null>(null);
 
   const { bottomSafeArea } = useGlobalStore();
   const padding = bottomSafeArea + 'px';
-
+  const form = reactive<any>({
+    name: '',
+    displayName: '',
+    icon: '',
+    process: [
+      {
+        type: 'Quick Setting Operator',
+      },
+    ],
+  });
+  provide('form', form);
   const sub = computed(() => subsStore.getOneSub(configName as string));
   const collection = computed(() =>
     subsStore.getOneCollection(configName as string)
@@ -259,18 +285,6 @@
   const ruleForm = ref<any>(null);
   const actionsChecked = reactive([]);
   const actionsList = reactive([]);
-
-  const form = reactive<any>({
-    name: '',
-    displayName: '',
-    icon: '',
-    process: [
-      {
-        type: 'Quick Setting Operator',
-      },
-    ],
-  });
-  provide('form', form);
 
   // 排除非动作卡片
   const ignoreList = ['Quick Setting Operator'];
@@ -413,7 +427,9 @@
       }
     });
   };
-
+  function showCollectionSortModal() {
+    collectionSortModalRef.value.showDialog();
+  }
   const submit = () => {
     ruleForm.value.validate().then(async ({ valid, errors }: any) => {
       // 如果验证失败
@@ -649,6 +665,9 @@
           }
         }
       }
+    }
+    .order-button {
+      margin-top: 18px;
     }
   }
 </style>

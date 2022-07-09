@@ -100,12 +100,12 @@
 
 <script lang="ts" setup>
   import ArtifactsListItem from '@/components/ArtifactsListItem.vue';
-  import { useArtifactsStore } from '@/store/artifacts';
+  import { useArtifactsStore } from '@/store/modules/artifacts';
   import { storeToRefs } from 'pinia';
-  import { useGlobalStore } from '@/store/global';
+  import { useGlobalStore } from '@/store/modules/global';
   import { ref, computed } from 'vue';
   import { initStores } from '@/utils/initApp';
-  import { useSettingsStore } from '@/store/settings';
+  import { useSettingsStore } from '@/store/modules/settings';
   import { useI18n } from 'vue-i18n';
   import ArtifactPanel from '@/components/ArtifactPanel.vue';
 

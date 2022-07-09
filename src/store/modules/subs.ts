@@ -2,10 +2,11 @@ import { defineStore } from 'pinia';
 import { useSubsApi } from '@/api/subs';
 import { Notify } from '@nutui/nutui';
 import i18n from '@/locales';
+import { useGlobalStoreWidthOut } from './global';
 
 const { t } = i18n.global;
 const subsApi = useSubsApi();
-
+const globalStore = useGlobalStoreWidthOut();
 export const useSubsStore = defineStore('subsStore', {
   state: (): SubsStoreState => {
     return {
@@ -50,6 +51,7 @@ export const useSubsStore = defineStore('subsStore', {
       }
     },
     async fetchFlows() {
+      globalStore.setFlowFetching(true);
       this.flows = {};
       const flowNameHash = {};
       const nameList = [];
@@ -67,12 +69,14 @@ export const useSubsStore = defineStore('subsStore', {
       for (const url in flowNameHash) {
         nameList.push([url, flowNameHash[url][0]]);
       }
-
       // 用该 name 请求流量信息 并按 url 存入 store 中
+
       for (let i = 0; i < nameList.length; i++) {
-        const [url, name] = nameList[i];
-        const { data } = await subsApi.getFlow(name);
-        this.flows[url] = data;
+        setTimeout(async () => {
+          const [url, name] = nameList[i];
+          const { data } = await subsApi.getFlow(name);
+          this.flows[url] = data;
+        }, 10);
       }
     },
     async deleteSub(type: SubsType, name: string) {
