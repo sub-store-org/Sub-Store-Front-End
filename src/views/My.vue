@@ -132,8 +132,8 @@
   import node from '@/assets/icons/node.svg?url';
   import avatar from '@/assets/icons/avatar.svg?url';
   import { ref, computed, watchEffect } from 'vue';
-  import { useGlobalStore } from '@/store/global';
-  import { useSettingsStore } from '@/store/settings';
+  import { useGlobalStore } from '@/store/modules/global';
+  import { useSettingsStore } from '@/store/modules/settings';
   import { storeToRefs } from 'pinia';
   import { useI18n } from 'vue-i18n';
   import { useSettingsApi } from '@/api/settings';

@@ -97,9 +97,9 @@
   import { createVNode, ref, computed, toRaw } from 'vue';
   import { useRouter } from 'vue-router';
   import useClipboard from 'vue-clipboard3';
-  import { useSubsStore } from '@/store/subs';
+  import { useSubsStore } from '@/store/modules/subs';
   import { storeToRefs } from 'pinia';
-  import { useGlobalStore } from '@/store/global';
+  import { useGlobalStore } from '@/store/modules/global';
   import { getString } from '@/utils/flowTransfer';
   import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
@@ -146,6 +146,7 @@
     if (props.type === 'sub') {
       const urlList = Object.keys(flows.value);
       if (props.sub.source === 'local') return t('subPage.subItem.local');
+
       if (isFlowFetching.value && !urlList.includes(props.sub.url))
         return t('subPage.subItem.loading');
 

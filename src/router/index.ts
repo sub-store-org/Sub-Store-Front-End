@@ -12,8 +12,9 @@ import { useSubsApi } from '@/api/subs';
 import { useEnvApi } from '@/api/env';
 import { toRaw } from 'vue';
 import { initStores } from '@/utils/initApp';
-import { useGlobalStore } from '@/store/global';
+import { useGlobalStore } from '@/store/modules/global';
 import { Toast } from '@nutui/nutui';
+import { useAsyncRouteStoreWidthOut } from '@/store/modules/asyncRoute';
 
 let globalStore = null;
 
@@ -36,11 +37,13 @@ const router = createRouter({
       children: [
         {
           path: '/subs',
-          component: Sub,
+          component: () => import('@/views/Sub.vue'),
+          name: 'Subs',
           meta: {
             title: 'sub',
             needTabBar: true,
             needNavBack: false,
+            keepAlive: false,
           },
         },
         {
@@ -64,6 +67,7 @@ const router = createRouter({
         {
           path: '/edit/:editType(subs|collections)/:id',
           component: SubEditor,
+          name: 'editRoute',
           meta: {
             title: 'subEditor',
             needTabBar: false,
@@ -91,6 +95,15 @@ const router = createRouter({
       },
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (from.name === 'editRoute' && to.name === 'Subs') {
+      const fromId = from.params.id;
+      (document.querySelector(`#${fromId}`) as HTMLElement).scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  },
 });
 
 // 全局前置守卫
@@ -139,6 +152,23 @@ router.beforeResolve(async to => {
 
   // 允许跳转
   return true;
+});
+router.afterEach((to, _, failure) => {
+  const asyncRouteStore = useAsyncRouteStoreWidthOut();
+  // 在这里设置需要缓存的组件名称
+  const keepAliveComponents = asyncRouteStore.keepAliveComponents;
+  const currentComName: any = to.matched.find(
+    item => item.name == to.name
+  )?.name;
+  if (
+    currentComName &&
+    !keepAliveComponents.includes(currentComName) &&
+    to.meta?.keepAlive
+  ) {
+    // 需要缓存的组件
+    keepAliveComponents.push(currentComName);
+  }
+  asyncRouteStore.setKeepAliveComponents(keepAliveComponents);
 });
 
 export default router;

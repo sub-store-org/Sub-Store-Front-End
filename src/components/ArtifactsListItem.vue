@@ -96,8 +96,8 @@
   import { isMobile } from '@/utils/isMobile';
   import { computed, ref, createVNode, watchEffect, watch, toRaw } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useSubsStore } from '@/store/subs';
-  import { useArtifactsStore } from '@/store/artifacts';
+  import { useSubsStore } from '@/store/modules/subs';
+  import { useArtifactsStore } from '@/store/modules/artifacts';
   import { Dialog, Toast, Notify } from '@nutui/nutui';
   import { butifyDate } from '@/utils/butifyDate';
   import useClipboard from 'vue-clipboard3';

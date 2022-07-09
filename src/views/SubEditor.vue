@@ -202,7 +202,7 @@
 <script lang="ts" setup>
   import icon from '@/assets/icons/logo.png';
   import { useRoute, useRouter } from 'vue-router';
-  import { useSubsStore } from '@/store/subs';
+  import { useSubsStore } from '@/store/modules/subs';
   import {
     ref,
     toRaw,
@@ -214,7 +214,7 @@
   } from 'vue';
   import { useI18n } from 'vue-i18n';
   import CommonBlock from '@/views/editor/CommonBlock.vue';
-  import { useGlobalStore } from '@/store/global';
+  import { useGlobalStore } from '@/store/modules/global';
   import ActionBlock from '@/views/editor/ActionBlock.vue';
   import ActionRadio from '@/views/editor/components/ActionRadio.vue';
   import FilterSelect from '@/views/editor/components/FilterSelect.vue';

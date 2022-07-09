@@ -101,8 +101,8 @@
 <script lang="ts" setup>
   import { computed, ref, watchEffect, toRaw } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useSubsStore } from '@/store/subs';
-  import { useArtifactsStore } from '@/store/artifacts';
+  import { useSubsStore } from '@/store/modules/subs';
+  import { useArtifactsStore } from '@/store/modules/artifacts';
   import { Dialog, Toast } from '@nutui/nutui';
 
   const { t } = useI18n();

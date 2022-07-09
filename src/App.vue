@@ -9,8 +9,8 @@
   import NavBar from '@/components/NavBar.vue';
   import { setColorThemeClass } from '@/utils/setColorThemeClass';
   import { onMounted } from 'vue';
-  import { useSubsStore } from '@/store/subs';
-  import { useGlobalStore } from '@/store/global';
+  import { useSubsStore } from '@/store/modules/subs';
+  import { useGlobalStore } from '@/store/modules/global';
   import { useI18n } from 'vue-i18n';
   import { initStores } from '@/utils/initApp';
 

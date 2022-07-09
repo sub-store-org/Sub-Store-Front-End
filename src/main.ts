@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 import router from '@/router';
-import { createPinia } from 'pinia';
 import i18n from '@/locales';
 
 import SvgIcon from '@/components/SvgIcon.vue';
@@ -17,17 +16,17 @@ import '@/assets/fonts.scss';
 import '@/assets/global_overwritten_nutui.scss';
 
 import App from './App.vue';
+import { setupStore } from './store';
 
-const pinia = createPinia();
 const app = createApp(App);
 
 nutUi(app);
-
+setupStore(app);
 app
   .use(router)
-  .use(pinia)
   .use(i18n)
   .component('font-awesome-icon', FontAwesomeIcon)
   .component('svg-icon', SvgIcon);
-
+// // 挂载状态管理
+// setupStore(app);
 app.mount('#app');
