@@ -103,6 +103,13 @@ export default {
         leaveConfirmTitle: 'Unsaved Changes',
         leaveContent:
           'Unsave changes will be lost without saving.\n\nDo you want to leave editing?',
+        clickTag: {
+          title: '编辑确认',
+          content:
+            '输入框存在未保存的内容，现在编辑其他标签当前未保存的内容将丢失\n\n请确认？',
+          confirm: '确认',
+          cancel: '取消',
+        },
       },
       basic: {
         label: 'Subscription Config',

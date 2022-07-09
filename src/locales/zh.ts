@@ -104,6 +104,13 @@ export default {
         leaveConfirmTitle: '有内容未保存',
         leaveContent:
           '输入框存在未保存内容，离开后未保存的操作将丢失\n\n请确认是否离开？',
+        clickTag: {
+          title: '编辑确认',
+          content:
+            '输入框存在未保存的内容，现在编辑其他标签当前未保存的内容将丢失\n\n请确认？',
+          confirm: '确认',
+          cancel: '取消',
+        },
       },
       basic: {
         label: '订阅配置',
