@@ -267,7 +267,7 @@
       const url = `${host}/download/${
         props.type === 'collection' ? 'collection/' : ''
       }${name}`;
-      await toClipboard(url);
+      await toClipboard(encodeURI(url));
       Notify.success(t('subPage.copyNotify.succeed'), {
         duration: 1500,
       });
