@@ -18,6 +18,10 @@ import '@/assets/global_overwritten_nutui.scss';
 
 import App from './App.vue';
 
+// import VConsole from 'vconsole';
+
+// const vConsole = new VConsole();
+
 const pinia = createPinia();
 const app = createApp(App);
 
