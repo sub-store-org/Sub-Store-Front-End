@@ -10,7 +10,6 @@ export const setColorThemeClass = () => {
   let s;
   (s = ua.match(/version\/([\d\.]+).*safari/)) ? (Sys.safari = s[1]) : 0;
 
-  console.log(Sys);
   // 不对 safari 13 及以下使用自动 dark-mode
   if (Sys.safari >= '14.0' || Sys.safari === '') {
     if (window?.matchMedia('(prefers-color-scheme: dark)').matches) {
