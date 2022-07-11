@@ -93,6 +93,8 @@
   import quanxIcon from '@/assets/icons/quanx.png';
   import loonIcon from '@/assets/icons/loon.png';
   import clashIcon from '@/assets/icons/clash.png';
+  import stashIcon from '@/assets/icons/stash.png';
+  import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
   import { isMobile } from '@/utils/isMobile';
   import { computed, ref, createVNode, watchEffect, watch, toRaw } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -129,6 +131,10 @@
         return loonIcon;
       case 'Clash':
         return clashIcon;
+      case 'Stash':
+        return stashIcon;
+      case 'ShadowRocket':
+        return shadowRocketIcon;
     }
   });
 
