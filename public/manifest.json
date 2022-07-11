@@ -1,23 +1,29 @@
 {
-  "short_name": "Sub Store",
   "name": "Sub Store",
+  "short_name": "Sub Store",
+  "description": "A sub-converter running in a Progressive Web App",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
   "icons": [
     {
-      "src": "/appicons/appicon-192.webp",
-      "type": "image/webp",
-      "sizes": "192x192"
+      "src": "192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "/appicons/appicon-512.webp",
-      "type": "image/webp",
-      "sizes": "512x512"
+      "src": "512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
-  ],
-  "start_url": "/",
-  "id": "/",
-  "background_color": "#121212",
-  "theme_color": "#121212",
-  "display": "standalone",
-  "scope": "/",
-  "description": "A sub-converter running in a Progressive Web App"
+  ]
 }
