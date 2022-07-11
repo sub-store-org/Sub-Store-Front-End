@@ -381,7 +381,7 @@ export default {
       secondLine: 'Last Time: {time}',
       notSync: 'Not sync yet',
     },
-    deleteSub: {
+    deleteArt: {
       title: 'Delete Sync Configuration',
       desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!',
       succeedNotify: 'Successfully deleted!',

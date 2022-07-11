@@ -90,7 +90,7 @@
 <script lang="ts" setup>
   import CompareTable from '@/views/CompareTable.vue';
   import PreviewPanel from '@/components/PreviewPanel.vue';
-  import icon from '@/assets/icons/logo.png';
+  import icon from '@/assets/icons/logo.svg';
   import { isMobile } from '@/utils/isMobile';
   import { Dialog, Notify, Toast } from '@nutui/nutui';
   import dayjs from 'dayjs';
