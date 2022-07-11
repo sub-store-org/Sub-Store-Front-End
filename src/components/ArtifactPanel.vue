@@ -92,6 +92,8 @@
           <nut-radio label="QX">Quantumult X</nut-radio>
           <nut-radio label="Loon">Loon</nut-radio>
           <nut-radio label="Clash">Clash</nut-radio>
+          <nut-radio label="Stash">Stash</nut-radio>
+          <nut-radio label="ShadowRocket">ShadowRocket</nut-radio>
         </nut-radiogroup>
       </nut-form-item>
     </nut-form>
