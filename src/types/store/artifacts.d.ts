@@ -2,7 +2,13 @@ interface ArtifactsStoreState {
   artifacts: Artifact[];
 }
 
-type ArtifactsPlatform = 'Surge' | 'QX' | 'Loon' | 'Clash';
+type ArtifactsPlatform =
+  | 'Surge'
+  | 'QX'
+  | 'Loon'
+  | 'Clash'
+  | 'Stash'
+  | 'ShadowRocket';
 
 type ArtifactType = 'collection' | 'subscription';
 

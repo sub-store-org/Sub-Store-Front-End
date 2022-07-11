@@ -84,7 +84,7 @@
       :ok-text="$t(`editorPage.subConfig.actions.addAction.confirm`)"
       @confirm="confirm"
     ></nut-picker>
-    <button class="add-action-btn" @click="showAddPicker = true">
+    <button class="add-action-btn" @click="onClickAddBtn">
       <span
         ><font-awesome-icon icon="fa-icon fa-plus" />{{
           $t(`editorPage.subConfig.actions.addAction.title`)
@@ -96,10 +96,11 @@
 
 <script lang="ts" setup>
   import Draggable from 'vuedraggable';
-  import { ref } from 'vue';
+  import { ref, toRaw, onMounted } from 'vue';
   import { Dialog } from '@nutui/nutui';
   import { useI18n } from 'vue-i18n';
   import i18nFile from '@/locales/zh';
+  import { isMobile } from '@/utils/isMobile';
 
   const { t } = useI18n();
   const drag = ref(true);
@@ -114,6 +115,12 @@
     };
   });
   const columns = ref(items);
+  // 电脑操作时需要使用的变量
+  const clickValue = ref(null);
+
+  const onClickAddBtn = () => {
+    showAddPicker.value = true;
+  };
 
   // 列表渲染的数据
   // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
@@ -160,7 +167,11 @@
 
   // 确认添加时 向渲染数组和预览数组添加对应项目
   const confirm = ({ _, selectedOptions }) => {
-    emit('addAction', selectedOptions);
+    if (clickValue.value) {
+      emit('addAction', clickValue.value);
+    } else {
+      emit('addAction', selectedOptions);
+    }
   };
 
   // 节点帮助弹窗
@@ -186,6 +197,31 @@
       closeOnClickOverlay: true,
     });
   };
+
+  onMounted(() => {
+    // hack pc 点击选择
+    if (!isMobile()) {
+      clickValue.value = toRaw(columns.value[0]);
+      const body = document.querySelector('body');
+      body.addEventListener('click', e => {
+        const el = e.target as HTMLElement;
+        if (el.className === 'nut-picker-roller-item') {
+          const container = el.parentElement;
+          const target = columns.value.find(item => item.text === el.innerText);
+          clickValue.value = [toRaw(target)];
+
+          (container.children as unknown as HTMLElement[]).forEach(item => {
+            item.classList.remove('nut-picker-roller-item-hidden');
+          });
+
+          // // 转动选择器位置
+          const result = el.style.transform.match(/rotate3d\((.*?)\)/);
+          const deg = Number(result[1].split(',').at(-1).replace('deg', ''));
+          container.style.transform = `rotate3d(1, 0, 0, ${-deg}deg)`;
+        }
+      });
+    }
+  });
 </script>
 
 <style lang="scss" scoped>

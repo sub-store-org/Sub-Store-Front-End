@@ -107,6 +107,7 @@
             prop="content"
           >
             <nut-textarea
+              class="textarea-wrapper"
               v-model="form.content"
               :autosize="{ maxHeight: 110, minHeight: 50 }"
               :placeholder="
@@ -200,7 +201,7 @@
 </template>
 
 <script lang="ts" setup>
-  import icon from '@/assets/icons/logo.png';
+  import icon from '@/assets/icons/logo.svg';
   import { useRoute, useRouter } from 'vue-router';
   import { useSubsStore } from '@/store/subs';
   import {

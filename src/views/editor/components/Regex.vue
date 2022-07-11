@@ -117,6 +117,7 @@
   };
 
   const addItem = () => {
+    if (!input1.value) return;
     if (type === 'Regex Rename Operator') {
       value.value.push({
         expr: input1.value,
