@@ -22,6 +22,7 @@
   import quanx from '@/assets/icons/quanx.png';
   import loon from '@/assets/icons/loon.png';
   import stash from '@/assets/icons/stash.png';
+  import shadowrocket from '@/assets/icons/shadowrocket.png';
 
   const { name, type } = defineProps<{
     name: string;
@@ -49,12 +50,16 @@
       path: 'Loon',
       icon: loon,
     },
-
     {
       name: 'Stash',
       path: 'Stash',
       icon: stash,
     },
+    {
+      name: 'ShadowRocket',
+      path: 'ShadowRocket',
+      icon: shadowrocket,
+    }
   ];
 </script>
 
