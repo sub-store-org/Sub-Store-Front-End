@@ -8,16 +8,20 @@
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue';
   import { setColorThemeClass } from '@/utils/setColorThemeClass';
-  import { onMounted } from 'vue';
-  import { useSubsStore } from '@/store/subs';
+  import { onMounted, watchEffect, ref } from 'vue';
   import { useGlobalStore } from '@/store/global';
   import { useI18n } from 'vue-i18n';
   import { initStores } from '@/utils/initApp';
+  import { storeToRefs } from 'pinia';
+  import { useSubsStore } from '@/store/subs';
+  import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
 
   const { t } = useI18n();
 
   const subsStore = useSubsStore();
   const globalStore = useGlobalStore();
+  const { subs, flows } = storeToRefs(subsStore);
+  const allLength = ref(null);
 
   // 处于 pwa 时将底部安全距离写入 global store
   type NavigatorExtend = Navigator & {
@@ -39,6 +43,12 @@
 
   // 初始化应用数据（顶部通知）
   initStores(true, true, false);
+  // 设置流量刷新状态
+  watchEffect(() => {
+    allLength.value = getFlowsUrlList(subs.value).length;
+    const currentLength = Object.keys(flows.value).length;
+    globalStore.setFlowFetching(allLength.value !== currentLength);
+  });
 </script>
 
 <style lang="scss">
