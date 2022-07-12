@@ -102,10 +102,10 @@
   import { useArtifactsStore } from '@/store/artifacts';
   import { Dialog, Toast, Notify } from '@nutui/nutui';
   import { butifyDate } from '@/utils/butifyDate';
-  import useClipboard from 'vue-clipboard3';
   import { storeToRefs } from 'pinia';
+  import { useClipboard } from '@vueuse/core';
 
-  const { toClipboard } = useClipboard();
+  const { copy } = useClipboard();
 
   const { t } = useI18n();
 
@@ -214,17 +214,11 @@
     }
   };
 
-  const onClickCopyLink = async () => {
-    try {
-      await toClipboard(artifact.value.url);
-      Notify.success(t('syncPage.copyNotify.succeed'), {
-        duration: 1500,
-      });
-    } catch (e) {
-      Notify.danger(t('syncPage.copyNotify.succeed', { e }), {
-        duration: 1500,
-      });
-    }
+  const onClickCopyLink = () => {
+    copy(encodeURI(artifact.value.url));
+    Notify.success(t('syncPage.copyNotify.succeed'), {
+      duration: 1500,
+    });
   };
 
   const onDeleteConfirm = async () => {

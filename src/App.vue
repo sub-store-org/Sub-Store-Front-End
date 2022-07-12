@@ -7,7 +7,6 @@
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue';
-  import { setColorThemeClass } from '@/utils/setColorThemeClass';
   import { onMounted, watchEffect, ref } from 'vue';
   import { useGlobalStore } from '@/store/global';
   import { useI18n } from 'vue-i18n';
@@ -15,6 +14,7 @@
   import { storeToRefs } from 'pinia';
   import { useSubsStore } from '@/store/subs';
   import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
+  import { useDark } from '@vueuse/core';
 
   const { t } = useI18n();
 
@@ -31,7 +31,12 @@
   globalStore.setBottomSafeArea(navigator.standalone ? 32 : 6);
 
   // 初始化颜色主题
-  setColorThemeClass();
+  useDark({
+    selector: 'body',
+    attribute: 'class',
+    valueDark: 'dark-mode',
+    valueLight: 'light-mode',
+  });
 
   // 引入 inoBounce 禁止过度滑动橡皮筋效果
   onMounted(() => {

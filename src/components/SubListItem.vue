@@ -92,19 +92,19 @@
   import PreviewPanel from '@/components/PreviewPanel.vue';
   import icon from '@/assets/icons/logo.svg';
   import { isMobile } from '@/utils/isMobile';
-  import { Dialog, Notify, Toast } from '@nutui/nutui';
+  import { Dialog, Toast, Notify } from '@nutui/nutui';
   import dayjs from 'dayjs';
   import { createVNode, ref, computed, toRaw } from 'vue';
   import { useRouter } from 'vue-router';
-  import useClipboard from 'vue-clipboard3';
   import { useSubsStore } from '@/store/subs';
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
   import { getString } from '@/utils/flowTransfer';
   import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
+  import { useClipboard } from '@vueuse/core';
 
-  const { toClipboard } = useClipboard();
+  const { copy } = useClipboard();
   const { t } = useI18n();
 
   const props = defineProps<{
@@ -261,22 +261,15 @@
     });
   };
 
-  const onClickCopyLink = async () => {
-    try {
-      const host = import.meta.env.VITE_API_URL;
-      const url = `${host}/download/${
-        props.type === 'collection' ? 'collection/' : ''
-      }${name}`;
-      await toClipboard(encodeURI(url));
-      Notify.success(t('subPage.copyNotify.succeed'), {
-        duration: 1500,
-      });
-    } catch (e) {
-      Notify.danger(t('subPage.copyNotify.succeed', { e }), {
-        duration: 1500,
-      });
-      console.error(e);
-    }
+  const onClickCopyLink = () => {
+    const host = import.meta.env.VITE_API_URL;
+    const url = `${host}/download/${
+      props.type === 'collection' ? 'collection/' : ''
+    }${name}`;
+    copy(encodeURI(url));
+    Notify.success(t('subPage.copyNotify.succeed'), {
+      duration: 1500,
+    });
   };
 </script>
 
