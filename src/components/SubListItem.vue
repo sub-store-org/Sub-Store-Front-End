@@ -166,15 +166,20 @@
           total,
           usage: { upload, download },
         } = target.data;
+
+        const secondLine = !expires
+          ? t('subPage.subItem.noExpiresInfo')
+          : `${t('subPage.subItem.expires')}：${dayjs
+              .unix(expires)
+              .format('YYYY-MM-DD')}`;
+
         return {
           firstLine: `${t('subPage.subItem.flow')}：${getString(
             upload + download,
             total,
             'B'
           )}`,
-          secondLine: `${t('subPage.subItem.expires')}：${dayjs
-            .unix(expires)
-            .format('YYYY-MM-DD')}`,
+          secondLine,
         };
       } else if (target?.status === 'failed') {
         if (target.error.code === 'NO_FLOW_INFO') {

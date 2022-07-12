@@ -64,6 +64,7 @@ export default {
       expires: '到期时间',
       noRecord: '刷新后可获取流量情况',
       noFlowInfo: '无流量信息',
+      noExpiresInfo: '无有效期信息',
     },
     deleteSub: {
       title: '删除订阅',
