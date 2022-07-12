@@ -228,6 +228,7 @@
   import { useSubsApi } from '@/api/subs';
   import CompareTable from '@/views/CompareTable.vue';
   import { initStores } from '@/utils/initApp';
+  import { usePopupRoute } from '@/utils/usePopupRoute';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -255,6 +256,7 @@
   });
 
   const compareTableIsVisible = ref(false);
+  usePopupRoute(compareTableIsVisible);
   const compareData = ref();
 
   const isInit = ref(false);
@@ -374,6 +376,7 @@
 
   const closeCompare = () => {
     compareTableIsVisible.value = false;
+    router.back();
   };
 
   const compare = () => {
@@ -392,7 +395,7 @@
         return;
       }
 
-      Toast.loading('生成节点对比中...', { id: 'compare' });
+      Toast.loading('生成节点对比中...', { id: 'compare', cover: true });
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
@@ -445,7 +448,7 @@
       if (configName === 'UNTITLED') {
         res = await subsApi.createSub(editType as string, data);
         await subsStore.fetchSubsData();
-        if (data.source === 'remote') await initStores(false, true, true);
+        if (data.source === 'remote') await initStores(false, true, false);
       } else {
         let apiType = '';
         if (editType === 'subs') {

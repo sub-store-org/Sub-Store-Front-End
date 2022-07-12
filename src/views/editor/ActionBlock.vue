@@ -101,6 +101,7 @@
   import { useI18n } from 'vue-i18n';
   import i18nFile from '@/locales/zh';
   import { isMobile } from '@/utils/isMobile';
+  import { useEventListener } from '@vueuse/core';
 
   const { t } = useI18n();
   const drag = ref(true);
@@ -203,7 +204,7 @@
     if (!isMobile()) {
       clickValue.value = toRaw(columns.value[0]);
       const body = document.querySelector('body');
-      body.addEventListener('click', e => {
+      useEventListener(body, 'click', e => {
         const el = e.target as HTMLElement;
         if (el.className === 'nut-picker-roller-item') {
           const container = el.parentElement;

@@ -112,7 +112,7 @@ router.beforeResolve(async to => {
                 cover: true,
               }
             );
-            await initStores(false, true, false);
+            await initStores(false, true, true);
             fetchLoading.hide();
           }
         }
