@@ -19,7 +19,6 @@ export const initStores = async (
   let isSucceed = true;
 
   globalStore.setLoading(true);
-  globalStore.setFlowFetching(true);
   globalStore.setFetchResult(true);
 
   // 更新所有数据
@@ -52,5 +51,4 @@ export const initStores = async (
   globalStore.setLoading(false);
   // 更新流量
   if (needFetchFlow) await subsStore.fetchFlows();
-  globalStore.setFlowFetching(false);
 };
