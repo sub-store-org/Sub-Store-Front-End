@@ -9,5 +9,11 @@ export function useEnvApi() {
         method: 'get',
       });
     },
+    refreshCache: (): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: '/api/utils/refresh',
+        method: 'get',
+      });
+    },
   };
 }

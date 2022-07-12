@@ -14,5 +14,5 @@ interface ErrorResponse {
 
 interface SucceedResponse {
   status: 'success';
-  data: any;
+  data?: any;
 }
