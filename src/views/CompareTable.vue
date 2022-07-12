@@ -394,7 +394,6 @@
 
   .processed-item,
   .original-item {
-    overflow: scroll;
     display: flex;
     align-items: center;
 
