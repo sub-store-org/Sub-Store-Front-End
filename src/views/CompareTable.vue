@@ -350,7 +350,7 @@
   .compare-table-row {
     margin: 0;
     display: grid;
-    grid-template-columns: 220px 1fr 1fr 1fr 1fr;
+    grid-template-columns: 46% 1fr 1fr 1fr 1fr;
 
     li {
     }
