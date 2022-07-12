@@ -131,7 +131,7 @@
   };
 
   const refresh = () => {
-    initStores(true, true);
+    initStores(true, true, false);
   };
 
   const preview = () => {
