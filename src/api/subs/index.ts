@@ -27,6 +27,13 @@ export function useSubsApi() {
         method: 'get',
       });
     },
+    getSubInfo: (data: NodeInfo): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/utils/node-info`,
+        method: 'post',
+        data,
+      });
+    },
     createSub: (
       type: string,
       data: Sub | Collection

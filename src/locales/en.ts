@@ -64,6 +64,7 @@ export default {
       expires: 'Expires',
       noRecord: 'Refresh to get usage',
       noFlowInfo: 'No flow info',
+      noExpiresInfo: 'No expires info',
     },
     deleteSub: {
       title: 'Delete Subscription',
@@ -361,6 +362,19 @@ export default {
       'skip-cert-verify': 'SCV',
       tfo: 'TFO',
       aead: 'AEAD',
+    },
+    nodeInfo: {
+      loading: 'Getting Node Info...',
+      loadFailed: 'Get Node Info Failed',
+      ipApi: {
+        title: 'IP-API',
+      },
+      node: {
+        title: 'Node Info',
+        server: 'Server',
+        password: 'Password',
+        UUID: 'UUID',
+      },
     },
   },
   codePage: {
