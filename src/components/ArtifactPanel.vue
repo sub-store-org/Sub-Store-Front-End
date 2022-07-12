@@ -223,7 +223,10 @@
 
       const data = toRaw(editPanelData.value);
       const loadingToast = Toast.loading(
-        t('syncPage.addArtForm.submitLoading')
+        t('syncPage.addArtForm.submitLoading'),
+        {
+          cover: true,
+        }
       );
       if (isEditMode.value) {
         await artifactsStore.editArtifact(name, data);

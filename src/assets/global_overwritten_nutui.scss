@@ -1,6 +1,70 @@
 // 引入定义变量scss文件
 @import 'custom_theme_variables.scss';
 
+.tab-panel-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 1100;
+  max-height: 72vh;
+  max-width: 80vw;
+  width: 80vw;
+  border-radius: 8px;
+  overflow: hidden;
+  padding-bottom: 24px;
+
+  .dark-mode & {
+    background-color: $dark-popup-color;
+    color: $dark-primary-text-color;
+  }
+
+  .light-mode & {
+    background-color: $light-popup-color;
+    color: $light-primary-text-color;
+  }
+
+  .auto-tab-panel {
+    .nut-tabs__titles {
+      border-bottom: 1px solid;
+
+      .dark-mode & {
+        border-color: $dark-divider-color;
+      }
+
+      .light-mode & {
+        border-color: $light-divider-color;
+      }
+    }
+
+    .nut-tabpane,
+    .nut-tabs__titles {
+      background-color: inherit;
+      color: inherit;
+    }
+
+    .nut-tabs__titles-item.active {
+      .dark-mode & {
+        color: $dark-primary-text-color;
+      }
+
+      .light-mode & {
+        color: $light-primary-text-color;
+      }
+    }
+
+    .nut-tabs__titles-item {
+      .dark-mode & {
+        color: $dark-comment-text-color;
+      }
+
+      .light-mode & {
+        color: $light-comment-text-color;
+      }
+    }
+  }
+}
+
 // 顶部粘性定位标题样式
 .sticky-title-wrapper {
   position: sticky;

@@ -64,6 +64,7 @@ export default {
       expires: '到期时间',
       noRecord: '刷新后可获取流量情况',
       noFlowInfo: '无流量信息',
+      noExpiresInfo: '无有效期信息',
     },
     deleteSub: {
       title: '删除订阅',
@@ -364,6 +365,19 @@ export default {
       'skip-cert-verify': 'SCERT',
       tfo: 'TFO',
       aead: 'AEAD',
+    },
+    nodeInfo: {
+      loading: '获取节点信息中...',
+      loadFailed: '获取节点信息失败',
+      ipApi: {
+        title: 'IP API',
+      },
+      node: {
+        title: '节点信息',
+        server: '服务器',
+        password: '密码',
+        UUID: 'UUID',
+      },
     },
   },
   codePage: {
