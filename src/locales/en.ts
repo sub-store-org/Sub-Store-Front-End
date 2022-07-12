@@ -363,6 +363,19 @@ export default {
       tfo: 'TFO',
       aead: 'AEAD',
     },
+    nodeInfo: {
+      loading: 'Getting Node Info...',
+      loadFailed: 'Get Node Info Failed',
+      ipApi: {
+        title: 'IP-API',
+      },
+      node: {
+        title: 'Node Info',
+        server: 'Server',
+        password: 'Password',
+        UUID: 'UUID',
+      },
+    },
   },
   codePage: {
     title: 'Code Editor',
