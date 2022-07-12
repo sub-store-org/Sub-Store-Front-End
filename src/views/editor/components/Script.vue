@@ -42,8 +42,11 @@
 
 <script lang="ts" setup>
   import { inject, reactive, onMounted, watch, ref } from 'vue';
+  import { usePopupRoute } from '@/utils/usePopupRoute';
   import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
+  import { useRouter } from 'vue-router';
 
+  const router = useRouter();
   const { type, id } = defineProps<{
     type: string;
     id: string;
@@ -54,6 +57,7 @@
   const modeList = ['link', 'script'];
 
   const editorIsVisible = ref(false);
+  usePopupRoute(editorIsVisible);
   const value = reactive({
     mode: '',
     content: '',
@@ -63,6 +67,7 @@
   const onCloseEditor = val => {
     value.code = val;
     editorIsVisible.value = false;
+    router.back();
   };
 
   // 挂载时将 value 值指针指向 form 对应的数据

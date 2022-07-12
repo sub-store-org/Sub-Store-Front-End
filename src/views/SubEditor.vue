@@ -228,6 +228,7 @@
   import { useSubsApi } from '@/api/subs';
   import CompareTable from '@/views/CompareTable.vue';
   import { initStores } from '@/utils/initApp';
+  import { usePopupRoute } from '@/utils/usePopupRoute';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -255,6 +256,7 @@
   });
 
   const compareTableIsVisible = ref(false);
+  usePopupRoute(compareTableIsVisible);
   const compareData = ref();
 
   const isInit = ref(false);
@@ -374,6 +376,7 @@
 
   const closeCompare = () => {
     compareTableIsVisible.value = false;
+    router.back();
   };
 
   const compare = () => {
