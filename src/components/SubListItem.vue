@@ -103,6 +103,7 @@
   import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
   import { useClipboard } from '@vueuse/core';
+  import { usePopupRoute } from '@/utils/usePopupRoute';
 
   const { copy } = useClipboard();
   const { t } = useI18n();
@@ -113,10 +114,12 @@
     collection?: Collection;
   }>();
 
+  const compareTableIsVisible = ref(false);
+  usePopupRoute(compareTableIsVisible);
+
   const moreAction = ref();
   const swipe = ref();
   const swipeIsOpen = ref(false);
-  const compareTableIsVisible = ref(false);
   const compareData = ref();
   const router = useRouter();
   const globalStore = useGlobalStore();
@@ -191,6 +194,7 @@
 
   const closeCompare = () => {
     compareTableIsVisible.value = false;
+    router.back();
   };
 
   const compareSub = async () => {
