@@ -141,7 +141,7 @@
   const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
 
   const refresh = () => {
-    initStores(true, true);
+    initStores(true, true, true);
   };
 </script>
 
