@@ -38,7 +38,7 @@
   });
 
   // 初始化应用数据（顶部通知）
-  initStores(true, true);
+  initStores(true, true, false);
 </script>
 
 <style lang="scss">
