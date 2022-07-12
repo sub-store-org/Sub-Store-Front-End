@@ -203,7 +203,7 @@
   };
 
   const compareSub = async () => {
-    Toast.loading('生成节点对比中...', { id: 'compare' });
+    Toast.loading('生成节点对比中...', { id: 'compare', cover: true });
     const res = await useSubsApi().compareSub(
       props.type,
       props.sub ?? props.collection

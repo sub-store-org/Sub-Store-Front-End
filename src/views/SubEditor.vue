@@ -395,7 +395,7 @@
         return;
       }
 
-      Toast.loading('生成节点对比中...', { id: 'compare' });
+      Toast.loading('生成节点对比中...', { id: 'compare', cover: true });
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data.process = actionsToProcess(data.process, actionsList, ignoreList);
 

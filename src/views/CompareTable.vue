@@ -44,6 +44,7 @@
               <tr
                 v-if="isProcessedVisible"
                 class="compare-table-row processed-tr"
+                @click="openNodeInfoPanel(processed)"
               >
                 <td class="processed-item">
                   <div class="name-wrapper">
@@ -91,6 +92,7 @@
               <tr
                 v-if="isOriginalVisible"
                 class="compare-table-row original-tr"
+                @click="openNodeInfoPanel(original)"
               >
                 <td class="original-item">
                   <div class="name-wrapper">
@@ -165,7 +167,10 @@
           <!--表格内容-->
           <table class="compare-table-body">
             <template v-for="node in originalData" :key="node.id">
-              <tr class="compare-table-row original-tr">
+              <tr
+                class="compare-table-row original-tr"
+                @click="openNodeInfoPanel(node)"
+              >
                 <td class="original-item">
                   <div class="name-wrapper">
                     <div>
@@ -214,12 +219,24 @@
         </div>
       </div>
     </div>
+
+    <NodeInfoPanel
+      :ipApi="ipApi"
+      :nodeInfo="nodeInfo"
+      v-if="nodeInfoIsVisible"
+      @close="closeNodeInfoPanel"
+    />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
+  import { computed, ref, toRaw } from 'vue';
+  import { useSubsApi } from '@/api/subs';
+  import { Toast } from '@nutui/nutui';
+  import NodeInfoPanel from '@/components/NodeInfoPanel.vue';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const { compareData } = defineProps<{
     compareData: any;
   }>();
@@ -230,6 +247,10 @@
 
   const isOriginalVisible = ref(true);
   const isProcessedVisible = ref(true);
+
+  const nodeInfoIsVisible = ref(false);
+  const ipApi = ref({});
+  const nodeInfo = ref({});
 
   const toggleProcessedVisible = () => {
     if (isProcessedVisible.value && !isOriginalVisible.value) {
@@ -271,6 +292,27 @@
 
   const clickClose = () => {
     emit('closeCompare');
+  };
+
+  const closeNodeInfoPanel = () => {
+    nodeInfoIsVisible.value = false;
+  };
+
+  const openNodeInfoPanel = async val => {
+    const toast = Toast.loading(t('comparePage.nodeInfo.loading'), {
+      cover: true,
+    });
+    const nodeData = toRaw(val);
+    const res = await useSubsApi().getSubInfo(nodeData);
+    if (res.data.status === 'success') {
+      ipApi.value = res.data.data;
+      nodeInfo.value = nodeData;
+      nodeInfoIsVisible.value = true;
+      toast.hide();
+    } else {
+      toast.hide();
+      Toast.fail(t('comparePage.nodeInfo.loadFailed'));
+    }
   };
 </script>
 

@@ -366,6 +366,19 @@ export default {
       tfo: 'TFO',
       aead: 'AEAD',
     },
+    nodeInfo: {
+      loading: '获取节点信息中...',
+      loadFailed: '获取节点信息失败',
+      ipApi: {
+        title: 'IP API',
+      },
+      node: {
+        title: '节点信息',
+        server: '服务器',
+        password: '密码',
+        UUID: 'UUID',
+      },
+    },
   },
   codePage: {
     title: '代码编辑',

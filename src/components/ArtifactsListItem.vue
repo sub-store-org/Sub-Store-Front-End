@@ -227,7 +227,9 @@
 
   const onClickSync = async () => {
     swipe.value.close();
-    const loadingToast = Toast.loading('同步中...');
+    const loadingToast = Toast.loading('同步中...', {
+      cover: true,
+    });
     await artifactsStore.syncOneArtifact(artifact.value.name);
     loadingToast.hide();
   };
