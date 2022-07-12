@@ -4,10 +4,12 @@ import { useSubsStore } from '@/store/subs';
 import { useSettingsStore } from '@/store/settings';
 import i18n from '@/locales';
 import { useArtifactsStore } from '@/store/artifacts';
+import { useEnvApi } from '@/api/env';
 
 export const initStores = async (
   needNotify: boolean,
-  needFetchFlow: boolean
+  needFetchFlow: boolean,
+  needRefreshCache: boolean
 ) => {
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
@@ -17,7 +19,6 @@ export const initStores = async (
   let isSucceed = true;
 
   globalStore.setLoading(true);
-  globalStore.setFlowFetching(true);
   globalStore.setFetchResult(true);
 
   // 更新所有数据
@@ -26,6 +27,13 @@ export const initStores = async (
     await artifactsStore.fetchArtifactsData();
     await settingsStore.fetchSettings();
     await globalStore.setEnv();
+    if (needRefreshCache) {
+      const { data } = await useEnvApi().refreshCache();
+      if (data.status !== 'success') {
+        globalStore.setFetchResult(false);
+        isSucceed = false;
+      }
+    }
   } catch (e) {
     globalStore.setFetchResult(false);
     subsStore.subs = [];
@@ -43,5 +51,4 @@ export const initStores = async (
   globalStore.setLoading(false);
   // 更新流量
   if (needFetchFlow) await subsStore.fetchFlows();
-  globalStore.setFlowFetching(false);
 };

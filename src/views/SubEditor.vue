@@ -227,6 +227,7 @@
   import { Dialog, Notify, Toast } from '@nutui/nutui';
   import { useSubsApi } from '@/api/subs';
   import CompareTable from '@/views/CompareTable.vue';
+  import { initStores } from '@/utils/initApp';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -444,6 +445,7 @@
       if (configName === 'UNTITLED') {
         res = await subsApi.createSub(editType as string, data);
         await subsStore.fetchSubsData();
+        if (data.source === 'remote') await initStores(false, true, true);
       } else {
         let apiType = '';
         if (editType === 'subs') {

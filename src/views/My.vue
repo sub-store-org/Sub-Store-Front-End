@@ -241,7 +241,7 @@
     if (res.data.status === 'success') {
       switch (query) {
         case 'download':
-          await initStores(false, true);
+          await initStores(false, true, true);
           break;
         case 'upload':
           await useSettingsStore().fetchSettings();
