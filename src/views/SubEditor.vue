@@ -445,7 +445,7 @@
       if (configName === 'UNTITLED') {
         res = await subsApi.createSub(editType as string, data);
         await subsStore.fetchSubsData();
-        if (data.source === 'remote') await initStores(false, true, true);
+        if (data.source === 'remote') await initStores(false, true, false);
       } else {
         let apiType = '';
         if (editType === 'subs') {
