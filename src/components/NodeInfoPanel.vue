@@ -87,12 +87,10 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .type-tag {
-    color: $primary-color !important;
+    color: var(--primary-color) !important;
     background: transparent !important;
-    border: 1px solid $primary-color !important;
+    border: 1px solid var(--primary-color) !important;
     margin-right: 4px;
   }
 
@@ -119,13 +117,7 @@
 
     li:not(:first-child) {
       margin-bottom: 8px;
-
-      .dark-mode & {
-        color: $dark-comment-text-color;
-      }
-      .light-mode & {
-        color: $light-comment-text-color;
-      }
+      color: var(--comment-text-color);
     }
   }
 

@@ -59,13 +59,11 @@
       name: 'ShadowRocket',
       path: 'ShadowRocket',
       icon: shadowrocket,
-    }
+    },
   ];
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .preview-list {
     margin: 0;
     padding: 0;
@@ -79,12 +77,8 @@
     > li {
       width: 100%;
 
-      .dark-mode &:not(:last-child) {
-        border-bottom: 1px solid $dark-divider-color;
-      }
-
-      .light-mode &:not(:last-child) {
-        border-bottom: 1px solid $light-divider-color;
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--divider-color);
       }
 
       a {
@@ -101,14 +95,7 @@
 
         p {
           font-size: 16px;
-
-          .dark & {
-            color: $dark-primary-text-color;
-          }
-
-          .light & {
-            color: $light-primary-text-color;
-          }
+          color: var(--comment-text-color);
         }
       }
     }

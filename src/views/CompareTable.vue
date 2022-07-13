@@ -330,40 +330,23 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .type-tag {
     padding: 1px 4px;
     line-height: 1;
     margin-right: 3px;
-
-    .dark-mode & {
-      color: $dark-second-text-color;
-      background: $dark-lowest-text-color;
-    }
-
-    .light-mode & {
-      color: $light-second-text-color;
-      background: $light-lowest-text-color;
-    }
+    color: var(--second-text-color);
+    background: var(--lowest-text-color);
   }
 
   .item-true {
-    color: #478ef2;
+    color: var(--primary-color);
   }
 
   .item-false {
     width: 8px;
     height: 1px;
     border-radius: 2px;
-
-    .dark-mode & {
-      background: $dark-lowest-text-color;
-    }
-
-    .light-mode & {
-      background: $light-lowest-text-color;
-    }
+    background: var(--lowest-text-color);
   }
 
   .name-wrapper {
@@ -382,23 +365,16 @@
     .original-tr {
       padding-top: 10px;
       padding-bottom: 20px;
-
-      .dark-mode & {
-        border-bottom: 1px solid $dark-divider-color;
-      }
-
-      .light-mode & {
-        border-bottom: 1px solid $light-divider-color;
-      }
+      border-bottom: 1px solid var(--divider-color);
     }
   }
 
   .compare-table-row {
-    padding: 0 $safe-area-side;
+    padding: 0 var(--safe-area-side);
   }
 
   .compare-table-head {
-    padding: 10px $safe-area-side;
+    padding: 10px var(--safe-area-side);
   }
 
   .compare-table-head,
@@ -425,22 +401,11 @@
   .compare-table-head {
     position: sticky;
     z-index: 7;
-    top: 118px;
-    background: inherit;
-    border-bottom: 1px solid;
+    top: 114px;
+    border-bottom: 1px solid var(--divider-color);
     font-weight: bold;
-
-    .dark-mode & {
-      background: $dark-background-color;
-      color: $dark-comment-text-color;
-      border-color: $dark-divider-color;
-    }
-
-    .light-mode & {
-      background: $light-background-color;
-      color: $light-comment-text-color;
-      border-color: $light-divider-color;
-    }
+    background: var(--background-color);
+    color: var(--comment-text-color);
 
     &.filter-table-head {
       top: 84px;
@@ -459,7 +424,7 @@
       height: 6px;
       border-radius: 50%;
       margin-right: 10px;
-      background: $primary-color;
+      background: var(--primary-color);
     }
   }
 
@@ -468,69 +433,40 @@
   }
 
   .processed-item::before {
-    background: #0ed57d;
+    background: var(--third-color);
   }
 
   .block-wrapper {
     position: relative;
-
-    .dark-mode & {
-      background: $dark-compare-item-background-color;
-    }
-
-    .light-mode & {
-      background: $light-compare-item-background-color;
-    }
+    background: var(--compare-item-background-color);
 
     .compare-title {
-      padding: 0 $safe-area-side;
+      padding: 0 var(--safe-area-side);
       z-index: 9;
       margin-top: 0;
       top: 56px;
-
-      .dark-mode & {
-        background: $dark-background-color;
-      }
-
-      .light-mode & {
-        background: $light-background-color;
-      }
+      background: var(--background-color);
     }
 
     .compare-des {
-      padding: 8px $safe-area-side;
+      padding: 6px var(--safe-area-side);
       z-index: 8;
       display: flex;
       position: sticky;
       top: 84px;
-
-      .dark-mode & {
-        background: $dark-background-color;
-        color: $dark-comment-text-color;
-      }
-
-      .light-mode & {
-        background: $light-background-color;
-        color: $light-comment-text-color;
-      }
+      background: var(--background-color);
+      color: var(--comment-text-color);
     }
   }
 
   .compare-page-body {
     font-size: 12px;
     background: inherit;
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-second-text-color;
-    }
+    color: var(--comment-text-color);
   }
 
   .compare-page-header {
-    padding: $safe-area-side;
+    padding: var(--safe-area-side);
     position: sticky;
     top: 0;
     z-index: 19;
@@ -539,18 +475,9 @@
     align-items: center;
     height: 56px;
     border-bottom: 1px solid;
-
-    .dark-mode & {
-      color: $dark-primary-text-color;
-      background: $dark-background-color;
-      border-color: $dark-divider-color;
-    }
-
-    .light-mode & {
-      color: $light-primary-text-color;
-      background: $light-background-color;
-      border-color: $light-divider-color;
-    }
+    color: var(--primary-text-color);
+    background: var(--background-color);
+    border-color: var(--divider-color);
 
     h1 {
       display: flex;
@@ -568,25 +495,11 @@
       span {
         margin-left: 8px;
         font-size: 14px;
-
-        .dark-mode & {
-          color: $dark-second-text-color;
-        }
-
-        .light-mode & {
-          color: $light-second-text-color;
-        }
+        color: var(--second-text-color);
 
         > svg {
           margin-right: 4px;
-
-          .dark-mode & {
-            color: $dark-comment-text-color;
-          }
-
-          .light-mode & {
-            color: $light-comment-text-color;
-          }
+          color: var(--comment-text-color);
         }
       }
     }
@@ -596,14 +509,7 @@
       border: none;
       font-size: 20px;
       padding: 8px;
-
-      .dark-mode & {
-        color: $dark-lowest-text-color;
-      }
-
-      .light-mode & {
-        color: $light-lowest-text-color;
-      }
+      color: var(--lowest-text-color);
     }
   }
 
@@ -613,27 +519,13 @@
     z-index: 1000;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-
-    .dark-mode & {
-      background: $dark-background-color;
-    }
-
-    .light-mode & {
-      background: $light-background-color;
-    }
+    background: var(--background-color);
   }
 
   .divider,
   .divider::before,
   .divider::after {
-    .dark-mode & {
-      color: $dark-lowest-text-color;
-      border-color: $dark-lowest-text-color;
-    }
-
-    .light-mode & {
-      color: $light-lowest-text-color;
-      border-color: $light-lowest-text-color;
-    }
+    color: var(--lowest-text-color);
+    border-color: var(--lowest-text-color);
   }
 </style>

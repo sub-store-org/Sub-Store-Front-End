@@ -61,13 +61,7 @@
 
       :deep(.nut-checkbox__label) {
         font-size: 14px;
-        .dark-mode & {
-          color: $dark-second-text-color;
-        }
-
-        .light-mode & {
-          color: $light-second-text-color;
-        }
+        color: var(--second-text-color);
       }
     }
   }

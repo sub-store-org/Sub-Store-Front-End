@@ -164,14 +164,7 @@
   .options-label {
     font-size: 12px;
     margin-bottom: 16px;
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-comment-text-color;
-    }
+    color: var(--comment-text-color);
   }
 
   .radio-wrapper.options-radio {

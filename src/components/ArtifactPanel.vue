@@ -275,8 +275,6 @@
 </script>
 
 <style lang="scss">
-  @import '@/assets/custom_theme_variables.scss';
-
   .artifact-panel {
     .nut-dialog {
       width: 80vw;
@@ -300,13 +298,7 @@
 
               .nut-input {
                 padding: 12px 8px;
-
-                .dark-mode & {
-                  border-color: $dark-divider-color;
-                }
-                .light-mode & {
-                  border-color: $light-divider-color;
-                }
+                border-color: var(--divider-color);
               }
 
               .artifact-radio-group {

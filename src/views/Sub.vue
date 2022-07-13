@@ -146,8 +146,6 @@
 </script>
 
 <style lang="scss">
-  @import '@/assets/custom_theme_variables.scss';
-
   .drag-btn-wrapper {
     position: relative;
     z-index: 999;
@@ -158,8 +156,8 @@
       border-radius: 50%;
       background-image: linear-gradient(
         to bottom right,
-        $primary-color,
-        $primary-color-end
+        var(--primary-color),
+        var(--primary-color-end)
       );
       box-shadow: 0 4px 8px #0003;
       display: flex;
@@ -167,7 +165,7 @@
       align-items: center;
 
       &.refresh {
-        background: #fa6419;
+        background: var(--second-color);
         margin-bottom: 12px;
       }
       > svg {
@@ -179,25 +177,13 @@
   }
 
   .add-sub-popup {
-    .dark-mode & {
-      background-color: $dark-popup-color;
-    }
-    .light-mode & {
-      background-color: $light-popup-color;
-    }
+    background-color: var(--popup-color) !important;
 
     .add-sub-panel-title {
       width: 100%;
       text-align: center;
       font-size: 16px;
-
-      .dark-mode & {
-        color: $dark-comment-text-color;
-      }
-
-      .light-mode & {
-        color: $light-comment-text-color;
-      }
+      color: var(--comment-text-color);
     }
 
     .add-sub-panel-list {
@@ -206,14 +192,7 @@
       font-weight: bold;
       display: flex;
       width: 100%;
-
-      .dark-mode & {
-        color: $dark-second-text-color;
-      }
-
-      .light-mode & {
-        color: $light-second-text-color;
-      }
+      color: var(--second-text-color);
 
       > li {
         width: 50%;
@@ -230,7 +209,7 @@
           > svg {
             width: 44px;
             height: 44px;
-            color: $primary-color;
+            color: var(--primary-color);
             margin-bottom: 12px;
           }
         }
@@ -243,7 +222,7 @@
     position: relative;
 
     .list-title {
-      padding-left: $safe-area-side;
+      padding-left: var(--safe-area-side);
     }
 
     & > ul {
@@ -267,39 +246,18 @@
     h3 {
       font-size: 18px;
       margin-bottom: 12px;
-
-      .dark-mode & {
-        color: $dark-primary-text-color;
-      }
-
-      .light-mode & {
-        color: $light-primary-text-color;
-      }
+      color: var(--primary-text-color);
     }
 
     p {
       font-size: 14px;
-
-      .dark-mode & {
-        color: $dark-comment-text-color;
-      }
-
-      .light-mode & {
-        color: $light-comment-text-color;
-      }
+      color: var(--comment-text-color);
     }
 
     a {
       font-size: 14px;
       margin-top: 24px;
-
-      .dark-mode & {
-        color: $dark-comment-text-color;
-      }
-
-      .light-mode & {
-        color: $light-comment-text-color;
-      }
+      color: var(--comment-text-color);
 
       span {
         margin-right: 4px;
