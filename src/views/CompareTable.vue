@@ -249,8 +249,8 @@
   const isProcessedVisible = ref(true);
 
   const nodeInfoIsVisible = ref(false);
-  const ipApi = ref({});
-  const nodeInfo = ref({});
+  const ipApi = ref<IpApiData>(null);
+  const nodeInfo = ref<NodeInfo>(null);
 
   const toggleProcessedVisible = () => {
     if (isProcessedVisible.value && !isOriginalVisible.value) {
@@ -299,8 +299,9 @@
   };
 
   const openNodeInfoPanel = async val => {
-    const toast = Toast.loading(t('comparePage.nodeInfo.loading'), {
+    Toast.loading(t('comparePage.nodeInfo.loading'), {
       cover: true,
+      id: 'nodeInfoLoading',
     });
     const nodeData = toRaw(val);
     const res = await useSubsApi().getSubInfo(nodeData);
@@ -308,11 +309,10 @@
       ipApi.value = res.data.data;
       nodeInfo.value = nodeData;
       nodeInfoIsVisible.value = true;
-      toast.hide();
     } else {
-      toast.hide();
       Toast.fail(t('comparePage.nodeInfo.loadFailed'));
     }
+    Toast.hide('nodeInfoLoading');
   };
 </script>
 

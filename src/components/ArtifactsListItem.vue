@@ -227,11 +227,12 @@
 
   const onClickSync = async () => {
     swipe.value.close();
-    const loadingToast = Toast.loading('同步中...', {
+    Toast.loading('同步中...', {
       cover: true,
+      id: 'sync-toast',
     });
     await artifactsStore.syncOneArtifact(artifact.value.name);
-    loadingToast.hide();
+    Toast.hide('sync-toast');
   };
 
   const onClickEdit = () => {
