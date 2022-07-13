@@ -53,8 +53,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .tab-bar-wrapper {
     .tabbar {
       padding-top: 12px;
@@ -62,27 +60,13 @@
       box-shadow: none;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-
-      .dark-mode & {
-        background: $dark-tab-bar-color;
-        border-top: $dark-divider-color solid 1px;
-      }
-
-      .light-mode & {
-        background: $light-tab-bar-color;
-        border-top: $light-divider-color solid 1px;
-      }
+      background: var(--tab-bar-color);
+      border-top: var(--divider-color) solid 1px;
     }
 
     :deep(.tabbar-item) {
       &.nut-tabbar-item__icon--unactive {
-        .dark-mode & {
-          color: $dark-lowest-text-color;
-        }
-
-        .light-mode & {
-          color: $light-lowest-text-color;
-        }
+        color: var(--lowest-text-color);
       }
       & > .nut-tabbar-item_icon-box > .nut-tabbar-item_icon-box_nav-word {
         margin-top: 4px;

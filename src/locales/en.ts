@@ -328,6 +328,12 @@ export default {
       cancel: 'Cancel',
       edit: 'Edit',
       save: 'Save',
+      changeTheme: 'Change Theme',
+    },
+    themePicker: {
+      title: 'Pick a Theme',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
     },
     notify: {
       save: {

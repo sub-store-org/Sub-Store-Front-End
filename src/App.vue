@@ -14,7 +14,7 @@
   import { storeToRefs } from 'pinia';
   import { useSubsStore } from '@/store/subs';
   import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
-  import { useDark } from '@vueuse/core';
+  import { useThemes } from '@/utils/useThemes';
 
   const { t } = useI18n();
 
@@ -31,12 +31,7 @@
   globalStore.setBottomSafeArea(navigator.standalone ? 32 : 6);
 
   // 初始化颜色主题
-  useDark({
-    selector: 'body',
-    attribute: 'class',
-    valueDark: 'dark-mode',
-    valueLight: 'light-mode',
-  });
+  useThemes();
 
   // 引入 inoBounce 禁止过度滑动橡皮筋效果
   onMounted(() => {
@@ -68,16 +63,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
-
-    .light-mode & {
-      color: $light-primary-text-color;
-      background: $light-background-color;
-    }
-
-    .dark-mode & {
-      color: $dark-primary-text-color;
-      background: $dark-background-color;
-    }
+    background: var(--background-color);
 
     .page-body {
       flex: 1;
