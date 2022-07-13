@@ -130,8 +130,8 @@
   }
 
   .qrcode {
-    width: 120px;
-    height: 120px;
+    width: 92px;
+    height: 92px;
     margin: 0 auto;
     opacity: 0.8;
   }
