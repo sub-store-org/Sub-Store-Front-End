@@ -13,7 +13,8 @@ const commonVariables = {
 const modulesFiles = import.meta.globEager('@/themes/*.ts');
 const keys = Object.keys(modulesFiles);
 const modules = keys.reduce((modules: { [key: string]: any }, path: string) => {
-  const moduleName = path.split('/').at(-1).replace('.ts', '');
+  const paths = path.split('/');
+  const moduleName = paths[paths.length - 1].replace('.ts', '');
   modules[moduleName] = modulesFiles[path]?.default;
   return modules;
 }, {});

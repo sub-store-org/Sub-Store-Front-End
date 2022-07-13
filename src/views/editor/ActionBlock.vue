@@ -217,7 +217,8 @@
 
           // // 转动选择器位置
           const result = el.style.transform.match(/rotate3d\((.*?)\)/);
-          const deg = Number(result[1].split(',').at(-1).replace('deg', ''));
+          const temp = result[1].split(',');
+          const deg = Number(temp[temp.length - 1].replace('deg', ''));
           container.style.transform = `rotate3d(1, 0, 0, ${-deg}deg)`;
         }
       });
