@@ -82,6 +82,7 @@
   </nut-swipe>
   <CompareTable
     v-if="compareTableIsVisible"
+    :name="name"
     :compareData="compareData"
     @closeCompare="closeCompare"
   />
