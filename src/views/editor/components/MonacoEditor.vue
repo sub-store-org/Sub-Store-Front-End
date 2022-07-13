@@ -117,7 +117,7 @@ function filter(proxies, targetPlatform) {
   @import '@/assets/custom_theme_variables.scss';
 
   .editor-page-header {
-    padding: $safe-area-side;
+    padding: var(--safe-area-side);
     position: sticky;
     top: 0;
     z-index: 19;
@@ -125,7 +125,7 @@ function filter(proxies, targetPlatform) {
     justify-content: space-between;
     align-items: center;
     height: 56px;
-    color: $dark-primary-text-color;
+    color: #ffffffee;
     background: #272823;
 
     h1 {
@@ -136,7 +136,7 @@ function filter(proxies, targetPlatform) {
       span {
         font-size: 12px;
         margin-left: 8px;
-        color: $dark-comment-text-color;
+        color: #ffffff88;
       }
 
       svg {
@@ -151,7 +151,7 @@ function filter(proxies, targetPlatform) {
       border: none;
       font-size: 20px;
       padding: 8px;
-      color: $dark-lowest-text-color;
+      color: #ffffff36;
     }
   }
 

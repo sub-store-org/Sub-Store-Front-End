@@ -222,19 +222,17 @@
       }
 
       const data = toRaw(editPanelData.value);
-      const loadingToast = Toast.loading(
-        t('syncPage.addArtForm.submitLoading'),
-        {
-          cover: true,
-        }
-      );
+      Toast.loading(t('syncPage.addArtForm.submitLoading'), {
+        cover: true,
+        id: 'add-artifact-loading',
+      });
       if (isEditMode.value) {
         await artifactsStore.editArtifact(name, data);
       } else {
         await artifactsStore.createArtifact(data);
       }
       closePanel();
-      loadingToast.hide();
+      Toast.hide('add-artifact-loading');
     });
   };
 
@@ -277,8 +275,6 @@
 </script>
 
 <style lang="scss">
-  @import '@/assets/custom_theme_variables.scss';
-
   .artifact-panel {
     .nut-dialog {
       width: 80vw;
@@ -302,13 +298,7 @@
 
               .nut-input {
                 padding: 12px 8px;
-
-                .dark-mode & {
-                  border-color: $dark-divider-color;
-                }
-                .light-mode & {
-                  border-color: $light-divider-color;
-                }
+                border-color: var(--divider-color);
               }
 
               .artifact-radio-group {

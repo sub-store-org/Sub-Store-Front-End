@@ -100,17 +100,10 @@
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;
+    color: var(--comment-text-color);
 
     &:not(:first-child) {
       margin-top: 16px;
-    }
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-comment-text-color;
     }
   }
 
@@ -128,32 +121,24 @@
       background: transparent;
       padding: 8px 12px;
       border-bottom: 1px solid;
+      color: var(--second-text-color);
+      border-color: var(--lowest-text-color);
 
       :deep(textarea) {
         color: inherit;
-      }
-
-      .dark-mode & {
-        color: $dark-second-text-color;
-        border-color: $dark-lowest-text-color;
-      }
-
-      .light-mode & {
-        color: $light-second-text-color;
-        border-color: $light-lowest-text-color;
       }
     }
   }
 
   .open-editor-btn {
-    border: 1px solid $primary-color;
+    border: 1px solid var(--primary-color);
     background: transparent;
     margin: 20px 0 12px 0;
     padding: 8px 0;
     text-align: center;
     width: 100%;
-    border-radius: $item-card-radios;
-    color: $primary-color;
+    border-radius: var(--item-card-radios);
+    color: var(--primary-color);
     font-weight: bold;
     svg {
       margin-right: 8px;

@@ -79,8 +79,6 @@
 </script>
 
 <style lang="scss">
-  @import '@/assets/custom_theme_variables.scss';
-
   .nav-bar-wrapper {
     position: fixed;
     width: 100%;
@@ -95,22 +93,11 @@
         box-shadow: none;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        background: var(--nav-bar-color);
+        border-bottom: var(--divider-color) solid 1px;
 
-        .dark-mode & {
-          background: $dark-nav-bar-color;
-          border-bottom: $dark-divider-color solid 1px;
-
-          .nut-navbar__title > .title {
-            color: $dark-primary-text-color;
-          }
-        }
-        .light-mode & {
-          background: $light-nav-bar-color;
-          border-bottom: $light-divider-color solid 1px;
-
-          .nut-navbar__title > .title {
-            color: $light-primary-text-color;
-          }
+        .nut-navbar__title > .title {
+          color: var(--primary-text-color);
         }
 
         .navBar-right-icon {
@@ -123,55 +110,29 @@
   .nav-bar-lang-switch-popup > .nut-cell-group {
     width: 100%;
 
-    .dark-mode & {
-      background-color: $dark-popup-color;
-      > .nut-cell-group__title {
-        color: $dark-comment-text-color;
-      }
-
-      > .nut-cell-group__warp {
-        background-color: $dark-popup-color;
-
-        > .nut-cell {
-          background-color: $dark-popup-color;
-
-          &::after {
-            border-color: $dark-divider-color;
-          }
-        }
-
-        > .nut-cell:not(.selected) {
-          color: $dark-primary-text-color;
-        }
-      }
+    background-color: var(--popup-color);
+    > .nut-cell-group__title {
+      color: var(--comment-text-color);
     }
 
-    .light-mode & {
-      background-color: $light-popup-color;
+    > .nut-cell-group__warp {
+      background-color: var(--popup-color);
 
-      > .nut-cell-group__title {
-        color: $light-comment-text-color;
+      > .nut-cell {
+        background-color: var(--popup-color);
+
+        &::after {
+          border-color: var(--divider-color);
+        }
       }
 
-      > .nut-cell-group__warp {
-        background-color: $light-popup-color;
-
-        > .nut-cell {
-          background-color: $light-popup-color;
-
-          &::after {
-            border-color: $light-divider-color;
-          }
-        }
-
-        > .nut-cell:not(.selected) {
-          color: $light-primary-text-color;
-        }
+      > .nut-cell:not(.selected) {
+        color: var(--primary-text-color);
       }
     }
 
     .selected.nut-cell {
-      color: $primary-color;
+      color: var(--primary-color);
       font-weight: bold;
       display: flex;
       align-items: center;

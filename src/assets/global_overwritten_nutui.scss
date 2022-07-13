@@ -1,6 +1,4 @@
-// 引入定义变量scss文件
-@import 'custom_theme_variables.scss';
-
+// tab 切换面板
 .tab-panel-wrapper {
   position: fixed;
   top: 50%;
@@ -13,28 +11,12 @@
   border-radius: 8px;
   overflow: hidden;
   padding-bottom: 24px;
-
-  .dark-mode & {
-    background-color: $dark-popup-color;
-    color: $dark-primary-text-color;
-  }
-
-  .light-mode & {
-    background-color: $light-popup-color;
-    color: $light-primary-text-color;
-  }
+  background-color: var(--popup-color);
+  color: var(--primary-text-color);
 
   .auto-tab-panel {
     .nut-tabs__titles {
-      border-bottom: 1px solid;
-
-      .dark-mode & {
-        border-color: $dark-divider-color;
-      }
-
-      .light-mode & {
-        border-color: $light-divider-color;
-      }
+      border-bottom: 1px solid var(--divider-color);
     }
 
     .nut-tabpane,
@@ -44,23 +26,11 @@
     }
 
     .nut-tabs__titles-item.active {
-      .dark-mode & {
-        color: $dark-primary-text-color;
-      }
-
-      .light-mode & {
-        color: $light-primary-text-color;
-      }
+      color: var(--primary-text-color);
     }
 
     .nut-tabs__titles-item {
-      .dark-mode & {
-        color: $dark-comment-text-color;
-      }
-
-      .light-mode & {
-        color: $light-comment-text-color;
-      }
+      color: var(--comment-text-color);
     }
   }
 }
@@ -71,25 +41,17 @@
   display: block;
   z-index: 10;
   top: 0;
-  margin-top: $safe-area-side;
+  margin-top: var(--safe-area-side);
   font-size: 14px;
   font-weight: bold;
   line-height: 2;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-
-  .dark-mode & {
-    color: $dark-comment-text-color;
-    background-color: $dark-nav-bar-color;
-  }
-
-  .light-mode & {
-    color: $light-comment-text-color;
-    background-color: $light-nav-bar-color;
-  }
+  color: var(--comment-text-color);
+  background-color: var(--nav-bar-color);
 }
 
-// picker 组件 dark mode 样式覆盖
+// picker 组件样式
 .nut-popup {
   .nut-picker-roller-mask {
     pointer-events: none;
@@ -105,227 +67,145 @@
     }
   }
 
-  .dark-mode & {
-    .nut-cascader__bar {
-      color: $dark-primary-text-color;
-      background-color: $dark-popup-color;
-    }
+  .nut-cascader__bar {
+    color: var(--primary-text-color);
+    background-color: var(--popup-color);
+  }
 
-    .nut-cascader.nut-tabs {
-      .nut-tabs__titles {
-        background: $dark-popup-color;
+  .nut-cascader.nut-tabs {
+    .nut-tabs__titles {
+      background: var(--popup-color);
 
-        .nut-tabs__titles-item.active {
-          color: $dark-primary-text-color;
-        }
-
-        .nut-tabs__titles-item {
-          color: $dark-comment-text-color;
-        }
+      .nut-tabs__titles-item.active {
+        color: var(--primary-text-color);
       }
 
-      .nut-tabs__content {
-        background: $dark-popup-color;
-        .nut-tabpane {
-          background-color: $dark-popup-color;
-
-          .nut-cascader-item.active {
-            color: $primary-color;
-          }
-
-          .nut-cascader-item {
-            color: $dark-primary-text-color;
-          }
-        }
+      .nut-tabs__titles-item {
+        color: var(--comment-text-color);
       }
     }
 
-    .nut-picker__bar,
-    .nut-picker__column {
-      background-color: $dark-popup-color;
+    .nut-tabs__content {
+      background: var(--popup-color);
+      .nut-tabpane {
+        background-color: var(--popup-color);
+
+        .nut-cascader-item.active {
+          color: var(--primary-text-color);
+        }
+
+        .nut-cascader-item {
+          color: var(--primary-text-color);
+        }
+      }
+    }
+  }
+
+  .nut-picker__bar,
+  .nut-picker__column {
+    background-color: var(--popup-color);
+  }
+
+  .nut-picker__hairline {
+    border-color: var(--divider-color);
+  }
+
+  .nut-picker__title {
+    color: var(--primary-text-color);
+  }
+
+  .nut-picker-roller-item {
+    color: var(--second-text-color);
+  }
+
+  .nut-picker-roller-mask {
+    background-image: linear-gradient(
+        180deg,
+        var(--picker-mask-far-color),
+        var(--picker-mask-near-color)
+      ),
+      linear-gradient(
+        0deg,
+        var(--picker-mask-far-color),
+        var(--picker-mask-near-color)
+      );
+  }
+}
+
+img.auto-reverse {
+  filter: brightness(var(--img-brightness));
+}
+
+.auto-dialog {
+  background-color: var(--dialog-color);
+
+  > .nut-dialog {
+    > .nut-dialog__content {
+      max-height: unset;
     }
 
-    .nut-picker__hairline {
-      border-color: $dark-divider-color;
+    > .nut-dialog__header {
+      color: var(--primary-text-color);
+      font-weight: bold;
     }
 
-    .nut-picker__title {
-      color: $dark-primary-text-color;
-    }
-
-    .nut-picker-roller-item {
-      color: $dark-second-text-color;
-    }
-
-    .nut-picker-roller-mask {
-      background-image: linear-gradient(
-          180deg,
-          $dark-picker-mask-far-color,
-          $dark-picker-mask-near-color
-        ),
-        linear-gradient(
-          0deg,
-          $dark-picker-mask-far-color,
-          $dark-picker-mask-near-color
-        );
+    .nut-button--plain {
+      background: var(--dialog-color);
     }
   }
 }
 
-.dark-mode {
-  img.auto-reverse {
-    filter: brightness(1000%);
-  }
+// 表单 相关
+.nut-cell-group__warp {
+  background-color: var(--card-color);
 
-  .auto-dialog {
-    background-color: $dark-dialog-color;
+  .nut-form-item,
+  .nut-textarea {
+    background: var(--card-color);
 
-    > .nut-dialog {
-      > .nut-dialog__content {
-        max-height: unset;
-      }
-
-      > .nut-dialog__header {
-        color: $dark-primary-text-color;
-        font-weight: bold;
-      }
-
-      .nut-button--plain {
-        background: $dark-dialog-color;
-      }
+    .nut-form-item__label {
+      color: var(--comment-text-color);
     }
-  }
 
-  // 表单 相关
-  .nut-cell-group__warp {
-    background-color: $dark-card-color;
-
-    .nut-form-item,
-    .nut-textarea {
-      background: $dark-card-color;
-
-      .nut-form-item__label {
-        color: $dark-comment-text-color;
-      }
-
-      &::after {
-        border-color: $dark-divider-color;
-      }
+    &::after {
+      border-color: var(--divider-color);
     }
-  }
-
-  .nut-radio__button.false {
-    color: $dark-comment-text-color;
-    background-color: $dark-divider-color;
-    border-color: transparent;
-  }
-
-  .nut-radio__icon--unchecked {
-    color: $dark-lowest-text-color;
-  }
-
-  .nut-radio__label {
-    color: $dark-second-text-color;
-  }
-
-  .nut-input-text {
-    color: $dark-second-text-color !important;
-  }
-
-  :-moz-placeholder {
-    color: $dark-lowest-text-color;
-  }
-
-  ::-moz-placeholder {
-    color: $dark-lowest-text-color;
-  }
-
-  input:-ms-input-placeholder,
-  textarea:-ms-input-placeholder {
-    color: $dark-lowest-text-color;
-  }
-
-  input::-webkit-input-placeholder,
-  textarea::-webkit-input-placeholder {
-    color: $dark-lowest-text-color;
   }
 }
 
-.light-mode {
-  img.auto-reverse {
-    filter: brightness(0);
-  }
+.nut-radio__button.false {
+  color: var(--comment-text-color);
+  background-color: var(--divider-color);
+  border-color: transparent;
+}
 
-  .auto-dialog {
-    background-color: $light-dialog-color;
+.nut-radio__icon--unchecked,
+.nut-checkbox__icon--unchecked {
+  color: var(--lowest-text-color);
+}
 
-    > .nut-dialog {
-      > .nut-dialog__content {
-        max-height: unset;
-      }
+.nut-radio__label {
+  color: var(--second-text-color);
+}
 
-      > .nut-dialog__header {
-        color: $light-primary-text-color;
-        font-weight: bold;
-      }
+.nut-input-text {
+  color: var(--second-text-color) !important;
+}
 
-      .nut-button--plain {
-        background: $light-dialog-color;
-      }
-    }
-  }
+:-moz-placeholder {
+  color: var(--lowest-text-color);
+}
 
-  // 表单相关
-  .nut-cell-group__warp {
-    background-color: $light-card-color;
+::-moz-placeholder {
+  color: var(--lowest-text-color);
+}
 
-    .nut-form-item,
-    .nut-textarea {
-      background: $light-card-color;
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: var(--lowest-text-color);
+}
 
-      .nut-form-item__label {
-        color: $light-comment-text-color;
-      }
-
-      &::after {
-        border-color: $light-divider-color;
-      }
-    }
-  }
-
-  .nut-radio__button.false {
-    color: $light-comment-text-color;
-    background-color: $light-divider-color;
-  }
-
-  .nut-radio__icon--unchecked {
-    color: $light-lowest-text-color;
-  }
-
-  .nut-radio__label {
-    color: $light-second-text-color;
-  }
-
-  // input 相关
-  .nut-input-text {
-    color: $light-second-text-color !important;
-  }
-
-  :-moz-placeholder {
-    color: $light-lowest-text-color;
-  }
-
-  ::-moz-placeholder {
-    color: $light-lowest-text-color;
-  }
-
-  input:-ms-input-placeholder,
-  textarea:-ms-input-placeholder {
-    color: $light-lowest-text-color;
-  }
-
-  input::-webkit-input-placeholder,
-  textarea::-webkit-input-placeholder {
-    color: $light-lowest-text-color;
-  }
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: var(--lowest-text-color);
 }

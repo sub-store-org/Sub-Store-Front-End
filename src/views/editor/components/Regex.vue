@@ -186,17 +186,10 @@
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;
+    color: var(--comment-text-color);
 
     &:not(:first-child) {
       margin-top: 16px;
-    }
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-comment-text-color;
     }
   }
 
@@ -214,6 +207,8 @@
       max-width: 100%;
       margin-right: 8px;
       margin-bottom: 8px;
+      background-color: var(--compare-item-background-color);
+      color: var(--second-text-color);
 
       span {
         max-width: 95%;
@@ -224,16 +219,6 @@
         word-wrap: break-word;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
-      }
-
-      .dark-mode & {
-        background-color: $dark-compare-item-background-color;
-        color: $dark-second-text-color;
-      }
-
-      .light-mode & {
-        background-color: $light-compare-item-background-color;
-        color: $light-second-text-color;
       }
     }
   }
@@ -246,23 +231,14 @@
       background: transparent;
       padding: 8px 12px;
       margin-right: 16px;
-      border-bottom: 1px solid;
-
-      .dark-mode & {
-        color: $dark-second-text-color;
-        border-color: $dark-lowest-text-color;
-      }
-
-      .light-mode & {
-        color: $light-second-text-color;
-        border-color: $light-lowest-text-color;
-      }
+      border-bottom: 1px solid var(--lowest-text-color);
+      color: var(--second-text-color);
     }
 
     > svg {
       width: 20px;
       height: 20px;
-      color: $primary-color;
+      color: var(--primary-color);
       flex: 1;
       padding-right: 12px;
     }
