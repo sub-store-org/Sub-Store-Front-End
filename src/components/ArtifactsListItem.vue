@@ -4,7 +4,7 @@
       <div class="sub-img-wrapper">
         <nut-avatar
           class="sub-item-customer-icon"
-          size="60"
+          size="48"
           :url="icon"
           bg-color=""
         ></nut-avatar>
@@ -391,8 +391,8 @@
         word-wrap: break-word;
         word-break: break-all;
         overflow: hidden;
-        margin-top: 6px;
-        font-size: 14px;
+        margin-top: 4px;
+        font-size: 12px;
 
         .second-line-wrapper {
           width: 100%;
@@ -409,7 +409,7 @@
             span {
               margin-right: 8px;
               font-weight: normal;
-              font-size: 12px;
+              line-height: 1.8;
 
               .light-mode & {
                 color: $light-comment-text-color;
@@ -445,7 +445,7 @@
 
         p {
           display: block;
-          line-height: 2.2;
+          line-height: 1.8;
         }
 
         .dark-mode & {

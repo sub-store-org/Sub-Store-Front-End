@@ -4,7 +4,7 @@
       <div class="sub-img-wrapper">
         <nut-avatar
           class="sub-item-customer-icon"
-          size="60"
+          size="48"
           :url="props[props.type].icon || icon"
           bg-color=""
         ></nut-avatar>
@@ -394,12 +394,12 @@
         word-wrap: break-word;
         word-break: break-all;
         overflow: hidden;
-        margin-top: 6px;
-        font-size: 14px;
+        margin-top: 4px;
+        font-size: 12px;
 
         span {
           display: block;
-          line-height: 2.2;
+          line-height: 1.8;
         }
 
         .dark-mode & {
