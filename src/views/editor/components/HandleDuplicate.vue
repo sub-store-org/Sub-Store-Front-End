@@ -101,17 +101,10 @@
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;
+    color: var(--comment-text-color);
 
     &:not(:first-child) {
       margin-top: 16px;
-    }
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-comment-text-color;
     }
   }
 
@@ -129,17 +122,8 @@
       background: transparent;
       padding: 8px 12px;
       margin-right: 16px;
-      border-bottom: 1px solid;
-
-      .dark-mode & {
-        color: $dark-second-text-color;
-        border-color: $dark-lowest-text-color;
-      }
-
-      .light-mode & {
-        color: $light-second-text-color;
-        border-color: $light-lowest-text-color;
-      }
+      border-bottom: 1px solid var(--lowest-text-color);
+      color: var(--second-text-color);
     }
   }
 </style>

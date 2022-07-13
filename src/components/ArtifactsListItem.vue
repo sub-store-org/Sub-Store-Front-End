@@ -4,7 +4,7 @@
       <div class="sub-img-wrapper">
         <nut-avatar
           class="sub-item-customer-icon"
-          size="60"
+          size="48"
           :url="icon"
           bg-color=""
         ></nut-avatar>
@@ -227,11 +227,12 @@
 
   const onClickSync = async () => {
     swipe.value.close();
-    const loadingToast = Toast.loading('同步中...', {
+    Toast.loading('同步中...', {
       cover: true,
+      id: 'sync-toast',
     });
     await artifactsStore.syncOneArtifact(artifact.value.name);
-    loadingToast.hide();
+    Toast.hide('sync-toast');
   };
 
   const onClickEdit = () => {
@@ -279,26 +280,10 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
-  .dark-mode {
-    background-color: $dark-background-color;
-    .sub-item-customer-icon {
-      :deep(img) {
-        & {
-          filter: brightness(1000%);
-        }
-      }
-    }
-  }
-
-  .light-mode {
-    background-color: $light-background-color;
-    .sub-item-customer-icon {
-      :deep(img) {
-        & {
-          filter: brightness(0);
-        }
+  .sub-item-customer-icon {
+    :deep(img) {
+      & {
+        filter: brightness(var(--img-brightness));
       }
     }
   }
@@ -307,17 +292,10 @@
     width: calc(100% - 24px);
     margin-left: auto;
     margin-right: auto;
-    border-radius: $item-card-radios;
-    padding: $safe-area-side;
+    border-radius: var(--item-card-radios);
+    padding: var(--safe-area-side);
     display: flex;
-
-    .dark-mode & {
-      background: $dark-card-color;
-    }
-
-    .light-mode & {
-      background: $light-card-color;
-    }
+    background: var(--card-color);
 
     :deep(.nut-avatar) {
       flex-shrink: 0;
@@ -332,7 +310,7 @@
       }
     }
 
-    > .sub-item-content {
+    .sub-item-content {
       flex: 1;
 
       .sub-item-title-wrapper {
@@ -348,14 +326,7 @@
           word-break: break-all;
           overflow: hidden;
           font-size: 16px;
-
-          .dark-mode & {
-            color: $dark-primary-text-color;
-          }
-
-          .light-mode & {
-            color: $light-primary-text-color;
-          }
+          color: var(--primary-text-color);
         }
 
         .copy-sub-link {
@@ -371,14 +342,7 @@
           svg {
             width: 16px;
             height: 16px;
-
-            .dark-mode & {
-              color: $dark-lowest-text-color;
-            }
-
-            .light-mode & {
-              color: $light-lowest-text-color;
-            }
+            color: var(--lowest-text-color);
           }
         }
       }
@@ -390,8 +354,8 @@
         word-wrap: break-word;
         word-break: break-all;
         overflow: hidden;
-        margin-top: 6px;
-        font-size: 14px;
+        margin-top: 4px;
+        font-size: 12px;
 
         .second-line-wrapper {
           width: 100%;
@@ -408,25 +372,12 @@
             span {
               margin-right: 8px;
               font-weight: normal;
-              font-size: 12px;
-
-              .light-mode & {
-                color: $light-comment-text-color;
-              }
-
-              .dark-mode & {
-                color: $dark-comment-text-color;
-              }
+              line-height: 1.8;
+              color: var(--comment-text-color);
             }
 
             .my-switch.switch-close {
-              .light-mode & {
-                background: $light-switch-background-color;
-              }
-
-              .dark-mode & {
-                background: $dark-switch-background-color;
-              }
+              background: var(--switch-background-color);
             }
 
             .my-switch {
@@ -444,16 +395,10 @@
 
         p {
           display: block;
-          line-height: 2.2;
+          line-height: 1.8;
         }
 
-        .dark-mode & {
-          color: $dark-comment-text-color;
-        }
-
-        .light-mode & {
-          color: $light-comment-text-color;
-        }
+        color: var(--comment-text-color);
       }
     }
   }

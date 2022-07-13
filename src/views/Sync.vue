@@ -155,8 +155,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .sync-title {
     display: flex;
     justify-content: space-between;
@@ -171,23 +169,12 @@
     }
   }
 
-  .preview-btn,
-  .upload-all-btn {
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-    .light-mode & {
-      color: $light-comment-text-color;
-    }
-  }
-
   .upload-all-btn,
   .preview-btn {
+    color: var(--comment-text-color) !important;
     border: none;
     background: none;
     width: 44px;
-    // padding-left: 0;
-    // padding-right: 0;
 
     :deep(view) {
       display: flex;

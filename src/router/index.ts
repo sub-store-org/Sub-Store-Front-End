@@ -106,14 +106,12 @@ router.beforeResolve(async to => {
           const backend = envNow.data.data.backend;
           const version = envNow.data.data.version;
           if (backend !== storeEnv.backend || version !== storeEnv.version) {
-            const fetchLoading = Toast.loading(
-              '检测到后端变化，更新数据中...',
-              {
-                cover: true,
-              }
-            );
+            Toast.loading('检测到后端变化，更新数据中...', {
+              cover: true,
+              id: 'fetchLoading',
+            });
             await initStores(false, true, true);
-            fetchLoading.hide();
+            Toast.hide('fetchLoading');
           }
         }
       });
