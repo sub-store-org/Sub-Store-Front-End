@@ -5,6 +5,11 @@
         <h1>
           <font-awesome-icon icon="fa-solid fa-eye" />
           {{ $t(`comparePage.title`) }}
+          <span
+            ><font-awesome-icon icon="fa-solid fa-angles-right" />{{
+              displayName
+            }}</span
+          >
         </h1>
         <button @click="clickClose">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
@@ -235,10 +240,13 @@
   import { Toast } from '@nutui/nutui';
   import NodeInfoPanel from '@/components/NodeInfoPanel.vue';
   import { useI18n } from 'vue-i18n';
+  import { useSubsStore } from '@/store/subs';
 
   const { t } = useI18n();
-  const { compareData } = defineProps<{
+  const subsStore = useSubsStore();
+  const { compareData, name } = defineProps<{
     compareData: any;
+    name: string;
   }>();
 
   const titleList = ['name', 'udp', 'tfo', 'skip-cert-verify', 'aead'];
@@ -251,6 +259,11 @@
   const nodeInfoIsVisible = ref(false);
   const ipApi = ref<IpApiData>(null);
   const nodeInfo = ref<NodeInfo>(null);
+
+  const displayName = computed(() => {
+    const sub = subsStore.getOneSub(name) || subsStore.getOneCollection(name);
+    return sub?.displayName || sub?.['display-name'] || name;
+  });
 
   const toggleProcessedVisible = () => {
     if (isProcessedVisible.value && !isOriginalVisible.value) {
@@ -540,14 +553,41 @@
     }
 
     h1 {
+      display: flex;
+      align-items: center;
       font-size: 20px;
       line-height: 1;
       font-weight: 500;
 
-      svg {
+      > svg {
         margin-right: 6px;
         width: 20px;
         height: 20px;
+      }
+
+      span {
+        margin-left: 8px;
+        font-size: 14px;
+
+        .dark-mode & {
+          color: $dark-second-text-color;
+        }
+
+        .light-mode & {
+          color: $light-second-text-color;
+        }
+
+        > svg {
+          margin-right: 4px;
+
+          .dark-mode & {
+            color: $dark-comment-text-color;
+          }
+
+          .light-mode & {
+            color: $light-comment-text-color;
+          }
+        }
       }
     }
 

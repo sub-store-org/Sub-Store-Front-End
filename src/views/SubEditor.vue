@@ -195,6 +195,7 @@
 
   <CompareTable
     v-if="compareTableIsVisible"
+    :name="configName"
     :compareData="compareData"
     @closeCompare="closeCompare"
   />
