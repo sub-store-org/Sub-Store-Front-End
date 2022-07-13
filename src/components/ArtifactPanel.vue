@@ -222,19 +222,17 @@
       }
 
       const data = toRaw(editPanelData.value);
-      const loadingToast = Toast.loading(
-        t('syncPage.addArtForm.submitLoading'),
-        {
-          cover: true,
-        }
-      );
+      Toast.loading(t('syncPage.addArtForm.submitLoading'), {
+        cover: true,
+        id: 'add-artifact-loading',
+      });
       if (isEditMode.value) {
         await artifactsStore.editArtifact(name, data);
       } else {
         await artifactsStore.createArtifact(data);
       }
       closePanel();
-      loadingToast.hide();
+      Toast.hide('add-artifact-loading');
     });
   };
 
