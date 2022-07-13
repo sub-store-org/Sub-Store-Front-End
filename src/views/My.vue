@@ -53,7 +53,40 @@
         </div>
       </div>
       <div class="config-card">
-        <h1>{{ $t(`myPage.config`) }}</h1>
+        <div class="title-wrapper">
+          <h1>{{ $t(`myPage.config`) }}</h1>
+          <div class="config-btn-wrapper">
+            <nut-button
+              v-if="isEditing"
+              class="cancel-btn"
+              plain
+              type="info"
+              size="mini"
+              @click="exitEditMode"
+              :disabled="isEditLoading"
+            >
+              <font-awesome-icon icon="fa-solid fa-ban" />
+              {{ $t(`myPage.btn.cancel`) }}
+            </nut-button>
+            <nut-button
+              class="save-btn"
+              type="primary"
+              size="mini"
+              @click="toggleEditMode"
+              :loading="isEditLoading"
+            >
+              <font-awesome-icon
+                v-if="!isEditing"
+                icon="fa-solid fa-pen-to-square"
+              />
+              <font-awesome-icon
+                v-else-if="!isEditLoading && isEditing"
+                icon="fa-solid fa-floppy-disk"
+              />
+              {{ !isEditing ? $t(`myPage.btn.edit`) : $t(`myPage.btn.save`) }}
+            </nut-button>
+          </div>
+        </div>
         <div class="config-input-wrapper">
           <nut-input
             class="input"
@@ -74,39 +107,16 @@
             :left-icon="iconKey"
           />
         </div>
-        <div class="config-btn-wrapper">
-          <nut-button
-            v-if="isEditing"
-            class="cancel-btn"
-            plain
-            type="info"
-            size="mini"
-            @click="exitEditMode"
-            :disabled="isEditLoading"
-          >
-            <font-awesome-icon icon="fa-solid fa-ban" />
-            {{ $t(`myPage.btn.cancel`) }}
-          </nut-button>
-          <nut-button
-            class="save-btn"
-            type="primary"
-            size="mini"
-            @click="toggleEditMode"
-            :loading="isEditLoading"
-          >
-            <font-awesome-icon
-              v-if="!isEditing"
-              icon="fa-solid fa-pen-to-square"
-            />
-            <font-awesome-icon
-              v-else-if="!isEditLoading && isEditing"
-              icon="fa-solid fa-floppy-disk"
-            />
-            {{ !isEditing ? $t(`myPage.btn.edit`) : $t(`myPage.btn.save`) }}
-          </nut-button>
-        </div>
       </div>
+      <nut-cell
+        class="change-theme"
+        :title="$t(`myPage.btn.changeTheme`)"
+        :desc="mode"
+        @click="showThemePicker = true"
+        is-link
+      ></nut-cell>
     </div>
+
     <div class="env-block">
       <img
         v-if="backendIcon()"
@@ -118,6 +128,15 @@
       <p>v{{ env.version }}</p>
     </div>
   </div>
+
+  <nut-picker
+    v-model:visible="showThemePicker"
+    :columns="themeColumn"
+    :title="$t(`myPage.themePicker.title`)"
+    :cancel-text="$t(`myPage.themePicker.cancel`)"
+    :ok-text="$t(`myPage.themePicker.confirm`)"
+    @confirm="confirm"
+  ></nut-picker>
 </template>
 
 <script lang="ts" setup>
@@ -140,13 +159,28 @@
   import { Notify } from '@nutui/nutui';
   import { initStores } from '@/utils/initApp';
   import { butifyDate } from '@/utils/butifyDate';
+  import { useThemes } from '@/utils/useThemes';
 
   const { t } = useI18n();
+  const { mode, themeList, setTheme } = useThemes();
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
   const { githubUser, gistToken, syncTime, avatarUrl } =
     storeToRefs(settingsStore);
+
+  const showThemePicker = ref(false);
+  const themeColumn = computed(() => {
+    return themeList.map(theme => {
+      return {
+        text: theme,
+        value: theme,
+      };
+    });
+  });
+  const confirm = ({ selectedValue }) => {
+    setTheme(selectedValue[0]);
+  };
 
   const displayAvatar = computed(() => {
     return !githubUser.value ? avatar : avatarUrl.value;
@@ -265,11 +299,9 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .my-page-wrapper {
     height: 100%;
-    padding: $safe-area-side;
+    padding: var(--safe-area-side);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -282,16 +314,14 @@
         margin-top: 20px;
         width: 100%;
         padding: 12px;
-        border-radius: $item-card-radios;
+        border-radius: var(--item-card-radios);
+        color: var(--comment-text-color);
+        background: var(--card-color);
 
-        .dark-mode & {
-          color: $dark-comment-text-color;
-          background: $dark-card-color;
-        }
-
-        .light-mode & {
-          color: $light-comment-text-color;
-          background: $light-card-color;
+        .title-wrapper {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
 
         h1 {
@@ -305,52 +335,31 @@
 
           .input.nut-input-disabled {
             :deep(input):disabled {
-              .dark-mode & {
-                -webkit-text-fill-color: $dark-lowest-text-color;
-              }
-              .light-mode & {
-                -webkit-text-fill-color: $light-lowest-text-color;
-              }
+              -webkit-text-fill-color: var(--lowest-text-color);
             }
           }
 
           .input {
             background: transparent;
             padding: 16px;
+            color: var(--second-text-color);
+            border-color: var(--lowest-text-color);
 
             :deep(img) {
               width: 16px;
               height: 16px;
               margin-right: 6px;
               opacity: 0.2;
-
-              .dark-mode & {
-                filter: brightness(1000%);
-              }
-
-              .light-mode & {
-                filter: brightness(0);
-              }
+              filter: brightness(var(--img-brightness));
             }
 
             &:not(:first-child) {
               margin-top: 8px;
             }
-
-            .dark-mode & {
-              color: $dark-second-text-color;
-              border-color: $dark-lowest-text-color;
-            }
-
-            .light-mode & {
-              color: $light-second-text-color;
-              border-color: $light-divider-color;
-            }
           }
         }
 
         .config-btn-wrapper {
-          margin-top: 20px;
           display: flex;
           justify-content: flex-end;
 
@@ -394,6 +403,7 @@
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
+              color: var(--primary-text-color);
             }
 
             .des {
@@ -402,14 +412,7 @@
               font-weight: normal;
               display: flex;
               flex-direction: column;
-
-              .dark-mode & {
-                color: $dark-comment-text-color;
-              }
-
-              .light-mode & {
-                color: $light-comment-text-color;
-              }
+              color: var(--comment-text-color);
             }
           }
         }
@@ -438,6 +441,19 @@
           }
         }
       }
+
+      .change-theme {
+        box-shadow: none;
+        background: var(--card-color);
+        border-radius: var(--item-card-radios);
+        color: var(--comment-text-color);
+        font-weight: bold;
+
+        :deep(.nut-cell__value) {
+          font-weight: normal;
+          color: var(--lowest-text-color);
+        }
+      }
     }
 
     .env-block {
@@ -446,14 +462,7 @@
       justify-content: center;
       align-items: center;
       font-size: 12px;
-
-      .dark-mode & {
-        color: $dark-lowest-text-color;
-      }
-
-      .light-mode & {
-        color: $light-lowest-text-color;
-      }
+      color: var(--lowest-text-color);
 
       img {
         opacity: 0.4;

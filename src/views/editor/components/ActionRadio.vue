@@ -80,14 +80,7 @@
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;
-
-    .dark-mode & {
-      color: $dark-comment-text-color;
-    }
-
-    .light-mode & {
-      color: $light-comment-text-color;
-    }
+    color: var(--comment-text-color);
   }
 
   .nut-radiogroup {

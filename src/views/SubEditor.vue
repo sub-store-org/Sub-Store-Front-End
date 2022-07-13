@@ -235,16 +235,15 @@
   const route = useRoute();
   const router = useRouter();
   const subsApi = useSubsApi();
-  const { editType, id: configName } = route.params;
+  const editType = route.params.editType as string;
+  const configName = route.params.id as string;
   const subsStore = useSubsStore();
 
   const { bottomSafeArea } = useGlobalStore();
   const padding = bottomSafeArea + 'px';
 
-  const sub = computed(() => subsStore.getOneSub(configName as string));
-  const collection = computed(() =>
-    subsStore.getOneCollection(configName as string)
-  );
+  const sub = computed(() => subsStore.getOneSub(configName));
+  const collection = computed(() => subsStore.getOneCollection(configName));
 
   const subsSelectList = computed(() => {
     return subsStore.subs.map(item => {
@@ -447,7 +446,7 @@
       let res = null;
 
       if (configName === 'UNTITLED') {
-        res = await subsApi.createSub(editType as string, data);
+        res = await subsApi.createSub(editType, data);
         await subsStore.fetchSubsData();
         if (data.source === 'remote') await initStores(false, true, false);
       } else {
@@ -457,14 +456,11 @@
         } else if (editType === 'collections') {
           apiType = 'collection';
         }
-        res = await subsApi.editSub(apiType, configName as string, data);
+        res = await subsApi.editSub(apiType, configName, data);
 
         if (configName === data.name) {
           // @ts-ignore
-          await subsStore.updateOneData(
-            editType as string,
-            configName as string
-          );
+          await subsStore.updateOneData(editType, configName);
         } else {
           await subsStore.fetchSubsData();
         }
@@ -507,10 +503,11 @@
   @import '@/assets/custom_theme_variables.scss';
 
   .page-wrapper {
-    padding: 0 $safe-area-side calc(v-bind(padding) + 63px) $safe-area-side;
+    padding: 0 var(--safe-area-side) calc(v-bind(padding) + 63px)
+      var(--safe-area-side);
 
     :deep(.nut-cell-group__warp) {
-      border-radius: $item-card-radios;
+      border-radius: var(--item-card-radios);
     }
   }
 
@@ -521,13 +518,7 @@
 
   .textarea-wrapper {
     :deep(textarea) {
-      .dark-mode & {
-        color: $dark-second-text-color;
-      }
-
-      .light-mode & {
-        color: $light-second-text-color;
-      }
+      color: var(--second-text-color);
     }
   }
 
@@ -541,18 +532,10 @@
     justify-content: space-between;
     bottom: 0;
     width: 100%;
-    padding: 12px $safe-area-side v-bind(padding) $safe-area-side;
+    padding: 12px var(--safe-area-side) v-bind(padding) var(--safe-area-side);
     z-index: 20;
-
-    .dark-mode & {
-      background: $dark-background-color;
-      border-top: 1px solid $dark-divider-color;
-    }
-
-    .light-mode & {
-      background: $light-background-color;
-      border-top: 1px solid $light-divider-color;
-    }
+    background: var(--background-color);
+    border-top: 1px solid var(--divider-color);
 
     .btn {
       border-radius: 8px;
@@ -570,15 +553,8 @@
     .compare-btn {
       background: transparent;
       width: 36%;
-
-      .dark-mode & {
-        color: $dark-second-text-color;
-        border-color: $dark-lowest-text-color;
-      }
-      .light-mode & {
-        color: $light-second-text-color;
-        border-color: $light-lowest-text-color;
-      }
+      color: var(--second-text-color);
+      border-color: var(--lowest-text-color);
     }
 
     .submit-btn {
@@ -605,14 +581,7 @@
         &:not(:last-child) {
           padding: 16px 0 16px 0;
           border-bottom: 1px solid;
-        }
-
-        .dark-mode &:not(:last-child) {
-          border-color: $dark-divider-color;
-        }
-
-        .light-mode & {
-          border-color: $light-divider-color;
+          border-color: var(--divider-color);
         }
 
         .sub-img-wrapper {
@@ -620,14 +589,7 @@
           display: flex;
           align-items: center;
           font-size: 14px;
-
-          .dark-mode & {
-            color: $dark-second-text-color;
-          }
-
-          .light-mode & {
-            color: $light-second-text-color;
-          }
+          color: var(--second-text-color);
 
           span {
             max-width: 56vw;
@@ -645,12 +607,8 @@
             :deep(img) {
               object-fit: contain;
 
-              .dark-mode &:not(.nut-icon__img) {
-                filter: brightness(1000%);
-              }
-
-              .light-mode &:not(.nut-icon__img) {
-                filter: brightness(0);
+              &:not(.nut-icon__img) {
+                filter: brightness(var(--img-brightness));
               }
             }
           }

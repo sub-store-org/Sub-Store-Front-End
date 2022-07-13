@@ -284,26 +284,10 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
-  .dark-mode {
-    background-color: $dark-background-color;
-    .sub-item-customer-icon {
-      :deep(img) {
-        & {
-          filter: brightness(1000%);
-        }
-      }
-    }
-  }
-
-  .light-mode {
-    background-color: $light-background-color;
-    .sub-item-customer-icon {
-      :deep(img) {
-        & {
-          filter: brightness(0);
-        }
+  .sub-item-customer-icon {
+    :deep(img) {
+      & {
+        filter: brightness(var(--img-brightness));
       }
     }
   }
@@ -312,17 +296,10 @@
     width: calc(100% - 24px);
     margin-left: auto;
     margin-right: auto;
-    border-radius: $item-card-radios;
-    padding: $safe-area-side;
+    border-radius: var(--item-card-radios);
+    padding: var(--safe-area-side);
     display: flex;
-
-    .dark-mode & {
-      background: $dark-card-color;
-    }
-
-    .light-mode & {
-      background: $light-card-color;
-    }
+    background: var(--card-color);
 
     :deep(.nut-avatar) {
       flex-shrink: 0;
@@ -353,14 +330,7 @@
           word-break: break-all;
           overflow: hidden;
           font-size: 16px;
-
-          .dark-mode & {
-            color: $dark-primary-text-color;
-          }
-
-          .light-mode & {
-            color: $light-primary-text-color;
-          }
+          color: var(--primary-text-color);
         }
 
         .copy-sub-link {
@@ -375,14 +345,7 @@
           svg {
             width: 16px;
             height: 16px;
-
-            .dark-mode & {
-              color: $dark-lowest-text-color;
-            }
-
-            .light-mode & {
-              color: $light-lowest-text-color;
-            }
+            color: var(--lowest-text-color);
           }
         }
       }
@@ -396,18 +359,11 @@
         overflow: hidden;
         margin-top: 4px;
         font-size: 12px;
+        color: var(--comment-text-color);
 
         span {
           display: block;
           line-height: 1.8;
-        }
-
-        .dark-mode & {
-          color: $dark-comment-text-color;
-        }
-
-        .light-mode & {
-          color: $light-comment-text-color;
         }
       }
     }

@@ -345,6 +345,12 @@ export default {
       cancel: '取消',
       edit: '编辑',
       save: '保存',
+      changeTheme: '更换主题',
+    },
+    themePicker: {
+      title: '选择一个主题',
+      cancel: '取消',
+      confirm: '确定',
     },
     config: 'GitHub 配置',
   },
