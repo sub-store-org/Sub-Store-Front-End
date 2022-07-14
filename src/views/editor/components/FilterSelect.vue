@@ -50,8 +50,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .checkbox-group {
     display: grid;
     grid-template-columns: 1fr 1fr;

@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
   import { inject, reactive, onMounted, watch, ref } from 'vue';
-  import { usePopupRoute } from '@/utils/usePopupRoute';
+  import { usePopupRoute } from '@/hooks/usePopupRoute';
   import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
   import { useRouter } from 'vue-router';
 
@@ -95,8 +95,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;

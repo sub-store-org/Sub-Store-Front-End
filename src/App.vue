@@ -14,7 +14,7 @@
   import { storeToRefs } from 'pinia';
   import { useSubsStore } from '@/store/subs';
   import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
-  import { useThemes } from '@/utils/useThemes';
+  import { useThemes } from '@/hooks/useThemes';
 
   const { t } = useI18n();
 
@@ -52,8 +52,6 @@
 </script>
 
 <style lang="scss">
-  @import '@/assets/custom_theme_variables.scss';
-
   #app {
     font-family: 'Roboto', 'Noto Sans', Arial, 'PingFang SC',
       'Source Han Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', 'ST Heiti',
