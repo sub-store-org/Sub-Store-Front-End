@@ -96,12 +96,11 @@
 
 <script lang="ts" setup>
   import Draggable from 'vuedraggable';
-  import { ref, toRaw, onMounted } from 'vue';
+  import { ref } from 'vue';
   import { Dialog } from '@nutui/nutui';
+  import { useHackPicker } from '@/hooks/useHackPicker';
   import { useI18n } from 'vue-i18n';
   import i18nFile from '@/locales/zh';
-  import { isMobile } from '@/utils/isMobile';
-  import { useEventListener } from '@vueuse/core';
 
   const { t } = useI18n();
   const drag = ref(true);
@@ -116,8 +115,7 @@
     };
   });
   const columns = ref(items);
-  // 电脑操作时需要使用的变量
-  const clickValue = ref(null);
+  const { clickValue } = useHackPicker(columns, showAddPicker);
 
   const onClickAddBtn = () => {
     showAddPicker.value = true;
@@ -198,37 +196,9 @@
       closeOnClickOverlay: true,
     });
   };
-
-  onMounted(() => {
-    // hack pc 点击选择
-    if (!isMobile()) {
-      clickValue.value = toRaw(columns.value[0]);
-      const body = document.querySelector('body');
-      useEventListener(body, 'click', e => {
-        const el = e.target as HTMLElement;
-        if (el.className === 'nut-picker-roller-item') {
-          const container = el.parentElement;
-          const target = columns.value.find(item => item.text === el.innerText);
-          clickValue.value = [toRaw(target)];
-
-          (container.children as unknown as HTMLElement[]).forEach(item => {
-            item.classList.remove('nut-picker-roller-item-hidden');
-          });
-
-          // // 转动选择器位置
-          const result = el.style.transform.match(/rotate3d\((.*?)\)/);
-          const temp = result[1].split(',');
-          const deg = Number(temp[temp.length - 1].replace('deg', ''));
-          container.style.transform = `rotate3d(1, 0, 0, ${-deg}deg)`;
-        }
-      });
-    }
-  });
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .add-action-btn {
     font-size: 14px;
     width: 100%;

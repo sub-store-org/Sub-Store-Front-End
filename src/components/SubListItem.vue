@@ -104,7 +104,7 @@
   import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
   import { useClipboard } from '@vueuse/core';
-  import { usePopupRoute } from '@/utils/usePopupRoute';
+  import { usePopupRoute } from '@/hooks/usePopupRoute';
 
   const { copy } = useClipboard();
   const { t } = useI18n();
