@@ -53,17 +53,9 @@
 
 // picker 组件样式
 .nut-popup {
-  .nut-picker-roller-mask {
-    pointer-events: none;
-  }
-
   .nut-picker-roller {
     @media screen and (min-width: 560px) {
       transition: transform 300ms 0s !important;
-    }
-
-    .nut-picker-roller-item {
-      cursor: pointer;
     }
   }
 

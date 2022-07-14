@@ -86,7 +86,7 @@ export const useThemes = () => {
   });
 
   return {
-    mode,
+    currentMode: mode,
     themeList,
     setTheme,
   };

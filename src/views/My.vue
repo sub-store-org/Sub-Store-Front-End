@@ -111,7 +111,7 @@
       <nut-cell
         class="change-theme"
         :title="$t(`myPage.btn.changeTheme`)"
-        :desc="mode"
+        :desc="currentMode"
         @click="showThemePicker = true"
         is-link
       ></nut-cell>
@@ -142,7 +142,6 @@
 <script lang="ts" setup>
   import iconKey from '@/assets/icons/key-solid.svg';
   import iconUser from '@/assets/icons/user-solid.svg';
-
   import surge from '@/assets/icons/surge.png?url';
   import clash from '@/assets/icons/clash.png?url';
   import quanx from '@/assets/icons/quanx.png?url';
@@ -159,10 +158,11 @@
   import { Notify } from '@nutui/nutui';
   import { initStores } from '@/utils/initApp';
   import { butifyDate } from '@/utils/butifyDate';
-  import { useThemes } from '@/utils/useThemes';
+  import { useThemes } from '@/hooks/useThemes';
+  import { useHackPicker } from '@/hooks/useHackPicker';
 
   const { t } = useI18n();
-  const { mode, themeList, setTheme } = useThemes();
+  const { currentMode, themeList, setTheme } = useThemes();
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
@@ -178,8 +178,15 @@
       };
     });
   });
+
+  const { clickValue } = useHackPicker(themeColumn, showThemePicker);
+
   const confirm = ({ selectedValue }) => {
-    setTheme(selectedValue[0]);
+    if (clickValue.value) {
+      setTheme(clickValue.value[0].value);
+    } else {
+      setTheme(selectedValue[0]);
+    }
   };
 
   const displayAvatar = computed(() => {

@@ -114,8 +114,6 @@ function filter(proxies, targetPlatform) {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .editor-page-header {
     padding: var(--safe-area-side);
     position: sticky;
