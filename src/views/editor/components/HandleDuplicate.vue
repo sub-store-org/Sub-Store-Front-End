@@ -96,8 +96,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .des-label {
     font-size: 12px;
     margin-bottom: 8px;

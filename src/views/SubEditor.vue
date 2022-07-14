@@ -229,7 +229,7 @@
   import { useSubsApi } from '@/api/subs';
   import CompareTable from '@/views/CompareTable.vue';
   import { initStores } from '@/utils/initApp';
-  import { usePopupRoute } from '@/utils/usePopupRoute';
+  import { usePopupRoute } from '@/hooks/usePopupRoute';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -500,8 +500,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .page-wrapper {
     padding: 0 var(--safe-area-side) calc(v-bind(padding) + 63px)
       var(--safe-area-side);
