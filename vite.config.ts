@@ -69,7 +69,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       preprocessorOptions: {
         scss: {
           // 配置 自定义覆盖主题 和 nutui 全局 scss 变量
-          additionalData: `@import "@/assets/custom_theme_variables.scss";@import "@nutui/nutui/dist/styles/variables-jdt.scss";`,
+          additionalData: `@import "@nutui/nutui/dist/styles/variables-jdt.scss";`,
         },
       },
     },

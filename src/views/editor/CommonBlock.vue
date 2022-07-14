@@ -159,8 +159,6 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/custom_theme_variables.scss';
-
   .options-label {
     font-size: 12px;
     margin-bottom: 16px;
