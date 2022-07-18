@@ -12,6 +12,7 @@ export default {
     'third-color': '#0ED57D',
     'danger-color': '#E56459',
 
+    'status-bar-background-color': '#478EF2',
     'background-color': '#121212',
     'nav-bar-color': '#12121299',
     'tab-bar-color': '#121212AA',
@@ -19,7 +20,8 @@ export default {
     'divider-color': '#FFFFFF08',
     'card-color': '#202020',
     'dialog-color': '#202020',
-    'switch-background-color': '#FFFFFF14',
+    'switch-close-background-color': '#FFFFFF14',
+    'switch-active-background-color': '#478EF2',
     'unimportant-icon-color': '#FFFFFF34',
     'picker-mask-near-color': '#12121248',
     'picker-mask-far-color': '#121212',

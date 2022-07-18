@@ -1,3 +1,12 @@
+// 全局 switch 样式
+.nut-switch.switch-close {
+  background: var(--switch-close-background-color);
+}
+
+.nut-switch {
+  background: var(--switch-active-background-color);
+}
+
 // tab 切换面板
 .tab-panel-wrapper {
   position: fixed;

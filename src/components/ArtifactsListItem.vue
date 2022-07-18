@@ -89,21 +89,21 @@
 </template>
 
 <script lang="ts" setup>
-  import surgeIcon from '@/assets/icons/surge.png';
-  import quanxIcon from '@/assets/icons/quanx.png';
-  import loonIcon from '@/assets/icons/loon.png';
   import clashIcon from '@/assets/icons/clash.png';
-  import stashIcon from '@/assets/icons/stash.png';
+  import loonIcon from '@/assets/icons/loon.png';
+  import quanxIcon from '@/assets/icons/quanx.png';
   import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
-  import { isMobile } from '@/utils/isMobile';
-  import { computed, ref, createVNode, watchEffect, watch, toRaw } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useSubsStore } from '@/store/subs';
+  import stashIcon from '@/assets/icons/stash.png';
+  import surgeIcon from '@/assets/icons/surge.png';
   import { useArtifactsStore } from '@/store/artifacts';
-  import { Dialog, Toast, Notify } from '@nutui/nutui';
+  import { useSubsStore } from '@/store/subs';
   import { butifyDate } from '@/utils/butifyDate';
-  import { storeToRefs } from 'pinia';
+  import { isMobile } from '@/utils/isMobile';
+  import { Dialog, Notify, Toast } from '@nutui/nutui';
   import { useClipboard } from '@vueuse/core';
+  import { storeToRefs } from 'pinia';
+  import { computed, createVNode, ref, toRaw, watch, watchEffect } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   const { copy } = useClipboard();
 
@@ -374,10 +374,6 @@
               font-weight: normal;
               line-height: 1.8;
               color: var(--comment-text-color);
-            }
-
-            .my-switch.switch-close {
-              background: var(--switch-background-color);
             }
 
             .my-switch {

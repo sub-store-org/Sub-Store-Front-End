@@ -13,11 +13,10 @@ export const useSettingsStore = defineStore('settingsStore', {
       githubUser: '',
       syncTime: 0,
       theme: {
-        name: 'auto',
-        config: {
-          dark: 'dark',
-          light: 'light',
-        },
+        auto: true,
+        name: 'light',
+        dark: 'dark',
+        light: 'light',
       },
       avatarUrl: '',
       artifactStore: '',
@@ -34,11 +33,10 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
 
-        this.theme.name = res.data.theme?.name ?? 'auto';
-        this.theme.config = res.data.theme?.config ?? {
-          dark: 'dark',
-          light: 'light',
-        };
+        this.theme.auto = res.data.theme?.auto ?? true;
+        this.theme.name = res.data.theme?.name ?? 'light';
+        this.theme.dark = res.data.theme?.dark ?? 'dark';
+        this.theme.light = res.data.theme?.light ?? 'light';
       }
     },
     async editSettings(data: SettingsPostData) {
@@ -51,36 +49,11 @@ export const useSettingsStore = defineStore('settingsStore', {
         Notify.success(t(`myPage.notify.save.succeed`));
       }
     },
-    async changeTheme(name) {
+    async changeTheme(data: SettingsPostData) {
       Toast.loading('切换主题中...', { cover: true, id: 'theme__loading' });
-
-      const data = {
-        theme: {
-          name,
-          config: this.theme.config,
-        },
-      };
       const { data: res } = await settingsApi.setSettings(data);
       if (res.status === 'success') {
-        this.theme.name = name;
-      }
-      Toast.hide('theme__loading');
-    },
-    async editThemeConfig(label, value) {
-      Toast.loading('切换主题中...', { cover: true, id: 'theme__loading' });
-      const data = {
-        theme: {
-          name: this.theme.name,
-          config: {
-            dark: this.theme.config.dark,
-            light: this.theme.config.light,
-          },
-        },
-      };
-      data.theme.config[label] = value;
-      const { data: res } = await settingsApi.setSettings(data);
-      if (res.status === 'success') {
-        this.theme.config[label] = value;
+        this.theme = res.data.theme;
       }
       Toast.hide('theme__loading');
     },

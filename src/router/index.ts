@@ -1,19 +1,21 @@
-import 'vue-router';
-import { createRouter, createWebHistory } from 'vue-router';
+import { useEnvApi } from '@/api/env';
+import { useSubsApi } from '@/api/subs';
 
 import AppLayout from '@/layout/AppLayout.vue';
+import { useGlobalStore } from '@/store/global';
+import { initStores } from '@/utils/initApp';
+import My from '@/views/My.vue';
+import NotFound from '@/views/NotFound.vue';
 
 import Sub from '@/views/Sub.vue';
-import Sync from '@/views/Sync.vue';
-import My from '@/views/My.vue';
 import SubEditor from '@/views/SubEditor.vue';
-import NotFound from '@/views/NotFound.vue';
-import { useSubsApi } from '@/api/subs';
-import { useEnvApi } from '@/api/env';
-import { toRaw } from 'vue';
-import { initStores } from '@/utils/initApp';
-import { useGlobalStore } from '@/store/global';
+
+import Sync from '@/views/Sync.vue';
+import themeSetting from '@/views/themeSetting.vue';
 import { Toast } from '@nutui/nutui';
+import { toRaw } from 'vue';
+import 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 let globalStore = null;
 
@@ -66,6 +68,15 @@ const router = createRouter({
           component: SubEditor,
           meta: {
             title: 'subEditor',
+            needTabBar: false,
+            needNavBack: true,
+          },
+        },
+        {
+          path: '/settings/theme',
+          component: themeSetting,
+          meta: {
+            title: 'themeSetting',
             needTabBar: false,
             needNavBack: true,
           },

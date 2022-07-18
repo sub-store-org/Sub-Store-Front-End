@@ -1,7 +1,7 @@
 import { useSettingsStore } from '@/store/settings';
 import { useEventListener } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
-import { watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -59,7 +59,7 @@ const changeVariables = (newMode: CustomTheme) => {
   const themeColorMeta = document.getElementById('theme__color');
   themeColorMeta.setAttribute(
     'content',
-    modules[newMode].colors['nav-bar-color']
+    modules[newMode].colors['status-bar-background-color']
   );
 };
 
@@ -69,9 +69,24 @@ export const useThemes = () => {
   const { theme } = storeToRefs(settingsStore);
 
   // 定义主题 picker list 选项
-  const pickerList = [{ text: '自动', value: 'auto' }];
+  const pickerList = ref([]);
+  const pickerDarkList = ref([]);
+  const pickerLightList = ref([]);
+
   for (const key in modules) {
-    pickerList.push({
+    if (modules[key].meta.label === 'dark') {
+      pickerDarkList.value.push({
+        text: modules[key].meta.name + ' - ' + modules[key].meta.author,
+        value: key,
+      });
+    } else if (modules[key].meta.label === 'light') {
+      pickerLightList.value.push({
+        text: modules[key].meta.name + ' - ' + modules[key].meta.author,
+        value: key,
+      });
+    }
+
+    pickerList.value.push({
       text: modules[key].meta.name + ' - ' + modules[key].meta.author,
       value: key,
     });
@@ -80,14 +95,14 @@ export const useThemes = () => {
   // 定义自动根据系统设置切换主题方法
   const autoTheme = el => {
     el.matches
-      ? changeVariables(theme.value.config.dark)
-      : changeVariables(theme.value.config.light);
+      ? changeVariables(theme.value.dark)
+      : changeVariables(theme.value.light);
   };
 
   // 监听 theme 设置变化，切换 theme
   watchEffect(async () => {
-    if (theme.value.name === 'auto') {
-      if (theme.value.config) {
+    if (theme.value.auto) {
+      if (theme.value.dark && theme.value.light) {
         autoTheme(mql);
         useEventListener(mql, 'change', autoTheme);
       }
@@ -100,5 +115,8 @@ export const useThemes = () => {
   return {
     currentMode: () => theme.value.name,
     pickerList,
+    pickerDarkList,
+    pickerLightList,
+    isAuto: () => theme.value.auto,
   };
 };
