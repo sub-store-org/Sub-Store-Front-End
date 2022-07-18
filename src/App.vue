@@ -7,14 +7,14 @@
 
 <script setup lang="ts">
   import NavBar from '@/components/NavBar.vue';
-  import { onMounted, watchEffect, ref } from 'vue';
+  import { useThemes } from '@/hooks/useThemes';
   import { useGlobalStore } from '@/store/global';
-  import { useI18n } from 'vue-i18n';
-  import { initStores } from '@/utils/initApp';
-  import { storeToRefs } from 'pinia';
   import { useSubsStore } from '@/store/subs';
   import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
-  import { useThemes } from '@/hooks/useThemes';
+  import { initStores } from '@/utils/initApp';
+  import { storeToRefs } from 'pinia';
+  import { onMounted, ref, watchEffect } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
 
@@ -30,9 +30,6 @@
   const navigator: NavigatorExtend = window.navigator;
   globalStore.setBottomSafeArea(navigator.standalone ? 32 : 6);
 
-  // 初始化颜色主题
-  useThemes();
-
   // 引入 inoBounce 禁止过度滑动橡皮筋效果
   onMounted(() => {
     let externalScript = document.createElement('script');
@@ -43,6 +40,10 @@
 
   // 初始化应用数据（顶部通知）
   initStores(true, true, false);
+
+  // 初始化颜色主题
+  useThemes();
+
   // 设置流量刷新状态
   watchEffect(() => {
     allLength.value = getFlowsUrlList(subs.value).length;

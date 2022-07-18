@@ -111,7 +111,7 @@
       <nut-cell
         class="change-theme"
         :title="$t(`myPage.btn.changeTheme`)"
-        :desc="currentMode"
+        :desc="currentThemeDes"
         @click="showThemePicker = true"
         is-link
       ></nut-cell>
@@ -129,9 +129,10 @@
     </div>
   </div>
 
+  <button @click="setLight">change</button>
   <nut-picker
     v-model:visible="showThemePicker"
-    :columns="themeColumn"
+    :columns="pickerList"
     :title="$t(`myPage.themePicker.title`)"
     :cancel-text="$t(`myPage.themePicker.cancel`)"
     :ok-text="$t(`myPage.themePicker.confirm`)"
@@ -140,52 +141,52 @@
 </template>
 
 <script lang="ts" setup>
-  import iconKey from '@/assets/icons/key-solid.svg';
-  import iconUser from '@/assets/icons/user-solid.svg';
-  import surge from '@/assets/icons/surge.png?url';
-  import clash from '@/assets/icons/clash.png?url';
-  import quanx from '@/assets/icons/quanx.png?url';
-  import loon from '@/assets/icons/loon.png?url';
-  import stash from '@/assets/icons/stash.png?url';
-  import node from '@/assets/icons/node.svg?url';
+  import { useSettingsApi } from '@/api/settings';
   import avatar from '@/assets/icons/avatar.svg?url';
-  import { ref, computed, watchEffect } from 'vue';
+  import clash from '@/assets/icons/clash.png?url';
+  import iconKey from '@/assets/icons/key-solid.svg';
+  import loon from '@/assets/icons/loon.png?url';
+  import node from '@/assets/icons/node.svg?url';
+  import quanx from '@/assets/icons/quanx.png?url';
+  import stash from '@/assets/icons/stash.png?url';
+  import surge from '@/assets/icons/surge.png?url';
+  import iconUser from '@/assets/icons/user-solid.svg';
+  import { useHackPicker } from '@/hooks/useHackPicker';
+  import { useThemes } from '@/hooks/useThemes';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
-  import { storeToRefs } from 'pinia';
-  import { useI18n } from 'vue-i18n';
-  import { useSettingsApi } from '@/api/settings';
-  import { Notify } from '@nutui/nutui';
-  import { initStores } from '@/utils/initApp';
   import { butifyDate } from '@/utils/butifyDate';
-  import { useThemes } from '@/hooks/useThemes';
-  import { useHackPicker } from '@/hooks/useHackPicker';
+  import { initStores } from '@/utils/initApp';
+  import { Notify } from '@nutui/nutui';
+  import { storeToRefs } from 'pinia';
+  import { computed, ref, watchEffect } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
-  const { currentMode, themeList, setTheme } = useThemes();
+  const { currentMode, pickerList } = useThemes();
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
   const { githubUser, gistToken, syncTime, avatarUrl } =
     storeToRefs(settingsStore);
+  const { changeTheme, editThemeConfig } = settingsStore;
 
   const showThemePicker = ref(false);
-  const themeColumn = computed(() => {
-    return themeList.map(theme => {
-      return {
-        text: theme,
-        value: theme,
-      };
-    });
+  const currentThemeDes = computed(() => {
+    return pickerList.find(item => item.value === currentMode()).text;
   });
 
-  const { clickValue } = useHackPicker(themeColumn, showThemePicker);
+  const { clickValue } = useHackPicker(pickerList, showThemePicker);
+
+  const setLight = () => {
+    editThemeConfig('dark', '333');
+  };
 
   const confirm = ({ selectedValue }) => {
     if (clickValue.value) {
-      setTheme(clickValue.value[0].value);
+      changeTheme(clickValue.value[0].value);
     } else {
-      setTheme(selectedValue[0]);
+      changeTheme(selectedValue[0]);
     }
   };
 

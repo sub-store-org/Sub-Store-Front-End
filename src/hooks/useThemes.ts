@@ -1,5 +1,7 @@
-import { useColorMode, BasicColorSchema, useEventListener } from '@vueuse/core';
-import { watch } from 'vue';
+import { useSettingsStore } from '@/store/settings';
+import { useEventListener } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
+import { watchEffect } from 'vue';
 
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -9,85 +11,94 @@ const commonVariables = {
   'item-card-radios': '12px',
 };
 
-// 读取主题文件内容
-const modulesFiles = import.meta.globEager('@/themes/*.ts');
-const keys = Object.keys(modulesFiles);
-const modules = keys.reduce((modules: { [key: string]: any }, path: string) => {
-  const paths = path.split('/');
-  const moduleName = paths[paths.length - 1].replace('.ts', '');
-  modules[moduleName] = modulesFiles[path]?.default;
-  return modules;
-}, {});
+// 获取主题文件夹内的主题
+const getThemeModules = () => {
+  const allThemes = {};
+  // 读取主题文件内容
+  const modulesFiles = import.meta.globEager('@/themes/*.ts');
+  const keys = Object.keys(modulesFiles);
 
-// 修改 root 变量
-const changeVariables = (newMode: Theme) => {
-  const map = modules[newMode];
+  // 初始化为主题表，继承合并
+  keys.forEach(path => {
+    const paths = path.split('/');
+    const modulesName = paths[paths.length - 1].replace('.ts', '');
+    allThemes[modulesName] = modulesFiles[path]?.default;
+  });
+
+  // 初始化 theme 表后开始处理继承关系
+  for (const key in allThemes) {
+    const current = allThemes[key];
+    const extend = current.meta.extend;
+    if (extend) {
+      const extendModule = allThemes[extend];
+      if (extendModule) {
+        // 拷贝一份原有继承和目标主题的 color 对象，解构复制覆盖目标主题颜色, 将通用变量覆盖进去
+        current.colors = {
+          ...{ ...extendModule.colors },
+          ...{ ...current.colors },
+        };
+      } else {
+        console.error(`${extend} 主题不存在`);
+      }
+    }
+  }
+  return allThemes;
+};
+const modules = getThemeModules();
+
+// 定义修改 root 变量方法
+const changeVariables = (newMode: CustomTheme) => {
+  const map = { ...{ ...modules[newMode].colors }, ...commonVariables };
   if (map) {
     Object.keys(map).forEach(key => {
       document.documentElement.style.setProperty(`--${key}`, map[key]);
     });
   }
+
+  // 切换浏览器窗口 / 状态栏颜色
+  const themeColorMeta = document.getElementById('theme__color');
+  themeColorMeta.setAttribute(
+    'content',
+    modules[newMode].colors['nav-bar-color']
+  );
 };
-
-// 自动根据系统设置切换主题
-const autoTheme = e => {
-  e.matches ? changeVariables('dark') : changeVariables('light');
-};
-
-// 初始化主题
-const initTheme = mode => {
-  Object.keys(commonVariables).forEach(key => {
-    document.documentElement.style.setProperty(
-      `--${key}`,
-      commonVariables[key]
-    );
-  });
-
-  if (mode.value === 'auto') {
-    autoTheme(mql);
-    useEventListener(mql, 'change', autoTheme);
-  } else {
-    changeVariables(mode.value);
-  }
-};
-
-// 定义主题类型
-type CustomTheme = 'light' | 'dark' | 'auto';
-type Theme = BasicColorSchema & CustomTheme;
 
 export const useThemes = () => {
-  const themeList = ['auto', ...Object.keys(modules)];
-  const modes = {};
-  themeList.forEach(theme => {
-    modes[theme] = theme;
-  });
-  // 自动 mode 并初始化主题变量
-  const mode = useColorMode({
-    emitAuto: true,
-    modes,
-  });
+  // 读取 store 中的主题配置
+  const settingsStore = useSettingsStore();
+  const { theme } = storeToRefs(settingsStore);
 
-  initTheme(mode);
+  // 定义主题 picker list 选项
+  const pickerList = [{ text: '自动', value: 'auto' }];
+  for (const key in modules) {
+    pickerList.push({
+      text: modules[key].meta.name + ' - ' + modules[key].meta.author,
+      value: key,
+    });
+  }
 
-  // 提供手动设置主题方法
-  const setTheme = (newMode: Theme) => {
-    mode.value = newMode;
+  // 定义自动根据系统设置切换主题方法
+  const autoTheme = el => {
+    el.matches
+      ? changeVariables(theme.value.config.dark)
+      : changeVariables(theme.value.config.light);
   };
 
-  // 监听 mode 变化切换 root 变量值
-  watch(mode, newMode => {
-    if (newMode === 'auto') {
-      autoTheme(mql);
-      useEventListener(mql, 'change', autoTheme);
+  // 监听 theme 设置变化，切换 theme
+  watchEffect(async () => {
+    if (theme.value.name === 'auto') {
+      if (theme.value.config) {
+        autoTheme(mql);
+        useEventListener(mql, 'change', autoTheme);
+      }
     } else {
       mql.removeEventListener('change', autoTheme);
-      changeVariables(newMode);
+      changeVariables(theme.value.name);
     }
   });
 
   return {
-    currentMode: mode,
-    themeList,
-    setTheme,
+    currentMode: () => theme.value.name,
+    pickerList,
   };
 };
