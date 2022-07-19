@@ -1,15 +1,20 @@
-interface SettingsStoreState {
-  gistToken: string;
-  githubUser: string;
+type SettingsStoreState = SettingsBase & SettingsPostData;
+
+interface SettingsBase {
   syncTime: number;
-  theme: {
-    darkMode: boolean;
-  };
   avatarUrl: string;
   artifactStore: string;
 }
 
 interface SettingsPostData {
-  gistToken: string;
-  githubUser: string;
+  gistToken?: string;
+  githubUser?: string;
+  theme?: {
+    auto: boolean;
+    name?: CustomTheme;
+    dark: CustomTheme;
+    light: CustomTheme;
+  };
 }
+
+type CustomTheme = 'light' | 'dark';
