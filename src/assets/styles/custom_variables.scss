@@ -1,0 +1,109 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 自定义 scss 变量 ***********************************************************************************************
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$text-color-1: var(--primary-text-color);
+$text-color-2: var(--second-text-color);
+$text-color-3: var(--comment-text-color);
+$text-color-4: var(--lowest-text-color);
+
+$divider-color: var(--divider-color);
+$popup-color: var(--popup-color);
+$card-color: var(--card-color);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 覆盖 nutui scss 变量 ******************************************************************************************
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 主色调
+$primary-color: var(--primary-color);
+$primary-color-end: var(--primary-color-end);
+
+// 标题常规文字
+$title-color: $text-color-1;
+$title-color2: $text-color-2;
+$text-color: $text-color-3;
+$disable-color: $text-color-4;
+
+// input 提示
+$required-color: #fa2c19;
+
+// button
+$button-default-border-color: $text-color-4;
+$button-default-color: $text-color-2;
+$button-plain-background-color: transparent;
+
+// switch
+$switch-close-bg-color: var(--switch-close-background-color);
+$switch-close--cline-bg-color: #f0f0f0;
+
+// tabbar
+$tabbar-border-top: 1px solid $divider-color;
+$tabbar-border-bottom: none;
+$tabbar-box-shadow: none;
+
+// tabs
+$tabs-tab-smile-color: $primary-color;
+$tabs-titles-item-color: $text-color;
+$tabs-titles-item-active-color: $title-color;
+$tabs-titles-background-color: $popup-color;
+
+// picker
+$picker-cancel-color: $text-color-3;
+$picker-bar-title-color: $title-color;
+$picker-bar-title-font-weight: bold;
+$picker-item-text-color: $text-color-2;
+$picker-item-active-line-border: 1px solid $divider-color;
+
+// cascader
+$cascader-item-color: $title-color;
+$cascader-item-active-color: $primary-color;
+
+//input & textarea
+$input-border-bottom: $divider-color;
+$input-disabled-color: $disable-color;
+$textarea-limit-color: $text-color-2;
+$textarea-text-color: $text-color-2;
+$textarea-disabled-color: $disable-color;
+
+// cell && cell group
+$cell-color: $text-color-2;
+$cell-border-radius: var(--item-card-radios);
+$cell-background: $card-color;
+$cell-after-border-bottom: 2px solid $divider-color;
+$cell-group-title-color: $text-color-3;
+$cell-group-desc-color: $text-color-4;
+$cell-group-background-color: $card-color;
+
+// checkbox
+$checkbox-label-color: $text-color-2;
+$checkbox-label-disable-color: $text-color-4;
+$checkbox-icon-disable-color: $text-color-4;
+
+//radio
+$radio-label-font-color: $text-color-2;
+$radio-label-font-active-color: $primary-color;
+$radio-label-disable-color: $text-color-4;
+$radio-icon-disable-color: $text-color-4;
+
+//tag
+$tag-default-background-color: $divider-color;
+$tag-default-color: $text-color-3;
+
+// Notify
+$notify-text-color: #fffe;
+$notify-padding: 12px 0 !default;
+$notify-font-size: 12px !default;
+$notify-line-height: 1.5;
+$notify-base-background-color: linear-gradient(
+  135deg,
+  $primary-color 0%,
+  $primary-color-end 100%
+);
+$notify-primary-background-color: linear-gradient(
+  315deg,
+  $primary-color 0%,
+  $primary-color-end 100%
+);
+$notify-success-background-color: var(--succeed-color);
+$notify-danger-background-color: var(--danger-color);

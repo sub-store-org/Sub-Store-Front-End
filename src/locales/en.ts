@@ -23,6 +23,7 @@ export default {
       sync: 'Sync Subscription',
       my: 'My Profile',
       subEditor: 'Subscription Editor',
+      themeSetting: 'Theme Setting',
       notFound: '404 Not Found',
     },
   },
@@ -328,12 +329,6 @@ export default {
       cancel: 'Cancel',
       edit: 'Edit',
       save: 'Save',
-      changeTheme: 'Change Theme',
-    },
-    themePicker: {
-      title: 'Pick a Theme',
-      cancel: 'Cancel',
-      confirm: 'Confirm',
     },
     notify: {
       save: {
@@ -452,6 +447,17 @@ export default {
     },
     selectSource: {
       title: 'Select Source',
+    },
+  },
+  themeSettingPage: {
+    themeSettingTitle: 'Theme Setting',
+    auto: 'Auto Switch',
+    light: 'Light Mode',
+    dark: 'Dark Mode',
+    themePicker: {
+      title: 'Pick a Theme',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
     },
   },
 };

@@ -1,10 +1,10 @@
-import { Notify } from '@nutui/nutui';
-import { useGlobalStore } from '@/store/global';
-import { useSubsStore } from '@/store/subs';
-import { useSettingsStore } from '@/store/settings';
+import { useEnvApi } from '@/api/env';
 import i18n from '@/locales';
 import { useArtifactsStore } from '@/store/artifacts';
-import { useEnvApi } from '@/api/env';
+import { useGlobalStore } from '@/store/global';
+import { useSettingsStore } from '@/store/settings';
+import { useSubsStore } from '@/store/subs';
+import { Notify } from '@nutui/nutui';
 
 export const initStores = async (
   needNotify: boolean,

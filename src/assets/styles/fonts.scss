@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'My Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/roboto-light.eot');
+  src: url('../fonts/roboto-light.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/roboto-light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'My Roboto';
+  font-style: normal;
+  font-weight: bold;
+  src: url('../fonts/roboto-bold.eot');
+  src: url('../fonts/roboto-bold.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/roboto-bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'JB';
+  src: url('../fonts/jetbrainsmononl-regular.eot');
+  src: url('../fonts/jetbrainsmononl-regular.eot?#iefix')
+      format('embedded-opentype'),
+    url('../fonts/jetbrainsmononl-regular.woff') format('woff');
+}

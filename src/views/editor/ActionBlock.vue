@@ -95,12 +95,12 @@
 </template>
 
 <script lang="ts" setup>
-  import Draggable from 'vuedraggable';
-  import { ref } from 'vue';
-  import { Dialog } from '@nutui/nutui';
   import { useHackPicker } from '@/hooks/useHackPicker';
-  import { useI18n } from 'vue-i18n';
   import i18nFile from '@/locales/zh';
+  import { Dialog } from '@nutui/nutui';
+  import { ref } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import Draggable from 'vuedraggable';
 
   const { t } = useI18n();
   const drag = ref(true);
@@ -229,11 +229,9 @@
   }
 
   .list-group-item {
-    border-radius: var(--item-card-radios);
     display: flex;
     flex-direction: column;
     box-shadow: none;
-    background: var(--card-color);
 
     .list-group-item-title {
       display: flex;
@@ -267,10 +265,6 @@
             margin-right: 8px;
             font-weight: normal;
             font-size: 12px;
-          }
-
-          .my-switch.switch-close {
-            background: var(--switch-background-color);
           }
 
           .my-switch {

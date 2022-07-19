@@ -202,34 +202,34 @@
 </template>
 
 <script lang="ts" setup>
+  import { useSubsApi } from '@/api/subs';
   import icon from '@/assets/icons/logo.svg';
-  import { useRoute, useRouter } from 'vue-router';
-  import { useSubsStore } from '@/store/subs';
-  import {
-    ref,
-    toRaw,
-    computed,
-    provide,
-    reactive,
-    shallowRef,
-    watchEffect,
-  } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import CommonBlock from '@/views/editor/CommonBlock.vue';
+  import { usePopupRoute } from '@/hooks/usePopupRoute';
   import { useGlobalStore } from '@/store/global';
+  import { useSubsStore } from '@/store/subs';
+  import { addItem, deleteItem } from '@/utils/actionsOperate';
+  import { actionsToProcess } from '@/utils/actionsToPorcess';
+  import { initStores } from '@/utils/initApp';
+  import CompareTable from '@/views/CompareTable.vue';
   import ActionBlock from '@/views/editor/ActionBlock.vue';
+  import CommonBlock from '@/views/editor/CommonBlock.vue';
   import ActionRadio from '@/views/editor/components/ActionRadio.vue';
   import FilterSelect from '@/views/editor/components/FilterSelect.vue';
   import HandleDuplicate from '@/views/editor/components/HandleDuplicate.vue';
   import Regex from '@/views/editor/components/Regex.vue';
   import Script from '@/views/editor/components/Script.vue';
-  import { actionsToProcess } from '@/utils/actionsToPorcess';
-  import { deleteItem, addItem } from '@/utils/actionsOperate';
   import { Dialog, Notify, Toast } from '@nutui/nutui';
-  import { useSubsApi } from '@/api/subs';
-  import CompareTable from '@/views/CompareTable.vue';
-  import { initStores } from '@/utils/initApp';
-  import { usePopupRoute } from '@/hooks/usePopupRoute';
+  import {
+    computed,
+    provide,
+    reactive,
+    ref,
+    shallowRef,
+    toRaw,
+    watchEffect,
+  } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRoute, useRouter } from 'vue-router';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -512,10 +512,10 @@
   .radio-wrapper {
     display: flex;
     justify-content: end;
-  }
 
-  .textarea-wrapper {
-    :deep(textarea) {
+    :deep(.nut-radio__button.false) {
+      background: var(--divider-color);
+      border-color: transparent;
       color: var(--second-text-color);
     }
   }
@@ -551,8 +551,6 @@
     .compare-btn {
       background: transparent;
       width: 36%;
-      color: var(--second-text-color);
-      border-color: var(--lowest-text-color);
     }
 
     .submit-btn {
