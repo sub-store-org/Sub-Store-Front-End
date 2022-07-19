@@ -23,8 +23,8 @@
         <div class="actions">
           <nut-button
             class="upload-btn"
-            type="info"
             plain
+            type="primary"
             :disabled="syncIsDisabled"
             size="small"
             :loading="uploadIsLoading"
@@ -110,9 +110,8 @@
       </div>
       <nut-cell
         class="change-theme"
-        :title="$t(`myPage.btn.changeTheme`)"
-        :desc="currentMode"
-        @click="showThemePicker = true"
+        :title="$t(`themeSettingPage.themeSettingTitle`)"
+        to="/settings/theme"
         is-link
       ></nut-cell>
     </div>
@@ -128,66 +127,36 @@
       <p>v{{ env.version }}</p>
     </div>
   </div>
-
-  <nut-picker
-    v-model:visible="showThemePicker"
-    :columns="themeColumn"
-    :title="$t(`myPage.themePicker.title`)"
-    :cancel-text="$t(`myPage.themePicker.cancel`)"
-    :ok-text="$t(`myPage.themePicker.confirm`)"
-    @confirm="confirm"
-  ></nut-picker>
 </template>
 
 <script lang="ts" setup>
-  import iconKey from '@/assets/icons/key-solid.svg';
-  import iconUser from '@/assets/icons/user-solid.svg';
-  import surge from '@/assets/icons/surge.png?url';
-  import clash from '@/assets/icons/clash.png?url';
-  import quanx from '@/assets/icons/quanx.png?url';
-  import loon from '@/assets/icons/loon.png?url';
-  import stash from '@/assets/icons/stash.png?url';
-  import node from '@/assets/icons/node.svg?url';
+  import { useSettingsApi } from '@/api/settings';
   import avatar from '@/assets/icons/avatar.svg?url';
-  import { ref, computed, watchEffect } from 'vue';
+  import clash from '@/assets/icons/clash.png?url';
+  import iconKey from '@/assets/icons/key-solid.svg';
+  import loon from '@/assets/icons/loon.png?url';
+  import node from '@/assets/icons/node.svg?url';
+  import quanx from '@/assets/icons/quanx.png?url';
+  import stash from '@/assets/icons/stash.png?url';
+  import surge from '@/assets/icons/surge.png?url';
+  import iconUser from '@/assets/icons/user-solid.svg';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
-  import { storeToRefs } from 'pinia';
-  import { useI18n } from 'vue-i18n';
-  import { useSettingsApi } from '@/api/settings';
-  import { Notify } from '@nutui/nutui';
-  import { initStores } from '@/utils/initApp';
   import { butifyDate } from '@/utils/butifyDate';
-  import { useThemes } from '@/hooks/useThemes';
-  import { useHackPicker } from '@/hooks/useHackPicker';
+  import { initStores } from '@/utils/initApp';
+  import { Notify } from '@nutui/nutui';
+  import { storeToRefs } from 'pinia';
+  import { computed, ref, watchEffect } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
 
   const { t } = useI18n();
-  const { currentMode, themeList, setTheme } = useThemes();
+  const router = useRouter();
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
   const { githubUser, gistToken, syncTime, avatarUrl } =
     storeToRefs(settingsStore);
-
-  const showThemePicker = ref(false);
-  const themeColumn = computed(() => {
-    return themeList.map(theme => {
-      return {
-        text: theme,
-        value: theme,
-      };
-    });
-  });
-
-  const { clickValue } = useHackPicker(themeColumn, showThemePicker);
-
-  const confirm = ({ selectedValue }) => {
-    if (clickValue.value) {
-      setTheme(clickValue.value[0].value);
-    } else {
-      setTheme(selectedValue[0]);
-    }
-  };
 
   const displayAvatar = computed(() => {
     return !githubUser.value ? avatar : avatarUrl.value;
@@ -322,7 +291,7 @@
         width: 100%;
         padding: 12px;
         border-radius: var(--item-card-radios);
-        color: var(--comment-text-color);
+        color: var(--second-text-color);
         background: var(--card-color);
 
         .title-wrapper {
@@ -350,7 +319,6 @@
             background: transparent;
             padding: 16px;
             color: var(--second-text-color);
-            border-color: var(--lowest-text-color);
 
             :deep(img) {
               width: 16px;
@@ -451,15 +419,7 @@
 
       .change-theme {
         box-shadow: none;
-        background: var(--card-color);
-        border-radius: var(--item-card-radios);
-        color: var(--comment-text-color);
         font-weight: bold;
-
-        :deep(.nut-cell__value) {
-          font-weight: normal;
-          color: var(--lowest-text-color);
-        }
       }
     }
 

@@ -23,6 +23,7 @@ export default {
       sync: '同步订阅',
       my: '我的',
       subEditor: '订阅编辑',
+      themeSetting: '主题设置',
       notFound: '地址未找到',
     },
   },
@@ -345,12 +346,6 @@ export default {
       cancel: '取消',
       edit: '编辑',
       save: '保存',
-      changeTheme: '更换主题',
-    },
-    themePicker: {
-      title: '选择一个主题',
-      cancel: '取消',
-      confirm: '确定',
     },
     config: 'GitHub 配置',
   },
@@ -454,6 +449,18 @@ export default {
     },
     selectSource: {
       title: '选择来源',
+    },
+  },
+  themeSettingPage: {
+    themeSettingTitle: '主题设置',
+    // themeSettingDes: '',
+    auto: '自动切换主题',
+    light: '浅色主题',
+    dark: '深色主题',
+    themePicker: {
+      title: '选择一个主题',
+      cancel: '取消',
+      confirm: '确定',
     },
   },
 };

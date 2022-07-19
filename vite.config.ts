@@ -1,9 +1,9 @@
-import * as path from 'path';
-import { createStyleImportPlugin } from 'vite-plugin-style-import';
-import monacoEditorPlugin from 'vite-plugin-monaco-editor';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
-import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import * as path from 'path';
+import { ConfigEnv, defineConfig, loadEnv } from 'vite';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import { createStyleImportPlugin } from 'vite-plugin-style-import';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 
 const alias: Record<string, string> = {
   '@': path.resolve(__dirname, 'src'),
@@ -69,7 +69,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       preprocessorOptions: {
         scss: {
           // 配置 自定义覆盖主题 和 nutui 全局 scss 变量
-          additionalData: `@import "@nutui/nutui/dist/styles/variables-jdt.scss";`,
+          additionalData: `@import "@/assets/styles/custom_variables.scss";@import "@nutui/nutui/dist/styles/variables-jdt.scss";`,
         },
       },
     },
