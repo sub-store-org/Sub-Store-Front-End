@@ -23,8 +23,8 @@
         <div class="actions">
           <nut-button
             class="upload-btn"
-            type="info"
             plain
+            type="primary"
             :disabled="syncIsDisabled"
             size="small"
             :loading="uploadIsLoading"
@@ -291,7 +291,7 @@
         width: 100%;
         padding: 12px;
         border-radius: var(--item-card-radios);
-        color: var(--comment-text-color);
+        color: var(--second-text-color);
         background: var(--card-color);
 
         .title-wrapper {
@@ -319,7 +319,6 @@
             background: transparent;
             padding: 16px;
             color: var(--second-text-color);
-            border-color: var(--lowest-text-color);
 
             :deep(img) {
               width: 16px;
@@ -420,15 +419,7 @@
 
       .change-theme {
         box-shadow: none;
-        background: var(--card-color);
-        border-radius: var(--item-card-radios);
-        color: var(--comment-text-color);
         font-weight: bold;
-
-        :deep(.nut-cell__value) {
-          font-weight: normal;
-          color: var(--lowest-text-color);
-        }
       }
     }
 

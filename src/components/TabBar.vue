@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRoute, onBeforeRouteUpdate } from 'vue-router';
   import { useGlobalStore } from '@/store/global';
   import { storeToRefs } from 'pinia';
   import { ref } from 'vue';
+  import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
   const route = useRoute();
   const routeList = ['/subs', '/sync', '/my'];
@@ -58,10 +58,9 @@
       padding-top: 12px;
       padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(var(--tab-bar-blur));
+      -webkit-backdrop-filter: blur(var(--tab-bar-blur));
       background: var(--tab-bar-color);
-      border-top: var(--divider-color) solid 1px;
     }
 
     :deep(.tabbar-item) {

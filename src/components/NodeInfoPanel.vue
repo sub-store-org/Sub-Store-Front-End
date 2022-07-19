@@ -5,8 +5,7 @@
         <ul class="info-ul">
           <li>
             <strong class="node-name">
-              <nut-tag type="primary" plain class="type-tag"
-                >{{ nodeInfo.type }} </nut-tag
+              <nut-tag class="type-tag">{{ nodeInfo.type }} </nut-tag
               >{{ nodeInfo.name }}</strong
             >
           </li>
@@ -46,7 +45,7 @@
 
 <script lang="ts" setup>
   import { useQRCode } from '@vueuse/integrations/useQRCode';
-  import { ref, computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   const emit = defineEmits(['close']);
   const { ipApi, nodeInfo } = defineProps<{
@@ -89,8 +88,8 @@
 <style lang="scss" scoped>
   .type-tag {
     color: var(--primary-color) !important;
-    background: transparent !important;
     border: 1px solid var(--primary-color) !important;
+    background: transparent !important;
     margin-right: 4px;
   }
 

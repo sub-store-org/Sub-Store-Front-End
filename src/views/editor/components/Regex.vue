@@ -22,7 +22,6 @@
         v-for="(content, index) in value"
         closeable
         @close="deleteRegexItem(index)"
-        type="primary"
       >
         <span>{{
           type === 'Regex Rename Operator'
@@ -53,10 +52,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, ref, onMounted, watch } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useRouter, onBeforeRouteLeave } from 'vue-router';
   import { Dialog } from '@nutui/nutui';
+  import { inject, onMounted, ref, watch } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -205,8 +204,6 @@
       max-width: 100%;
       margin-right: 8px;
       margin-bottom: 8px;
-      background-color: var(--compare-item-background-color);
-      color: var(--second-text-color);
 
       span {
         max-width: 95%;
@@ -229,8 +226,6 @@
       background: transparent;
       padding: 8px 12px;
       margin-right: 16px;
-      border-bottom: 1px solid var(--lowest-text-color);
-      color: var(--second-text-color);
     }
 
     > svg {
