@@ -1,25 +1,10 @@
-// 全局 switch 样式
-.nut-switch.switch-close {
-  background: var(--switch-close-background-color);
-}
-
+// switch
 .nut-switch {
   background: var(--switch-active-background-color);
 }
 
 // tab 切换面板
 .tab-panel-wrapper {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  z-index: 1100;
-  max-height: 72vh;
-  max-width: 80vw;
-  width: 80vw;
-  border-radius: 8px;
-  overflow: hidden;
-  padding-bottom: 24px;
   background-color: var(--popup-color);
   color: var(--primary-text-color);
 
@@ -28,39 +13,23 @@
       border-bottom: 1px solid var(--divider-color);
     }
 
-    .nut-tabpane,
-    .nut-tabs__titles {
+    .nut-tabpane {
       background-color: inherit;
       color: inherit;
-    }
-
-    .nut-tabs__titles-item.active {
-      color: var(--primary-text-color);
-    }
-
-    .nut-tabs__titles-item {
-      color: var(--comment-text-color);
     }
   }
 }
 
-// 顶部粘性定位标题样式
+// sticky title 顶部粘性定位标题
 .sticky-title-wrapper {
-  position: sticky;
-  display: block;
-  z-index: 10;
-  top: 0;
   margin-top: var(--safe-area-side);
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 2;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--sticky-title-blur));
+  -webkit-backdrop-filter: blur(var(--sticky-title-blur));
   color: var(--comment-text-color);
   background-color: var(--nav-bar-color);
 }
 
-// picker 组件样式
+// picker
 .nut-popup {
   .nut-picker-roller {
     @media screen and (min-width: 560px) {
@@ -76,28 +45,13 @@
   .nut-cascader.nut-tabs {
     .nut-tabs__titles {
       background: var(--popup-color);
-
-      .nut-tabs__titles-item.active {
-        color: var(--primary-text-color);
-      }
-
-      .nut-tabs__titles-item {
-        color: var(--comment-text-color);
-      }
     }
 
     .nut-tabs__content {
       background: var(--popup-color);
+
       .nut-tabpane {
         background-color: var(--popup-color);
-
-        .nut-cascader-item.active {
-          color: var(--primary-text-color);
-        }
-
-        .nut-cascader-item {
-          color: var(--primary-text-color);
-        }
       }
     }
   }
@@ -105,18 +59,6 @@
   .nut-picker__bar,
   .nut-picker__column {
     background-color: var(--popup-color);
-  }
-
-  .nut-picker__hairline {
-    border-color: var(--divider-color);
-  }
-
-  .nut-picker__title {
-    color: var(--primary-text-color);
-  }
-
-  .nut-picker-roller-item {
-    color: var(--second-text-color);
   }
 
   .nut-picker-roller-mask {
@@ -133,12 +75,14 @@
   }
 }
 
+// img
 img.auto-reverse {
   filter: brightness(var(--img-brightness));
 }
 
+// dialog
 .auto-dialog {
-  background-color: var(--dialog-color);
+  background-color: var(--dialog-color) !important;
 
   > .nut-dialog {
     > .nut-dialog__content {
@@ -149,17 +93,11 @@ img.auto-reverse {
       color: var(--primary-text-color);
       font-weight: bold;
     }
-
-    .nut-button--plain {
-      background: var(--dialog-color);
-    }
   }
 }
 
-// 表单 相关
+// form
 .nut-cell-group__warp {
-  background-color: var(--card-color);
-
   .nut-form-item,
   .nut-textarea {
     background: var(--card-color);
@@ -174,39 +112,21 @@ img.auto-reverse {
   }
 }
 
-.nut-radio__button.false {
-  color: var(--comment-text-color);
-  background-color: var(--divider-color);
-  border-color: transparent;
-}
-
-.nut-radio__icon--unchecked,
-.nut-checkbox__icon--unchecked {
-  color: var(--lowest-text-color);
-}
-
-.nut-radio__label {
-  color: var(--second-text-color);
-}
-
+// input & textarea
 .nut-input-text {
   color: var(--second-text-color) !important;
 }
-
 :-moz-placeholder {
-  color: var(--lowest-text-color);
+  color: var(--comment-text-color);
 }
-
 ::-moz-placeholder {
-  color: var(--lowest-text-color);
+  color: var(--comment-text-color);
 }
-
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: var(--lowest-text-color);
+  color: var(--comment-text-color);
 }
-
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: var(--lowest-text-color);
+  color: var(--comment-text-color);
 }

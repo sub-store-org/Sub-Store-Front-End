@@ -129,7 +129,6 @@
       box-shadow: none;
       background: var(--card-color);
       border-radius: var(--item-card-radios);
-      color: var(--comment-text-color);
       font-weight: bold;
       display: flex;
       align-items: center;
@@ -146,10 +145,6 @@
       :deep(.nut-cell-group__warp) {
         border-radius: var(--item-card-radios);
         overflow: hidden;
-
-        .cell-item::after {
-          border-bottom: 1px solid var(--switch-background-color);
-        }
       }
     }
   }

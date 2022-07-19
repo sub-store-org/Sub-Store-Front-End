@@ -229,11 +229,9 @@
   }
 
   .list-group-item {
-    border-radius: var(--item-card-radios);
     display: flex;
     flex-direction: column;
     box-shadow: none;
-    background: var(--card-color);
 
     .list-group-item-title {
       display: flex;

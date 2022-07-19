@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
 
@@ -91,8 +91,8 @@
         height: v-bind(navBarHeight);
         top: 0;
         box-shadow: none;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(var(--nav-bar-blur));
+        -webkit-backdrop-filter: blur(var(--nav-bar-blur));
         background: var(--nav-bar-color);
         border-bottom: var(--divider-color) solid 1px;
 
@@ -101,7 +101,7 @@
         }
 
         .navBar-right-icon {
-          color: #606266;
+          color: var(--icon-nav-bar-right);
         }
       }
     }
