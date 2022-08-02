@@ -1,8 +1,11 @@
-import axios, { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
-import { Notify } from '@nutui/nutui';
+import { useAppNotifyStore } from '@/store/appNotify';
+import axios, { AxiosError, AxiosPromise, AxiosResponse } from 'axios';
 
-const notifyConfig = {
-  duration: 3000,
+let appNotifyStore = null;
+
+const notifyConfig: { type: 'danger'; duration: number } = {
+  type: 'danger',
+  duration: 2500,
 };
 
 // 配置新建一个 axios 实例
@@ -24,19 +27,28 @@ service.interceptors.response.use(
     if (e.config.url.startsWith('/api/sub/flow'))
       return Promise.resolve(e.response);
 
-    let msg = '';
-    // 如果是网络错误，则提示网络错误
-    if (e.response.status === 0) {
-      msg += '网络错误，无法连接后端服务\n';
-      msg += 'code: ' + e.response.status + ' msg: ' + e.message;
-      Notify.danger(msg, notifyConfig);
-      return Promise.reject(e.response);
+    if (appNotifyStore) {
+      // 如果是网络错误，则提示网络错误
+      if (e.response.status === 0) {
+        appNotifyStore.showNotify({
+          title: '网络错误，无法连接后端服务\n',
+          content: 'code: ' + e.response.status + ' msg: ' + e.message,
+          ...notifyConfig,
+        });
+        return Promise.reject(e.response);
+      } else {
+        let content = 'type: ' + e.response.data.error?.type;
+        if (e.response.data.error?.details)
+          content += '\n' + e.response.data.error.details;
+        appNotifyStore.showNotify({
+          title: e.response.data.error?.message,
+          content,
+          ...notifyConfig,
+        });
+        return Promise.resolve(e.response);
+      }
     } else {
-      msg += e.response.data.error?.message + '\n';
-      msg += 'type: ' + e.response.data.error?.type + '\n';
-      msg += e.response.data.error?.details;
-      Notify.danger(msg, notifyConfig);
-      return Promise.resolve(e.response);
+      appNotifyStore = useAppNotifyStore();
     }
   }
 );

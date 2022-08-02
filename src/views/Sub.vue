@@ -1,15 +1,4 @@
 <template>
-  <!--顶部通知 组件式暂时有 bug，先使用函数调用式-->
-  <!--<nut-notify-->
-  <!--  pop-class="pop-notify"-->
-  <!--  v-model:visible="visible"-->
-  <!--  type="primary"-->
-  <!--  :duration="1000"-->
-  <!--&gt;-->
-  <!--  <span>{{ '通知' }}</span>-->
-  <!--</nut-notify>-->
-  <!--<button @click="visible = true">点击</button>-->
-
   <!--浮动按钮-->
   <Teleport to="body">
     <div class="drag-btn-wrapper" v-if="hasSubs || hasCollections">
@@ -126,12 +115,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { useSubsStore } from '@/store/subs';
-  import { useGlobalStore } from '@/store/global';
-  import { ref } from 'vue';
   import SubListItem from '@/components/SubListItem.vue';
-  import { storeToRefs } from 'pinia';
+  import { useGlobalStore } from '@/store/global';
+  import { useSubsStore } from '@/store/subs';
   import { initStores } from '@/utils/initApp';
+  import { storeToRefs } from 'pinia';
+  import { ref } from 'vue';
 
   const addSubBtnIsVisible = ref(false);
 

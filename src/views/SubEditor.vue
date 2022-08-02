@@ -205,6 +205,7 @@
   import { useSubsApi } from '@/api/subs';
   import icon from '@/assets/icons/logo.svg';
   import { usePopupRoute } from '@/hooks/usePopupRoute';
+  import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
   import { useSubsStore } from '@/store/subs';
   import { addItem, deleteItem } from '@/utils/actionsOperate';
@@ -218,7 +219,7 @@
   import HandleDuplicate from '@/views/editor/components/HandleDuplicate.vue';
   import Regex from '@/views/editor/components/Regex.vue';
   import Script from '@/views/editor/components/Script.vue';
-  import { Dialog, Notify, Toast } from '@nutui/nutui';
+  import { Dialog, Toast } from '@nutui/nutui';
   import {
     computed,
     provide,
@@ -238,6 +239,7 @@
   const editType = route.params.editType as string;
   const configName = route.params.id as string;
   const subsStore = useSubsStore();
+  const { showNotify } = useAppNotifyStore();
 
   const { bottomSafeArea } = useGlobalStore();
   const padding = bottomSafeArea + 'px';
@@ -442,7 +444,6 @@
 
       // console.log('submit.....\n', data);
 
-      const duration = 1000;
       let res = null;
 
       if (configName === 'UNTITLED') {
@@ -468,8 +469,9 @@
 
       router.replace('/').then(() => {
         if (res)
-          Notify.success(t(`editorPage.subConfig.pop.succeedMsg`), {
-            duration,
+          showNotify({
+            type: 'success',
+            title: t(`editorPage.subConfig.pop.succeedMsg`),
           });
       });
     });
