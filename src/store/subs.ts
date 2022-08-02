@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
 import { useSubsApi } from '@/api/subs';
-import { Notify } from '@nutui/nutui';
 import i18n from '@/locales';
+import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
+import { defineStore } from 'pinia';
 
 const { t } = i18n.global;
 const subsApi = useSubsApi();
@@ -59,10 +59,15 @@ export const useSubsStore = defineStore('subsStore', {
       getFlowsUrlList(this.subs).forEach(asyncGetFlow);
     },
     async deleteSub(type: SubsType, name: string) {
+      const { showNotify } = useAppNotifyStore();
+
       const { data } = await subsApi.deleteSub(type, name);
       if (data.status === 'success') {
         await this.fetchSubsData();
-        Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
+        showNotify({
+          type: 'danger',
+          title: t('subPage.deleteSub.succeedNotify'),
+        });
       }
     },
   },

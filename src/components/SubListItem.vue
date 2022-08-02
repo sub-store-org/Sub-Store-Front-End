@@ -89,22 +89,23 @@
 </template>
 
 <script lang="ts" setup>
-  import CompareTable from '@/views/CompareTable.vue';
-  import PreviewPanel from '@/components/PreviewPanel.vue';
-  import icon from '@/assets/icons/logo.svg';
-  import { isMobile } from '@/utils/isMobile';
-  import { Dialog, Toast, Notify } from '@nutui/nutui';
-  import dayjs from 'dayjs';
-  import { createVNode, ref, computed, toRaw } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useSubsStore } from '@/store/subs';
-  import { storeToRefs } from 'pinia';
-  import { useGlobalStore } from '@/store/global';
-  import { getString } from '@/utils/flowTransfer';
-  import { useI18n } from 'vue-i18n';
   import { useSubsApi } from '@/api/subs';
-  import { useClipboard } from '@vueuse/core';
+  import icon from '@/assets/icons/logo.svg';
+  import PreviewPanel from '@/components/PreviewPanel.vue';
   import { usePopupRoute } from '@/hooks/usePopupRoute';
+  import { useAppNotifyStore } from '@/store/appNotify';
+  import { useGlobalStore } from '@/store/global';
+  import { useSubsStore } from '@/store/subs';
+  import { getString } from '@/utils/flowTransfer';
+  import { isMobile } from '@/utils/isMobile';
+  import CompareTable from '@/views/CompareTable.vue';
+  import { Dialog, Toast } from '@nutui/nutui';
+  import { useClipboard } from '@vueuse/core';
+  import dayjs from 'dayjs';
+  import { storeToRefs } from 'pinia';
+  import { computed, createVNode, ref, toRaw } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
 
   const { copy } = useClipboard();
   const { t } = useI18n();
@@ -271,15 +272,15 @@
     });
   };
 
+  const { showNotify } = useAppNotifyStore();
+
   const onClickCopyLink = () => {
     const host = import.meta.env.VITE_API_URL;
     const url = `${host}/download/${
       props.type === 'collection' ? 'collection/' : ''
     }${name}`;
     copy(encodeURI(url));
-    Notify.success(t('subPage.copyNotify.succeed'), {
-      duration: 1500,
-    });
+    showNotify({ title: t('subPage.copyNotify.succeed'), type: 'success' });
   };
 </script>
 

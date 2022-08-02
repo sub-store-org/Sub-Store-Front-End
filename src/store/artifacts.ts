@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
 import { useArtifactsApi } from '@/api/artifacts';
-import { Notify } from '@nutui/nutui';
 import i18n from '@/locales';
+import { useAppNotifyStore } from '@/store/appNotify';
+import { defineStore } from 'pinia';
 
 const { t } = i18n.global;
 const artifactsApi = useArtifactsApi();
@@ -21,48 +21,62 @@ export const useArtifactsStore = defineStore('artifactsStore', {
       }
     },
     async createArtifact(data: Artifact) {
+      const { showNotify } = useAppNotifyStore();
       const res = await artifactsApi.createArtifact(data);
       if (res.data.status === 'success') {
         await this.fetchArtifactsData();
-        Notify.success(t('syncPage.addArtForm.succeedNotify'), {
-          duration: 1500,
+        showNotify({
+          title: t('syncPage.addArtForm.succeedNotify'),
+          type: 'success',
         });
       }
     },
     async editArtifact(name: string, data: Artifact) {
+      const { showNotify } = useAppNotifyStore();
+
       const res = await artifactsApi.editArtifact(name, data);
       if (res.data.status === 'success') {
         await this.fetchArtifactsData();
-        Notify.success(t('syncPage.editArtForm.succeedNotify'), {
-          duration: 1500,
+        showNotify({
+          title: t('syncPage.editArtForm.succeedNotify'),
+          type: 'success',
         });
       }
     },
     async deleteArtifact(name: string) {
+      const { showNotify } = useAppNotifyStore();
+
       const { data } = await artifactsApi.deleteArtifact(name);
       if (data.status === 'success') {
         await this.fetchArtifactsData();
-        Notify.success(t('syncPage.deleteArt.succeedNotify'), {
-          duration: 1500,
+        showNotify({
+          title: t('syncPage.deleteArt.succeedNotify'),
+          type: 'success',
         });
       }
     },
     async syncAllArtifact() {
+      const { showNotify } = useAppNotifyStore();
+
       const { data } = await artifactsApi.syncAllArtifact();
       if (data.status === 'success') {
         await this.fetchArtifactsData();
-        Notify.success(t('syncPage.syncAllSucceed'), {
-          duration: 1500,
+        showNotify({
+          title: t('syncPage.syncAllSucceed'),
+          type: 'success',
         });
       }
     },
     async syncOneArtifact(name: string) {
+      const { showNotify } = useAppNotifyStore();
+
       const res = await artifactsApi.syncOneArtifact(name);
       if (res.data.status === 'success') {
         const index = this.artifacts.findIndex(item => item.name === name);
         this.artifacts[index] = res.data.data;
-        Notify.success(t('syncPage.syncAllSucceed'), {
-          duration: 1500,
+        showNotify({
+          title: t('syncPage.syncAllSucceed'),
+          type: 'success',
         });
       }
     },
