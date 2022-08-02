@@ -95,11 +95,12 @@
   import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
   import stashIcon from '@/assets/icons/stash.png';
   import surgeIcon from '@/assets/icons/surge.png';
+  import { useAppNotifyStore } from '@/store/appNotify';
   import { useArtifactsStore } from '@/store/artifacts';
   import { useSubsStore } from '@/store/subs';
   import { butifyDate } from '@/utils/butifyDate';
   import { isMobile } from '@/utils/isMobile';
-  import { Dialog, Notify, Toast } from '@nutui/nutui';
+  import { Dialog, Toast } from '@nutui/nutui';
   import { useClipboard } from '@vueuse/core';
   import { storeToRefs } from 'pinia';
   import { computed, createVNode, ref, toRaw, watch, watchEffect } from 'vue';
@@ -113,6 +114,7 @@
     name: string;
   }>();
 
+  const { showNotify } = useAppNotifyStore();
   const subsStore = useSubsStore();
   const artifactsStore = useArtifactsStore();
   const { artifacts } = storeToRefs(artifactsStore);
@@ -216,9 +218,7 @@
 
   const onClickCopyLink = () => {
     copy(encodeURI(artifact.value.url));
-    Notify.success(t('syncPage.copyNotify.succeed'), {
-      duration: 1500,
-    });
+    showNotify({ title: t('syncPage.copyNotify.succeed'), type: 'success' });
   };
 
   const onDeleteConfirm = async () => {

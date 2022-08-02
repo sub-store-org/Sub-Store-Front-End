@@ -9,6 +9,7 @@ export default {
       succeed: '数据刷新成功！',
       flowFailed: '刷新 {name} 流量失败！',
       failed: '数据刷新失败\n',
+      loading: '刷新数据中...',
     },
   },
   // 顶部标题栏

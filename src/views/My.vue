@@ -140,11 +140,11 @@
   import stash from '@/assets/icons/stash.png?url';
   import surge from '@/assets/icons/surge.png?url';
   import iconUser from '@/assets/icons/user-solid.svg';
+  import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
   import { butifyDate } from '@/utils/butifyDate';
   import { initStores } from '@/utils/initApp';
-  import { Notify } from '@nutui/nutui';
   import { storeToRefs } from 'pinia';
   import { computed, ref, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -152,6 +152,7 @@
 
   const { t } = useI18n();
   const router = useRouter();
+  const { showNotify } = useAppNotifyStore();
   const settingsStore = useSettingsStore();
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
@@ -257,7 +258,10 @@
           await useSettingsStore().fetchSettings();
           break;
       }
-      Notify.success(t(`myPage.notify.${query}.succeed`));
+      showNotify({
+        type: 'success',
+        title: t(`myPage.notify.${query}.succeed`),
+      });
     }
 
     downloadIsLoading.value = false;

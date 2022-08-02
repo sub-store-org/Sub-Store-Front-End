@@ -1,16 +1,18 @@
 import { useEnvApi } from '@/api/env';
 import i18n from '@/locales';
+import { useAppNotifyStore } from '@/store/appNotify';
 import { useArtifactsStore } from '@/store/artifacts';
 import { useGlobalStore } from '@/store/global';
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from '@/store/subs';
-import { Notify } from '@nutui/nutui';
+import { Toast } from '@nutui/nutui';
 
 export const initStores = async (
   needNotify: boolean,
   needFetchFlow: boolean,
   needRefreshCache: boolean
 ) => {
+  const { showNotify } = useAppNotifyStore();
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
   const artifactsStore = useArtifactsStore();
@@ -18,6 +20,10 @@ export const initStores = async (
   const { t } = i18n.global;
   let isSucceed = true;
 
+  Toast.loading(t('globalNotify.refresh.loading'), {
+    cover: true,
+    id: 'refresh',
+  });
   globalStore.setLoading(true);
   globalStore.setFetchResult(true);
 
@@ -43,12 +49,11 @@ export const initStores = async (
 
   // 发送通知
   if (isSucceed && needNotify) {
-    Notify.primary(t('globalNotify.refresh.succeed'), {
-      duration: 2000,
-    });
+    showNotify({ title: t('globalNotify.refresh.succeed') });
   }
 
   globalStore.setLoading(false);
   // 更新流量
   if (needFetchFlow) await subsStore.fetchFlows();
+  Toast.hide('refresh');
 };

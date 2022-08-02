@@ -1,6 +1,7 @@
 import { useSettingsApi } from '@/api/settings';
 import i18n from '@/locales';
-import { Notify, Toast } from '@nutui/nutui';
+import { useAppNotifyStore } from '@/store/appNotify';
+import { Toast } from '@nutui/nutui';
 import { defineStore } from 'pinia';
 
 const settingsApi = useSettingsApi();
@@ -40,13 +41,15 @@ export const useSettingsStore = defineStore('settingsStore', {
       }
     },
     async editSettings(data: SettingsPostData) {
+      const { showNotify } = useAppNotifyStore();
+
       const { data: res } = await settingsApi.setSettings(data);
       if (res.status === 'success') {
         this.gistToken = res.data.gistToken || '';
         this.githubUser = res.data.githubUser || '';
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
-        Notify.success(t(`myPage.notify.save.succeed`));
+        showNotify({ type: 'success', title: t(`myPage.notify.save.succeed`) });
       }
     },
     async changeTheme(data: SettingsPostData) {
