@@ -1,4 +1,5 @@
 <template>
+  <GlobalNotify />
   <NavBar />
   <main class="page-body">
     <router-view />
@@ -6,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+  import GlobalNotify from '@/components/GlobalNotify.vue';
   import NavBar from '@/components/NavBar.vue';
   import { useThemes } from '@/hooks/useThemes';
   import { useGlobalStore } from '@/store/global';
