@@ -9,6 +9,7 @@ export default {
       succeed: 'Refresh Successful!\nEnjoy the feeling',
       flowFailed: 'Refresh flow of {name} failed！',
       failed: 'Refresh Failed\n',
+      loading: 'Refreshing Data...',
     },
   },
   // Title Bar
