@@ -478,7 +478,7 @@
   };
 
   // 唯一名称验证器
-  const nameValidator = (val: string) => {
+  const nameValidator = (val: string): Promise<boolean> => {
     return new Promise(resolve => {
       if (val === 'UNTITLED') resolve(false);
       const nameList = subsStore.subs.map(item => item.name);
@@ -489,7 +489,7 @@
   };
 
   // url 格式验证器
-  const urlValidator = (val: string) => {
+  const urlValidator = (val: string): Promise<boolean> => {
     return new Promise(resolve => {
       resolve(/^(http|https):\/\/\S+$/.test(val));
     });
