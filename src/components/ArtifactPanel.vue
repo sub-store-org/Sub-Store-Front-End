@@ -101,11 +101,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, watchEffect, toRaw } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useSubsStore } from '@/store/subs';
   import { useArtifactsStore } from '@/store/artifacts';
+  import { useSubsStore } from '@/store/subs';
   import { Dialog, Toast } from '@nutui/nutui';
+  import { computed, ref, toRaw, watchEffect } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
   const artifactsStore = useArtifactsStore();
@@ -236,7 +236,7 @@
     });
   };
 
-  const nameValidator = () => {
+  const nameValidator = (): Promise<boolean> => {
     return new Promise(resolve => {
       if (isEditMode.value) resolve(true);
       const isValid = /^[a-zA-Z\d._-]*$/.test(editPanelData.value.name);
@@ -244,7 +244,7 @@
     });
   };
 
-  const duplicateNameValidator = () => {
+  const duplicateNameValidator = (): Promise<boolean> => {
     return new Promise(resolve => {
       if (isEditMode.value) resolve(true);
       const duplicate = artifactsStore.artifacts.find(
