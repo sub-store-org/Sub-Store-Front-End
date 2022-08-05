@@ -47,6 +47,18 @@
         </p>
       </div>
     </div>
+    <template #left>
+      <div class="sub-item-swipe-btn-wrapper">
+        <nut-button
+          shape="square"
+          type="primary"
+          class="sub-item-swipe-btn"
+          @click="onClickCopyConfig"
+        >
+          <font-awesome-icon icon="fa-solid fa-paste" />
+        </nut-button>
+      </div>
+    </template>
     <template #right>
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button
@@ -126,6 +138,7 @@
   const router = useRouter();
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
+  const subsApi = useSubsApi();
   const displayName =
     props[props.type].displayName || props[props.type]['display-name'];
 
@@ -247,6 +260,26 @@
       closeOnPopstate: true,
       lockScroll: true,
     });
+  };
+
+  const onClickCopyConfig = async () => {
+    let data;
+    switch (props.type) {
+      case 'sub':
+        data = JSON.parse(JSON.stringify(toRaw(props.sub)));
+        break;
+      case 'collection':
+        data = JSON.parse(JSON.stringify(toRaw(props.collection)));
+        break;
+    }
+    data.name += `-copy${~~(Math.random() * 10000)}`;
+
+    Toast.loading(t('subPage.copyConfigNotify.loading'), { id: 'copyConfig' });
+    await subsApi.createSub(props.type + 's', data);
+    await subsStore.fetchSubsData();
+    Toast.hide('copyConfig');
+    showNotify({ title: t('subPage.copyConfigNotify.succeed') });
+    swipe.value.close();
   };
 
   const onClickEdit = () => {
@@ -371,7 +404,14 @@
   }
 
   .sub-item-swipe {
-    :deep(.nut-swipe__right) {
+    :deep(.nut-swipe__left) {
+      .sub-item-swipe-btn-wrapper {
+        padding-left: 24px;
+      }
+    }
+
+    :deep(.nut-swipe__right),
+    :deep(.nut-swipe__left) {
       display: flex;
       justify-content: space-around;
       align-items: center;

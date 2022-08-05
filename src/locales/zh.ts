@@ -81,6 +81,11 @@ export default {
       succeed: '复制订阅链接成功\n请导入代理工具使用',
       failed: '复制订阅链接失败\n{e}',
     },
+    copyConfigNotify: {
+      loading: '拷贝配置中...',
+      succeed: '配置拷贝成功！',
+      failed: '配置拷贝失败！\n{e}',
+    },
   },
   editorPage: {
     subConfig: {

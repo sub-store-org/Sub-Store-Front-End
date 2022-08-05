@@ -1,26 +1,27 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import {
-  faLanguage,
-  faCheck,
-  faPlus,
-  faArrowUpRightFromSquare,
-  faTrashCan,
-  faPenNib,
-  faClone,
-  faEye,
-  faGrip,
-  faCircleQuestion,
-  faFloppyDisk,
-  faCircleXmark,
-  faLocationArrow,
-  faCode,
-  faArrowRotateRight,
   faAnglesRight,
+  faArrowRotateRight,
+  faArrowUpRightFromSquare,
+  faBan,
+  faCheck,
+  faCircleQuestion,
+  faCircleXmark,
+  faClone,
   faCloudArrowDown,
   faCloudArrowUp,
-  faBan,
+  faCode,
+  faEye,
+  faFloppyDisk,
+  faGrip,
+  faLanguage,
+  faLocationArrow,
+  faPaste,
+  faPenNib,
   faPenToSquare,
+  faPlus,
+  faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -43,3 +44,4 @@ library.add(faCloudArrowDown);
 library.add(faCloudArrowUp);
 library.add(faBan);
 library.add(faPenToSquare);
+library.add(faPaste);
