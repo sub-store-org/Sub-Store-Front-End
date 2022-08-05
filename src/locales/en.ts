@@ -81,6 +81,11 @@ export default {
       succeed: 'Successfully copied link!\nYou can paste in Proxy Tool now!',
       failed: 'Failed to copy subscription link!\n{e}',
     },
+    copyConfigNotify: {
+      loading: 'Copying...',
+      succeed: 'Successfully copied config!',
+      failed: 'Failed to copy config!\n{e}',
+    },
   },
   editorPage: {
     subConfig: {
