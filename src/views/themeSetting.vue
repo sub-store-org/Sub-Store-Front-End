@@ -42,6 +42,7 @@
   </div>
 
   <nut-picker
+    v-model="selectedValue"
     v-model:visible="showThemePicker"
     :columns="pickerColumn"
     :title="$t(`themeSettingPage.themePicker.title`)"
@@ -67,6 +68,7 @@
   const { theme } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
   useMousePicker();
+  const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {
     return {
@@ -84,6 +86,7 @@
   const openPicker = (type: 'dark' | 'light' | 'name') => {
     showThemePicker.value = true;
     pickerType.value = type;
+    selectedValue.value = [toRaw(theme.value[type])];
   };
 
   const pickerColumn = computed(() => {
