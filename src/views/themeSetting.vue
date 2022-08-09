@@ -42,6 +42,7 @@
   </div>
 
   <nut-picker
+    v-model="selectedValue"
     v-model:visible="showThemePicker"
     :columns="pickerColumn"
     :title="$t(`themeSettingPage.themePicker.title`)"
@@ -52,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useHackPicker } from '@/hooks/useHackPicker';
+  import { useMousePicker } from '@/hooks/useMousePicker';
   import { useThemes } from '@/hooks/useThemes';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
@@ -66,7 +67,8 @@
   const { changeTheme } = settingsStore;
   const { theme } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
-  const { clickValue } = useHackPicker(pickerList, showThemePicker);
+  useMousePicker();
+  const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {
     return {
@@ -84,6 +86,7 @@
   const openPicker = (type: 'dark' | 'light' | 'name') => {
     showThemePicker.value = true;
     pickerType.value = type;
+    selectedValue.value = [toRaw(theme.value[type])];
   };
 
   const pickerColumn = computed(() => {
@@ -99,10 +102,7 @@
 
   const confirm = ({ selectedValue }) => {
     const data = { ...theme.value };
-    data[pickerType.value] =
-      clickValue.value?.[0].value ??
-      selectedValue[0] ??
-      pickerColumn.value[0].value;
+    data[pickerType.value] = selectedValue[0] ?? pickerColumn.value[0].value;
     changeTheme({ theme: data });
   };
 
