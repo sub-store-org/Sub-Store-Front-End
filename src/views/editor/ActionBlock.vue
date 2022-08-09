@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useHackPicker } from '@/hooks/useHackPicker';
+  import { useMousePicker } from '@/hooks/useMousePicker';
   import i18nFile from '@/locales/zh';
   import { Dialog } from '@nutui/nutui';
   import { ref } from 'vue';
@@ -115,7 +115,7 @@
     };
   });
   const columns = ref(items);
-  const { clickValue } = useHackPicker(columns, showAddPicker);
+  useMousePicker();
 
   const onClickAddBtn = () => {
     showAddPicker.value = true;
@@ -166,11 +166,7 @@
 
   // 确认添加时 向渲染数组和预览数组添加对应项目
   const confirm = ({ _, selectedOptions }) => {
-    if (clickValue.value) {
-      emit('addAction', clickValue.value);
-    } else {
-      emit('addAction', selectedOptions);
-    }
+    emit('addAction', selectedOptions);
   };
 
   // 节点帮助弹窗
