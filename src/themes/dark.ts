@@ -45,5 +45,8 @@ export default {
     'nav-bar-blur': '16px',
     'tab-bar-blur': '16px',
     'sticky-title-blur': '16px',
+
+    'compare-tag-text-color': '#FFFFFF88',
+    'compare-tag-background-color': '#FFFFFF22',
   },
 };

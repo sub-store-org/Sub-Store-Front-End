@@ -235,12 +235,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, toRaw } from 'vue';
   import { useSubsApi } from '@/api/subs';
-  import { Toast } from '@nutui/nutui';
   import NodeInfoPanel from '@/components/NodeInfoPanel.vue';
-  import { useI18n } from 'vue-i18n';
   import { useSubsStore } from '@/store/subs';
+  import { Toast } from '@nutui/nutui';
+  import { computed, ref, toRaw } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
   const subsStore = useSubsStore();
@@ -334,8 +334,8 @@
     padding: 1px 4px;
     line-height: 1;
     margin-right: 3px;
-    color: var(--second-text-color);
-    background: var(--lowest-text-color);
+    color: var(--compare-tag-text-color);
+    background: var(--compare-tag-background-color);
   }
 
   .item-true {
