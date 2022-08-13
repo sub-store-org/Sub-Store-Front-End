@@ -22,6 +22,7 @@
     "pinia": "^2.0.14",
     "qrcode": "^1.5.0",
     "vue": "^3.2.37",
+    "vue-clipboard3": "^2.0.0",
     "vue-i18n": "^9.2.0-beta.36",
     "vue-router": "^4.0.16",
     "vuedraggable": "^4.1.0"
