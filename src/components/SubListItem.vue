@@ -116,10 +116,12 @@
   import dayjs from 'dayjs';
   import { storeToRefs } from 'pinia';
   import { computed, createVNode, ref, toRaw } from 'vue';
+  import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
 
-  const { copy } = useClipboard();
+  const { copy, isSupported } = useClipboard();
+  const { toClipboard: copyFallback } = useV3Clipboard();
   const { t } = useI18n();
 
   const props = defineProps<{
@@ -307,12 +309,17 @@
 
   const { showNotify } = useAppNotifyStore();
 
-  const onClickCopyLink = () => {
+  const onClickCopyLink = async () => {
     const host = import.meta.env.VITE_API_URL;
     const url = `${host}/download/${
       props.type === 'collection' ? 'collection/' : ''
     }${name}`;
-    copy(encodeURI(url));
+
+    if (isSupported) {
+      await copy(encodeURI(url));
+    } else {
+      await copyFallback(encodeURI(url));
+    }
     showNotify({ title: t('subPage.copyNotify.succeed'), type: 'success' });
   };
 </script>

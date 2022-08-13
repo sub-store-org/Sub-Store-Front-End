@@ -104,9 +104,11 @@
   import { useClipboard } from '@vueuse/core';
   import { storeToRefs } from 'pinia';
   import { computed, createVNode, ref, toRaw, watch, watchEffect } from 'vue';
+  import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
 
-  const { copy } = useClipboard();
+  const { copy, isSupported } = useClipboard();
+  const { toClipboard: copyFallback } = useV3Clipboard();
 
   const { t } = useI18n();
 
@@ -216,8 +218,12 @@
     }
   };
 
-  const onClickCopyLink = () => {
-    copy(encodeURI(artifact.value.url));
+  const onClickCopyLink = async () => {
+    if (isSupported) {
+      await copy(encodeURI(artifact.value.url));
+    } else {
+      await copyFallback(encodeURI(artifact.value.url));
+    }
     showNotify({ title: t('syncPage.copyNotify.succeed'), type: 'success' });
   };
 
