@@ -48,7 +48,7 @@
               v-if="!downloadIsLoading"
               icon="fa-solid fa-cloud-arrow-down"
             />
-            {{ $t(`myPage.btn.sync`) }}</nut-button
+            {{ $t(`myPage.btn.download`) }}</nut-button
           >
         </div>
       </div>
@@ -232,8 +232,8 @@
     if (!gistToken.value || !githubUser.value) {
       return [t(`myPage.placeholder.des`), ''];
     } else {
-      if (!syncTime.value) return [t(`myPage.placeholder.haveNotSync`), ''];
-      return [t(`myPage.placeholder.syncTime`), butifyDate(syncTime.value)];
+      if (!syncTime.value) return [t(`myPage.placeholder.haveNotDownload`), ''];
+      return [t(`myPage.placeholder.uploadTime`), butifyDate(syncTime.value)];
     }
   });
 
@@ -408,7 +408,7 @@
           .upload-btn,
           .download-btn {
             padding: 0 12px;
-            width: 104px;
+            width: 114px;
           }
 
           .upload-btn {
