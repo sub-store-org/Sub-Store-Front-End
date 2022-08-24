@@ -34,7 +34,7 @@ export default {
     sync: 'Sync',
     my: 'Profile',
   },
-  // 404页
+  // 404 页
   notFoundPage: {
     title: 'Oops! URL Error!',
     desc: 'Back to Home Page',
@@ -322,15 +322,15 @@ export default {
     placeholder: {
       name: 'Gist Sync not set',
       des: 'Sync available after Gist configuration',
-      syncTime: 'Last sync time ',
-      haveNotSync: 'Not sync yet',
+      uploadTime: 'Last upload time',
+      haveNotDownload: 'Not download yet',
       githubUser: 'Please input Github username',
       gistToken: 'Please input Gist Token',
       noGithubUser: 'Not set Github username',
       noGistToken: 'Not set Gist Token',
     },
     btn: {
-      sync: 'Sync',
+      download: 'Download',
       upload: 'Upload',
       cancel: 'Cancel',
       edit: 'Edit',
