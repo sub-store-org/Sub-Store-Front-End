@@ -34,7 +34,7 @@ export default {
     sync: '同步',
     my: '我的',
   },
-  // 404页
+  // 404 页
   notFoundPage: {
     title: '啊哦～ URL 错误！',
     desc: '回首页',
@@ -154,11 +154,11 @@ export default {
         },
         icon: {
           label: '图标链接',
-          placeholder: '填入图标链接，不要使用jpg',
+          placeholder: '填入图标链接，不要使用 jpg',
         },
         ua: {
           label: 'User-Agent',
-          placeholder: '下载订阅使用的UA，不填使用默认',
+          placeholder: '下载订阅使用的 UA，不填使用默认',
         },
       },
       commonOptions: {
@@ -169,7 +169,7 @@ export default {
           enabled: '删除',
         },
         udp: {
-          label: 'UDP转发',
+          label: 'UDP 转发',
           default: '默认',
           enabled: '强制开启',
           disabled: '强制关闭',
@@ -325,8 +325,8 @@ export default {
     placeholder: {
       name: '未设置 GitHub 同步',
       des: '同步功能配置 GitHub 用户名以及 Token 后可用',
-      syncTime: '上次同步 ',
-      haveNotSync: '暂无同步记录',
+      uploadTime: '上次上传',
+      haveNotDownload: '暂无下载记录',
       githubUser: '请输入 Github 用户名',
       gistToken: '请输入 GitHub 令牌',
       noGithubUser: '未配置 Github 用户名',
@@ -342,12 +342,12 @@ export default {
         failed: '下载失败',
       },
       upload: {
-        succeed: '同步成功',
-        failed: '同步失败',
+        succeed: '上传成功',
+        failed: '上传失败',
       },
     },
     btn: {
-      sync: '同步',
+      download: '下载',
       upload: '上传',
       cancel: '取消',
       edit: '编辑',
@@ -401,7 +401,7 @@ export default {
       btn: '立即添加',
     },
     detail: {
-      firstLine: '类型：{type}， 订阅：{name}',
+      firstLine: '类型：{type}，订阅：{name}',
       secondLine: '上次同步：{time}',
       notSync: '从未同步',
     },
