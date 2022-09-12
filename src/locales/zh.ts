@@ -26,6 +26,13 @@ export default {
       subEditor: '订阅编辑',
       themeSetting: '主题设置',
       notFound: '地址未找到',
+      askWhat: {
+        sync: {
+          title: '什么是同步订阅？',
+          content:
+            '将您的订阅信息上传到私有 Gist，在无法运行 Sub Store 的设备（例如路由器等）上也可以随时访问。',
+        },
+      },
     },
   },
   // 底部标签栏

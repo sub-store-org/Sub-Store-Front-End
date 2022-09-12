@@ -26,6 +26,13 @@ export default {
       subEditor: 'Subscription Editor',
       themeSetting: 'Theme Setting',
       notFound: '404 Not Found',
+      askWhat: {
+        sync: {
+          title: 'What is Sync Subscription?',
+          content:
+            'Upload your subscriptions to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).',
+        },
+      },
     },
   },
   // Tab Bar
