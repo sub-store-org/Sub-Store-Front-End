@@ -408,7 +408,7 @@
           .upload-btn,
           .download-btn {
             padding: 0 12px;
-            width: 114px;
+            width: 116px;
           }
 
           .upload-btn {
