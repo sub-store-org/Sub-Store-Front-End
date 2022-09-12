@@ -6,6 +6,8 @@
         @on-click-back="back"
         @on-click-right="showLangSwitchPopup = true"
         :title="currentTitle"
+        :tit-icon="currentTitleWhetherAsk"
+        @on-click-icon="onClickNavbarIcon"
       >
         <template #right>
           <font-awesome-icon
@@ -48,6 +50,7 @@
   import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
+  import { Toast } from '@nutui/nutui';
 
   const { t, locale } = useI18n();
   const router = useRouter();
@@ -63,6 +66,26 @@
     const metaTitle = route.meta.title;
     return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
   });
+  const currentTitleWhetherAsk = computed(() => {
+    const ownAsk = ['sync'];
+    const metaTitle = route.meta.title;
+    return ownAsk.includes(metaTitle) ? 'ask' : '';
+  });
+  const onClickNavbarIcon = () => {
+    const metaTitle = route.meta.title;
+    const toastContent =
+      t(`navBar.pagesTitle.askWhat.${metaTitle}.content`) || '';
+    const toastTitle = t(`navBar.pagesTitle.askWhat.${metaTitle}.title`) || '';
+    Toast.text(toastContent, {
+      title: toastTitle,
+      duration: 0,
+      cover: true,
+      'close-on-click-overlay': true,
+      'bg-color': 'rgba(0, 0, 0, 0.8)',
+      'cover-color': 'rgba(0, 0, 0, 0.2)',
+      'text-align-center': false,
+    });
+  };
 
   const navBarHeight = '56px';
   const changeLang = (type: string) => {
@@ -96,8 +119,27 @@
         background: var(--nav-bar-color);
         border-bottom: var(--divider-color) solid 1px;
 
-        .nut-navbar__title > .title {
-          color: var(--primary-text-color);
+        .nut-navbar__title {
+          min-width: 53%;
+          margin: 0 auto;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .title {
+            min-width: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 100%;
+            color: var(--primary-text-color);
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+          }
+          .nutui-iconfont {
+            margin-left: 5px;
+          }
         }
 
         .navBar-right-icon {
