@@ -10,7 +10,8 @@ const flowTransfer = (flow: number, unit: Unit) => {
 };
 
 export const getString = (current: number, total: number, unit: Unit) => {
-  const currT = flowTransfer(current, unit);
+  const currT = flowTransfer(Math.abs(current), unit);
+  currT.value = current < 0 ? '-' + currT.value : currT.value;
   const totalT = flowTransfer(total, unit);
   return `${currT.value} ${currT.unit} / ${totalT.value} ${totalT.unit}`;
 };
