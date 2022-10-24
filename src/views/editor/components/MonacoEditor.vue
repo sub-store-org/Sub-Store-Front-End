@@ -7,6 +7,9 @@
           {{ $t(`codePage.title`) }}
           <span> {{ $t(`codePage.des`) }} </span>
         </h1>
+        <button @click="onclearEditor">
+          <font-awesome-icon icon="fa-solid fa-eraser" />
+        </button>
         <button @click="onCloseEditor">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
@@ -18,9 +21,13 @@
 
 <script lang="ts" setup>
   import { ref, watchEffect, toRaw } from 'vue';
+  import { Dialog } from '@nutui/nutui';
   import * as monaco from 'monaco-editor';
   import Monokai from '@/assets/editor_theme/monokai.json';
+  import { useI18n } from 'vue-i18n';
 
+
+  const { t } = useI18n();
   const { code } = defineProps<{
     code: string;
   }>();
@@ -33,6 +40,21 @@
     const value = toRaw(monacoEditor.value)?.getValue();
     emit('close', value);
     toRaw(monacoEditor.value)?.dispose();
+  };
+  // 清空编辑器内容
+  const onclearEditor = () => {
+      Dialog({
+        title: t('editorPage.subConfig.pop.clearTitle'),
+        content: t('editorPage.subConfig.pop.clearDes'),
+        popClass: 'auto-dialog',
+        okText: t(`editorPage.subConfig.pop.clearConfirm`),
+        cancelText: t(`editorPage.subConfig.pop.clearCancel`),
+        onOk: () =>toRaw(monacoEditor.value)?.setValue(''),
+        // onCancel: () => resolve(false),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+    
   };
 
   // 获取当前系统主题 并在变化时动态修改编辑器主题
