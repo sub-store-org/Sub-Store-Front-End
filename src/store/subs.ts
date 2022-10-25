@@ -50,13 +50,13 @@ export const useSubsStore = defineStore('subsStore', {
         this[type][index] = res.data.data;
       }
     },
-    async fetchFlows() {
-      this.flows = {};
+    async fetchFlows(sub?: Sub[]) {
       const asyncGetFlow = async ([url, name]) => {
         const { data } = await subsApi.getFlow(name);
         this.flows[url] = data;
       };
-      getFlowsUrlList(this.subs).forEach(asyncGetFlow);
+      const subs = sub || this.subs;
+      getFlowsUrlList(subs).forEach(asyncGetFlow);
     },
     async deleteSub(type: SubsType, name: string) {
       const { showNotify } = useAppNotifyStore();
