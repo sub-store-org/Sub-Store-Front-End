@@ -22,6 +22,7 @@ import {
   faPenToSquare,
   faPlus,
   faTrashCan,
+  faEraser,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -45,3 +46,4 @@ library.add(faCloudArrowUp);
 library.add(faBan);
 library.add(faPenToSquare);
 library.add(faPaste);
+library.add(faEraser);
