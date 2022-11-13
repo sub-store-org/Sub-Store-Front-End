@@ -31,6 +31,7 @@
 
 // picker
 .nut-popup {
+  user-select: none;
   .nut-picker-roller {
     @media screen and (min-width: 560px) {
       transition: transform 300ms 0s !important;
@@ -59,6 +60,9 @@
   .nut-picker__bar,
   .nut-picker__column {
     background-color: var(--popup-color);
+  }
+  .nut-picker__column {
+    cursor: grab;
   }
 
   .nut-picker-roller-mask {
