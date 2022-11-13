@@ -7,6 +7,9 @@
           {{ $t(`codePage.title`) }}
           <span> {{ $t(`codePage.des`) }} </span>
         </h1>
+        <button class="select-all" @click="onSelectAll">
+          <font-awesome-icon icon="fa-solid fa-i-cursor" />
+        </button>
         <button @click="onclearEditor">
           <font-awesome-icon icon="fa-solid fa-eraser" />
         </button>
@@ -55,6 +58,14 @@
         closeOnClickOverlay: true,
       });
     
+  };
+  // 全选
+  const onSelectAll = () => {
+    const editor = toRaw(monacoEditor.value)
+    if (editor) {
+      const range = editor.getModel().getFullModelRange();
+      editor.setSelection(range);
+    }
   };
 
   // 获取当前系统主题 并在变化时动态修改编辑器主题
@@ -172,6 +183,10 @@ function filter(proxies, targetPlatform) {
       font-size: 20px;
       padding: 8px;
       color: #ffffff36;
+      cursor: pointer;
+      &.select-all {
+        margin-left: auto;
+      }
     }
   }
 

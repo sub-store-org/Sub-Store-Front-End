@@ -23,6 +23,7 @@ import {
   faPlus,
   faTrashCan,
   faEraser,
+  faICursor,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faLanguage);
@@ -47,3 +48,4 @@ library.add(faBan);
 library.add(faPenToSquare);
 library.add(faPaste);
 library.add(faEraser);
+library.add(faICursor);
