@@ -399,7 +399,7 @@ export default {
     },
   },
   codePage: {
-    title: '代码编辑',
+    title: '编辑',
     des: '右上角退出时自动保存',
   },
   syncPage: {

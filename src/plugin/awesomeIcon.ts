@@ -23,6 +23,7 @@ import {
   faPlus,
   faTrashCan,
   faEraser,
+  faT,
   faICursor,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -48,4 +49,5 @@ library.add(faBan);
 library.add(faPenToSquare);
 library.add(faPaste);
 library.add(faEraser);
+library.add(faT);
 library.add(faICursor);
