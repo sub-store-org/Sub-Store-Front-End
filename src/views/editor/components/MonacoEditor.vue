@@ -7,17 +7,21 @@
           {{ $t(`codePage.title`) }}
           <span> {{ $t(`codePage.des`) }} </span>
         </h1>
-        <button class="select-all" @click="onSelectAll">
+        <button v-if="!plaintextMode" class="toggle-plaintext-mode" @click="togglePlaintextMode">
+          <font-awesome-icon icon="fa-solid fa-t" />
+        </button>
+        <button v-if="!plaintextMode" class="select-all" @click="onSelectAll">
           <font-awesome-icon icon="fa-solid fa-i-cursor" />
         </button>
-        <button @click="onclearEditor">
+        <button v-if="!plaintextMode" @click="onclearEditor">
           <font-awesome-icon icon="fa-solid fa-eraser" />
         </button>
         <button @click="onCloseEditor">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
       </header>
-      <div ref="monacoRef" class="monaco-editor"></div>
+      <textarea v-show="plaintextMode" class="textarea-editor" :value="textareaValue" @input="onTextareaInput"></textarea>
+      <div v-show="!plaintextMode" ref="monacoRef" class="monaco-editor"></div>
     </div>
   </Teleport>
 </template>
@@ -37,10 +41,21 @@
   const emit = defineEmits(['close']);
   const monacoRef = ref(null);
   const monacoEditor = ref(null);
+  const textareaValue = ref('');
+  const plaintextMode = ref(false);
+
+  const togglePlaintextMode = event => {
+    plaintextMode.value = !plaintextMode.value
+    textareaValue.value = toRaw(monacoEditor.value)?.getValue()
+  }
+
+  const onTextareaInput = event => {
+    textareaValue.value = event.target.value
+  }
 
   // 关闭编辑器时获取内容触发事件，然后销毁编辑器实例
   const onCloseEditor = () => {
-    const value = toRaw(monacoEditor.value)?.getValue();
+    const value = plaintextMode.value ? textareaValue.value : toRaw(monacoEditor.value)?.getValue();
     emit('close', value);
     toRaw(monacoEditor.value)?.dispose();
   };
@@ -184,7 +199,7 @@ function filter(proxies, targetPlatform) {
       padding: 8px;
       color: #ffffff36;
       cursor: pointer;
-      &.select-all {
+      &.toggle-plaintext-mode {
         margin-left: auto;
       }
     }
@@ -201,5 +216,14 @@ function filter(proxies, targetPlatform) {
   .monaco-editor {
     padding: 12px 0;
     height: calc(100vh - 56px);
+  }
+
+  .textarea-editor {
+    padding: 12px 0;
+    height: calc(100vh - 56px);
+    width: 100%;
+    background-color: #272822;
+    color: #f8f8f2;
+    border: none;
   }
 </style>

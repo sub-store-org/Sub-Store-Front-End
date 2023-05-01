@@ -396,7 +396,7 @@ export default {
     },
   },
   codePage: {
-    title: 'Code Editor',
+    title: 'Editor',
     des: 'Auto save when exit',
   },
   syncPage: {
