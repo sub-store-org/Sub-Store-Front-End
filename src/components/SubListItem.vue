@@ -316,7 +316,7 @@
   const { showNotify } = useAppNotifyStore();
 
   const onClickCopyLink = async () => {
-    const host = import.meta.env.VITE_API_URL;
+    const host = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.host}`;
     const url = `${host}/download/${
       props.type === 'collection' ? 'collection/' : ''
     }${name}`;
