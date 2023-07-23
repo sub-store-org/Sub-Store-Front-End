@@ -11,6 +11,18 @@
       >
         <template #right>
           <font-awesome-icon
+              v-if="isSimpleMode"
+              @click.stop="setSimpleMode(false)"
+              class="navBar-right-icon fa-toggle"
+              icon="fa-solid fa-toggle-on "
+            />
+          <font-awesome-icon
+              v-else
+              @click.stop="setSimpleMode(true)"
+              class="navBar-right-icon fa-toggle"
+              icon="fa-solid fa-toggle-off "
+            />
+          <font-awesome-icon
             class="navBar-right-icon fa-lg"
             icon="fa-solid fa-language "
           />
@@ -50,13 +62,17 @@
   import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
+  import { useGlobalStore } from '@/store/global';
+  import { storeToRefs } from 'pinia';
   import { Toast } from '@nutui/nutui';
 
   const { t, locale } = useI18n();
   const router = useRouter();
   const route = useRoute();
+  const globalStore = useGlobalStore();
   const showLangSwitchPopup = ref(false);
   const langList = ['zh', 'en'];
+  const { isSimpleMode } = storeToRefs(globalStore);
 
   const isNeedBack = computed(() => {
     return route.meta.needNavBack ?? false;
@@ -98,6 +114,9 @@
     if (isNeedBack.value) {
       router.back();
     }
+  };
+  const setSimpleMode = (isSimpleMode: boolean) => {
+    globalStore.setSimpleMode(isSimpleMode);
   };
 </script>
 
@@ -144,6 +163,9 @@
 
         .navBar-right-icon {
           color: var(--icon-nav-bar-right);
+        }
+        & .fa-toggle {
+          margin-right: 15px;
         }
       }
     }

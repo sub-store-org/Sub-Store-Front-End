@@ -5,6 +5,7 @@ interface GlobalStoreState {
   bottomSafeArea: number;
   isDarkMode: boolean;
   env: ENV;
+  isSimpleMode: boolean;
 }
 
 interface ENV {
