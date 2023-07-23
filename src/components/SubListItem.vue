@@ -1,10 +1,10 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe">
     <div class="sub-item-wrapper" @click="compareSub">
-      <div class="sub-img-wrapper">
+      <div class="sub-img-wrapper" :style="{ 'line-height': isSimpleMode ? 1 : '' }">
         <nut-avatar
           class="sub-item-customer-icon"
-          size="48"
+          :size="isSimpleMode ? '24' : '48'"
           :url="props[props.type].icon || icon"
           bg-color=""
         ></nut-avatar>
@@ -35,23 +35,24 @@
             </button>
           </div>
         </div>
-
-        <p v-if="type === 'sub'" class="sub-item-detail">
-          <template v-if="typeof flow === 'string'">
-            <span>
-              {{ flow }}
-            </span>
-          </template>
-          <template v-else>
-            <span>
-              {{ flow.firstLine }}
-            </span>
-            <span> {{ flow.secondLine }} </span>
-          </template>
-        </p>
-        <p v-else-if="type === 'collection'" class="sub-item-detail">
-          {{ collectionDetail }}
-        </p>
+        <template v-if="!isSimpleMode">
+          <p v-if="type === 'sub'" class="sub-item-detail">
+            <template v-if="typeof flow === 'string'">
+              <span>
+                {{ flow }}
+              </span>
+            </template>
+            <template v-else>
+              <span>
+                {{ flow.firstLine }}
+              </span>
+              <span> {{ flow.secondLine }} </span>
+            </template>
+          </p>
+          <p v-else-if="type === 'collection'" class="sub-item-detail">
+            {{ collectionDetail }}
+          </p>
+        </template>
       </div>
     </div>
     <template #left>
@@ -166,7 +167,7 @@
       )}`;
     }
   });
-  const { isFlowFetching } = storeToRefs(globalStore);
+  const { isFlowFetching, isSimpleMode } = storeToRefs(globalStore);
 
   const flow = computed(() => {
     if (props.type === 'sub') {

@@ -16,6 +16,8 @@ import {
   faFloppyDisk,
   faGrip,
   faLanguage,
+  faToggleOn,
+  faToggleOff,
   faLocationArrow,
   faPaste,
   faPenNib,
@@ -27,6 +29,8 @@ import {
   faICursor,
 } from '@fortawesome/free-solid-svg-icons';
 
+library.add(faToggleOn);
+library.add(faToggleOff);
 library.add(faLanguage);
 library.add(faCheck);
 library.add(faPlus);

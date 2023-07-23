@@ -12,6 +12,7 @@ export const useGlobalStore = defineStore('globalStore', {
       bottomSafeArea: 0,
       isDarkMode: false,
       env: {},
+      isSimpleMode: localStorage.getItem('isSimpleMode') === 'on',
     };
   },
   getters: {},
@@ -30,6 +31,14 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
+    },
+    setSimpleMode(isSimpleMode: boolean) {
+      if (isSimpleMode) {
+        localStorage.setItem('isSimpleMode', 'on');
+      } else {
+        localStorage.removeItem('isSimpleMode');
+      }
+      this.isSimpleMode = isSimpleMode;
     },
     async setEnv() {
       const res = await envApi.getEnv();
