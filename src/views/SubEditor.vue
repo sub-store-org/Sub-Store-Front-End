@@ -103,13 +103,14 @@
           </nut-form-item>
           <nut-form-item
             v-else-if="form.source === 'local'"
-            :label="$t(`editorPage.subConfig.basic.content.label`)"
+            :label="isSimpleMode ? $t(`editorPage.subConfig.basic.content.label`) : undefined"
             prop="content"
           >
             <nut-textarea
               class="textarea-wrapper"
               v-model="form.content"
-              :autosize="{ maxHeight: 110, minHeight: 50 }"
+              text-align="left"
+              :autosize="isSimpleMode ? { maxHeight: 110, minHeight: 50 } : { maxHeight: 440, minHeight: 50 }"
               :placeholder="
                 $t(`editorPage.subConfig.basic.content.placeholder`)
               "
@@ -220,6 +221,7 @@
   import Regex from '@/views/editor/components/Regex.vue';
   import Script from '@/views/editor/components/Script.vue';
   import { Dialog, Toast } from '@nutui/nutui';
+  import { storeToRefs } from 'pinia';
   import {
     computed,
     provide,
@@ -241,8 +243,9 @@
   const subsStore = useSubsStore();
   const { showNotify } = useAppNotifyStore();
 
-  const { bottomSafeArea } = useGlobalStore();
-  const padding = bottomSafeArea + 'px';
+  const globalStore = useGlobalStore();
+  const { bottomSafeArea, isSimpleMode } = storeToRefs(globalStore);
+  const padding = bottomSafeArea.value + 'px';
 
   const sub = computed(() => subsStore.getOneSub(configName));
   const collection = computed(() => subsStore.getOneCollection(configName));
