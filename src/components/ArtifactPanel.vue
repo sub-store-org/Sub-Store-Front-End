@@ -94,6 +94,7 @@
           <nut-radio label="Clash">Clash</nut-radio>
           <nut-radio label="Stash">Stash</nut-radio>
           <nut-radio label="ShadowRocket">ShadowRocket</nut-radio>
+          <nut-radio label="V2Ray">V2Ray</nut-radio>
         </nut-radiogroup>
       </nut-form-item>
     </nut-form>
