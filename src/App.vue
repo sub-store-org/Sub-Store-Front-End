@@ -59,10 +59,10 @@ watchEffect(() => {
   width: 100%;
 
   background: var(--background-color);
-  overflow: hidden;
+  // overflow: hidden;
 
   .page-body {
-    overflow: hidden;
+    // overflow: hidden;
     flex: 1;
     display: flex;
     flex-direction: column;

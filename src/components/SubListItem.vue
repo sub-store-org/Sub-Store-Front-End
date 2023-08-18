@@ -1,10 +1,10 @@
 
-<template >
+<template>
   <!-- 滚动内容 -->
   <nut-swipe class="sub-item-swipe" ref="swipe">
-    <div class="sub-item-wrapper oooo" :style="{ padding: isSimpleMode ? '11px' : '16px' }" @click="swipeClose">
+    <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '11px' : '16px' }" @click="swipeClose">
       <!-- compareSub -->
-      <div @click="compareSub" class="sub-img-wrapper" :style="{ 'line-height': isSimpleMode ? 1 : '' }">
+      <div @click="compareSub" class="sub-img-wrapper" >
         <nut-avatar v-if="props[props.type].icon" :size="isSimpleMode ? '36' : '48'" :url="props[props.type].icon"
           bg-color=""></nut-avatar>
         <nut-avatar v-else class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon"
@@ -13,10 +13,10 @@
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
 
-          <h3 v-if="!isSimpleMode" class="sub-item-title dragkey">
+          <h3 v-if="!isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
           </h3>
-          <h3 v-else class="dragkey" style="color: var(--primary-text-color); font-size: 14px;">
+          <h3 v-else style="color: var(--primary-text-color); font-size: 14px;">
             {{ displayName || name }}
           </h3>
 
@@ -61,7 +61,6 @@
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail">
-
             {{ collectionDetail }}
           </p>
         </template>
@@ -438,7 +437,7 @@ const onClickRefresh = async () => {
 
   >.sub-item-content {
     flex: 1;
-    line-height: 1.3;
+    // line-height: 1.3;
 
     .sub-item-title-wrapper {
       display: flex;
@@ -513,6 +512,18 @@ const onClickRefresh = async () => {
       color: var(--comment-text-color);
     }
   }
+
+  // list-style: none;
+  // /* Remove the default list-style (small dot) */
+  // // border: 1px solid #ccc;
+  // // padding: 6px;
+  // margin-top: 12px;
+  // margin-bottom: 12px;
+  // margin-left: 2.5px;
+  // // display: flex;
+  // // align-items: center;
+  // width: 98.5%;
+  // overflow: hidden;
 }
 
 .sub-item-swipe {
@@ -567,10 +578,6 @@ const onClickRefresh = async () => {
 
 }
 
-.dragkey {
-  min-width: 50px;
-  // background-color:#000;
-}
 
 .subs-list-wrapper {
 

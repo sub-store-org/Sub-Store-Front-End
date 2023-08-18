@@ -1,6 +1,6 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe">
-    <div class="sub-item-wrapper" :style="{'line-height': isSimpleMode ? 1 : '','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'line-height': '1','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrapper">
         <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
@@ -390,7 +390,7 @@ watch(isSyncOpen, async () => {
           span {
             margin-right: 8px;
             font-weight: normal;
-            line-height: 1.8;
+            line-height: 2.8;
             color: var(--comment-text-color);
           }
 

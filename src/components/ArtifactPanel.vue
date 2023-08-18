@@ -42,6 +42,7 @@
           type="text"
         />
       </nut-form-item>
+      
       <nut-form-item
         :label="$t(`syncPage.addArtForm.displayName.label`)"
         prop="displayName"
@@ -283,7 +284,7 @@
 
   .artifact-panel {
     .nut-dialog {
-      width: 80vw;
+      width: 83vw;
 
       .nut-dialog__content {
         max-height: 72vh !important;
@@ -291,7 +292,6 @@
         .nut-form {
           .nut-cell-group__warp {
             background: transparent;
-
             .nut-cell::after {
               border-color: transparent;
             }

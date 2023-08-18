@@ -44,15 +44,16 @@
   }
 
   .nut-cascader.nut-tabs {
+    background-color: var(--popup-color);
     .nut-tabs__titles {
       background: var(--popup-color);
     }
-
     .nut-tabs__content {
       background: var(--popup-color);
 
       .nut-tabpane {
         background-color: var(--popup-color);
+        margin-bottom: 60px;
       }
     }
   }

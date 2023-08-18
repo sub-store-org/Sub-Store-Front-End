@@ -67,8 +67,7 @@
         }">
         <template #item="{ element }">
           <li :key="element.name" class="draggable-item">
-            <SubListItem :sub="element" type="sub" />
-
+            <SubListItem :sub="element" type="sub"/>
           </li>
         </template>
       </draggable>
@@ -141,6 +140,11 @@ import draggable from 'vuedraggable';
 import { useSubsApi } from '@/api/subs';
 const subsApi = useSubsApi();
 
+const addSubBtnIsVisible = ref(false);
+const subsStore = useSubsStore();
+const globalStore = useGlobalStore();
+const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
+const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
 
 const touchStartY = ref(null);
 const touchStartX = ref(null);
@@ -166,11 +170,7 @@ const onTouchEnd = () => {
   touchStartY.value = null;
   touchStartX.value = null;
 };
-const addSubBtnIsVisible = ref(false);
-const subsStore = useSubsStore();
-const globalStore = useGlobalStore();
-const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
-const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
+
 
 
 const refresh = () => {
@@ -337,17 +337,11 @@ const changeCollections = async () => {
 }
 
 .draggable-item {
-  width: 100%;
   list-style: none;
-  /* Remove the default list-style (small dot) */
-  // border: 1px solid #ccc;
-  // padding: 6px;
   margin-top: 12px;
   margin-bottom: 12px;
-  margin-left: 2.5px;
-  // display: flex;
-  // align-items: center;
-  width: 98.5%;
+  margin-left: 6px;
+  width: 97%;
   overflow: hidden;
 }
 
@@ -369,5 +363,6 @@ const changeCollections = async () => {
   // align-items: center;
   width: 96.5%;
 }
+
 
 </style>

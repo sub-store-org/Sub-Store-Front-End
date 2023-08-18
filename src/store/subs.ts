@@ -61,15 +61,15 @@ export const useSubsStore = defineStore('subsStore', {
       const flowsUrlList = getFlowsUrlList(sub || this.subs);
       const batches = [];
 
-      for (let i = 0; i < flowsUrlList.length; i += 3) {
-        const batch = flowsUrlList.slice(i, i + 3);
+      for (let i = 0; i < flowsUrlList.length; i += 4) {
+        const batch = flowsUrlList.slice(i, i + 4);
         batches.push(batch);
       }
 
       for (const batch of batches) {
         const promises = batch.map(asyncGetFlow);
         await Promise.all(promises);
-        await new Promise((resolve) => setTimeout(resolve, 150));
+        // await new Promise((resolve) => setTimeout(resolve, 150));
       }
     },
     async deleteSub(type: SubsType, name: string) {

@@ -48,7 +48,7 @@
           handle: 'div'
         }">
         <template #item="{ element }">
-          <li :key="element.name" class="draggable-item">
+          <li :key="element.name" class="draggable-itemsync">
             <ArtifactsListItem :name="element.name" @edit="onClickEdit" />
           </li>
         </template>
@@ -209,5 +209,11 @@ const changeArtifacts = async () => {
     width: 20px;
     height: 20px;
   }
+}
+.draggable-itemsync {
+  list-style: none;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
 }
 </style>
