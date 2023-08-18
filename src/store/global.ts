@@ -13,6 +13,8 @@ export const useGlobalStore = defineStore('globalStore', {
       isDarkMode: false,
       env: {},
       isSimpleMode: localStorage.getItem('isSimpleMode') === 'on',
+      isLeftRight: localStorage.getItem('isLr') === '1',
+      ishostApi: localStorage.getItem('hostApi'),
     };
   },
   getters: {},
@@ -39,6 +41,18 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('isSimpleMode');
       }
       this.isSimpleMode = isSimpleMode;
+    },
+    setLeftRight(isLr: boolean) {
+      if (isLr) {
+        localStorage.setItem('isLr', '1');
+      } else {
+        localStorage.removeItem('isLr');
+      }
+      this.isLeftRight = isLr;
+    },
+    sethostApi(hostApi: string) {
+      localStorage.setItem('hostApi', hostApi);
+      this.ishostApi = hostApi;
     },
     async setEnv() {
       const res = await envApi.getEnv();

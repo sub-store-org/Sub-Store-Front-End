@@ -4,6 +4,7 @@ interface SettingsBase {
   syncTime: number;
   avatarUrl: string;
   artifactStore: string;
+  // ishostApi: string;
 }
 
 interface SettingsPostData {
@@ -15,6 +16,7 @@ interface SettingsPostData {
     dark: CustomTheme;
     light: CustomTheme;
   };
+  autoDownloadGistSync?: boolean;
 }
 
 type CustomTheme = 'light' | 'dark';

@@ -7,7 +7,7 @@ export const useAppNotifyStore = defineStore('appNotify', {
       title: '',
       content: '',
       type: 'primary',
-      duration: 2000,
+      duration: 800,
     };
   },
   getters: {},
@@ -17,7 +17,7 @@ export const useAppNotifyStore = defineStore('appNotify', {
       this.title = title;
       this.content = content || '';
       this.type = type || 'primary';
-      this.duration = duration || 2000;
+      this.duration = duration || 800;
       this.isVisible = true;
     },
     setVisible(isVisible: boolean) {

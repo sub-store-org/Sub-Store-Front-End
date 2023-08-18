@@ -23,10 +23,10 @@
 // sticky title 顶部粘性定位标题
 .sticky-title-wrapper {
   margin-top: var(--safe-area-side);
-  backdrop-filter: blur(var(--sticky-title-blur));
-  -webkit-backdrop-filter: blur(var(--sticky-title-blur));
+  // backdrop-filter: blur(var(--sticky-title-blur));
+  // -webkit-backdrop-filter: blur(var(--sticky-title-blur));
   color: var(--comment-text-color);
-  background-color: var(--nav-bar-color);
+  // background-color: var(--nav-bar-color);
 }
 
 // picker
@@ -99,8 +99,10 @@ img.auto-reverse {
     }
   }
 }
-
+// nut-popup round popup-bottom nut-cascader__popup
 // form
+.nut-cascader__popup,
+.nut-cascader-pane,
 .nut-cell-group__warp {
   .nut-form-item,
   .nut-textarea {
@@ -117,6 +119,9 @@ img.auto-reverse {
 }
 
 // input & textarea
+.input-text,
+.nut-input-readonly,
+.nut-input,
 .nut-input-text {
   color: var(--second-text-color) !important;
 }
@@ -132,5 +137,5 @@ textarea:-ms-input-placeholder {
 }
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: var(--comment-text-color);
+  color: var(--comment-text-color) !important;
 }

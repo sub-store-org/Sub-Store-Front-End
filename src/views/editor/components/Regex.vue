@@ -32,6 +32,7 @@
     </div>
     <div class="input-wrapper">
       <nut-input
+       class="custom-input"
         label=""
         :placeholder="
           $t(`editorPage.subConfig.nodeActions['${type}'].placeholder[0]`)

@@ -20,11 +20,12 @@ export default {
       en: 'English',
     },
     pagesTitle: {
-      sub: 'Subscription Management',
+      sub: 'Management',
       sync: 'Sync Subscription',
       my: 'My Profile',
       subEditor: 'Subscription Editor',
       themeSetting: 'Theme Setting',
+      moreSetting: 'More Setting',
       notFound: '404 Not Found',
       askWhat: {
         sync: {
@@ -32,6 +33,16 @@ export default {
           content:
             'Upload your subscriptions to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).',
         },
+        subEditor: {
+          title: 'Download no subscription？',
+          content:
+            'Try replacing UA· Download. The default isQuanX UA',
+        },
+        moreSetting: {
+          title: 'Try',
+          content:
+            'Try',
+        }, 
       },
     },
   },
@@ -476,5 +487,17 @@ export default {
       cancel: 'Cancel',
       confirm: 'Confirm',
     },
+  },
+  moreSettingPage: {
+    moreSettingTitle: 'More Setting',
+    other: 'Other',
+    auto: 'Auto Download Gist config on startup',
+    desc:'Note: Turning on this switch will automatically download and refresh the Gist remote configuration when SubStore is opened. The refresh operation overwrites the current configuration. To prevent data loss, you can manually upload the configuration after the modification. The switch will not be uploaded, and the configuration will be downloaded only after the restart.',
+    simple: 'Simple Mode',
+    islr: 'Card right swipe to call out',
+    auto2: 'MoreSetting Key',
+    hostapi: 'Custom Backend API',
+    yhostapi: 'Default:https://sub.store ',
+    serverDesc: 'Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save',
   },
 };

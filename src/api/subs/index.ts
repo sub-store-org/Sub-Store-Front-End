@@ -71,5 +71,16 @@ export function useSubsApi() {
         data,
       });
     },
+    sortSub: (
+      type: string,
+      data: Sub | Collection | Artifacts
+    ): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/${type}`,
+        method: 'put',
+        data,
+      });
+      
+    },
   };
 }

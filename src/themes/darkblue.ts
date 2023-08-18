@@ -1,15 +1,15 @@
 export default {
   meta: {
-    name: '基础夜间',
-    author: 'DesnLee',
+    name: 'Dark Blue',
+    author: 'Keywos',
     label: 'dark',
-    extend: '',
+    extend: 'dark',
   },
   colors: {
     // 全局高亮色
     'primary-color': '#6f9cc5',
     'primary-color-end': '#8389c8',
-    'second-color': '#d47878',
+    'second-color': '#c5565a',
     'third-color': '#70b496',
 
     'danger-color': '#c16058',
@@ -20,22 +20,22 @@ export default {
     'unimportant-icon-color': '#FFFFFF34',
 
     // 组件色
-    'status-bar-background-color': '#12121299',
-    'background-color': '#121212',
-    'nav-bar-color': '#12121299',
-    'tab-bar-color': '#121212AA',
-    'popup-color': '#121212',
+    'status-bar-background-color': '#141416',
+    'background-color': '#141416',
+    'nav-bar-color': '#141416',
+    'tab-bar-color': '#1414168f',
+    'popup-color': '#141416',
     'divider-color': '#FFFFFF08',
-    'card-color': '#202020',
+    'card-color': '#212126',
     'dialog-color': '#202020',
     'switch-close-background-color': '#FFFFFF14',
     'switch-active-background-color': '#478EF2',
-    'compare-item-background-color': '#202020',
+    'compare-item-background-color': '#1e1e21',
     'picker-mask-near-color': '#12121248',
     'picker-mask-far-color': '#121212',
 
     // 文字色
-    'primary-text-color': '#FFFFFFEE',
+    'primary-text-color': '#bcbac1',
     'second-text-color': '#FFFFFFBB',
     'comment-text-color': '#FFFFFF88',
     'lowest-text-color': '#FFFFFF36',
@@ -50,6 +50,3 @@ export default {
     'compare-tag-background-color': '#FFFFFF22',
   },
 };
-//--second-text-color
-//--comment-text-color 覆盖
-
