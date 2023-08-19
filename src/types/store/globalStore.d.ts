@@ -7,6 +7,7 @@ interface GlobalStoreState {
   env: ENV;
   isSimpleMode: boolean;
   isLeftRight: boolean;
+  isIconColor: boolean;
   ishostApi: any;
 }
 
