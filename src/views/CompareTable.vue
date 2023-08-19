@@ -18,7 +18,7 @@
       <div class="compare-page-body">
         <div class="block-wrapper">
           <!--块标题-->
-          <div class="sticky-title-wrapper compare-title">
+          <div class="sticky-title-wrapperse compare-title">
             <p>{{ $t(`comparePage.remain.title`) }}</p>
           </div>
 
@@ -158,7 +158,7 @@
 
         <div class="block-wrapper" v-if="originalData.length > 0">
           <!--块标题-->
-          <div class="sticky-title-wrapper compare-title">
+          <div class="sticky-title-wrapperse compare-title">
             <p>{{ $t(`comparePage.filter.title`) }}</p>
           </div>
 

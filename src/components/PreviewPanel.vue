@@ -23,12 +23,12 @@
   import loon from '@/assets/icons/loon.png';
   import stash from '@/assets/icons/stash.png';
   import shadowrocket from '@/assets/icons/shadowrocket.png';
-
+  import v2ray from '@/assets/icons/v2ray.png';
   const { name, type } = defineProps<{
     name: string;
     type: 'sub' | 'collection';
   }>();
-  const host = import.meta.env.VITE_API_URL;
+  const host = localStorage.getItem('hostApi') || import.meta.env.VITE_API_URL || 'https://sub.store';
   const platformList = [
     {
       name: 'Clash',
@@ -59,6 +59,11 @@
       name: 'ShadowRocket',
       path: 'ShadowRocket',
       icon: shadowrocket,
+    },
+    {
+      name: 'V2Ray',
+      path: 'V2Ray',
+      icon: v2ray,
     },
   ];
 </script>

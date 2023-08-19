@@ -45,6 +45,17 @@ interface Collection {
   icon?: string;
 }
 
+interface Artifacts {
+  name: string;
+  displayName?: string;
+  type: string;
+  source: string;
+  platform: string;
+  sync:boolean;
+  updated:number;
+  url:string;
+}
+
 interface Flow {
   status: 'success';
   data: {

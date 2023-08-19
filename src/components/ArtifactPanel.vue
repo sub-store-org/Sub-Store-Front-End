@@ -42,6 +42,7 @@
           type="text"
         />
       </nut-form-item>
+      
       <nut-form-item
         :label="$t(`syncPage.addArtForm.displayName.label`)"
         prop="displayName"
@@ -70,10 +71,12 @@
           class="nut-input-text"
           :placeholder="$t(`syncPage.addArtForm.source.placeholder`)"
           v-model="sourceInput"
-          readonly
+          readonly style="color: var(--primary-text-color);"
           @click="sourceSelectorIsVisible = true"
           type="text"
         />
+        <!-- readonly 只读 -->
+
         <nut-cascader
           :title="$t('syncPage.selectSource.title')"
           v-model:visible="sourceSelectorIsVisible"
@@ -81,6 +84,7 @@
           @change="sourceChange"
           :options="sourceOptions"
         ></nut-cascader>
+
       </nut-form-item>
       <nut-form-item :label="$t(`syncPage.addArtForm.platform.label`)">
         <nut-radiogroup
@@ -115,6 +119,7 @@
   const ruleForm = ref();
 
   const emit = defineEmits(['close']);
+  
   const { name } = defineProps<{
     name: string;
   }>();
@@ -276,9 +281,10 @@
 </script>
 
 <style lang="scss">
+
   .artifact-panel {
     .nut-dialog {
-      width: 80vw;
+      width: 83vw;
 
       .nut-dialog__content {
         max-height: 72vh !important;
@@ -286,7 +292,6 @@
         .nut-form {
           .nut-cell-group__warp {
             background: transparent;
-
             .nut-cell::after {
               border-color: transparent;
             }
@@ -298,7 +303,7 @@
               flex-direction: column;
 
               .nut-input {
-                padding: 12px 8px;
+                padding: 8px 8px;
                 border-color: var(--divider-color);
               }
 
@@ -315,5 +320,11 @@
         }
       }
     }
+  }
+  .nut-input-text{
+    color: var(--divider-color);
+  }
+  .readonly{
+    border-color: var(--divider-color);
   }
 </style>

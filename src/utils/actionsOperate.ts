@@ -74,15 +74,31 @@ export const addItem = (
   actionsList.push(obj);
 
   // 添加后将页面置底
+  // nextTick(() => {
+  //   const container = document.querySelector('.app-layout-wrapper');
+  //   container.scrollTo({
+  //     top: container.scrollHeight,
+  //     left: 0,
+  //     behavior: 'smooth',
+  //   });
+  // });
   nextTick(() => {
     const container = document.querySelector('.app-layout-wrapper');
+    const distanceToScrollUp = 90; // 向上调整
+
+    const currentScrollTop = container.scrollTop;
+
+    const targetScrollTop = currentScrollTop + distanceToScrollUp;
+  
     container.scrollTo({
-      top: container.scrollHeight,
+      top: targetScrollTop,
       left: 0,
       behavior: 'smooth',
     });
   });
+  
 };
+
 
 export const deleteItem = (form, actionsList, actionsChecked, id) => {
   const processIndex = form.process.findIndex(item => item.id === id);

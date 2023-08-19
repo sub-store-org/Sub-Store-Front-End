@@ -46,14 +46,218 @@ img {
   overflow: hidden;
   padding-bottom: 24px;
 }
+.nut-button {
+  margin-right: 10px;
+}
 
 // 顶部粘性定位标题样式
-.sticky-title-wrapper {
+.sticky-title-wrapperse {
   position: sticky;
   display: block;
-  z-index: 10;
+  z-index: 1;
   top: 0;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   line-height: 2;
+}
+.nut-icon-issue:before {
+  content: "\e6b1";
+}
+.nut-icon-ask:before {
+  content: "\e670";
+}
+.nut-icon-setting:before {
+  content: "\e681";
+}
+.nut-icon-left:before {
+  content: "\e673";
+}
+.nut-icon-rect-left:before {
+  content: "\e6c9";
+}
+
+.nut-icon-right:before {
+  content: "\e698";
+}
+.nut-icon-rect-right:before {
+  content: "\e6cb"; // \2003 占位符
+  color: var(--lowest-text-color); // 更多设置
+}
+.nut-icon-arrow-right2:before {
+  content: "\e6a9";
+}
+.nut-icon-arrow-right:before {
+  content: "\e6a3";
+}
+.nut-icon-link:before {
+  content: "\e67c"; // link
+}
+.nut-icon-refresh2:before {
+  content: "\e682"; // sync
+}
+.nut-icon-refresh:before {
+  content: "\e690";
+}
+
+.nut-icon-checked:before {
+  content: "\e601";
+}
+
+.nut-icon-checklist:before {
+  content: "\e6c8";
+}
+
+.nut-icon-check-disabled:before {
+  content: "\e6c7";
+}
+
+.nut-icon-check-normal:before {
+  content: "\e6c5";
+}
+
+.nut-icon-check-checked:before {
+  content: "\e6c6";
+}
+
+.nut-icon-check-checked:before {
+  content: "\e6c6";
+}
+
+.nut-icon-loading:before {
+  content: "\e6c4";
+}
+
+.nut-icon-loading1:before {
+  content: "\e614";
+}
+
+// keyfrom nutui scss
+.nut-icon {
+  display: inline-block;
+  position: relative;
+  width: $icon-width;
+  height: $icon-height;
+  line-height: $icon-line-height;
+  text-align: right;
+
+  &::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__img {
+    width: $icon-width;
+    height: $icon-height;
+    object-fit: contain;
+  }
+  &-loading,
+  &-loading1 {
+    display: inline-block;
+    animation: rotation 1s infinite linear;
+  }
+
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+
+  &-am-infinite {
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+  &-am-jump {
+    -webkit-animation-name: nutJumpOne;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: nutJumpOne;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: ease;
+    animation-delay: var(--animate-delay);
+
+    &.nut-icon-am-infinite {
+      -webkit-animation-name: nutJump;
+      animation-name: nutJump;
+    }
+  }
+
+  &-am-rotate {
+    -webkit-animation-name: rotation;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: rotation;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: linear;
+    animation-delay: var(--animate-delay);
+
+    &.nut-icon-am-infinite {
+      -webkit-animation-direction: normal;
+      animation-direction: normal;
+    }
+  }
+  &-am-blink {
+    -webkit-animation-name: nutBlink;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: nutBlink;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: linear;
+    animation-delay: var(--animate-delay);
+  }
+  &-am-breathe {
+    -webkit-animation-name: nutBreathe;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: nutBreathe;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: ease-in-out;
+    animation-delay: var(--animate-delay);
+  }
+  &-am-flash {
+    -webkit-animation-name: nutFlash;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: nutFlash;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: ease-in-out;
+    animation-delay: var(--animate-delay);
+  }
+  &-am-bounce {
+    -webkit-animation-name: nutBounce;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-delay: var(--animate-delay);
+    animation-name: nutBounce;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: ease-in-out;
+    animation-delay: var(--animate-delay);
+
+    &.nut-icon-am-infinite {
+      -webkit-animation-direction: normal;
+      animation-direction: normal;
+    }
+  }
+
+  &-am-shake {
+    -webkit-animation-name: nutShake;
+    -webkit-animation-duration: var(--animate-duration);
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-delay: var(--animate-delay);
+
+    animation-name: nutShake;
+    animation-duration: var(--animate-duration);
+    animation-timing-function: ease-in-out;
+    animation-delay: var(--animate-delay);
+  }
 }

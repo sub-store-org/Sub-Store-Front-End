@@ -11,6 +11,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom", "WebWorker"],
+    "types": ["vite/client", "vite-plugin-pwa/client"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {

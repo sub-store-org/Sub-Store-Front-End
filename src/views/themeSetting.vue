@@ -1,4 +1,5 @@
 <template>
+
   <div class="page-wrapper">
     <nut-cell :title="$t(`themeSettingPage.auto`)" class="cell-item">
       <template v-slot:link>
@@ -10,26 +11,34 @@
         />
       </template>
     </nut-cell>
-
+ 
     <nut-cell-group
       class="cell-group"
       v-if="theme.auto"
       :title="$t(`themeSettingPage.themeSettingTitle`)"
     >
+    <!--  -->
       <nut-cell
         class="cell-item"
         :title="$t(`themeSettingPage.dark`)"
         :desc="themeDes.darkDes"
         @click="openPicker('dark')"
-        is-link
-      />
+        >
+         <template v-slot:link>
+          <nut-icon name="rect-right"></nut-icon>
+        </template></nut-cell>
+      
+
+
       <nut-cell
         class="cell-item"
         :title="$t(`themeSettingPage.light`)"
         :desc="themeDes.lightDes"
         @click="openPicker('light')"
-        is-link
-      />
+      ><template v-slot:link>
+          <nut-icon name="rect-right"></nut-icon>
+        </template>
+      </nut-cell>
     </nut-cell-group>
     <nut-cell
       v-else
@@ -45,11 +54,15 @@
     v-model="selectedValue"
     v-model:visible="showThemePicker"
     :columns="pickerColumn"
+
     :title="$t(`themeSettingPage.themePicker.title`)"
     :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
     :ok-text="$t(`themeSettingPage.themePicker.confirm`)"
     @confirm="confirm"
   ></nut-picker>
+
+
+ 
 </template>
 
 <script lang="ts" setup>
@@ -59,13 +72,15 @@
   import { storeToRefs } from 'pinia';
   import { computed, ref, toRaw, watchEffect } from 'vue';
 
+  // const addSubBtnIsVisible = ref(false);
+
   const pickerType = ref('');
   const autoSwitch = ref(false);
   const showThemePicker = ref(false);
 
   const settingsStore = useSettingsStore();
   const { changeTheme } = settingsStore;
-  const { theme } = storeToRefs(settingsStore);
+  const { theme, } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
   useMousePicker();
   const selectedValue = ref(['dark']);
@@ -115,13 +130,17 @@
   watchEffect(() => {
     autoSwitch.value = isAuto();
   });
+
+ 
+
 </script>
 
 <style lang="scss" scoped>
   .page-wrapper {
     height: 100%;
-    padding: var(--safe-area-side);
-    display: flex;
+    // padding: var(--safe-area-side);
+    padding: 0 var(--safe-area-side);
+    // display: flex;
     flex-direction: column;
     align-items: center;
 
@@ -147,5 +166,43 @@
         overflow: hidden;
       }
     }
+  }
+  .theme-picker {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+
+.theme-optionss {
+  background: var(--card-color);
+  border-radius: var(--item-card-radios);
+  color: var(--lowest-text-color);
+  // padding: 16px;
+  display: flex;
+  // align-items: center; /* 垂直居中 */
+  // justify-content: center; /* 水平居中 */
+  font-size: 14px;
+  // margin: 15px 15px 15px 16px; /* 保留左边边距，同时上、右、下边距为5px */
+}
+
+.radio-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10% 50% 10% 150%;
+    // margin: 10px;
+    // margin:20px auto; 
+    
+    :deep(.nut-radio__button.false) {
+      
+      background: var(--divider-color);
+      border-color: transparent;
+      color: var(--second-text-color);
+    }
+  }
+
+  .nut-icon {
+    color: var(--comment-text-color);
   }
 </style>

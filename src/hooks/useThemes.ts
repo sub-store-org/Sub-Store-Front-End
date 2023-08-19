@@ -3,6 +3,7 @@ import { useEventListener } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { ref, watchEffect } from 'vue';
 
+
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
 // 通用变量
@@ -22,7 +23,9 @@ const getThemeModules = () => {
   keys.forEach(path => {
     const paths = path.split('/');
     const modulesName = paths[paths.length - 1].replace('.ts', '');
-    allThemes[modulesName] = modulesFiles[path]?.default;
+    // allThemes[modulesName] = modulesFiles[path]?.default;
+    allThemes[modulesName] = (modulesFiles[path] as any)?.default;
+
   });
 
   // 初始化 theme 表后开始处理继承关系
@@ -101,6 +104,7 @@ export const useThemes = () => {
 
   // 监听 theme 设置变化，切换 theme
   watchEffect(async () => {
+    // console.log(theme.value);
     if (theme.value.auto) {
       if (theme.value.dark && theme.value.light) {
         autoTheme(mql);

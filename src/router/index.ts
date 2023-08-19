@@ -11,11 +11,13 @@ import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
 
 import Sync from '@/views/Sync.vue';
-import themeSetting from '@/views/themeSetting.vue';
+// import themeSetting from '@/views/themeSetting.vue';
+import moreSetting from '@/views/moreSetting.vue';
 import { Toast } from '@nutui/nutui';
 import { toRaw } from 'vue';
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
+// import { SwipeBack } from 'vue-swipe-back'
 
 let globalStore = null;
 
@@ -72,11 +74,20 @@ const router = createRouter({
             needNavBack: true,
           },
         },
+        // {
+        //   path: '/settings/theme',
+        //   component: themeSetting,
+        //   meta: {
+        //     title: 'themeSetting',
+        //     needTabBar: false,
+        //     needNavBack: true,
+        //   },
+        // },
         {
-          path: '/settings/theme',
-          component: themeSetting,
+          path: '/settings/more',
+          component: moreSetting,
           meta: {
-            title: 'themeSetting',
+            title: 'moreSetting',
             needTabBar: false,
             needNavBack: true,
           },

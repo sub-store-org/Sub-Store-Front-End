@@ -1,6 +1,6 @@
 <template>
   <div class="tab-bar-wrapper">
-    <nut-tabbar
+    <nut-tabbar 
       unactive-color=""
       v-model:visible="activeTab"
       :bottom="true"
@@ -9,21 +9,19 @@
     >
       <nut-tabbar-item
         class="tabbar-item"
-        :tab-title="$t(`tabBar.sub`)"
         to="/subs"
         icon="link"
       ></nut-tabbar-item>
       <nut-tabbar-item
         class="tabbar-item"
-        :tab-title="$t(`tabBar.sync`)"
         to="/sync"
         icon="refresh2"
       ></nut-tabbar-item>
       <nut-tabbar-item
+      
         class="tabbar-item"
-        :tab-title="$t(`tabBar.my`)"
         to="/my"
-        icon="my"
+        icon="setting"
       ></nut-tabbar-item>
     </nut-tabbar>
   </div>
@@ -54,8 +52,9 @@
 
 <style lang="scss" scoped>
   .tab-bar-wrapper {
+    z-index: 101;
     .tabbar {
-      padding-top: 12px;
+      padding-top: 8px;
       padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
       backdrop-filter: blur(var(--tab-bar-blur));
@@ -68,7 +67,7 @@
         color: var(--lowest-text-color);
       }
       & > .nut-tabbar-item_icon-box > .nut-tabbar-item_icon-box_nav-word {
-        margin-top: 4px;
+        margin-top: 8px;
         font-weight: 600;
       }
     }

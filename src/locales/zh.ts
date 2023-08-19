@@ -15,7 +15,7 @@ export default {
   // 顶部标题栏
   navBar: {
     langSwitcher: {
-      cellTitle: '轻点你想要使用的语言以切换',
+      cellTitle: '轻点语言以切换',
       zh: '简体中文',
       en: 'English',
     },
@@ -23,8 +23,9 @@ export default {
       sub: '订阅管理',
       sync: '同步订阅',
       my: '我的',
-      subEditor: '订阅编辑',
+      subEditor: "订阅编辑",
       themeSetting: '主题设置',
+      moreSetting: '更多设置',
       notFound: '地址未找到',
       askWhat: {
         sync: {
@@ -32,6 +33,16 @@ export default {
           content:
             '将您的订阅信息上传到私有 Gist，在无法运行 Sub Store 的设备（例如路由器等）上也可以随时访问。',
         },
+        subEditor: {
+          title: '下载不了订阅？',
+          content:
+            '尝试更换 UA 下载试试，默认为QuanX UA',
+        },
+        moreSetting: {
+          title: '遇到问题？',
+          content:
+            '遇到问题？',
+        }, 
       },
     },
   },
@@ -222,6 +233,15 @@ export default {
         },
       },
       nodeActions: {
+        'Script Operator': {
+          label: '脚本操作',
+          options: ['链接', '脚本'],
+          des: ['类型', '内容'],
+          placeholder: '填入脚本链接',
+          openEditorBtn: '打开脚本编辑器',
+          tipsTitle: '脚本操作操作提示',
+          tipsDes: '使用一段 JavaScript 脚本来修改节点信息',
+        },
         'Flag Operator': {
           label: '国旗操作',
           des: '工作模式',
@@ -237,7 +257,7 @@ export default {
           tipsDes: '按照节点名字进行排序',
         },
         'Resolve Domain Operator': {
-          label: '节点域名解析',
+          label: '域名解析',
           des: '服务提供商',
           options: ['Google', 'IP-API', 'Cloudflare'],
           tipsTitle: '域名解析操作提示',
@@ -250,7 +270,7 @@ export default {
           tipsDes: '按照国家和区域过滤节点',
         },
         'Type Filter': {
-          label: '节点类型过滤',
+          label: '类型过滤',
           options: [
             'ShadowSocks',
             'ShadowSocks R',
@@ -289,7 +309,7 @@ export default {
           tipsDes: '按照正则表达式删除节点名中的字段',
         },
         'Regex Rename Operator': {
-          label: '正则重命名',
+          label: '正则命名',
           des: ['正则表达式'],
           placeholder: ['填入正则表达式', '替换为'],
           tipsTitle: '正则重命名操作提示',
@@ -312,7 +332,7 @@ export default {
             '对名字重复的节点进行操作（移除/重命名）。重命名模式下，会自动为重名节点添加序号，序号样式和位置可以自定义。同时序号和名字之间的连接符也可以自定义',
         },
         'Script Filter': {
-          label: '脚本过滤器',
+          label: '脚本过滤',
           options: ['链接', '脚本'],
           des: ['类型', '内容'],
           placeholder: '填入脚本链接',
@@ -320,15 +340,7 @@ export default {
           tipsTitle: '脚本过滤器操作提示',
           tipsDes: '使用一段 JavaScript 脚本来过滤节点',
         },
-        'Script Operator': {
-          label: '脚本操作',
-          options: ['链接', '脚本'],
-          des: ['类型', '内容'],
-          placeholder: '填入脚本链接',
-          openEditorBtn: '打开脚本编辑器',
-          tipsTitle: '脚本操作操作提示',
-          tipsDes: '使用一段 JavaScript 脚本来修改节点信息',
-        },
+
       },
     },
   },
@@ -479,5 +491,17 @@ export default {
       cancel: '取消',
       confirm: '确定',
     },
+  },
+  moreSettingPage: {
+    moreSettingTitle: '更多设置',
+    other: '其他设置',
+    auto: '启动时自动下载 Gist 配置',
+    desc:'注意事项：开启此开关会在打开 SubStore 时自动下载 Gist 远程配置并刷新。刷新操作会覆盖当前配置，为防止数据丢失，可在修改后手动上传配置。 打开开关不会上传，只有在重启后才会下载配置。',
+    simple: '简洁模式',
+    islr: '卡片右滑呼出',
+    auto2: '自已定设置 Key',
+    hostapi: '自定义后端 API',
+    yhostapi: '默认:https://sub.store ',
+    serverDesc: '配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 配置后需要重启 Sub Store 以生效。如需删除 api，使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。',
   },
 };

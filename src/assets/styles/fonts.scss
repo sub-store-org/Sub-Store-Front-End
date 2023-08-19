@@ -23,3 +23,17 @@
       format('embedded-opentype'),
     url('../fonts/jetbrainsmononl-regular.woff') format('woff');
 }
+
+@font-face {
+  font-family: nutui-iconfont;
+  src:url(../fonts/3x_static_iconfont.ttf)format("woff2"),
+      url(../fonts/3x_static_iconfont.woff) format("woff"),
+      url(../fonts/3x_static_iconfont.ttf) format("truetype")
+}.nutui-iconfont {
+  font-family: nutui-iconfont !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
