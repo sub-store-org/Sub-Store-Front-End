@@ -92,6 +92,7 @@ import quanxIcon from '@/assets/icons/quanx.png';
 import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
 import stashIcon from '@/assets/icons/stash.png';
 import surgeIcon from '@/assets/icons/surge.png';
+import v2rayIcon from '@/assets/icons/v2ray.png';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { useArtifactsStore } from '@/store/artifacts';
 import { useSubsStore } from '@/store/subs';
@@ -139,6 +140,8 @@ const icon = computed(() => {
       return stashIcon;
     case 'ShadowRocket':
       return shadowRocketIcon;
+    case 'V2Ray':
+      return v2rayIcon;
   }
 });
 
