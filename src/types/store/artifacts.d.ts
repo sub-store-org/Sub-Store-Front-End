@@ -8,7 +8,8 @@ type ArtifactsPlatform =
   | 'Loon'
   | 'Clash'
   | 'Stash'
-  | 'ShadowRocket';
+  | 'ShadowRocket'
+  | 'V2Ray'
 
 type ArtifactType = 'collection' | 'subscription';
 

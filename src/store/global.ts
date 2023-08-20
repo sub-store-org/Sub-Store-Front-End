@@ -14,6 +14,7 @@ export const useGlobalStore = defineStore('globalStore', {
       env: {},
       isSimpleMode: localStorage.getItem('isSimpleMode') === 'on',
       isLeftRight: localStorage.getItem('isLr') === '1',
+      isIconColor: localStorage.getItem('iconColor') === '1',
       ishostApi: localStorage.getItem('hostApi'),
     };
   },
@@ -49,6 +50,14 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('isLr');
       }
       this.isLeftRight = isLr;
+    },
+    setIconColor(iconColor: boolean) {
+      if (iconColor) {
+        localStorage.setItem('iconColor', '1');
+      } else {
+        localStorage.removeItem('iconColor');
+      }
+      this.isIconColor = iconColor;
     },
     sethostApi(hostApi: string) {
       localStorage.setItem('hostApi', hostApi);

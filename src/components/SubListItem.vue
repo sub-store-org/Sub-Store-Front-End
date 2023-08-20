@@ -4,11 +4,17 @@
   <nut-swipe class="sub-item-swipe" ref="swipe">
     <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '11px' : '16px' }" @click="swipeClose">
       <!-- compareSub -->
-      <div @click="compareSub" class="sub-img-wrapper" >
-        <nut-avatar v-if="props[props.type].icon" :size="isSimpleMode ? '36' : '48'" :url="props[props.type].icon"
-          bg-color=""></nut-avatar>
-        <nut-avatar v-else class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon"
-          bg-color=""></nut-avatar>
+      <div @click="compareSub" class="sub-img-wrapper">
+        <div v-if="isIconColor">
+          <nut-avatar v-if="props[props.type].icon" :size="isSimpleMode ? '36' : '48'" :url="props[props.type].icon"
+            bg-color=""></nut-avatar>
+          <nut-avatar v-else class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon"
+            bg-color=""></nut-avatar>
+        </div>
+        <div v-else>
+          <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'"
+            :url="props[props.type].icon || icon" bg-color=""></nut-avatar>
+        </div>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -160,6 +166,7 @@ import { useRouter } from 'vue-router';
 
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
+
 const { t } = useI18n();
 
 const props = defineProps<{
@@ -178,6 +185,7 @@ const router = useRouter();
 const globalStore = useGlobalStore();
 const subsStore = useSubsStore();
 const subsApi = useSubsApi();
+const { isFlowFetching, isSimpleMode, isLeftRight, isIconColor } = storeToRefs(globalStore);
 const displayName =
   props[props.type].displayName || props[props.type]['display-name'];
 
@@ -197,7 +205,7 @@ const collectionDetail = computed(() => {
     )}`;
   }
 });
-const { isFlowFetching, isSimpleMode, isLeftRight } = storeToRefs(globalStore);
+
 
 const flow = computed(() => {
   if (props.type === 'sub') {

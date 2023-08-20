@@ -20,6 +20,13 @@
       </template>
     </nut-cell>
 
+    <nut-cell :title="$t(`moreSettingPage.isIC`)" class="cell-item">
+      <template v-slot:link>
+        <nut-switch class="my-switch" v-model="awIconColor" size="mini" @change="setIconColor" />
+      </template>
+    </nut-cell>
+    
+
     <nut-cell :title="$t(`themeSettingPage.auto`)" class="cell-item">
       <template v-slot:link>
         <nut-switch class="my-switch" v-model="autoSwitch" size="mini" @change="autoSwitchIsChange" />
@@ -108,7 +115,7 @@
       关于：Sub Store<br>
       <span>
         前端：
-        v 2.14.8
+        v 2.14.9
         -<a target="_blank" href="https://github.com/Keywos/Sub-Store-PWA"> github.com/Keywos/Sub-Store-PWA
         </a>
         <br>
@@ -154,8 +161,7 @@
       首页订阅页面：卡片左滑呼出快捷方式，可设置右滑呼出。
       <br>ㅤ ㅤ 点击卡片空白处可关闭当前滑块。添加编辑方便修改
 
-      <br> ㅤ•ㅤ
-      首页订阅页面图标默认图标依旧为黑白，自已定图标为彩色
+      
       <br> ㅤ•ㅤ
       改进 Service Worker 通过将资源预缓存，更快、流畅地加载
       <br>ㅤ ㅤ 网络连接稳定或不可用时仍能够访问程序
@@ -163,6 +169,9 @@
       增加预览时候的 V2Ray 入口
       <br> ㅤ•ㅤ
       新增长按卡片拖动排序，前端需 v2.14.6+ 后端 v2.14.13+
+      <br> ㅤ•ㅤ
+      首页订阅页面图标默认为黑白，可自定义开启图标为彩色
+
     </div>
   </div>
 </template>
@@ -183,12 +192,13 @@ const settingsStore = useSettingsStore();
 const { changeAutoDownloadGist } = settingsStore;
 const { autoDownloadGistSync } = storeToRefs(settingsStore);
 const globalStore = useGlobalStore();
-const { env, isSimpleMode, isLeftRight, ishostApi } = storeToRefs(globalStore);
+const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor } = storeToRefs(globalStore);
 
 const InputHostApi = ref('');
 const autoSwitchSync = ref(false);
 const SimpleSwitch = ref(false);
 const LeftRight = ref(false);
+const awIconColor = ref(false);
 const isEditing = ref(false);
 const isInit = ref(false);
 
@@ -205,6 +215,9 @@ const setLeftRight = (isLeftRight: boolean) => {
   globalStore.setLeftRight(isLeftRight);
 };
 
+const setIconColor = (isIconColor: boolean) => {
+  globalStore.setIconColor(isIconColor);
+};
 
 const SwitchSyncIsChange = (val: boolean) => {
   changeAutoDownloadGist({ autoDownloadGistSync: val });
@@ -314,6 +327,7 @@ watchEffect(() => {
   SimpleSwitch.value = isSimpleMode.value;
   LeftRight.value = isLeftRight.value;
   autoSwitchSync.value = autoDownloadGistSync.value;
+  awIconColor.value = isIconColor.value;
   autoSwitch.value = isAuto();
   if (!isInit.value) {
     setDisplayInfo();
