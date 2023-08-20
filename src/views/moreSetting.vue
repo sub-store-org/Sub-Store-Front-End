@@ -283,7 +283,9 @@ const exitEditMode = () => {
 
 const toggleEditMode = async () => {
   isEditLoading.value = true;
-  if (!/^(https):\/\/\S+$/.test(InputHostApi.value) && isEditing.value && InputHostApi.value !== "") {
+  console.log(`location.protocol`, location.protocol)
+  console.log(`InputHostApi`, InputHostApi.value)
+  if (location.protocol === 'https:' && !/^(https):\/\/\S+$|^http:\/\/(localhost|127\.0\.0\.1)/.test(InputHostApi.value) && isEditing.value && InputHostApi.value !== "") {
     console.log('InputHostApi失败')
     Dialog({
       title: '链接验证失败 或无效链接',
