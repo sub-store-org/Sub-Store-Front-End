@@ -63,7 +63,7 @@
           <div class="config-btn-wrapper">
 
             <nut-button v-if="isEditing" class="cancel-btn" plain type="info" size="mini" 
-              @click="clearEditor" :disabled="isEditLoading">清空
+              @click="clearEditor" :disabled="isEditLoading">{{ $t(`myPage.btn.clear`) }}
             </nut-button>
 
             <nut-button v-if="isEditing" class="cancel-btn" plain type="info" size="mini" 
@@ -90,7 +90,7 @@
     </div>
 
     <p class="desc-title">
-      {{ $t(`moreSettingPage.serverDesc`) }} 可以跳转链接 查看 小一佬的后端搭建教程：<a target="_blank"
+      {{ $t(`moreSettingPage.serverDesc`) }}<a target="_blank"
         href="https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d">
         https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d </a>
     </p>
@@ -115,7 +115,7 @@
       关于：Sub Store<br>
       <span>
         前端：
-        v 2.14.10
+        v 2.14.11
         -<a target="_blank" href="https://github.com/Keywos/Sub-Store-PWA"> github.com/Keywos/Sub-Store-PWA
         </a>
         <br>
@@ -154,6 +154,8 @@
       <br> ㅤ•ㅤ
       修复左右滑动组件的时候 没有阻止会上下滑动 容易误触
       <br> ㅤ•ㅤ
+      修复拖动卡片的时会把快捷方式跟着拖动
+      <br> ㅤ•ㅤ
       脚本操作、正则操作、等平铺放置更容易添加操作
       <br> ㅤ•ㅤ
       点击订阅左边的图标才会预览，防止误触预览节点
@@ -171,6 +173,7 @@
       新增长按卡片拖动排序，前端需 v2.14.6+ 后端 v2.14.13+
       <br> ㅤ•ㅤ
       首页订阅页面图标默认为黑白，可自定义开启图标为彩色
+      
 
     </div>
   </div>
