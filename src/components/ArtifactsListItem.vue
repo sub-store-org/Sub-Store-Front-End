@@ -1,7 +1,7 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe">
     <div class="sub-item-wrapper" :style="{'line-height': '1','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
-      <div class="sub-img-wrapper">
+      <div class="sub-img-wrappers">
         <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
       <div class="sub-item-content">
@@ -35,7 +35,7 @@
                   <font-awesome-icon icon="fa-solid fa-angles-right" />
                   </button>
                 </button>
-            </div>
+              </div>
               <span v-if="!isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
@@ -325,7 +325,7 @@ watch(isSyncOpen, async () => {
 }
 
 .sub-item-wrapper {
-  width: calc(100% - 24px);
+  // width: calc(100% - 24px);
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--item-card-radios);

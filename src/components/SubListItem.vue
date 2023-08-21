@@ -2,9 +2,9 @@
 <template>
   <!-- 滚动内容 -->
   <nut-swipe class="sub-item-swipe" ref="swipe">
-    <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '11px' : '16px' }" @click="swipeClose">
+    <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '9px' : '16px' }" @click="swipeClose">
       <!-- compareSub -->
-      <div @click="compareSub" class="sub-img-wrapper">
+      <div @click="compareSub" class="sub-img-wrappers" :style="{ 'margin-top': isSimpleMode ? '3.5px' : '0' }">
         <div v-if="isIconColor">
           <nut-avatar v-if="props[props.type].icon" :size="isSimpleMode ? '36' : '48'" :url="props[props.type].icon"
             bg-color=""></nut-avatar>
@@ -26,15 +26,13 @@
             {{ displayName || name }}
           </h3>
 
-          <div>
+          <div style="position: relative;" :style="{ 'top': isSimpleMode ? '8px' : '0' }">
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
             </button>
             <button class="refresh-sub-flow" @click.stop="onClickRefresh" v-if="props.type === 'sub' && !isSimpleMode">
               <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
             </button>
-
-
 
             <!-- 编辑 -->
             <button v-if="!isSimpleMode" class="copy-sub-link" @click.stop="onClickEdit">
@@ -48,9 +46,9 @@
             <button class="copy-sub-link" @click.stop="swipeController" v-if="!isMobile()" ref="moreAction">
               <font-awesome-icon icon="fa-solid fa-angles-right" />
             </button>
-
-
           </div>
+
+
         </div>
         <template v-if="!isSimpleMode">
           <p v-if="type === 'sub'" class="sub-item-detail">
@@ -117,19 +115,16 @@
     </template>
 
     <template v-else #right>
-      <!-- Copy -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="primary" class="sub-item-swipe-btn" @click="onClickCopyConfig">
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
-      <!-- preview -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
           <font-awesome-icon icon="fa-solid fa-eye" />
         </nut-button>
       </div>
-      <!-- del -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="danger" class="sub-item-swipe-btn" @click="onClickDelete">
           <font-awesome-icon icon="fa-solid fa-trash-can" />
@@ -421,7 +416,7 @@ const onClickRefresh = async () => {
 }
 
 .sub-item-wrapper {
-  width: calc(100% - 12px);
+  // width: calc(100% - 12px);
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--item-card-radios);
@@ -535,6 +530,10 @@ const onClickRefresh = async () => {
 }
 
 .sub-item-swipe {
+  // line-height: 1.3;
+  // margin-top: 12px;
+  // margin-bottom: 12px;
+  // overflow:hidden;
   :deep(.nut-swipe__left) {
     .sub-item-swipe-btn-wrapper {
       padding-left: 24px;
@@ -600,5 +599,10 @@ const onClickRefresh = async () => {
       margin-bottom: 12px;
     }
   }
+}
+
+.sub-img-wrappers {
+  display: flex;
+  align-items: center;
 }
 </style>

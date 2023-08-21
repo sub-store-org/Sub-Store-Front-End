@@ -1,5 +1,5 @@
 <template>
-  <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+  <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd" style="overflow: hidden;">
     <Teleport to="body">
       <div class="drag-btn-wrapper" v-if="artifacts.length > 0">
         <nut-drag :attract="true" :boundary="{
@@ -32,12 +32,6 @@
           </nut-button>
         </div>
       </div>
-
-      <!-- <ul>
-        <li v-for="artifact in artifacts" :key="artifact.name">
-          <ArtifactsListItem :name="artifact.name" @edit="onClickEdit" />
-        </li>
-      </ul> -->
       
       <draggable v-model="artifacts" @input="sortArtifacts" @change="changeArtifacts" itemKey="name"
         :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
@@ -48,9 +42,9 @@
           handle: 'div'
         }">
         <template #item="{ element }">
-          <li :key="element.name" class="draggable-itemsync">
+          <div :key="element.name" class="draggable-itemsync">
             <ArtifactsListItem :name="element.name" @edit="onClickEdit" />
-          </li>
+          </div>
         </template>
       </draggable>
     </div>
@@ -211,7 +205,6 @@ const changeArtifacts = async () => {
   }
 }
 .draggable-itemsync {
-  list-style: none;
   margin-top: 12px;
   margin-bottom: 12px;
   overflow: hidden;

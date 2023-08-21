@@ -1,7 +1,7 @@
 
 
 <template>
-  <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+  <div @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd" style="overflow: hidden;">
     <!--添加订阅弹窗-->
     <div>
       <nut-popup pop-class="add-sub-popup" lock-scroll position="bottom" :style="{
@@ -51,49 +51,50 @@
     </Teleport>
 
     <!--页面内容-->
-    <!--有数据-->
-    <div v-if="hasSubs" class="subs-list-wrapper">
-      <div class="sticky-title-wrappers">
-        <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
+      <!--有数据-->
+    <div class="subs-list-wrapper">
+      <div v-if="hasSubs">
+        <div class="sticky-title-wrappers">
+          <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
+        </div>
+
+        <draggable v-model="subs" @input="sortSubs" @change="changeSubs" itemKey="name" :scroll-sensitivity="200"
+          :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
+            animation: 200,
+            disabled: false,
+            delay: 200,
+            chosenClass: 'chosensub',
+            handle: 'div'
+          }">
+          <template #item="{ element }">
+            <div :key="element.name" class="draggable-item">
+              <SubListItem :sub="element" type="sub"/>
+            </div>
+          </template>
+        </draggable>
       </div>
 
-      <draggable v-model="subs" @input="sortSubs" @change="changeSubs" itemKey="name" :scroll-sensitivity="200"
-        :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
-          animation: 200,
-          disabled: false,
-          delay: 200,
-          chosenClass: 'chosensub',
-          handle: 'div'
-        }">
-        <template #item="{ element }">
-          <li :key="element.name" class="draggable-item">
-            <SubListItem :sub="element" type="sub"/>
-          </li>
-        </template>
-      </draggable>
-    </div>
+      <div v-if="hasCollections">
+        <div class="sticky-title-wrappers">
+          <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
+        </div>
 
-    <div v-if="hasCollections" class="subs-list-wrapper">
-      <div class="sticky-title-wrappers">
-        <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
+        <draggable v-model="collections" @input="sortCollections" @change="changeCollections" itemKey="name"
+          :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
+            animation: 200,
+            disabled: false,
+            delay: 200,
+            chosenClass: 'chosensub',
+            handle: 'div'
+          }">
+          <template #item="{ element }">
+            <div :key="element.name" class="draggable-item">
+              <SubListItem :collection="element" type="collection" />
+            </div>
+          </template>
+        </draggable>
       </div>
-
-      <draggable v-model="collections" @input="sortCollections" @change="changeCollections" itemKey="name"
-        :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
-          animation: 200,
-          disabled: false,
-          delay: 200,
-          chosenClass: 'chosensub',
-          handle: 'div'
-        }">
-        <template #item="{ element }">
-          <li :key="element.name" class="draggable-item">
-            <SubListItem :collection="element" type="collection" />
-          </li>
-        </template>
-      </draggable>
     </div>
-
     <!--没有数据-->
     <div v-if="!isLoading && fetchResult && !hasSubs && !hasCollections" class="no-data-wrapper">
       <nut-empty image="empty">
@@ -300,7 +301,7 @@ const changeCollections = async () => {
 }
 
 .list-title {
-  padding-left: 26px;
+  padding-left: 20px;
   font-weight: bold;
   // padding-left: var(--safe-area-side);
 }
@@ -337,12 +338,8 @@ const changeCollections = async () => {
 }
 
 .draggable-item {
-  list-style: none;
   margin-top: 12px;
   margin-bottom: 12px;
-  margin-left: 6px;
-  width: 97%;
-  overflow: hidden;
 }
 
 .drag-handler {
@@ -350,19 +347,15 @@ const changeCollections = async () => {
   color: var(--lowest-text-color);
 }
 
-
 .chosensub {
   box-shadow: 0 0 10px var(--primary-color);
-
-  background-color: var(--card-color);
   border-radius: var(--item-card-radios);
-  // border: 2px var(--primary-color-end);
-  // border: solid 1px var(--primary-color) !important;
-  margin-left: 6px;
-  // display: flex;
-  // align-items: center;
-  width: 96.5%;
 }
 
+.subs-list-wrapper{
+  width: calc(100% - 1.5rem);
+  margin-left: auto;
+  margin-right: auto;
+}
 
 </style>
