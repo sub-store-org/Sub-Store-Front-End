@@ -115,7 +115,7 @@
       关于：Sub Store<br>
       <span>
         前端：
-        v 2.14.9
+        v 2.14.10
         -<a target="_blank" href="https://github.com/Keywos/Sub-Store-PWA"> github.com/Keywos/Sub-Store-PWA
         </a>
         <br>
