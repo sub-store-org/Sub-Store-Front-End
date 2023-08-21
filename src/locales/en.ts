@@ -357,6 +357,7 @@ export default {
       cancel: 'Cancel',
       edit: 'Edit',
       save: 'Save',
+      clear: 'Clear',
     },
     notify: {
       save: {

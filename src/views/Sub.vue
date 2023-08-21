@@ -51,15 +51,15 @@
     </Teleport>
 
     <!--页面内容-->
-      <!--有数据-->
+    <!--有数据-->
     <div class="subs-list-wrapper">
       <div v-if="hasSubs">
         <div class="sticky-title-wrappers">
           <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
         </div>
 
-        <draggable v-model="subs" @input="sortSubs" @change="changeSubs" itemKey="name" :scroll-sensitivity="200"
-          :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
+        <draggable v-model="subs" @change="changeSubs" @start="handleDragStart" @end="handleDragEnd" itemKey="name"
+          :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
             animation: 200,
             disabled: false,
             delay: 200,
@@ -68,7 +68,7 @@
           }">
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
-              <SubListItem :sub="element" type="sub"/>
+              <SubListItem :sub="element" type="sub" :disabled="swipeDisabled" />
             </div>
           </template>
         </draggable>
@@ -79,8 +79,8 @@
           <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
         </div>
 
-        <draggable v-model="collections" @input="sortCollections" @change="changeCollections" itemKey="name"
-          :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
+        <draggable v-model="collections" @change="changeCollections" @start="handleDragStart" @end="handleDragEnd"
+          itemKey="name" :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
             animation: 200,
             disabled: false,
             delay: 200,
@@ -89,7 +89,7 @@
           }">
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
-              <SubListItem :collection="element" type="collection" />
+              <SubListItem :collection="element" type="collection" :disabled="swipeDisabled" />
             </div>
           </template>
         </draggable>
@@ -146,7 +146,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
 const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
-
+const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 
@@ -178,23 +178,32 @@ const refresh = () => {
   initStores(true, true, true);
 };
 
-const sortSubs = (newSub:any) => {
-  subs.value = newSub;
-};
+// const sortSubs = (newSub: any) => {
+//   subs.value = newSub;
+// };
 const changeSubs = async () => {
+  console.log('2233')
   await subsApi.sortSub('subs', JSON.parse(JSON.stringify(toRaw(subs.value))));
 };
 
 
-const sortCollections = (newCollections:any) => {
-  collections.value = newCollections;
-};
+// const sortCollections = (newCollections: any) => {
+//   collections.value = newCollections;
+// };
 
 const changeCollections = async () => {
   await subsApi.sortSub('collections', JSON.parse(JSON.stringify(toRaw(collections.value))));
   // showNotify({ title: '6666' });
 };
+const handleDragStart = () => {
+  console.log('启用禁止拖动')
+  swipeDisabled.value = true;
+};
 
+const handleDragEnd = () => {
+  console.log('禁用禁止拖动')
+  swipeDisabled.value = false;
+};
 
 </script>
 
@@ -340,6 +349,7 @@ const changeCollections = async () => {
 .draggable-item {
   margin-top: 12px;
   margin-bottom: 12px;
+  // overflow: hidden;
 }
 
 .drag-handler {
@@ -350,12 +360,12 @@ const changeCollections = async () => {
 .chosensub {
   box-shadow: 0 0 10px var(--primary-color);
   border-radius: var(--item-card-radios);
+  overflow: hidden;
 }
 
-.subs-list-wrapper{
+.subs-list-wrapper {
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
 }
-
 </style>

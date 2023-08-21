@@ -1,5 +1,5 @@
 <template>
-  <nut-swipe class="sub-item-swipe" ref="swipe">
+  <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
     <div class="sub-item-wrapper" :style="{'line-height': '1','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrappers">
         <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
@@ -115,6 +115,7 @@ const { t } = useI18n();
 
 const { name } = defineProps<{
   name: string;
+  disabled?: boolean,
 }>();
 
 const { showNotify } = useAppNotifyStore();
@@ -438,7 +439,7 @@ watch(isSyncOpen, async () => {
       padding-left: 14px;
 
       &:last-child {
-        padding-right: 10px;
+        padding-right: 14px;
       }
 
       .sub-item-swipe-btn {

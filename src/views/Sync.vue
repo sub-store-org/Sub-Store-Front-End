@@ -19,7 +19,7 @@
 
     <!--有数据-->
     <div v-if="artifacts.length > 0" class="subs-list-wrapper">
-      
+
       <div class="sticky-title-wrapper sync-title">
         <p class="list-title">{{ $t(`syncPage.title`) }}</p>
         <div class="actions-wrapper">
@@ -32,9 +32,9 @@
           </nut-button>
         </div>
       </div>
-      
-      <draggable v-model="artifacts" @input="sortArtifacts" @change="changeArtifacts" itemKey="name"
-        :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
+
+      <draggable v-model="artifacts" @change="changeArtifacts" @start="handleDragStart" @end="handleDragEnd"
+        itemKey="name" :scroll-sensitivity="200" :force-fallback="true" :scrollSpeed="8" :scroll="true" v-bind="{
           animation: 200,
           disabled: false,
           delay: 200,
@@ -43,7 +43,7 @@
         }">
         <template #item="{ element }">
           <div :key="element.name" class="draggable-itemsync">
-            <ArtifactsListItem :name="element.name" @edit="onClickEdit" />
+            <ArtifactsListItem :name="element.name" @edit="onClickEdit" :disabled="swipeDisabled" Í />
           </div>
         </template>
       </draggable>
@@ -99,7 +99,7 @@ const settingsStore = useSettingsStore();
 const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const { artifactStore: artifactStoreUrl } = storeToRefs(settingsStore);
-
+const swipeDisabled = ref(false);
 const isEditPanelVisible = ref(false);
 const editTargetName = ref('');
 const touchStartY = ref(null);
@@ -160,13 +160,23 @@ const closeArtifactPanel = () => {
   isEditPanelVisible.value = false;
 };
 
-const sortArtifacts = (newCollections:any) => {
-  artifacts.value = newCollections;
-};
+// const sortArtifacts = (newCollections: any) => {
+//   artifacts.value = newCollections;
+// };
 
 const changeArtifacts = async () => {
   await subsApi.sortSub('artifacts', JSON.parse(JSON.stringify(toRaw(artifacts.value))));
   // showNotify({ title: '6666' });
+};
+
+const handleDragStart = () => {
+  console.log('启用禁止拖动')
+  swipeDisabled.value = true;
+};
+
+const handleDragEnd = () => {
+  console.log('禁用禁止拖动')
+  swipeDisabled.value = false;
 };
 
 </script>
@@ -204,9 +214,10 @@ const changeArtifacts = async () => {
     height: 20px;
   }
 }
+
 .draggable-itemsync {
   margin-top: 12px;
   margin-bottom: 12px;
-  overflow: hidden;
+  // overflow: hidden;
 }
 </style>

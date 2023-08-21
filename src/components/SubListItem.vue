@@ -1,7 +1,7 @@
 
 <template>
   <!-- 滚动内容 -->
-  <nut-swipe class="sub-item-swipe" ref="swipe">
+  <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="props.disabled">
     <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '9px' : '16px' }" @click="swipeClose">
       <!-- compareSub -->
       <div @click="compareSub" class="sub-img-wrappers" :style="{ 'margin-top': isSimpleMode ? '3.5px' : '0' }">
@@ -168,7 +168,10 @@ const props = defineProps<{
   type: 'sub' | 'collection';
   sub?: Sub;
   collection?: Collection;
+  disabled?: boolean,
 }>();
+// console.log('props.disabled')
+// console.log(props.disabled)
 const compareTableIsVisible = ref(false);
 usePopupRoute(compareTableIsVisible);
 
@@ -370,13 +373,6 @@ const onClickDelete = () => {
   });
 };
 
-// (() => {
-//   let api = new URLSearchParams(window.location.search).get('api');
-//   if (api) {
-//     localStorage.setItem('api', api);
-//   }
-//   return api || localStorage.getItem('api') || import.meta.env.VITE_API_URL || 'https://sub.store';
-// })();
 const { showNotify } = useAppNotifyStore();
 
 const onClickCopyLink = async () => {
@@ -516,24 +512,9 @@ const onClickRefresh = async () => {
     }
   }
 
-  // list-style: none;
-  // /* Remove the default list-style (small dot) */
-  // // border: 1px solid #ccc;
-  // // padding: 6px;
-  // margin-top: 12px;
-  // margin-bottom: 12px;
-  // margin-left: 2.5px;
-  // // display: flex;
-  // // align-items: center;
-  // width: 98.5%;
-  // overflow: hidden;
 }
 
 .sub-item-swipe {
-  // line-height: 1.3;
-  // margin-top: 12px;
-  // margin-bottom: 12px;
-  // overflow:hidden;
   :deep(.nut-swipe__left) {
     .sub-item-swipe-btn-wrapper {
       padding-left: 24px;
@@ -550,7 +531,7 @@ const onClickRefresh = async () => {
       padding-left: 14px;
 
       &:last-child {
-        padding-right: 10px;
+        padding-right: 14px;
       }
 
       .sub-item-swipe-btn {
@@ -590,15 +571,6 @@ const onClickRefresh = async () => {
 
   margin-bottom: 36px;
   position: relative;
-
-  &>ul {
-    margin: 8px 0;
-    overflow: hidden;
-
-    >li:not(:last-child) {
-      margin-bottom: 12px;
-    }
-  }
 }
 
 .sub-img-wrappers {

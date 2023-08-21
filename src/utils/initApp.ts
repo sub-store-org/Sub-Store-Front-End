@@ -22,7 +22,7 @@ export const initStores = async (
   
   const { t } = i18n.global;
   let isSucceed = true;
-
+  showNotify({ title: t('globalNotify.refresh.loading') });
   // Toast.loading(t('globalNotify.refresh.loading'), {
   //   cover: true,
   //   id: 'refresh',
