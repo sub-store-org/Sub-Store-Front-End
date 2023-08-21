@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
+import service from '@/api';
 import { useEnvApi } from '@/api/env';
+import { initStores } from '@/utils/initApp';
 
 const envApi = useEnvApi();
 
@@ -62,6 +64,9 @@ export const useGlobalStore = defineStore('globalStore', {
     sethostApi(hostApi: string) {
       localStorage.setItem('hostApi', hostApi);
       this.ishostApi = hostApi;
+      service.defaults.baseURL = hostApi;
+      // 初始化应用数据（顶部通知）
+      initStores(true, true, false);
     },
     async setEnv() {
       const res = await envApi.getEnv();

@@ -499,6 +499,6 @@ export default {
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
     yhostapi: 'Default:https://sub.store ',
-    serverDesc: 'Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save',
+    serverDesc: 'Configure the back-end server address, such as the back-end service set up on VPS or Render. To delete the api, use the original default backend to manually delete the address and click Save',
   },
 };
