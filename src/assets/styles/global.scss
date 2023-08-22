@@ -33,11 +33,17 @@ img {
 }
 
 //collapse
-.nut-collapse-item .collapse-item.collapse-item {
-  background-color: var(--card-color);
+.nut-collapse-item {
+  .collapse-item.collapse-item {
+    background-color: var(--card-color);
 
-  &::after {
-    border-color: var(--divider-color);
+    &::after {
+      border-color: var(--divider-color);
+    }
+  }
+
+  .collapse-wrapper {
+    background-color: var(--card-color);
   }
 }
 
