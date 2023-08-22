@@ -1,6 +1,6 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'line-height': '1','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'line-height': '1.2','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrappers">
         <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
@@ -26,7 +26,7 @@
           </p>
           <div class="second-line-wrapper">
             <p>{{ detail.secondLine }}</p>
-            <div class="task-switch" style="margin-top: -22px;">
+            <div class="task-switch" :style="{'margin-top': isSimpleMode ? '-22px' : '0' }">
               <div v-if="isSimpleMode">
                 <button v-if="artifact.url" class="copy-sub-link"
                   style="padding: 0 12px;" @click.stop="onClickCopyLink">
@@ -332,6 +332,8 @@ watch(isSyncOpen, async () => {
   border-radius: var(--item-card-radios);
   // padding: var(--safe-area-side);
   display: flex;
+  flex-direction: row;//
+  justify-content: flex-end; //
   background: var(--card-color);
 
   :deep(.nut-avatar) {
@@ -389,7 +391,9 @@ watch(isSyncOpen, async () => {
           flex: 1;
           display: flex;
           align-items: center;
-          justify-content: end;
+          // justify-content: end;
+          flex-direction: row;
+          justify-content: flex-end; // ios 14
 
           span {
             margin-right: 8px;
