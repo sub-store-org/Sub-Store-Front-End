@@ -374,6 +374,7 @@
     // display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 80px;
 
     .cell-item {
       box-shadow: none;
