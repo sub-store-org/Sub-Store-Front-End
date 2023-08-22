@@ -144,6 +144,7 @@
 
     .changelog-wrapper {
       margin-top: 44px;
+      padding-bottom: 36px;
 
       .changelog-title {
         font-size: 16px;
