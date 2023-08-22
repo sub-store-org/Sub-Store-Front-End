@@ -1,8 +1,8 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'line-height': '1.2','padding': isSimpleMode ? '9px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrappers">
-        <nut-avatar class="sub-item-customer-icon" :style="{ 'margin-top': isSimpleMode ? '3.5px' : '0' }" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
+        <nut-avatar class="sub-item-customer-icon" :style="{ 'margin-top': isSimpleMode ? '3px' : '0' }" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -326,6 +326,7 @@ watch(isSyncOpen, async () => {
 }
 
 .sub-item-wrapper {
+  line-height: 1.6;
   // width: calc(100% - 24px);
   margin-left: auto;
   margin-right: auto;
@@ -378,7 +379,7 @@ watch(isSyncOpen, async () => {
       word-wrap: break-word;
       word-break: break-all;
       // overflow: hidden;
-      margin-top: 5.5px;
+      // margin-top: 3.5px;
       font-size: 12px;
 
       .second-line-wrapper {
