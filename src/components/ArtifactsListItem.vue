@@ -378,7 +378,7 @@ watch(isSyncOpen, async () => {
       word-wrap: break-word;
       word-break: break-all;
       // overflow: hidden;
-      margin-top: 4.7px;
+      margin-top: 5.5px;
       font-size: 12px;
 
       .second-line-wrapper {
