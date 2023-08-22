@@ -153,6 +153,7 @@
 
       .changelog-content {
         font-size: 12px;
+        padding-bottom: 12px;
       }
     }
   }
