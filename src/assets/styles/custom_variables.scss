@@ -59,7 +59,7 @@ $picker-item-active-line-border: 1px solid $divider-color;
 $cascader-item-color: $title-color;
 $cascader-item-active-color: $primary-color;
 
-//input & textarea 
+//input & textarea
 $input-border-bottom: $divider-color;
 $input-disabled-color: $disable-color;
 $textarea-limit-color: $text-color-2;
@@ -74,6 +74,15 @@ $cell-after-border-bottom: 2px solid $divider-color;
 $cell-group-title-color: $text-color-3;
 $cell-group-desc-color: $text-color-4;
 $cell-group-background-color: $card-color;
+
+// collapse
+$collapse-item-color: $text-color-2;
+$collapse-item-disabled-color: $text-color-4;
+$collapse-item-icon-color: $text-color-3;
+$collapse-item-sub-title-color: $text-color-3;
+$collapse-wrapper-content-color: $text-color-3;
+$collapse-wrapper-content-line-height: 2;
+$collapse-wrapper-content-background-color: $card-color;
 
 // checkbox
 $checkbox-label-color: $text-color-2;

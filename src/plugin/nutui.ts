@@ -37,6 +37,8 @@ import {
   Tag,
   Input,
   Cascader,
+  Collapse,
+  CollapseItem,
 } from '@nutui/nutui';
 
 export default app => {
@@ -78,5 +80,7 @@ export default app => {
     .use(Divider)
     .use(Tag)
     .use(Input)
-    .use(Cascader);
+    .use(Cascader)
+    .use(Collapse)
+    .use(CollapseItem);
 };

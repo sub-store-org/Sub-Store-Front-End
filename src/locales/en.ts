@@ -26,6 +26,7 @@ export default {
       subEditor: 'Subscription Editor',
       themeSetting: 'Theme Setting',
       moreSetting: 'More Setting',
+      aboutUs: 'About Sub-Store',
       notFound: '404 Not Found',
       askWhat: {
         sync: {
@@ -501,5 +502,18 @@ export default {
     yhostapi: 'Default:https://sub.store ',
     serverDesc:
       'Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save',
+  },
+  aboutUsPage: {
+    projectInfo: {
+      title: 'Project Info (Please Star 🌟)',
+      fe: 'Front-End',
+      be: 'Back-End',
+      mock: 'Mock Module',
+      team: 'Project Team',
+      link: 'View on Github',
+    },
+    changelogs: {
+      title: 'Changelogs',
+    },
   },
 };

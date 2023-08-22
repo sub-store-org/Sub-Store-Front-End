@@ -187,66 +187,7 @@
       :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
       :ok-text="$t(`themeSettingPage.themePicker.confirm`)"
       @confirm="confirm"
-    ></nut-picker>
-
-    <div class="desc-about">
-      <br /><br /><br /><br /><br /><br />
-      关于：Sub Store<br />
-      <span>
-        前端： v 2.14.11 -<a
-          target="_blank"
-          href="https://github.com/Keywos/Sub-Store-PWA"
-        >
-          github.com/Keywos/Sub-Store-PWA
-        </a>
-        <br />
-        后端： v {{ env.version }} -<a
-          target="_blank"
-          href="https://github.com/sub-store-org/Sub-Store"
-        >
-          github.com/sub-store-org/Sub-Store
-        </a>
-      </span>
-      <span>
-        Mock 模块 -
-
-        <a
-          target="_blank"
-          href="https://github.com/Keywos/rule/raw/main/module/Sub-Store-Mock.sgmodule"
-        >
-          github.com/Keywos/rule/raw/main/Sub-Store</a
-        >
-      </span>
-      <br />
-
-      <span> 更新日志：2023-08-15 12:22:29 </span>
-
-      <br />
-      ㅤ•ㅤ 更新组件库 NutUI v3.3.8、Picker 问题修复 <br />
-      ㅤ•ㅤ 解决反复重启并发消耗资源、降低资源占用内存 <br />
-      ㅤ•ㅤ 移除：Monaco-Editor 组件
-
-      <br />
-      ㅤ•ㅤ 添加新主题、Simple 模式 主页与管理页 <br />
-      ㅤ•ㅤ 自定义后端 HostAPI 更多使用场景 <br />
-      ㅤ•ㅤ 可选重启时自动下载 Gist 配置文件
-
-      <br />
-      ㅤ•ㅤ 优化侧滑返回容易失效的问题 <br />
-      ㅤ•ㅤ 修复左右滑动组件的时候 没有阻止会上下滑动 容易误触 <br />
-      ㅤ•ㅤ 修复拖动卡片的时会把快捷方式跟着拖动 <br />
-      ㅤ•ㅤ 脚本操作、正则操作、等平铺放置更容易添加操作 <br />
-      ㅤ•ㅤ 点击订阅左边的图标才会预览，防止误触预览节点 <br />
-      ㅤ•ㅤ 首页订阅页面：卡片左滑呼出快捷方式，可设置右滑呼出。 <br />ㅤ ㅤ
-      点击卡片空白处可关闭当前滑块。添加编辑方便修改
-
-      <br />
-      ㅤ•ㅤ 改进 Service Worker 通过将资源预缓存，更快、流畅地加载 <br />ㅤ ㅤ
-      网络连接稳定或不可用时仍能够访问程序 <br />
-      ㅤ•ㅤ 增加预览时候的 V2Ray 入口 <br />
-      ㅤ•ㅤ 新增长按卡片拖动排序，前端需 v2.14.6+ 后端 v2.14.13+ <br />
-      ㅤ•ㅤ 首页订阅页面图标默认为黑白，可自定义开启图标为彩色
-    </div>
+    />
   </div>
 </template>
 

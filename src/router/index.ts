@@ -17,6 +17,7 @@ import { Toast } from '@nutui/nutui';
 import { toRaw } from 'vue';
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
+import aboutUs from '@/views/AboutUs.vue';
 // import { SwipeBack } from 'vue-swipe-back'
 
 let globalStore = null;
@@ -88,6 +89,15 @@ const router = createRouter({
           component: moreSetting,
           meta: {
             title: 'moreSetting',
+            needTabBar: false,
+            needNavBack: true,
+          },
+        },
+        {
+          path: '/aboutUs',
+          component: aboutUs,
+          meta: {
+            title: 'aboutUs',
             needTabBar: false,
             needNavBack: true,
           },
