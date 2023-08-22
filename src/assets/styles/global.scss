@@ -32,6 +32,15 @@ img {
   pointer-events: none;
 }
 
+//collapse
+.nut-collapse-item .collapse-item.collapse-item {
+  background-color: var(--card-color);
+
+  &::after {
+    border-color: var(--divider-color);
+  }
+}
+
 // tab 切换面板
 .tab-panel-wrapper {
   position: fixed;
@@ -61,85 +70,85 @@ img {
   line-height: 2;
 }
 .nut-icon-issue:before {
-  content: "\e6b1";
+  content: '\e6b1';
 }
 .nut-icon-ask:before {
-  content: "\e670";
+  content: '\e670';
 }
 .nut-icon-setting:before {
-  content: "\e681";
+  content: '\e681';
 }
 .nut-icon-left:before {
-  content: "\e673";
+  content: '\e673';
 }
 .nut-icon-rect-left:before {
-  content: "\e6c9";
+  content: '\e6c9';
 }
 
 .nut-icon-right:before {
-  content: "\e698";
+  content: '\e698';
 }
 .nut-icon-rect-right:before {
-  content: "\e6cb"; // \2003 占位符
+  content: '\e6cb'; // \2003 占位符
   color: var(--lowest-text-color); // 更多设置
 }
 .nut-icon-arrow-right2:before {
-  content: "\e6a9";
+  content: '\e6a9';
 }
 .nut-icon-arrow-right:before {
-  content: "\e6a3";
+  content: '\e6a3';
 }
 .nut-icon-link:before {
-  content: "\e67c"; // link
+  content: '\e67c'; // link
 }
 .nut-icon-refresh2:before {
-  content: "\e682"; // sync
+  content: '\e682'; // sync
 }
 .nut-icon-refresh:before {
-  content: "\e690";
+  content: '\e690';
 }
 .nut-icon-close-little:before {
-  content: "\e6aa";
+  content: '\e6aa';
 }
 .nut-icon-close:before {
-  content: "\e674";
+  content: '\e674';
 }
 .nut-icon-mask-close:before {
-  content: "\e6cd";
+  content: '\e6cd';
 }
 .nut-icon-circle-close:before {
-  content: "\e699";
+  content: '\e699';
 }
 .nut-icon-checked:before {
-  content: "\e601";
+  content: '\e601';
 }
 
 .nut-icon-checklist:before {
-  content: "\e6c8";
+  content: '\e6c8';
 }
 
 .nut-icon-check-disabled:before {
-  content: "\e6c7";
+  content: '\e6c7';
 }
 
 .nut-icon-check-normal:before {
-  content: "\e6c5";
+  content: '\e6c5';
 }
 
 .nut-icon-check-checked:before {
-  content: "\e6c6";
+  content: '\e6c6';
 }
 
 .nut-icon-check-checked:before {
-  content: "\e6c6";
+  content: '\e6c6';
 }
 
 .nut-icon-loading:before {
-  content: "\e6c4";
+  content: '\e6c4';
 }
 
 .nut-icon-loading1:before {
-  content: "\e614";
+  content: '\e614';
 }
 
 // keyfrom nutui scss

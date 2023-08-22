@@ -23,9 +23,10 @@ export default {
       sub: '订阅管理',
       sync: '同步订阅',
       my: '我的',
-      subEditor: "订阅编辑",
+      subEditor: '订阅编辑',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
+      aboutUs: '关于 Sub-Store',
       notFound: '地址未找到',
       askWhat: {
         sync: {
@@ -35,14 +36,12 @@ export default {
         },
         subEditor: {
           title: '下载不了订阅？',
-          content:
-            '尝试更换 UA 下载试试，默认为QuanX UA',
+          content: '尝试更换 UA 下载试试，默认为QuanX UA',
         },
         moreSetting: {
           title: '遇到问题？',
-          content:
-            '遇到问题？',
-        }, 
+          content: '遇到问题？',
+        },
       },
     },
   },
@@ -340,7 +339,6 @@ export default {
           tipsTitle: '脚本过滤器操作提示',
           tipsDes: '使用一段 JavaScript 脚本来过滤节点',
         },
-
       },
     },
   },
@@ -482,7 +480,7 @@ export default {
     },
   },
   themeSettingPage: {
-    themeSettingTitle: '主题设置',
+    themeSettingTitle: '外观设置',
     // themeSettingDes: '',
     auto: '自动切换主题',
     light: '浅色主题',
@@ -497,7 +495,7 @@ export default {
     moreSettingTitle: '更多设置',
     other: '其他设置',
     auto: '启动时自动下载 Gist 配置',
-    desc:`注意事项：开启此开关会在打开 SubStore 时自动下载 Gist 远程配置并刷新。
+    desc: `注意事项：开启此开关会在打开 SubStore 时自动下载 Gist 远程配置并刷新。
           刷新操作会覆盖当前配置，为防止数据丢失，可在修改后手动上传配置。 
           打开开关不会上传，只有在重启后才会下载配置。`,
     simple: '简洁模式',
@@ -505,9 +503,23 @@ export default {
     isIC: '卡片图标彩色',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
+    currentHostApi: '当前后端 API',
     yhostapi: '默认:https://sub.store ',
-    serverDesc:`配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
+    serverDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
                 配置后需要重启 Sub Store 以生效。如需删除 api，
                 使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+  },
+  aboutUsPage: {
+    projectInfo: {
+      title: '项目信息（求 Star 🌟）',
+      fe: '前端',
+      be: '后端',
+      mock: 'Mock 模块',
+      team: '项目组',
+      link: '在 GitHub 上查看',
+    },
+    changelogs: {
+      title: '更新日志',
+    },
   },
 };
