@@ -1,8 +1,8 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'line-height': '1.2','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'line-height': '1.2','padding': isSimpleMode ? '9px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrappers">
-        <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
+        <nut-avatar class="sub-item-customer-icon" :style="{ 'margin-top': isSimpleMode ? '3.5px' : '0' }" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">

@@ -412,11 +412,10 @@ const onClickRefresh = async () => {
 }
 
 .sub-item-wrapper {
-  // width: calc(100% - 12px);
+  line-height: 1.4;
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--item-card-radios);
-  // padding: var(--safe-area-side);
   display: flex;
   background: var(--card-color);
 
