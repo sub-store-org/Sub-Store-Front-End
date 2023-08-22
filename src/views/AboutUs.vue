@@ -52,25 +52,27 @@
     <div class="changelog-wrapper">
       <h1 class="block-title">{{ $t(`aboutUsPage.changelogs.title`) }}</h1>
 
-      <nut-collapse
-        v-model:active="active"
-        icon="arrow-right2"
-        rotate="90"
-        accordion
-      >
-        <nut-collapse-item
-          v-for="changelog in changelogs"
-          :key="changelog.htmlContent"
-          :name="changelog.date.format('YYYY-MM-DD')"
+      <div class="block-content">
+        <nut-collapse
+          v-model:active="active"
+          icon="arrow-right2"
+          rotate="90"
+          accordion
         >
-          <template #mTitle>
-            <h2 class="changelog-title">
-              {{ changelog.date.format('YYYY-MM-DD') }}
-            </h2>
-          </template>
-          <div class="changelog-content" v-html="changelog.htmlContent" />
-        </nut-collapse-item>
-      </nut-collapse>
+          <nut-collapse-item
+            v-for="changelog in changelogs"
+            :key="changelog.htmlContent"
+            :name="changelog.date.format('YYYY-MM-DD')"
+          >
+            <template #mTitle>
+              <h2 class="changelog-title">
+                {{ changelog.date.format('YYYY-MM-DD') }}
+              </h2>
+            </template>
+            <div class="changelog-content" v-html="changelog.htmlContent" />
+          </nut-collapse-item>
+        </nut-collapse>
+      </div>
     </div>
   </div>
 </template>
@@ -105,6 +107,9 @@
       display: flex;
       flex-direction: column;
       gap: 1px;
+      margin: 0 var(--safe-area-side);
+      border-radius: var(--item-card-radios);
+      overflow: hidden;
     }
 
     .about-wrapper {
