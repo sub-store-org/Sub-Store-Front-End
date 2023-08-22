@@ -412,7 +412,7 @@ const onClickRefresh = async () => {
 }
 
 .sub-item-wrapper {
-  line-height: 1.4;
+  // line-height: 1.4;
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--item-card-radios);
@@ -435,7 +435,7 @@ const onClickRefresh = async () => {
 
   >.sub-item-content {
     flex: 1;
-    // line-height: 1.3;
+    // line-height: 1.4;
 
     .sub-item-title-wrapper {
       display: flex;
@@ -505,7 +505,7 @@ const onClickRefresh = async () => {
       word-break: break-all;
       overflow: hidden;
       font-size: 12px;
-      margin-top: 2.5px;
+      margin-top: 3.5px;
       max-width: 80%;
       color: var(--comment-text-color);
     }
