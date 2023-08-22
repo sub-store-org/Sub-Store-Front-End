@@ -19,6 +19,9 @@ export const useAppNotifyStore = defineStore('appNotify', {
       this.type = type || 'primary';
       this.duration = duration || 800;
       this.isVisible = true;
+      setTimeout(() => {
+        this.setVisible(false);
+      }, 1000); // 防止重复通知 持续时间过长
     },
     setVisible(isVisible: boolean) {
       this.isVisible = isVisible;
