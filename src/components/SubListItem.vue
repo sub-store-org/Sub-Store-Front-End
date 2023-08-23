@@ -435,7 +435,7 @@ const onClickRefresh = async () => {
 
   >.sub-item-content {
     flex: 1;
-    // line-height: 1.4;
+    line-height: 1.6;
 
     .sub-item-title-wrapper {
       display: flex;
