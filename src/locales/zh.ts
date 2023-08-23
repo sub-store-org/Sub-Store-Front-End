@@ -500,7 +500,7 @@ export default {
           打开开关不会上传，只有在重启后才会下载配置。`,
     simple: '简洁模式',
     islr: '卡片右滑呼出',
-    isIC: '卡片图标彩色',
+    isIC: '使用订阅图标原始颜色',
     isEditorCommon: '编辑页常用配置',
     isSimpleReicon: '订阅页刷新按钮',
     auto2: '自定义设置 Key',
@@ -513,7 +513,7 @@ export default {
   },
   aboutUsPage: {
     projectInfo: {
-      title: '项目信息（求 Star 🌟）',
+      title: '项目信息（欢迎 Star 🌟）',
       fe: '前端',
       be: '后端',
       mock: 'Mock 模块',
