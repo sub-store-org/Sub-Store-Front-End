@@ -347,9 +347,8 @@
     ) {
       console.log('InputHostApi失败');
       Dialog({
-        title: '链接验证失败 或无效链接',
-        content:
-          '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
+        title: t(`moreSettingPage.InputHostApi.title`),
+        content: t(`moreSettingPage.InputHostApi.content`),
         popClass: 'auto-dialog',
         noCancelBtn: true,
         okText: t(`editorPage.subConfig.pop.errorBtn`),

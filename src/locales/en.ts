@@ -504,6 +504,10 @@ export default {
     yhostapi: 'Default:https://sub.store ',
     serverDesc:
       'Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save',
+    InputHostApi: {
+      title:'Link validation failed invalid link',
+      content:'Mainstream browsers have already blocked HTTP requests on HTTPS pages. Please use the HTTPS protocol instead',
+    }
   },
   aboutUsPage: {
     projectInfo: {
