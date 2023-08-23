@@ -110,6 +110,13 @@
       margin: 0 var(--safe-area-side);
       border-radius: var(--item-card-radios);
       overflow: hidden;
+      view:first-of-type {
+        :deep(.nut-collapse-item) {
+          .collapse-wrapper {
+            height: auto;
+          }
+        }
+      }
     }
 
     .about-wrapper {
