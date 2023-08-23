@@ -8,6 +8,8 @@ interface GlobalStoreState {
   isSimpleMode: boolean;
   isLeftRight: boolean;
   isIconColor: boolean;
+  isEditorCommon: boolean;
+  isSimpleReicon: boolean;
   ishostApi: any;
 }
 

@@ -496,6 +496,8 @@ export default {
     simple: 'Simple Mode',
     islr: 'Card right swipe to call out',
     isIC: 'Card Icon is Color',
+    isEditorCommon: 'Editor Common Settings',
+    isSimpleReicon: 'Management Simple Refresh Button',
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
     currentHostApi: 'Current Backend API',

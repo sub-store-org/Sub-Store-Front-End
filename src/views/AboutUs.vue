@@ -6,7 +6,7 @@
         <div class="project-block">
           <p>
             <span>{{ $t(`aboutUsPage.projectInfo.fe`) }}</span
-            ><span>v2.14.11</span>
+            ><span>v2.14.12</span>
           </p>
           <a
             target="_blank"

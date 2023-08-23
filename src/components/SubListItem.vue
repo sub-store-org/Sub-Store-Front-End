@@ -30,7 +30,7 @@
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
             </button>
-            <button class="refresh-sub-flow" @click.stop="onClickRefresh" v-if="props.type === 'sub' && !isSimpleMode">
+            <button class="refresh-sub-flow" @click.stop="onClickRefresh" v-if="props.type === 'sub' && (!isSimpleMode || isSimpleReicon)">
               <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
             </button>
 
@@ -183,7 +183,7 @@ const router = useRouter();
 const globalStore = useGlobalStore();
 const subsStore = useSubsStore();
 const subsApi = useSubsApi();
-const { isFlowFetching, isSimpleMode, isLeftRight, isIconColor } = storeToRefs(globalStore);
+const { isFlowFetching, isSimpleMode, isLeftRight, isIconColor, isSimpleReicon } = storeToRefs(globalStore);
 const displayName =
   props[props.type].displayName || props[props.type]['display-name'];
 
