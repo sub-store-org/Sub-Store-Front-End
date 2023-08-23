@@ -4,7 +4,7 @@
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="props.disabled">
     <div class="sub-item-wrapper" :style="{ 'padding': isSimpleMode ? '9px' : '16px' }" @click="swipeClose">
       <!-- compareSub -->
-      <div @click="compareSub" class="sub-img-wrappers" :style="{ 'margin-top': isSimpleMode ? '3px' : '0' }">
+      <div @click="compareSub" class="sub-img-wrappers" :style="{ 'margin-top': isSimpleMode ? '5px' : '0' }">
         <div v-if="isIconColor">
           <nut-avatar v-if="props[props.type].icon" :size="isSimpleMode ? '36' : '48'" :url="props[props.type].icon"
             bg-color=""></nut-avatar>
@@ -412,7 +412,7 @@ const onClickRefresh = async () => {
 }
 
 .sub-item-wrapper {
-  line-height: 1.6;
+  line-height: 1.4;
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--item-card-radios);
