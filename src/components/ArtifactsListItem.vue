@@ -399,7 +399,7 @@ watch(isSyncOpen, async () => {
           span {
             margin-right: 8px;
             font-weight: normal;
-            line-height: 2.8;
+            // line-height: 2.8;
             color: var(--comment-text-color);
           }
 
@@ -471,5 +471,9 @@ watch(isSyncOpen, async () => {
     height: 16px;
     color: var(--lowest-text-color);
   }
+}
+.sub-img-wrappers {
+  display: flex;
+  align-items: center;
 }
 </style>
