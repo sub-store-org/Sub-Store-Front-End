@@ -368,7 +368,7 @@
 
 <style lang="scss" scoped>
   .page-wrapper {
-    height: 100%;
+    min-height: 100%;
     padding: 0 var(--safe-area-side);
     // padding: var(--safe-area-side);
     // display: flex;
