@@ -59,7 +59,7 @@ export default {
   // 订阅管理页
   subPage: {
     addSubTitle: '选择要创建的订阅类型',
-    previewTitle: '选择想要预览的平台',
+    previewTitle: '点击复制或点击图标预览',
 
     emptySub: {
       title: '你还没有添加订阅',
@@ -102,6 +102,9 @@ export default {
       loading: '拷贝配置中...',
       succeed: '配置拷贝成功！',
       failed: '配置拷贝失败！\n{e}',
+    },
+    panel: {
+      general: '通用订阅',
     },
   },
   editorPage: {

@@ -28,7 +28,7 @@ export default {
     'divider-color': '#FFFFFF08',
     'card-color': '#242427',
     // 'card-color': '#0e0e0f',
-    'dialog-color': '#202020',
+    'dialog-color': '#242427',
     'switch-close-background-color': '#FFFFFF14',
     'switch-active-background-color': '#478EF2',
     'compare-item-background-color': '#202020',

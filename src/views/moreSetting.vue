@@ -74,15 +74,16 @@
       </nut-cell>
 
       <template v-if="theme.auto">
+        
         <nut-cell
           class="cell-item"
           :title="$t(`themeSettingPage.dark`)"
           :desc="themeDes.darkDes"
           @click="openPicker('dark')"
         >
-          <template v-slot:link>
-            <nut-icon name="rect-right"></nut-icon>
-          </template>
+          <!-- <template v-slot:link>
+            <nut-icon name="rect-right" ></nut-icon>
+          </template> -->
         </nut-cell>
 
         <nut-cell
@@ -90,10 +91,12 @@
           :title="$t(`themeSettingPage.light`)"
           :desc="themeDes.lightDes"
           @click="openPicker('light')"
-          ><template v-slot:link>
-            <nut-icon name="rect-right"></nut-icon>
-          </template>
+          >
+          <!-- <template v-slot:link>
+            <nut-icon name="rect-right" ></nut-icon>
+          </template> -->
         </nut-cell>
+        
       </template>
 
       <nut-cell
@@ -405,6 +408,7 @@
     padding: 0 var(--safe-area-side);
     // padding: var(--safe-area-side);
     // display: flex;
+    // min-width: 100%;
     flex-direction: column;
     align-items: center;
     margin-bottom: 80px;
@@ -412,6 +416,7 @@
     .cell-item {
       box-shadow: none;
       background: var(--card-color);
+      
       border-radius: var(--item-card-radios);
       font-weight: bold;
       display: flex;
@@ -421,7 +426,21 @@
         font-weight: normal;
         color: var(--lowest-text-color);
       }
+      
     }
+    // .cell-items {
+    //   // box-shadow: none;
+    //   background: var(--card-color);
+    //   border-radius: var(--item-card-radios);
+    //   font-weight: bold;
+    //   // display: flex;
+    //   // align-items: center;
+
+    //   // :deep(.nut-cell__value) {
+    //   //   font-weight: normal;
+    //   //   color: var(--lowest-text-color);
+    //   // }
+    // }
 
     .cell-group {
       width: 100%;

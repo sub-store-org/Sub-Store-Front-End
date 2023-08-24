@@ -25,9 +25,10 @@
           <h3 v-else style="color: var(--primary-text-color); font-size: 16px;">
             {{ displayName || name }}
           </h3>
-
+          
+          <!-- onClickCopyLink 拷贝 -->
           <div style="position: relative;" :style="{ 'top': isSimpleMode ? '8px' : '0' }">
-            <button class="copy-sub-link" @click.stop="onClickCopyLink">
+            <button class="copy-sub-link" @click.stop="onClickPreview">
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
             </button>
             <button class="refresh-sub-flow" @click.stop="onClickRefresh" v-if="props.type === 'sub' && (!isSimpleMode || isSimpleReicon)">
@@ -101,11 +102,11 @@
         </nut-button>
       </div>
       <!-- preview -->
-      <div class="sub-item-swipe-btn-wrapper">
+      <!-- <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
           <font-awesome-icon icon="fa-solid fa-eye" />
         </nut-button>
-      </div>
+      </div> -->
       <!-- del -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="danger" class="sub-item-swipe-btn" @click="onClickDelete">
@@ -120,11 +121,11 @@
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
-      <div class="sub-item-swipe-btn-wrapper">
+      <!-- <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
           <font-awesome-icon icon="fa-solid fa-eye" />
         </nut-button>
-      </div>
+      </div> -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="danger" class="sub-item-swipe-btn" @click="onClickDelete">
           <font-awesome-icon icon="fa-solid fa-trash-can" />
@@ -159,8 +160,8 @@ import { useRouter } from 'vue-router';
 // import { defineProps } from 'vue';
 
 
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
+// const { copy, isSupported } = useClipboard();
+// const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 
@@ -318,7 +319,7 @@ const onDeleteConfirm = async () => {
 const onClickPreview = () => {
   Dialog({
     title: t('subPage.previewTitle'),
-    content: createVNode(PreviewPanel, { name, type: props.type }),
+    content: createVNode(PreviewPanel, { name, type: props.type, general: t('subPage.panel.general'), notify:t('subPage.copyNotify.succeed') }),
     onOpened: () => swipe.value.close(),
     popClass: 'auto-dialog',
     // @ts-ignore-next-line  组件库bug，类型错误但功能正常
@@ -331,7 +332,7 @@ const onClickPreview = () => {
 };
 
 const onClickCopyConfig = async () => {
-  let data;
+  let data: Sub | Collection;
   switch (props.type) {
     case 'sub':
       data = JSON.parse(JSON.stringify(toRaw(props.sub)));
@@ -375,18 +376,18 @@ const onClickDelete = () => {
 
 const { showNotify } = useAppNotifyStore();
 
-const onClickCopyLink = async () => {
-  const host = localStorage.getItem('hostApi') || import.meta.env.VITE_API_URL || 'https://sub.store';
-  const url = `${host}/download/${props.type === 'collection' ? 'collection/' : ''
-    }${name}`;
+// const onClickCopyLink = async () => {
+//   const host = localStorage.getItem('hostApi') || import.meta.env.VITE_API_URL || 'https://sub.store';
+//   const url = `${host}/download/${props.type === 'collection' ? 'collection/' : ''
+//     }${name}`;
 
-  if (isSupported) {
-    await copy(encodeURI(url));
-  } else {
-    await copyFallback(encodeURI(url));
-  }
-  showNotify({ title: t('subPage.copyNotify.succeed'), type: 'success' });
-};
+//   if (isSupported) {
+//     await copy(encodeURI(url));
+//   } else {
+//     await copyFallback(encodeURI(url));
+//   }
+//   showNotify({ title: t('subPage.copyNotify.succeed'), type: 'success' });
+// };
 
 const onClickRefresh = async () => {
   Toast.loading(t('globalNotify.refresh.loading'), {

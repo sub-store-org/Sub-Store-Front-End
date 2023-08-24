@@ -103,6 +103,9 @@ export default {
       succeed: 'Successfully copied config!',
       failed: 'Failed to copy config!\n{e}',
     },
+    panel: {
+      general: 'General',
+    },
   },
   editorPage: {
     subConfig: {
