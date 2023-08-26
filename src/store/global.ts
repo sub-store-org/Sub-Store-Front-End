@@ -17,6 +17,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isIconColor: localStorage.getItem('iconColor') === '1',
       isEditorCommon: localStorage.getItem('iseditorCommon') !== '1',
       isSimpleReicon: localStorage.getItem('isSimpleReicon') === '1',
+      istabBar: localStorage.getItem('istabBar') === '1',
       ishostApi: localStorage.getItem('hostApi'),
     };
   },
@@ -76,6 +77,14 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('isSimpleReicon');
       }
       this.isSimpleReicon = isSimpleReicon;
+    },
+    settabBar(istabBar: boolean) {
+      if (istabBar) {
+        localStorage.setItem('istabBar', '1');
+      } else {
+        localStorage.removeItem('istabBar');
+      }
+      this.istabBar = istabBar;
     },
     sethostApi(hostApi: string) {
       localStorage.setItem('hostApi', hostApi);

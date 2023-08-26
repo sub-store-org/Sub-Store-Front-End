@@ -501,6 +501,7 @@ export default {
     isIC: 'Use original color for icons',
     isEditorCommon: 'Editor Common Settings',
     isSimpleReicon: 'Management Simple Refresh Button',
+    tabBar: 'Disable TabBar Sync Button',
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
     currentHostApi: 'Current Backend API',

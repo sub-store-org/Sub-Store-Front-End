@@ -59,6 +59,18 @@
           />
         </template>
       </nut-cell>
+
+      <nut-cell :title="$t(`moreSettingPage.tabBar`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awtabBar"
+            size="mini"
+            @change="settabBar"
+          />
+        </template>
+      </nut-cell>
+
     </nut-cell-group>
 
     <nut-cell-group>
@@ -231,7 +243,7 @@
   const { changeAutoDownloadGist } = settingsStore;
   const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
-  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor, isEditorCommon, isSimpleReicon } =
+  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor, isEditorCommon, isSimpleReicon, istabBar } =
     storeToRefs(globalStore);
 
   const InputHostApi = ref('');
@@ -241,6 +253,7 @@
   const awIconColor = ref(false);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
+  const awtabBar = ref(true);
   const isEditing = ref(false);
   const isInit = ref(false);
 
@@ -268,6 +281,11 @@
   const setSimpleReicon = (isSimpleReicon: boolean) => {
     globalStore.setSimpleReicon(isSimpleReicon);
   };
+
+  const settabBar= (istabBar: boolean) => {
+    globalStore.settabBar(istabBar);
+  };
+
   const SwitchSyncIsChange = (val: boolean) => {
     changeAutoDownloadGist({ autoDownloadGistSync: val });
   };
@@ -394,6 +412,7 @@
     awEditorCommon.value = isEditorCommon.value;
     awEditorCommon.value = isEditorCommon.value;
     awSimpleReicon.value = isSimpleReicon.value;
+    awtabBar.value = istabBar.value;
     autoSwitch.value = isAuto();
     if (!isInit.value) {
       setDisplayInfo();
