@@ -447,19 +447,6 @@
       }
       
     }
-    // .cell-items {
-    //   // box-shadow: none;
-    //   background: var(--card-color);
-    //   border-radius: var(--item-card-radios);
-    //   font-weight: bold;
-    //   // display: flex;
-    //   // align-items: center;
-
-    //   // :deep(.nut-cell__value) {
-    //   //   font-weight: normal;
-    //   //   color: var(--lowest-text-color);
-    //   // }
-    // }
 
     .cell-group {
       width: 100%;

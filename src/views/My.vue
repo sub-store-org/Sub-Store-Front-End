@@ -152,13 +152,13 @@
   import { useSettingsApi } from '@/api/settings';
   import avatar from '@/assets/icons/avatar.svg?url';
   import clash from '@/assets/icons/clash.png?url';
-  import iconKey from '@/assets/icons/key-solid.svg';
+  import iconKey from '@/assets/icons/key-solid.png';
   import loon from '@/assets/icons/loon.png?url';
   import node from '@/assets/icons/node.svg?url';
   import quanx from '@/assets/icons/quanx.png?url';
   import stash from '@/assets/icons/stash.png?url';
   import surge from '@/assets/icons/surge.png?url';
-  import iconUser from '@/assets/icons/user-solid.svg';
+  import iconUser from '@/assets/icons/user-solid.png';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';

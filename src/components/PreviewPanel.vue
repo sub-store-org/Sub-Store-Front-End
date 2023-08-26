@@ -26,7 +26,7 @@ import loon from '@/assets/icons/loon.png';
 import stash from '@/assets/icons/stash.png';
 import shadowrocket from '@/assets/icons/shadowrocket.png';
 import v2ray from '@/assets/icons/v2ray.png';
-import copyicon from '@/assets/icons/copy.svg';
+import copyicon from '@/assets/icons/copy.png';
 import logoicon from '@/assets/icons/logo.svg';
 import { useClipboard } from '@vueuse/core';
 import useV3Clipboard from 'vue-clipboard3';
