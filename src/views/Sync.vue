@@ -185,7 +185,7 @@ const handleDragEnd = () => {
 .sync-title {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  // align-items: center;
 
   .actions-wrapper {
     margin-right: 16px;
@@ -216,7 +216,7 @@ const handleDragEnd = () => {
 }
 
 .draggable-itemsync {
-  margin-top: 12px;
+  margin-top: 4px;
   margin-bottom: 12px;
   // overflow: hidden;
 }

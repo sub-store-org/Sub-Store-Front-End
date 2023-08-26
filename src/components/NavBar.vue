@@ -157,7 +157,7 @@
             min-width: 20px;
             font-size: 18px;
             font-weight: 600;
-            line-height: 100%;
+            // line-height: 100%;
             color: var(--primary-text-color);
             display: nowrap;
             -webkit-box-orient: vertical;

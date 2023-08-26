@@ -12,9 +12,11 @@ export const useGlobalStore = defineStore('globalStore', {
       bottomSafeArea: 0,
       isDarkMode: false,
       env: {},
-      isSimpleMode: localStorage.getItem('isSimpleMode') === 'on',
+      isSimpleMode: localStorage.getItem('isSimpleMode') === '1',
       isLeftRight: localStorage.getItem('isLr') === '1',
       isIconColor: localStorage.getItem('iconColor') === '1',
+      isEditorCommon: localStorage.getItem('iseditorCommon') !== '1',
+      isSimpleReicon: localStorage.getItem('isSimpleReicon') === '1',
       ishostApi: localStorage.getItem('hostApi'),
     };
   },
@@ -37,7 +39,7 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setSimpleMode(isSimpleMode: boolean) {
       if (isSimpleMode) {
-        localStorage.setItem('isSimpleMode', 'on');
+        localStorage.setItem('isSimpleMode', '1');
       } else {
         localStorage.removeItem('isSimpleMode');
       }
@@ -58,6 +60,22 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('iconColor');
       }
       this.isIconColor = iconColor;
+    },
+    setEditorCommon(isEditorCommon: boolean) {
+      if (!isEditorCommon) {
+        localStorage.setItem('iseditorCommon', '1');
+      } else {
+        localStorage.removeItem('iseditorCommon');
+      }
+      this.isEditorCommon = isEditorCommon;
+    },
+    setSimpleReicon(isSimpleReicon: boolean) {
+      if (isSimpleReicon) {
+        localStorage.setItem('isSimpleReicon', '1');
+      } else {
+        localStorage.removeItem('isSimpleReicon');
+      }
+      this.isSimpleReicon = isSimpleReicon;
     },
     sethostApi(hostApi: string) {
       localStorage.setItem('hostApi', hostApi);

@@ -37,6 +37,28 @@
           />
         </template>
       </nut-cell>
+
+      <nut-cell :title="$t(`moreSettingPage.isEditorCommon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awEditorCommon"
+            size="mini"
+            @change="setEditorCommon"
+          />
+        </template>
+      </nut-cell>
+
+      <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleReicon"
+            size="mini"
+            @change="setSimpleReicon"
+          />
+        </template>
+      </nut-cell>
     </nut-cell-group>
 
     <nut-cell-group>
@@ -52,15 +74,16 @@
       </nut-cell>
 
       <template v-if="theme.auto">
+        
         <nut-cell
           class="cell-item"
           :title="$t(`themeSettingPage.dark`)"
           :desc="themeDes.darkDes"
           @click="openPicker('dark')"
         >
-          <template v-slot:link>
-            <nut-icon name="rect-right"></nut-icon>
-          </template>
+          <!-- <template v-slot:link>
+            <nut-icon name="rect-right" ></nut-icon>
+          </template> -->
         </nut-cell>
 
         <nut-cell
@@ -68,10 +91,12 @@
           :title="$t(`themeSettingPage.light`)"
           :desc="themeDes.lightDes"
           @click="openPicker('light')"
-          ><template v-slot:link>
-            <nut-icon name="rect-right"></nut-icon>
-          </template>
+          >
+          <!-- <template v-slot:link>
+            <nut-icon name="rect-right" ></nut-icon>
+          </template> -->
         </nut-cell>
+        
       </template>
 
       <nut-cell
@@ -206,7 +231,7 @@
   const { changeAutoDownloadGist } = settingsStore;
   const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
-  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor } =
+  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor, isEditorCommon, isSimpleReicon } =
     storeToRefs(globalStore);
 
   const InputHostApi = ref('');
@@ -214,6 +239,8 @@
   const SimpleSwitch = ref(false);
   const LeftRight = ref(false);
   const awIconColor = ref(false);
+  const awEditorCommon = ref(false);
+  const awSimpleReicon = ref(true);
   const isEditing = ref(false);
   const isInit = ref(false);
 
@@ -234,6 +261,13 @@
     globalStore.setIconColor(isIconColor);
   };
 
+  const setEditorCommon = (isIconColor: boolean) => {
+    globalStore.setEditorCommon(isIconColor);
+  };
+
+  const setSimpleReicon = (isSimpleReicon: boolean) => {
+    globalStore.setSimpleReicon(isSimpleReicon);
+  };
   const SwitchSyncIsChange = (val: boolean) => {
     changeAutoDownloadGist({ autoDownloadGistSync: val });
   };
@@ -316,9 +350,8 @@
     ) {
       console.log('InputHostApi失败');
       Dialog({
-        title: '链接验证失败 或无效链接',
-        content:
-          '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
+        title: t(`moreSettingPage.InputHostApi.title`),
+        content: t(`moreSettingPage.InputHostApi.content`),
         popClass: 'auto-dialog',
         noCancelBtn: true,
         okText: t(`editorPage.subConfig.pop.errorBtn`),
@@ -358,6 +391,9 @@
     LeftRight.value = isLeftRight.value;
     autoSwitchSync.value = autoDownloadGistSync.value;
     awIconColor.value = isIconColor.value;
+    awEditorCommon.value = isEditorCommon.value;
+    awEditorCommon.value = isEditorCommon.value;
+    awSimpleReicon.value = isSimpleReicon.value;
     autoSwitch.value = isAuto();
     if (!isInit.value) {
       setDisplayInfo();
@@ -372,12 +408,15 @@
     padding: 0 var(--safe-area-side);
     // padding: var(--safe-area-side);
     // display: flex;
+    // min-width: 100%;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 80px;
 
     .cell-item {
       box-shadow: none;
       background: var(--card-color);
+      
       border-radius: var(--item-card-radios);
       font-weight: bold;
       display: flex;
@@ -387,7 +426,21 @@
         font-weight: normal;
         color: var(--lowest-text-color);
       }
+      
     }
+    // .cell-items {
+    //   // box-shadow: none;
+    //   background: var(--card-color);
+    //   border-radius: var(--item-card-radios);
+    //   font-weight: bold;
+    //   // display: flex;
+    //   // align-items: center;
+
+    //   // :deep(.nut-cell__value) {
+    //   //   font-weight: normal;
+    //   //   color: var(--lowest-text-color);
+    //   // }
+    // }
 
     .cell-group {
       width: 100%;

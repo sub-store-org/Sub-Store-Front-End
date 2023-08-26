@@ -89,7 +89,7 @@
     </div>
 
     <!-- 常用配置 -->
-    <CommonBlock />
+    <CommonBlock v-if="isEditorCommon"/>
 
     <!-- 节点操作 -->
     <ActionBlock :checked="actionsChecked" :list="actionsList" @addAction="addAction" @deleteAction="deleteAction" />
@@ -152,7 +152,7 @@ const subsStore = useSubsStore();
 const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
-const { bottomSafeArea } = storeToRefs(globalStore);
+const { bottomSafeArea, isEditorCommon } = storeToRefs(globalStore);
 const padding = bottomSafeArea.value + 'px';
 
 const sub = computed(() => subsStore.getOneSub(configName));

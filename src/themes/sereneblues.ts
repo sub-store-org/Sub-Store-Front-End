@@ -27,7 +27,7 @@ export default {
     'popup-color': '#444654',
     'divider-color': '#FFFFFF08',
     'card-color': '#444654',
-    'dialog-color': '#202020',
+    'dialog-color': '#444654',
     'switch-close-background-color': '#FFFFFF14',
     'switch-active-background-color': '#478EF2',
     'compare-item-background-color': '#444654',

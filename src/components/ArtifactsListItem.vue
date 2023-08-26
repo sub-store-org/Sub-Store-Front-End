@@ -1,8 +1,8 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'line-height': '1.2','padding': isSimpleMode ? '11px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="onclose">
       <div class="sub-img-wrappers">
-        <nut-avatar class="sub-item-customer-icon" :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
+        <nut-avatar class="sub-item-customer-icon"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -326,6 +326,7 @@ watch(isSyncOpen, async () => {
 }
 
 .sub-item-wrapper {
+  line-height: 1.6;
   // width: calc(100% - 24px);
   margin-left: auto;
   margin-right: auto;
@@ -378,7 +379,7 @@ watch(isSyncOpen, async () => {
       word-wrap: break-word;
       word-break: break-all;
       // overflow: hidden;
-      margin-top: 4px;
+      // margin-top: 3.5px;
       font-size: 12px;
 
       .second-line-wrapper {
@@ -398,7 +399,7 @@ watch(isSyncOpen, async () => {
           span {
             margin-right: 8px;
             font-weight: normal;
-            line-height: 2.8;
+            // line-height: 2.8;
             color: var(--comment-text-color);
           }
 
@@ -470,5 +471,9 @@ watch(isSyncOpen, async () => {
     height: 16px;
     color: var(--lowest-text-color);
   }
+}
+.sub-img-wrappers {
+  display: flex;
+  align-items: center;
 }
 </style>

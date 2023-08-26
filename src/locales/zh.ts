@@ -59,7 +59,7 @@ export default {
   // 订阅管理页
   subPage: {
     addSubTitle: '选择要创建的订阅类型',
-    previewTitle: '选择想要预览的平台',
+    previewTitle: '点击复制或点击图标预览',
 
     emptySub: {
       title: '你还没有添加订阅',
@@ -102,6 +102,9 @@ export default {
       loading: '拷贝配置中...',
       succeed: '配置拷贝成功！',
       failed: '配置拷贝失败！\n{e}',
+    },
+    panel: {
+      general: '通用订阅',
     },
   },
   editorPage: {
@@ -500,7 +503,9 @@ export default {
           打开开关不会上传，只有在重启后才会下载配置。`,
     simple: '简洁模式',
     islr: '卡片右滑呼出',
-    isIC: '卡片图标彩色',
+    isIC: '使用订阅图标原始颜色',
+    isEditorCommon: '编辑页常用配置',
+    isSimpleReicon: '订阅页刷新按钮',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
@@ -508,10 +513,14 @@ export default {
     serverDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
                 配置后需要重启 Sub Store 以生效。如需删除 api，
                 使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+    InputHostApi: {
+      title:'链接验证失败 或无效链接',
+      content:'主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
+    }
   },
   aboutUsPage: {
     projectInfo: {
-      title: '项目信息（求 Star 🌟）',
+      title: '项目信息（欢迎 Star 🌟）',
       fe: '前端',
       be: '后端',
       mock: 'Mock 模块',
