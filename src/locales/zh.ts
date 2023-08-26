@@ -506,6 +506,7 @@ export default {
     isIC: '使用订阅图标原始颜色',
     isEditorCommon: '编辑页常用配置',
     isSimpleReicon: '订阅页刷新按钮',
+    tabBar: '关闭 TabBar 同步按钮',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
