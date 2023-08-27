@@ -143,9 +143,11 @@ export const useHostAPI = () => {
     if (!url) return await errorCb?.();
 
     const isExist = apis.value.find(api => api.url === url);
-    if (isExist.name === currentName.value) return await errorCb?.();
 
-    if (isExist) return setCurrent(isExist.name);
+    if (isExist) {
+      if (isExist.name === currentName.value) return await errorCb?.();
+      return setCurrent(isExist.name);
+    }
 
     const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
     await addApi({ name, url });
