@@ -123,6 +123,28 @@ export const useHostAPI = () => {
     apis.value[index].url = url;
   };
 
+  const handleUrlQuery = async () => {
+    const query = window.location.search;
+    if (!query) return;
+
+    const apiUrl = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'api');
+    if (!apiUrl) return;
+
+    const url = decodeURIComponent(apiUrl[1]);
+    if (!url) return;
+
+    const isExist = apis.value.find(api => api.url === url);
+    if (isExist) return setCurrent(isExist.name);
+
+    const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
+    await addApi({ name, url });
+    setCurrent(name);
+  };
+
   return {
     currentName,
     currentUrl,
@@ -131,5 +153,6 @@ export const useHostAPI = () => {
     addApi,
     deleteApi,
     editApi,
+    handleUrlQuery,
   };
 };
