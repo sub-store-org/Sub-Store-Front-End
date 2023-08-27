@@ -70,7 +70,6 @@
           />
         </template>
       </nut-cell>
-
     </nut-cell-group>
 
     <nut-cell-group>
@@ -86,7 +85,6 @@
       </nut-cell>
 
       <template v-if="theme.auto">
-        
         <nut-cell
           class="cell-item"
           :title="$t(`themeSettingPage.dark`)"
@@ -103,12 +101,11 @@
           :title="$t(`themeSettingPage.light`)"
           :desc="themeDes.lightDes"
           @click="openPicker('light')"
-          >
+        >
           <!-- <template v-slot:link>
             <nut-icon name="rect-right" ></nut-icon>
           </template> -->
         </nut-cell>
-        
       </template>
 
       <nut-cell
@@ -243,8 +240,16 @@
   const { changeAutoDownloadGist } = settingsStore;
   const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
-  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor, isEditorCommon, isSimpleReicon, istabBar } =
-    storeToRefs(globalStore);
+  const {
+    env,
+    isSimpleMode,
+    isLeftRight,
+    ishostApi,
+    isIconColor,
+    isEditorCommon,
+    isSimpleReicon,
+    istabBar,
+  } = storeToRefs(globalStore);
 
   const InputHostApi = ref('');
   const autoSwitchSync = ref(false);
@@ -282,7 +287,7 @@
     globalStore.setSimpleReicon(isSimpleReicon);
   };
 
-  const settabBar= (istabBar: boolean) => {
+  const settabBar = (istabBar: boolean) => {
     globalStore.settabBar(istabBar);
   };
 
@@ -423,19 +428,19 @@
 
 <style lang="scss" scoped>
   .page-wrapper {
-    height: 100%;
+    min-height: 100%;
     padding: 0 var(--safe-area-side);
     // padding: var(--safe-area-side);
     // display: flex;
     // min-width: 100%;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 80px;
+    //margin-bottom: 80px;
 
     .cell-item {
       box-shadow: none;
       background: var(--card-color);
-      
+
       border-radius: var(--item-card-radios);
       font-weight: bold;
       display: flex;
@@ -445,7 +450,6 @@
         font-weight: normal;
         color: var(--lowest-text-color);
       }
-      
     }
 
     .cell-group {

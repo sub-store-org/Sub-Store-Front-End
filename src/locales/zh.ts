@@ -504,9 +504,9 @@ export default {
     simple: '简洁模式',
     islr: '卡片右滑呼出',
     isIC: '使用订阅图标原始颜色',
-    isEditorCommon: '编辑页常用配置',
-    isSimpleReicon: '订阅页刷新按钮',
-    tabBar: '关闭 TabBar 同步按钮',
+    isEditorCommon: '展示编辑页常用配置',
+    isSimpleReicon: '展示订阅刷新按钮',
+    tabBar: '隐藏 “Gist 同步” 页',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
@@ -515,9 +515,10 @@ export default {
                 配置后需要重启 Sub Store 以生效。如需删除 api，
                 使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
     InputHostApi: {
-      title:'链接验证失败 或无效链接',
-      content:'主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
-    }
+      title: '链接验证失败 或无效链接',
+      content:
+        '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
+    },
   },
   aboutUsPage: {
     projectInfo: {
