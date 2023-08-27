@@ -92,6 +92,16 @@
         </nut-button>
       </div>
     </nut-cell-group>
+
+    <p class="desc-text">
+      {{ $t(`apiSettingPage.apiSettingDesc`) }}
+      <a
+        href="https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d"
+        target="_blank"
+      >
+        https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d</a
+      >
+    </p>
   </div>
 </template>
 
@@ -211,6 +221,16 @@
         &:not(:first-child) {
           margin-top: 8px;
         }
+      }
+    }
+
+    .desc-text {
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--comment-text-color);
+
+      > a {
+        color: var(--primary-color);
       }
     }
   }

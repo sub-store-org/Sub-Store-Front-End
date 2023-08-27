@@ -494,9 +494,7 @@ export default {
   },
   apiSettingPage: {
     apiSettingTitle: 'Backend Setting',
-    apiSettingDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
-                配置后需要重启 Sub Store 以生效。如需删除 api，
-                使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+    apiSettingDesc: `Add the backend server address, such as the backend service built on VPS or Render. You can refer to XiaoYi's tutorial on setting up a backend: `,
     currentApi: {
       title: 'Current Backend',
     },

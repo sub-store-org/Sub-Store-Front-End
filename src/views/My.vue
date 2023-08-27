@@ -114,35 +114,37 @@
         </div>
       </div>
 
-      <nut-cell
-        :title="$t(`apiSettingPage.apiSettingTitle`)"
-        class="change-themes"
-        @click.stop="onClickAPISetting"
-      >
-        <template v-slot:link>
-          <nut-icon name="rect-right" />
-        </template>
-      </nut-cell>
+      <nut-cell-group>
+        <nut-cell
+          :title="$t(`apiSettingPage.apiSettingTitle`)"
+          class="change-themes"
+          @click.stop="onClickAPISetting"
+        >
+          <template v-slot:link>
+            <nut-icon name="rect-right" />
+          </template>
+        </nut-cell>
 
-      <nut-cell
-        :title="$t(`moreSettingPage.moreSettingTitle`)"
-        class="change-themes"
-        @click.stop="onClickMore"
-      >
-        <template v-slot:link>
-          <nut-icon name="rect-right" />
-        </template>
-      </nut-cell>
+        <nut-cell
+          :title="$t(`moreSettingPage.moreSettingTitle`)"
+          class="change-themes"
+          @click.stop="onClickMore"
+        >
+          <template v-slot:link>
+            <nut-icon name="rect-right" />
+          </template>
+        </nut-cell>
 
-      <nut-cell
-        :title="$t(`navBar.pagesTitle.aboutUs`)"
-        class="change-themes"
-        @click.stop="onClickAbout"
-      >
-        <template v-slot:link>
-          <nut-icon name="rect-right" />
-        </template>
-      </nut-cell>
+        <nut-cell
+          :title="$t(`navBar.pagesTitle.aboutUs`)"
+          class="change-themes"
+          @click.stop="onClickAbout"
+        >
+          <template v-slot:link>
+            <nut-icon name="rect-right" />
+          </template>
+        </nut-cell>
+      </nut-cell-group>
     </div>
 
     <div class="env-block">
