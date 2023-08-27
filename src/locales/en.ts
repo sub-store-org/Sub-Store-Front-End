@@ -253,7 +253,7 @@ export default {
         'Resolve Domain Operator': {
           label: 'Resolve Domain',
           des: 'Providers',
-          options: ['Google', 'IP-API', 'Cloudflare'],
+          options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
           tipsTitle: 'domain Tips',
           tipsDes: '节点域名解析操作说明',
         },

@@ -23,6 +23,7 @@
     "monaco-editor": "^0.33.0",
     "pinia": "^2.0.14",
     "qrcode": "^1.5.0",
+    "semver": "^7.5.4",
     "vite-plugin-compression": "^0.5.1",
     "vue": "^3.2.37",
     "vue-clipboard3": "^2.0.0",

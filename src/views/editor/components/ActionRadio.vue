@@ -16,7 +16,14 @@
 </template>
 
 <script lang="ts" setup>
+  import semverGte from 'semver/functions/gte';
+  import { storeToRefs } from 'pinia';
+  import { useGlobalStore } from '@/store/global';
   import { inject, onMounted, ref, watch } from 'vue';
+
+  const globalStore = useGlobalStore();
+
+  const { env } = storeToRefs(globalStore);
 
   const { type, id } = defineProps<{
     type: string;
@@ -32,6 +39,12 @@
     'Sort Operator': ['asc', 'desc', 'random'],
     'Resolve Domain Operator': ['Google', 'IP-API', 'Cloudflare'],
   };
+
+  try {
+    if (semverGte(env.value.version, '2.14.33')) {
+      opt['Resolve Domain Operator'] = [...opt['Resolve Domain Operator'], 'Ali', 'Tencent']
+    }
+  } catch (e) {}
 
   const value = ref();
 
