@@ -1,50 +1,97 @@
 <template>
   <div class="page-wrapper">
     <template v-if="isEnvReady">
-      <h1 class="block-title">当前后端</h1>
-      <nut-cell class="cell" center>
-        <template v-slot:icon>
-          <img :src="icon" alt="" class="auto-reverse backend-icon" />
-        </template>
-        <template v-slot:link>
-          <span class="backend-version">{{
-            `${env.backend} - ${env.version}`
-          }}</span>
-        </template>
-      </nut-cell>
+      <nut-cell-group :title="$t(`apiSettingPage.currentApi.title`)">
+        <nut-cell class="cell" center>
+          <template v-slot:icon>
+            <img :src="icon" alt="" class="auto-reverse backend-icon" />
+          </template>
+          <template v-slot:title>
+            <span class="backend-title">{{
+              currentName === ''
+                ? $t(`apiSettingPage.apiList.defaultName`)
+                : currentName
+            }}</span>
+          </template>
+          <template v-slot:link>
+            <span class="backend-version">{{
+              `${env.backend} - ${env.version}`
+            }}</span>
+          </template>
+        </nut-cell>
+      </nut-cell-group>
     </template>
 
-    <ul>
-      <li v-for="api in apis" :key="api.name">{{ api.name + api.url }}</li>
-    </ul>
+    <nut-cell-group
+      :title="$t(`apiSettingPage.apiList.title`)"
+      :desc="$t(`apiSettingPage.apiList.desc`)"
+    >
+      <nut-cell @click="setCurrent('')">
+        <div class="api-list-item">
+          <div class="api-item-left">
+            <h2>
+              {{ $t(`apiSettingPage.apiList.defaultName`) }}
+              <nut-tag v-if="currentName === ''" type="primary" plain>{{
+                $t(`apiSettingPage.apiList.currentTag`)
+              }}</nut-tag>
+            </h2>
+          </div>
+        </div>
+      </nut-cell>
 
-    <h1 class="block-title">{{ $t(`apiSettingPage.addApi.title`) }}</h1>
-    <div class="add-api-wrapper">
-      <nut-input
-        class="input"
-        v-model="addForm.name"
-        :placeholder="$t(`apiSettingPage.addApi.placeholder.name`)"
-        type="text"
-        input-align="left"
-      />
-      <nut-input
-        class="input"
-        v-model="addForm.url"
-        :placeholder="$t(`apiSettingPage.addApi.placeholder.url`)"
-        type="text"
-        input-align="left"
-      />
-      <nut-button
-        class="save-btn"
-        type="primary"
-        size="mini"
-        @click="addApiHandler"
-        :disabled="!addForm.name || !addForm.url"
+      <nut-cell
+        v-for="api in apis"
+        :key="api.name"
+        @click="setCurrent(api.name)"
       >
-        <font-awesome-icon icon="fa-solid fa-floppy-disk" />
-        {{ $t(`apiSettingPage.addApi.btn`) }}
-      </nut-button>
-    </div>
+        <div class="api-list-item">
+          <div class="api-item-left">
+            <h2>
+              {{ api.name }}
+              <nut-tag v-if="currentName === api.name" type="primary" plain
+                >{{ $t(`apiSettingPage.apiList.currentTag`) }}
+              </nut-tag>
+            </h2>
+            <p>{{ api.url.slice(0, 20) + '******' }}</p>
+          </div>
+          <div class="api-item-right">
+            <font-awesome-icon
+              icon="fa-solid fa-xmark"
+              @click.stop="deleteApi(api.name)"
+            />
+          </div>
+        </div>
+      </nut-cell>
+    </nut-cell-group>
+
+    <nut-cell-group :title="$t(`apiSettingPage.addApi.title`)">
+      <div class="add-api-wrapper">
+        <nut-input
+          class="input"
+          v-model="addForm.name"
+          :placeholder="$t(`apiSettingPage.addApi.placeholder.name`)"
+          type="text"
+          input-align="left"
+        />
+        <nut-input
+          class="input"
+          v-model="addForm.url"
+          :placeholder="$t(`apiSettingPage.addApi.placeholder.url`)"
+          type="text"
+          input-align="left"
+        />
+        <nut-button
+          class="save-btn"
+          type="primary"
+          size="mini"
+          @click="addApiHandler"
+          :disabled="!addForm.name || !addForm.url"
+        >
+          <font-awesome-icon icon="fa-solid fa-floppy-disk" />
+          {{ $t(`apiSettingPage.addApi.btn`) }}
+        </nut-button>
+      </div>
+    </nut-cell-group>
   </div>
 </template>
 
@@ -54,19 +101,20 @@
   import { ref } from 'vue';
 
   const { icon, env, isEnvReady } = useBackend();
-  const { currentName, apis, addApi } = useHostAPI();
+  const { currentName, apis, setCurrent, addApi, deleteApi } = useHostAPI();
 
   const addForm = ref<HostAPI>({
     name: '',
     url: '',
   });
-  const addApiHandler = () => {
+  const addApiHandler = async () => {
     if (!addForm.value.name || !addForm.value.url) return;
-    addApi(addForm.value);
-    addForm.value = {
-      name: '',
-      url: '',
-    };
+    const result = await addApi(addForm.value);
+    result &&
+      (addForm.value = {
+        name: '',
+        url: '',
+      });
   };
 </script>
 
@@ -75,11 +123,6 @@
     min-height: 100%;
     padding: 16px var(--safe-area-side);
     color: var(--second-text-color);
-
-    .block-title {
-      font-size: 16px;
-      font-weight: 500;
-    }
 
     .cell {
       box-shadow: none;
@@ -91,10 +134,53 @@
         aspect-ratio: 1;
       }
 
+      .backend-title {
+        margin-left: 12px;
+        font-size: 16px;
+      }
+
       .backend-version {
         font-size: 14px;
         color: var(--comment-text-color);
         margin-left: auto;
+      }
+    }
+
+    .api-list-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .api-item-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        :deep(.nut-tag) {
+          background: transparent !important;
+          height: 20px;
+        }
+
+        > h2 {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 16px;
+          line-height: 20px;
+          font-weight: bold;
+          color: var(--second-text-color);
+        }
+
+        > p {
+          font-size: 12px;
+          color: var(--comment-text-color);
+        }
+      }
+
+      .api-item-right {
+        font-size: 20px;
+        color: var(--comment-text-color);
       }
     }
 

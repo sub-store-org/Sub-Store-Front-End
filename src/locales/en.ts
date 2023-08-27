@@ -494,25 +494,25 @@ export default {
   },
   apiSettingPage: {
     apiSettingTitle: 'Backend Setting',
+    apiSettingDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
+                配置后需要重启 Sub Store 以生效。如需删除 api，
+                使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+    currentApi: {
+      title: 'Current Backend',
+    },
+    apiList: {
+      title: 'Backend List',
+      desc: 'This list is saved locally in the browser. If you change your browser/device, you will need to add it again. Click to switch to the corresponding backend.',
+      defaultName: 'Default',
+      currentTag: 'Current',
+    },
     addApi: {
-      title: 'Add Backend',
+      title: 'Add New Backend',
       placeholder: {
         name: 'Please input backend name, must be unique',
         url: 'Please input backend url',
       },
       btn: 'Add',
-    },
-
-    hostapi: '自定义后端 API',
-    currentHostApi: '当前后端 API',
-    yhostapi: '默认:https://sub.store ',
-    serverDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
-                配置后需要重启 Sub Store 以生效。如需删除 api，
-                使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
-    InputHostApi: {
-      title: '链接验证失败 或无效链接',
-      content:
-        '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
     },
   },
   moreSettingPage: {

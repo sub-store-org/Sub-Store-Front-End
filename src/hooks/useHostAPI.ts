@@ -1,6 +1,8 @@
 import { ref, watch, computed, onUnmounted } from 'vue';
 import { useGlobalStore } from '@/store/global';
 import { useAppNotifyStore } from '@/store/appNotify';
+import service from '@/api';
+import axios from 'axios';
 
 const lsKey = 'hostAPI';
 
@@ -54,39 +56,65 @@ export const useHostAPI = () => {
       await useGlobalStore().setHostAPI(url);
     }
   });
-  const stopWatchApis = watch(apis, newApis => {
-    setHostAPI({
-      ...getHostAPI(),
-      apis: apis.value,
-    });
-  });
+  const stopWatchApis = watch(
+    apis,
+    newApis => {
+      setHostAPI({
+        ...getHostAPI(),
+        apis: newApis,
+      });
+    },
+    { deep: true }
+  );
   onUnmounted(() => {
     stopWatchCurrent();
     stopWatchApis();
   });
 
   const setCurrent = (name: string) => {
-    if (!apis.value.find(api => api.name === name)) {
+    if (name !== '' && !apis.value.find(api => api.name === name)) {
       return;
     }
     currentName.value = name;
   };
 
-  const addApi = ({ name, url }: HostAPI) => {
+  const addApi = async ({ name, url }: HostAPI) => {
     if (apis.value.find(api => api.name === name)) {
       showNotify({
         title: 'API 名称重复',
         type: 'danger',
       });
       return false;
+    } else {
+      try {
+        const res = await axios.get<{ status: number }>(url + '/api/utils/env');
+        if (res && res.status === 200) {
+          apis.value.push({ name, url });
+          return true;
+        } else {
+          showNotify({
+            title: '无效的 API 地址，请检查',
+            type: 'danger',
+          });
+          return false;
+        }
+      } catch {
+        showNotify({
+          title: '无效的 API 地址，请检查',
+          type: 'danger',
+        });
+        return false;
+      }
     }
-    apis.value.push({ name, url });
   };
 
   const deleteApi = (name: string) => {
     const index = apis.value.findIndex(api => api.name === name);
     if (index === -1) return;
     apis.value.splice(index, 1);
+    if (currentName.value === name) {
+      currentName.value = apis.value[0]?.name || '';
+    }
   };
 
   const editApi = ({ name, url }: HostAPI) => {

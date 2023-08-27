@@ -28,6 +28,8 @@ export const useBackend = () => {
         return stash;
       case 'Node':
         return node;
+      default:
+        return '';
     }
   });
 
