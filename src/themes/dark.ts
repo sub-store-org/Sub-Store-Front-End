@@ -20,7 +20,7 @@ export default {
     'unimportant-icon-color': '#FFFFFF34',
 
     // 组件色
-    'status-bar-background-color': '#478EF2',
+    'status-bar-background-color': '#121212',
     'background-color': '#121212',
     'nav-bar-color': '#12121299',
     'tab-bar-color': '#121212AA',
