@@ -1,29 +1,22 @@
 <template>
   <div class="tab-bar-wrapper">
-    <nut-tabbar 
+    <nut-tabbar
       unactive-color=""
       v-model:visible="activeTab"
       :bottom="true"
       class="tabbar"
       size="22px"
     >
-      <nut-tabbar-item
-        class="tabbar-item"
-        to="/subs"
-        icon="link"
-      ></nut-tabbar-item>
+      <nut-tabbar-item class="tabbar-item" to="/subs" icon="link" />
 
-      <nut-tabbar-item v-if="!istabBar"
+      <nut-tabbar-item
+        v-show="!istabBar"
         class="tabbar-item"
         to="/sync"
         icon="refresh2"
-      ></nut-tabbar-item>
+      />
 
-      <nut-tabbar-item
-        class="tabbar-item"
-        to="/my"
-        icon="setting"
-      ></nut-tabbar-item>
+      <nut-tabbar-item class="tabbar-item" to="/my" icon="setting" />
     </nut-tabbar>
   </div>
 </template>
@@ -33,7 +26,7 @@
   import { storeToRefs } from 'pinia';
   import { ref } from 'vue';
   import { onBeforeRouteUpdate, useRoute } from 'vue-router';
- 
+
   const route = useRoute();
   const routeList = ['/subs', '/sync', '/my'];
   const activeTab = ref(routeList.indexOf(route.path));
