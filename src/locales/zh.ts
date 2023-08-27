@@ -26,6 +26,7 @@ export default {
       subEditor: '订阅编辑',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
+      apiSetting: '后端设置',
       aboutUs: '关于 Sub-Store',
       notFound: '地址未找到',
       askWhat: {
@@ -59,7 +60,7 @@ export default {
   // 订阅管理页
   subPage: {
     addSubTitle: '选择要创建的订阅类型',
-    previewTitle: '点击复制或点击图标预览',
+    previewTitle: '预览/拷贝订阅',
 
     emptySub: {
       title: '你还没有添加订阅',
@@ -494,6 +495,27 @@ export default {
       confirm: '确定',
     },
   },
+  apiSettingPage: {
+    apiSettingTitle: '后端设置',
+    apiSettingDesc: `添加后端服务器地址，例如 VPS 或 Render 上搭建的后端服务。可以查看小一佬的后端搭建教程：`,
+    currentApi: {
+      title: '当前后端',
+    },
+    apiList: {
+      title: '已保存后端列表',
+      desc: '此列表为浏览器本地保存，更换浏览器/设备需重新添加，点击即可切换至对应后端',
+      defaultName: '默认后端',
+      currentTag: '当前',
+    },
+    addApi: {
+      title: '添加新后端',
+      placeholder: {
+        name: '请输入后端名称，必须唯一',
+        url: '请输入后端地址',
+      },
+      btn: '添加',
+    },
+  },
   moreSettingPage: {
     moreSettingTitle: '更多设置',
     other: '其他设置',
@@ -504,9 +526,9 @@ export default {
     simple: '简洁模式',
     islr: '卡片右滑呼出',
     isIC: '使用订阅图标原始颜色',
-    isEditorCommon: '编辑页常用配置',
-    isSimpleReicon: '订阅页刷新按钮',
-    tabBar: '关闭 TabBar 同步按钮',
+    isEditorCommon: '展示编辑页常用配置',
+    isSimpleReicon: '展示订阅刷新按钮',
+    tabBar: '隐藏 “Gist 同步” 页',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
@@ -515,9 +537,10 @@ export default {
                 配置后需要重启 Sub Store 以生效。如需删除 api，
                 使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
     InputHostApi: {
-      title:'链接验证失败 或无效链接',
-      content:'主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
-    }
+      title: '链接验证失败 或无效链接',
+      content:
+        '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
+    },
   },
   aboutUsPage: {
     projectInfo: {

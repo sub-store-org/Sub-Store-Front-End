@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
 import { useEnvApi } from '@/api/env';
+import { initStores } from '@/utils/initApp';
+import service from '@/api';
+import { getHostAPIUrl } from '@/hooks/useHostAPI';
 
 const envApi = useEnvApi();
 
@@ -18,7 +21,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isEditorCommon: localStorage.getItem('iseditorCommon') !== '1',
       isSimpleReicon: localStorage.getItem('isSimpleReicon') === '1',
       istabBar: localStorage.getItem('istabBar') === '1',
-      ishostApi: localStorage.getItem('hostApi'),
+      ishostApi: getHostAPIUrl(),
     };
   },
   getters: {},
@@ -86,9 +89,10 @@ export const useGlobalStore = defineStore('globalStore', {
       }
       this.istabBar = istabBar;
     },
-    sethostApi(hostApi: string) {
-      localStorage.setItem('hostApi', hostApi);
+    async setHostAPI(hostApi: string) {
       this.ishostApi = hostApi;
+      service.defaults.baseURL = hostApi;
+      await initStores(true, true, true);
     },
     async setEnv() {
       const res = await envApi.getEnv();

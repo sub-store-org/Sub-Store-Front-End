@@ -70,7 +70,6 @@
           />
         </template>
       </nut-cell>
-
     </nut-cell-group>
 
     <nut-cell-group>
@@ -86,7 +85,6 @@
       </nut-cell>
 
       <template v-if="theme.auto">
-        
         <nut-cell
           class="cell-item"
           :title="$t(`themeSettingPage.dark`)"
@@ -103,12 +101,11 @@
           :title="$t(`themeSettingPage.light`)"
           :desc="themeDes.lightDes"
           @click="openPicker('light')"
-          >
+        >
           <!-- <template v-slot:link>
             <nut-icon name="rect-right" ></nut-icon>
           </template> -->
         </nut-cell>
-        
       </template>
 
       <nut-cell
@@ -123,82 +120,6 @@
 
     <p class="More-title">
       {{ $t(`moreSettingPage.other`) }}
-    </p>
-
-    <div class="profile-block">
-      <div class="config-card">
-        <div class="title-wrapper">
-          <h1>{{ $t(`moreSettingPage.hostapi`) }}</h1>
-          <div class="config-btn-wrapper">
-            <nut-button
-              v-if="isEditing"
-              class="cancel-btn"
-              plain
-              type="info"
-              size="mini"
-              @click="clearEditor"
-              :disabled="isEditLoading"
-              >{{ $t(`myPage.btn.clear`) }}
-            </nut-button>
-
-            <nut-button
-              v-if="isEditing"
-              class="cancel-btn"
-              plain
-              type="info"
-              size="mini"
-              @click="exitEditMode"
-              :disabled="isEditLoading"
-            >
-              {{ $t(`myPage.btn.cancel`) }}
-            </nut-button>
-
-            <nut-button
-              class="save-btn"
-              type="primary"
-              size="mini"
-              @click="toggleEditMode"
-              :loading="isEditLoading"
-            >
-              <font-awesome-icon
-                v-if="!isEditing"
-                icon="fa-solid fa-pen-to-square"
-              />
-              <font-awesome-icon
-                v-else-if="!isEditLoading && isEditing"
-                icon="fa-solid fa-floppy-disk"
-              />
-              {{ !isEditing ? $t(`myPage.btn.edit`) : $t(`myPage.btn.save`) }}
-            </nut-button>
-          </div>
-        </div>
-
-        <div class="config-input-wrapper">
-          <nut-input
-            class="input"
-            v-model="InputHostApi"
-            :disabled="!isEditing"
-            :placeholder="$t(`moreSettingPage.yhostapi`)"
-            type="text"
-            input-align="left"
-          />
-        </div>
-
-        <p class="hostapi-comment">
-          {{ $t(`moreSettingPage.currentHostApi`) }}：{{ env.backend }} -
-          {{ env.version }}
-        </p>
-      </div>
-    </div>
-
-    <p class="desc-title">
-      {{ $t(`moreSettingPage.serverDesc`)
-      }}<a
-        target="_blank"
-        href="https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d"
-      >
-        https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d
-      </a>
     </p>
 
     <nut-cell :title="$t(`moreSettingPage.auto`)" class="cell-item">
@@ -236,15 +157,23 @@
   import { useThemes } from '@/hooks/useThemes';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Dialog } from '@nutui/nutui';
+  // import { Dialog } from '@nutui/nutui';
 
   const { t } = useI18n();
   const settingsStore = useSettingsStore();
   const { changeAutoDownloadGist } = settingsStore;
   const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
-  const { env, isSimpleMode, isLeftRight, ishostApi, isIconColor, isEditorCommon, isSimpleReicon, istabBar } =
-    storeToRefs(globalStore);
+  const {
+    // env,
+    isSimpleMode,
+    isLeftRight,
+    ishostApi,
+    isIconColor,
+    isEditorCommon,
+    isSimpleReicon,
+    istabBar,
+  } = storeToRefs(globalStore);
 
   const InputHostApi = ref('');
   const autoSwitchSync = ref(false);
@@ -254,13 +183,13 @@
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awtabBar = ref(true);
-  const isEditing = ref(false);
+  // const isEditing = ref(false);
   const isInit = ref(false);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
   const showThemePicker = ref(false);
-  const isEditLoading = ref(false);
+  // const isEditLoading = ref(false);
 
   const setSimpleMode = (isSimpleMode: boolean) => {
     globalStore.setSimpleMode(isSimpleMode);
@@ -282,7 +211,7 @@
     globalStore.setSimpleReicon(isSimpleReicon);
   };
 
-  const settabBar= (istabBar: boolean) => {
+  const settabBar = (istabBar: boolean) => {
     globalStore.settabBar(istabBar);
   };
 
@@ -348,61 +277,61 @@
       : t(`moreSettingPage.yhostapi`);
   };
 
-  const exitEditMode = () => {
-    setDisplayInfo();
-    isEditing.value = false;
-    isEditLoading.value = false;
-  };
+  // const exitEditMode = () => {
+  //   setDisplayInfo();
+  //   isEditing.value = false;
+  //   isEditLoading.value = false;
+  // };
 
-  const toggleEditMode = async () => {
-    isEditLoading.value = true;
-    console.log(`location.protocol`, location.protocol);
-    console.log(`InputHostApi`, InputHostApi.value);
-    if (
-      location.protocol === 'https:' &&
-      !/^(https):\/\/\S+$|^http:\/\/(localhost|127\.0\.0\.1)/.test(
-        InputHostApi.value
-      ) &&
-      isEditing.value &&
-      InputHostApi.value !== ''
-    ) {
-      console.log('InputHostApi失败');
-      Dialog({
-        title: t(`moreSettingPage.InputHostApi.title`),
-        content: t(`moreSettingPage.InputHostApi.content`),
-        popClass: 'auto-dialog',
-        noCancelBtn: true,
-        okText: t(`editorPage.subConfig.pop.errorBtn`),
-        closeOnClickOverlay: true,
-      });
-      isEditing.value = false;
-      isEditLoading.value = false;
-      setDisplayInfo();
-    } else {
-      if (isEditing.value) {
-        globalStore.sethostApi(InputHostApi.value);
-        setDisplayInfo();
-      } else {
-        InputHostApi.value = ishostApi.value;
-      }
-      isEditLoading.value = false;
-      isEditing.value = !isEditing.value;
-    }
-  };
+  // const toggleEditMode = async () => {
+  //   isEditLoading.value = true;
+  //   console.log(`location.protocol`, location.protocol);
+  //   console.log(`InputHostApi`, InputHostApi.value);
+  //   if (
+  //     location.protocol === 'https:' &&
+  //     !/^(https):\/\/\S+$|^http:\/\/(localhost|127\.0\.0\.1)/.test(
+  //       InputHostApi.value
+  //     ) &&
+  //     isEditing.value &&
+  //     InputHostApi.value !== ''
+  //   ) {
+  //     console.log('InputHostApi失败');
+  //     Dialog({
+  //       title: t(`moreSettingPage.InputHostApi.title`),
+  //       content: t(`moreSettingPage.InputHostApi.content`),
+  //       popClass: 'auto-dialog',
+  //       noCancelBtn: true,
+  //       okText: t(`editorPage.subConfig.pop.errorBtn`),
+  //       closeOnClickOverlay: true,
+  //     });
+  //     isEditing.value = false;
+  //     isEditLoading.value = false;
+  //     setDisplayInfo();
+  //   } else {
+  //     if (isEditing.value) {
+  //       globalStore.sethostApi(InputHostApi.value);
+  //       setDisplayInfo();
+  //     } else {
+  //       InputHostApi.value = ishostApi.value;
+  //     }
+  //     isEditLoading.value = false;
+  //     isEditing.value = !isEditing.value;
+  //   }
+  // };
 
-  const clearEditor = () => {
-    Dialog({
-      title: t('editorPage.subConfig.pop.clearTitle'),
-      content: t('editorPage.subConfig.pop.clearDes'),
-      popClass: 'auto-dialog',
-      okText: t(`editorPage.subConfig.pop.clearConfirm`),
-      cancelText: t(`editorPage.subConfig.pop.clearCancel`),
-      onOk: () => {
-        InputHostApi.value = '';
-      },
-      closeOnClickOverlay: true,
-    });
-  };
+  // const clearEditor = () => {
+  //   Dialog({
+  //     title: t('editorPage.subConfig.pop.clearTitle'),
+  //     content: t('editorPage.subConfig.pop.clearDes'),
+  //     popClass: 'auto-dialog',
+  //     okText: t(`editorPage.subConfig.pop.clearConfirm`),
+  //     cancelText: t(`editorPage.subConfig.pop.clearCancel`),
+  //     onOk: () => {
+  //       InputHostApi.value = '';
+  //     },
+  //     closeOnClickOverlay: true,
+  //   });
+  // };
 
   watchEffect(() => {
     SimpleSwitch.value = isSimpleMode.value;
@@ -423,19 +352,19 @@
 
 <style lang="scss" scoped>
   .page-wrapper {
-    height: 100%;
+    min-height: 100%;
     padding: 0 var(--safe-area-side);
     // padding: var(--safe-area-side);
     // display: flex;
     // min-width: 100%;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 80px;
+    //margin-bottom: 80px;
 
     .cell-item {
       box-shadow: none;
       background: var(--card-color);
-      
+
       border-radius: var(--item-card-radios);
       font-weight: bold;
       display: flex;
@@ -445,7 +374,6 @@
         font-weight: normal;
         color: var(--lowest-text-color);
       }
-      
     }
 
     .cell-group {

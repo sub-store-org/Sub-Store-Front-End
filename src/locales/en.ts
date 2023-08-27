@@ -26,6 +26,7 @@ export default {
       subEditor: 'Subscription Editor',
       themeSetting: 'Theme Setting',
       moreSetting: 'More Setting',
+      apiSetting: 'Backend Setting',
       aboutUs: 'About Sub-Store',
       notFound: '404 Not Found',
       askWhat: {
@@ -59,7 +60,7 @@ export default {
   // subscription management page
   subPage: {
     addSubTitle: 'Which type you want to create?',
-    previewTitle: 'Which you want to preview?',
+    previewTitle: 'Copy/Preview a subscription',
 
     emptySub: {
       title: 'You have no Subscription yet',
@@ -491,6 +492,27 @@ export default {
       confirm: 'Confirm',
     },
   },
+  apiSettingPage: {
+    apiSettingTitle: 'Backend Setting',
+    apiSettingDesc: `Add the backend server address, such as the backend service built on VPS or Render. You can refer to XiaoYi's tutorial on setting up a backend: `,
+    currentApi: {
+      title: 'Current Backend',
+    },
+    apiList: {
+      title: 'Backend List',
+      desc: 'This list is saved locally in the browser. If you change your browser/device, you will need to add it again. Click to switch to the corresponding backend.',
+      defaultName: 'Default',
+      currentTag: 'Current',
+    },
+    addApi: {
+      title: 'Add New Backend',
+      placeholder: {
+        name: 'Please input backend name, must be unique',
+        url: 'Please input backend url',
+      },
+      btn: 'Add',
+    },
+  },
   moreSettingPage: {
     moreSettingTitle: 'More Setting',
     other: 'Other',
@@ -499,9 +521,9 @@ export default {
     simple: 'Simple Mode',
     islr: 'Card right swipe to call out',
     isIC: 'Use original color for icons',
-    isEditorCommon: 'Editor Common Settings',
-    isSimpleReicon: 'Management Simple Refresh Button',
-    tabBar: 'Disable TabBar Sync Button',
+    isEditorCommon: 'Show editor common settings',
+    isSimpleReicon: 'Show items refresh button',
+    tabBar: 'Hide "Sync" Page',
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
     currentHostApi: 'Current Backend API',
@@ -509,9 +531,10 @@ export default {
     serverDesc:
       'Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save',
     InputHostApi: {
-      title:'Link validation failed invalid link',
-      content:'Mainstream browsers have already blocked HTTP requests on HTTPS pages. Please use the HTTPS protocol instead',
-    }
+      title: 'Link validation failed invalid link',
+      content:
+        'Mainstream browsers have already blocked HTTP requests on HTTPS pages. Please use the HTTPS protocol instead',
+    },
   },
   aboutUsPage: {
     projectInfo: {

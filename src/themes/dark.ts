@@ -7,12 +7,12 @@ export default {
   },
   colors: {
     // 全局高亮色
-    'primary-color': '#6f9cc5',
-    'primary-color-end': '#8389c8',
-    'second-color': '#d47878',
-    'third-color': '#70b496',
+    'primary-color': '#478EF2',
+    'primary-color-end': '#496AF2',
+    'second-color': '#FA6419',
+    'third-color': '#0ED57D',
 
-    'danger-color': '#c16058',
+    'danger-color': '#E56459',
     'succeed-color': '#49bb88',
 
     // icon色
@@ -20,7 +20,7 @@ export default {
     'unimportant-icon-color': '#FFFFFF34',
 
     // 组件色
-    'status-bar-background-color': '#12121299',
+    'status-bar-background-color': '#121212',
     'background-color': '#121212',
     'nav-bar-color': '#12121299',
     'tab-bar-color': '#121212AA',
@@ -30,7 +30,7 @@ export default {
     'dialog-color': '#202020',
     'switch-close-background-color': '#FFFFFF14',
     'switch-active-background-color': '#478EF2',
-    'compare-item-background-color': '#202020',
+    'compare-item-background-color': '#191919',
     'picker-mask-near-color': '#12121248',
     'picker-mask-far-color': '#121212',
 
@@ -52,4 +52,3 @@ export default {
 };
 //--second-text-color
 //--comment-text-color 覆盖
-

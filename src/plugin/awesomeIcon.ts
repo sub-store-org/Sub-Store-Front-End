@@ -8,6 +8,7 @@ import {
   faCheck,
   faCircleQuestion,
   faCircleXmark,
+  faXmark,
   faClone,
   faCloudArrowDown,
   faCloudArrowUp,
@@ -43,6 +44,7 @@ library.add(faGrip);
 library.add(faCircleQuestion);
 library.add(faFloppyDisk);
 library.add(faCircleXmark);
+library.add(faXmark);
 library.add(faLocationArrow);
 library.add(faCode);
 library.add(faArrowRotateRight);
