@@ -36,7 +36,7 @@ export const useHostAPI = () => {
   const currentName = ref(getHostAPI().current);
   const currentUrl = computed(() => {
     return (
-      apis.value.find(api => api.name === currentName.value) ??
+      apis.value.find(api => api.name === currentName.value)?.url ??
       import.meta.env.VITE_API_URL ??
       'https://sub.store'
     );
