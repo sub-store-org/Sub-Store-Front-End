@@ -35,6 +35,7 @@
                 $t(`apiSettingPage.apiList.currentTag`)
               }}</nut-tag>
             </h2>
+            <p>{{ defaultAPI }}</p>
           </div>
         </div>
       </nut-cell>
@@ -111,7 +112,8 @@
   import { ref } from 'vue';
 
   const { icon, env, isEnvReady } = useBackend();
-  const { currentName, apis, setCurrent, addApi, deleteApi } = useHostAPI();
+  const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi } =
+    useHostAPI();
 
   const addForm = ref<HostAPI>({
     name: '',

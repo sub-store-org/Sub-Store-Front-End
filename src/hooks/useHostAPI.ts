@@ -31,14 +31,14 @@ const setHostAPI = (hostAPI: HostAPIStorage) => {
   localStorage.setItem(lsKey, JSON.stringify(hostAPI));
 };
 export const useHostAPI = () => {
+  const defaultAPI = import.meta.env.VITE_API_URL || 'https://sub.store';
+
   const { showNotify } = useAppNotifyStore();
   const apis = ref(getHostAPI().apis);
   const currentName = ref(getHostAPI().current);
   const currentUrl = computed(() => {
     return (
-      apis.value.find(api => api.name === currentName.value)?.url ??
-      import.meta.env.VITE_API_URL ??
-      'https://sub.store'
+      apis.value.find(api => api.name === currentName.value)?.url ?? defaultAPI
     );
   });
 
@@ -49,9 +49,7 @@ export const useHostAPI = () => {
         current: newName,
       });
       const url =
-        apis.value.find(api => api.name === newName)?.url ??
-        import.meta.env.VITE_API_URL ??
-        'https://sub.store';
+        apis.value.find(api => api.name === newName)?.url ?? defaultAPI;
 
       await useGlobalStore().setHostAPI(url);
     }
@@ -156,5 +154,6 @@ export const useHostAPI = () => {
     deleteApi,
     editApi,
     handleUrlQuery,
+    defaultAPI,
   };
 };
