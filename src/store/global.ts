@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { useEnvApi } from '@/api/env';
+import { initStores } from '@/utils/initApp';
+import service from '@/api';
 
 const envApi = useEnvApi();
 
@@ -86,9 +88,12 @@ export const useGlobalStore = defineStore('globalStore', {
       }
       this.istabBar = istabBar;
     },
-    sethostApi(hostApi: string) {
+    async sethostApi(hostApi: string) {
       localStorage.setItem('hostApi', hostApi);
       this.ishostApi = hostApi;
+
+      service.defaults.baseURL = hostApi;
+      await initStores(true, true, true);
     },
     async setEnv() {
       const res = await envApi.getEnv();
