@@ -7,23 +7,22 @@
         @on-click-right="showLangSwitchPopup = true"
         :title="currentTitle"
         :tit-icon="currentTitleWhetherAsk"
-
         @on-click-icon="onClickNavbarIcon"
       >
         <template #right>
-          <font-awesome-icon
-              v-if="isSimpleMode"
-              @click.stop="setSimpleMode(false)"
-              class="navBar-right-icon fa-toggle"
-              icon="fa-solid fa-toggle-on "
-            />
-          <font-awesome-icon
-              v-else
-              @click.stop="setSimpleMode(true)"
-              class="navBar-right-icon fa-toggle"
-              icon="fa-solid fa-toggle-off "
-            />
-            
+          <!--          <font-awesome-icon-->
+          <!--              v-if="isSimpleMode"-->
+          <!--              @click.stop="setSimpleMode(false)"-->
+          <!--              class="navBar-right-icon fa-toggle"-->
+          <!--              icon="fa-solid fa-toggle-on "-->
+          <!--            />-->
+          <!--          <font-awesome-icon-->
+          <!--              v-else-->
+          <!--              @click.stop="setSimpleMode(true)"-->
+          <!--              class="navBar-right-icon fa-toggle"-->
+          <!--              icon="fa-solid fa-toggle-off "-->
+          <!--            />-->
+
           <font-awesome-icon
             class="navBar-right-icon fa-lg"
             icon="fa-solid fa-language "
@@ -40,10 +39,16 @@
     v-model:visible="showLangSwitchPopup"
     z-index="1000"
   >
-  <!-- :title="$t(`navBar.langSwitcher.cellTitle`)" -->
-    <nut-cell-group >
-      <div style="color: var(--comment-text-color); padding: 10px 0 10px 15px; font-size: 14px;">
-        {{$t(`navBar.langSwitcher.cellTitle`)}}
+    <!-- :title="$t(`navBar.langSwitcher.cellTitle`)" -->
+    <nut-cell-group>
+      <div
+        style="
+          color: var(--comment-text-color);
+          padding: 10px 0 10px 15px;
+          font-size: 14px;
+        "
+      >
+        {{ $t(`navBar.langSwitcher.cellTitle`) }}
       </div>
       <nut-cell
         v-for="lang in langList"
@@ -72,7 +77,6 @@
   import { storeToRefs } from 'pinia';
   import { Toast } from '@nutui/nutui';
 
-
   const { t, locale } = useI18n();
   const router = useRouter();
   const route = useRoute();
@@ -90,7 +94,7 @@
     return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
   });
   const currentTitleWhetherAsk = computed(() => {
-    const ownAsk = ['sync','subEditor','moreSetting'];
+    const ownAsk = ['sync', 'subEditor', 'moreSetting'];
     const metaTitle = route.meta.title;
     return ownAsk.includes(metaTitle) ? 'ask' : '';
   });
@@ -125,7 +129,6 @@
   const setSimpleMode = (isSimpleMode: boolean) => {
     globalStore.setSimpleMode(isSimpleMode);
   };
-
 </script>
 
 <style lang="scss">
@@ -147,7 +150,7 @@
         border-bottom: var(--divider-color) solid 1px;
 
         .nut-navbar__title {
-          min-width:53%;
+          min-width: 53%;
           margin: 0 auto;
           text-align: center;
           display: flex;
@@ -171,7 +174,7 @@
 
         .navBar-right-icon {
           padding-top: 15px;
-          padding-right:4px;
+          padding-right: 4px;
           padding-bottom: 15px;
           padding-left: 10px;
           color: var(--icon-nav-bar-right);
@@ -224,5 +227,4 @@
       flex-direction: row-reverse;
     }
   }
-
 </style>
