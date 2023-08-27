@@ -8,6 +8,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const alias: Record<string, string> = {
   '@': path.resolve(__dirname, 'src'),
+  vue: 'vue/dist/vue.esm-bundler.js',
 };
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
