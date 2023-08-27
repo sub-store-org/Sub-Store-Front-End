@@ -115,12 +115,22 @@
       </div>
 
       <nut-cell
+        :title="$t(`apiSettingPage.apiSettingTitle`)"
+        class="change-themes"
+        @click.stop="onClickAPISetting"
+      >
+        <template v-slot:link>
+          <nut-icon name="rect-right" />
+        </template>
+      </nut-cell>
+
+      <nut-cell
         :title="$t(`moreSettingPage.moreSettingTitle`)"
         class="change-themes"
         @click.stop="onClickMore"
       >
         <template v-slot:link>
-          <nut-icon name="rect-right"></nut-icon>
+          <nut-icon name="rect-right" />
         </template>
       </nut-cell>
 
@@ -130,18 +140,13 @@
         @click.stop="onClickAbout"
       >
         <template v-slot:link>
-          <nut-icon name="rect-right"></nut-icon>
+          <nut-icon name="rect-right" />
         </template>
       </nut-cell>
     </div>
 
     <div class="env-block">
-      <img
-        v-if="backendIcon()"
-        :src="backendIcon()"
-        alt=""
-        class="auto-reverse"
-      />
+      <img v-if="icon" :src="icon" alt="" class="auto-reverse" />
       <p>v{{ env.version }}</p>
       <p>{{ env.backend }}</p>
     </div>
@@ -151,13 +156,7 @@
 <script lang="ts" setup>
   import { useSettingsApi } from '@/api/settings';
   import avatar from '@/assets/icons/avatar.svg?url';
-  import clash from '@/assets/icons/clash.png?url';
   import iconKey from '@/assets/icons/key-solid.png';
-  import loon from '@/assets/icons/loon.png?url';
-  import node from '@/assets/icons/node.svg?url';
-  import quanx from '@/assets/icons/quanx.png?url';
-  import stash from '@/assets/icons/stash.png?url';
-  import surge from '@/assets/icons/surge.png?url';
   import iconUser from '@/assets/icons/user-solid.png';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
@@ -168,6 +167,7 @@
   import { computed, ref, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
+  import { useBackend } from '@/hooks/useBackend';
 
   const { t } = useI18n();
 
@@ -175,8 +175,6 @@
   const router = useRouter();
   const { showNotify } = useAppNotifyStore();
   const settingsStore = useSettingsStore();
-  const globalStore = useGlobalStore();
-  const { env } = storeToRefs(globalStore);
   const { githubUser, gistToken, syncTime, avatarUrl } =
     storeToRefs(settingsStore);
 
@@ -184,28 +182,17 @@
     return !githubUser.value ? avatar : avatarUrl.value;
   });
 
+  const { icon, env } = useBackend();
+
+  const onClickAPISetting = () => {
+    router.push(`/settings/api`);
+  };
+
   const onClickMore = () => {
     router.push(`/settings/more`);
   };
   const onClickAbout = () => {
     router.push(`/aboutUs`);
-  };
-
-  const backendIcon = () => {
-    switch (env.value.backend) {
-      case 'Surge':
-        return surge;
-      case 'Clash':
-        return clash;
-      case 'QX':
-        return quanx;
-      case 'Loon':
-        return loon;
-      case 'Stash':
-        return stash;
-      case 'Node':
-        return node;
-    }
   };
 
   // 编辑 更新
