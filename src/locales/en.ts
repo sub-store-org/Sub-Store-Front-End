@@ -494,6 +494,15 @@ export default {
   },
   apiSettingPage: {
     apiSettingTitle: 'Backend Setting',
+    addApi: {
+      title: 'Add Backend',
+      placeholder: {
+        name: 'Please input backend name, must be unique',
+        url: 'Please input backend url',
+      },
+      btn: 'Add',
+    },
+
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
     yhostapi: '默认:https://sub.store ',

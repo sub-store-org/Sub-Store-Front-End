@@ -46,6 +46,7 @@
   import useV3Clipboard from 'vue-clipboard3';
   import { useAppNotifyStore } from '@/store/appNotify';
   import SvgIcon from '@/components/SvgIcon.vue';
+  import { useHostAPI } from '@/hooks/useHostAPI';
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
@@ -55,13 +56,11 @@
     general: string;
     notify: string;
   }>();
-  const host =
-    localStorage.getItem('hostApi') ||
-    import.meta.env.VITE_API_URL ||
-    'https://sub.store';
+
+  const { currentUrl: host } = useHostAPI();
   const targetCopy = async (path: string) => {
     const urlTarget: string = path !== null ? `?target=${path}` : '';
-    const url = `${host}/download/${
+    const url = `${host.value}/download/${
       type === 'sub' ? '' : 'collection/'
     }${name}${urlTarget}`;
     if (isSupported) {

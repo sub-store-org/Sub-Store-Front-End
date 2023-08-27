@@ -11,7 +11,7 @@ interface GlobalStoreState {
   isEditorCommon: boolean;
   isSimpleReicon: boolean;
   istabBar: boolean;
-  ishostApi: any;
+  ishostApi: string;
 }
 
 interface ENV {

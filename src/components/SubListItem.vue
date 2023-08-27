@@ -210,6 +210,7 @@
   import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
+  import { useHostAPI } from '@/hooks/useHostAPI';
 
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
@@ -429,13 +430,10 @@
   };
 
   const { showNotify } = useAppNotifyStore();
+  const { currentUrl: host } = useHostAPI();
 
   const onClickCopyLink = async () => {
-    const host =
-      localStorage.getItem('hostApi') ||
-      import.meta.env.VITE_API_URL ||
-      'https://sub.store';
-    const url = `${host}/download/${
+    const url = `${host.value}/download/${
       props.type === 'collection' ? 'collection/' : ''
     }${name}`;
 

@@ -497,6 +497,15 @@ export default {
   },
   apiSettingPage: {
     apiSettingTitle: '后端设置',
+
+    addApi: {
+      title: '添加后端',
+      placeholder: {
+        name: '请输入后端名称，必须唯一',
+        url: '请输入后端地址',
+      },
+      btn: '添加',
+    },
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
     yhostapi: '默认:https://sub.store ',
