@@ -10,18 +10,18 @@
         @on-click-icon="onClickNavbarIcon"
       >
         <template #right>
-          <!--          <font-awesome-icon-->
-          <!--              v-if="isSimpleMode"-->
-          <!--              @click.stop="setSimpleMode(false)"-->
-          <!--              class="navBar-right-icon fa-toggle"-->
-          <!--              icon="fa-solid fa-toggle-on "-->
-          <!--            />-->
-          <!--          <font-awesome-icon-->
-          <!--              v-else-->
-          <!--              @click.stop="setSimpleMode(true)"-->
-          <!--              class="navBar-right-icon fa-toggle"-->
-          <!--              icon="fa-solid fa-toggle-off "-->
-          <!--            />-->
+          <font-awesome-icon
+            v-if="isSimpleMode"
+            @click.stop="setSimpleMode(false)"
+            class="navBar-right-icon fa-toggle"
+            icon="fa-solid fa-toggle-on "
+          />
+          <font-awesome-icon
+            v-else
+            @click.stop="setSimpleMode(true)"
+            class="navBar-right-icon fa-toggle"
+            icon="fa-solid fa-toggle-off "
+          />
 
           <font-awesome-icon
             class="navBar-right-icon fa-lg"
