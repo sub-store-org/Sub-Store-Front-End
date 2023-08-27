@@ -12,12 +12,14 @@ import SubEditor from '@/views/SubEditor.vue';
 
 import Sync from '@/views/Sync.vue';
 // import themeSetting from '@/views/themeSetting.vue';
-import moreSetting from '@/views/moreSetting.vue';
+import moreSetting from '@/views/settings/moreSetting.vue';
 import { Toast } from '@nutui/nutui';
 import { toRaw } from 'vue';
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
-import aboutUs from '@/views/AboutUs.vue';
+import aboutUs from '@/views/settings/AboutUs.vue';
+import APISetting from '@/views/settings/APISetting.vue';
+
 // import { SwipeBack } from 'vue-swipe-back'
 
 let globalStore = null;
@@ -89,6 +91,15 @@ const router = createRouter({
           component: moreSetting,
           meta: {
             title: 'moreSetting',
+            needTabBar: false,
+            needNavBack: true,
+          },
+        },
+        {
+          path: '/settings/api',
+          component: APISetting,
+          meta: {
+            title: 'apiSetting',
             needTabBar: false,
             needNavBack: true,
           },

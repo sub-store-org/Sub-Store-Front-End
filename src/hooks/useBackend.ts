@@ -13,6 +13,7 @@ export const useBackend = () => {
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
 
+  const isEnvReady = computed(() => !!env.value.backend);
   const icon = computed(() => {
     switch (env.value.backend) {
       case 'Surge':
@@ -33,5 +34,6 @@ export const useBackend = () => {
   return {
     icon,
     env,
+    isEnvReady,
   };
 };

@@ -26,6 +26,7 @@ export default {
       subEditor: '订阅编辑',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
+      apiSetting: '后端设置',
       aboutUs: '关于 Sub-Store',
       notFound: '地址未找到',
       askWhat: {
@@ -492,6 +493,20 @@ export default {
       title: '选择一个主题',
       cancel: '取消',
       confirm: '确定',
+    },
+  },
+  apiSettingPage: {
+    apiSettingTitle: '后端设置',
+    hostapi: '自定义后端 API',
+    currentHostApi: '当前后端 API',
+    yhostapi: '默认:https://sub.store ',
+    serverDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
+                配置后需要重启 Sub Store 以生效。如需删除 api，
+                使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+    InputHostApi: {
+      title: '链接验证失败 或无效链接',
+      content:
+        '主流浏览器都已经 Block 掉了 HTTPS 页面上的 HTTP 请求 请使用 Https 链接',
     },
   },
   moreSettingPage: {
