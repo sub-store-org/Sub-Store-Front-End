@@ -59,7 +59,7 @@ export default {
   // 订阅管理页
   subPage: {
     addSubTitle: '选择要创建的订阅类型',
-    previewTitle: '点击复制或点击图标预览',
+    previewTitle: '预览/拷贝订阅',
 
     emptySub: {
       title: '你还没有添加订阅',

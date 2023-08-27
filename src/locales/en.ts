@@ -59,7 +59,7 @@ export default {
   // subscription management page
   subPage: {
     addSubTitle: 'Which type you want to create?',
-    previewTitle: 'Which you want to preview?',
+    previewTitle: 'Copy/Preview a subscription',
 
     emptySub: {
       title: 'You have no Subscription yet',
