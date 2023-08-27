@@ -35,24 +35,21 @@
 
   // 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
   const { handleUrlQuery } = useHostAPI();
+  handleUrlQuery({
+    errorCb: async () => initStores(true, true, false),
+  });
 
   // 初始化颜色主题
   useThemes();
 
   // 初始化应用数据（顶部通知）
-  // initStores(true, true, false);
+  //   initStores(true, true, false);
 
   // 设置流量刷新状态
   watchEffect(() => {
     allLength.value = getFlowsUrlList(subs.value).length;
     const currentLength = Object.keys(flows.value).length;
     globalStore.setFlowFetching(allLength.value !== currentLength);
-  });
-
-  onMounted(async () => {
-    await handleUrlQuery();
-    // 初始化应用数据（订阅列表）
-    await initStores(false, false, true);
   });
 </script>
 

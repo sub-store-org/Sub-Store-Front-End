@@ -3,6 +3,7 @@ import { useGlobalStore } from '@/store/global';
 import { useAppNotifyStore } from '@/store/appNotify';
 import service from '@/api';
 import axios from 'axios';
+import { initStores } from '@/utils/initApp';
 
 const lsKey = 'hostAPI';
 
@@ -123,21 +124,27 @@ export const useHostAPI = () => {
     apis.value[index].url = url;
   };
 
-  const handleUrlQuery = async () => {
+  const handleUrlQuery = async ({
+    errorCb,
+  }: {
+    errorCb?: () => Promise<void>;
+  }) => {
     const query = window.location.search;
-    if (!query) return;
+    if (!query) return await errorCb?.();
 
     const apiUrl = query
       .slice(1)
       .split('&')
       .map(i => i.split('='))
       .find(i => i[0] === 'api');
-    if (!apiUrl) return;
+    if (!apiUrl) return await errorCb?.();
 
     const url = decodeURIComponent(apiUrl[1]);
-    if (!url) return;
+    if (!url) return await errorCb?.();
 
     const isExist = apis.value.find(api => api.url === url);
+    if (isExist.name === currentName.value) return await errorCb?.();
+
     if (isExist) return setCurrent(isExist.name);
 
     const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
