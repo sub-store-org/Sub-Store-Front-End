@@ -157,7 +157,7 @@
   import { useThemes } from '@/hooks/useThemes';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Dialog } from '@nutui/nutui';
+  // import { Dialog } from '@nutui/nutui';
 
   const { t } = useI18n();
   const settingsStore = useSettingsStore();
@@ -165,7 +165,7 @@
   const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
   const {
-    env,
+    // env,
     isSimpleMode,
     isLeftRight,
     ishostApi,
@@ -183,13 +183,13 @@
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awtabBar = ref(true);
-  const isEditing = ref(false);
+  // const isEditing = ref(false);
   const isInit = ref(false);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
   const showThemePicker = ref(false);
-  const isEditLoading = ref(false);
+  // const isEditLoading = ref(false);
 
   const setSimpleMode = (isSimpleMode: boolean) => {
     globalStore.setSimpleMode(isSimpleMode);
@@ -277,61 +277,61 @@
       : t(`moreSettingPage.yhostapi`);
   };
 
-  const exitEditMode = () => {
-    setDisplayInfo();
-    isEditing.value = false;
-    isEditLoading.value = false;
-  };
+  // const exitEditMode = () => {
+  //   setDisplayInfo();
+  //   isEditing.value = false;
+  //   isEditLoading.value = false;
+  // };
 
-  const toggleEditMode = async () => {
-    isEditLoading.value = true;
-    console.log(`location.protocol`, location.protocol);
-    console.log(`InputHostApi`, InputHostApi.value);
-    if (
-      location.protocol === 'https:' &&
-      !/^(https):\/\/\S+$|^http:\/\/(localhost|127\.0\.0\.1)/.test(
-        InputHostApi.value
-      ) &&
-      isEditing.value &&
-      InputHostApi.value !== ''
-    ) {
-      console.log('InputHostApi失败');
-      Dialog({
-        title: t(`moreSettingPage.InputHostApi.title`),
-        content: t(`moreSettingPage.InputHostApi.content`),
-        popClass: 'auto-dialog',
-        noCancelBtn: true,
-        okText: t(`editorPage.subConfig.pop.errorBtn`),
-        closeOnClickOverlay: true,
-      });
-      isEditing.value = false;
-      isEditLoading.value = false;
-      setDisplayInfo();
-    } else {
-      if (isEditing.value) {
-        globalStore.sethostApi(InputHostApi.value);
-        setDisplayInfo();
-      } else {
-        InputHostApi.value = ishostApi.value;
-      }
-      isEditLoading.value = false;
-      isEditing.value = !isEditing.value;
-    }
-  };
+  // const toggleEditMode = async () => {
+  //   isEditLoading.value = true;
+  //   console.log(`location.protocol`, location.protocol);
+  //   console.log(`InputHostApi`, InputHostApi.value);
+  //   if (
+  //     location.protocol === 'https:' &&
+  //     !/^(https):\/\/\S+$|^http:\/\/(localhost|127\.0\.0\.1)/.test(
+  //       InputHostApi.value
+  //     ) &&
+  //     isEditing.value &&
+  //     InputHostApi.value !== ''
+  //   ) {
+  //     console.log('InputHostApi失败');
+  //     Dialog({
+  //       title: t(`moreSettingPage.InputHostApi.title`),
+  //       content: t(`moreSettingPage.InputHostApi.content`),
+  //       popClass: 'auto-dialog',
+  //       noCancelBtn: true,
+  //       okText: t(`editorPage.subConfig.pop.errorBtn`),
+  //       closeOnClickOverlay: true,
+  //     });
+  //     isEditing.value = false;
+  //     isEditLoading.value = false;
+  //     setDisplayInfo();
+  //   } else {
+  //     if (isEditing.value) {
+  //       globalStore.sethostApi(InputHostApi.value);
+  //       setDisplayInfo();
+  //     } else {
+  //       InputHostApi.value = ishostApi.value;
+  //     }
+  //     isEditLoading.value = false;
+  //     isEditing.value = !isEditing.value;
+  //   }
+  // };
 
-  const clearEditor = () => {
-    Dialog({
-      title: t('editorPage.subConfig.pop.clearTitle'),
-      content: t('editorPage.subConfig.pop.clearDes'),
-      popClass: 'auto-dialog',
-      okText: t(`editorPage.subConfig.pop.clearConfirm`),
-      cancelText: t(`editorPage.subConfig.pop.clearCancel`),
-      onOk: () => {
-        InputHostApi.value = '';
-      },
-      closeOnClickOverlay: true,
-    });
-  };
+  // const clearEditor = () => {
+  //   Dialog({
+  //     title: t('editorPage.subConfig.pop.clearTitle'),
+  //     content: t('editorPage.subConfig.pop.clearDes'),
+  //     popClass: 'auto-dialog',
+  //     okText: t(`editorPage.subConfig.pop.clearConfirm`),
+  //     cancelText: t(`editorPage.subConfig.pop.clearCancel`),
+  //     onOk: () => {
+  //       InputHostApi.value = '';
+  //     },
+  //     closeOnClickOverlay: true,
+  //   });
+  // };
 
   watchEffect(() => {
     SimpleSwitch.value = isSimpleMode.value;
