@@ -7,7 +7,6 @@ import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from '@/store/subs';
 // import { Toast } from '@nutui/nutui';
 
-
 export const initStores = async (
   needNotify: boolean,
   needFetchFlow: boolean,
@@ -19,7 +18,6 @@ export const initStores = async (
   const artifactsStore = useArtifactsStore();
   const settingsStore = useSettingsStore();
 
-  
   const { t } = i18n.global;
   let isSucceed = true;
   showNotify({ title: t('globalNotify.refresh.loading') });
@@ -60,5 +58,4 @@ export const initStores = async (
   globalStore.setLoading(false);
   // 更新流量
   if (needFetchFlow) await subsStore.fetchFlows();
-  
 };

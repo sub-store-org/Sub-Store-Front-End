@@ -15,6 +15,8 @@ interface GlobalStoreState {
 }
 
 interface ENV {
+  hasNewVersion?: boolean;
+  latestVersion?: string;
   version?: string;
   backend?:
     | 'Stash'

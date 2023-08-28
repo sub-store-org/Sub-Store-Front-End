@@ -39,6 +39,7 @@ import {
   Cascader,
   Collapse,
   CollapseItem,
+  Badge,
 } from '@nutui/nutui';
 
 export default app => {
@@ -82,5 +83,6 @@ export default app => {
     .use(Input)
     .use(Cascader)
     .use(Collapse)
-    .use(CollapseItem);
+    .use(CollapseItem)
+    .use(Badge);
 };

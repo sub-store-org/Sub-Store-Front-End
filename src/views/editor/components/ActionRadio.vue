@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-  import semverGte from 'semver/functions/gte';
+  import semverGt from 'semver/functions/gt';
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
   import { inject, onMounted, ref, watch } from 'vue';
@@ -41,7 +41,7 @@
   };
 
   try {
-    if (semverGte(env.value.version, '2.14.33')) {
+    if (semverGt(env.value.version, '2.14.32')) {
       opt['Resolve Domain Operator'] = [...opt['Resolve Domain Operator'], 'Ali', 'Tencent']
     }
   } catch (e) {}

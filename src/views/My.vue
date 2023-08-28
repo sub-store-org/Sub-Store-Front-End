@@ -149,7 +149,8 @@
 
     <div class="env-block">
       <img v-if="icon" :src="icon" alt="" class="auto-reverse" />
-      <p>v{{ env.version }}</p>
+      <a v-if="env.hasNewVersion" target="_blank" :href="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'"><nut-badge value="NEW">v{{env.version}}</nut-badge></a>
+      <p v-else>v{{ env.version }}</p>
       <p>{{ env.backend }}</p>
     </div>
   </div>

@@ -148,6 +148,8 @@ router.beforeResolve(async to => {
         if (envNow.data.status === 'success') {
           const backend = envNow.data.data.backend;
           const version = envNow.data.data.version;
+          const hasNewVersion = envNow.data.data.hasNewVersion;
+          const latestVersion = envNow.data.data.latestVersion;
           if (backend !== storeEnv.backend || version !== storeEnv.version) {
             Toast.loading('检测到后端变化，更新数据中...', {
               cover: true,
