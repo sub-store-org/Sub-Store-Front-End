@@ -94,7 +94,7 @@
     return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
   });
   const currentTitleWhetherAsk = computed(() => {
-    const ownAsk = ['sync', 'subEditor', 'moreSetting'];
+    const ownAsk = ['sync'];
     const metaTitle = route.meta.title;
     return ownAsk.includes(metaTitle) ? 'ask' : '';
   });
