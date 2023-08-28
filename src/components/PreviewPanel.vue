@@ -41,6 +41,7 @@
   import stash from '@/assets/icons/stash.png';
   import shadowrocket from '@/assets/icons/shadowrocket.png';
   import v2ray from '@/assets/icons/v2ray.png';
+  import clashmeta from '@/assets/icons/clashmeta.png';
   import logoicon from '@/assets/icons/logo.svg';
   import { useClipboard } from '@vueuse/core';
   import useV3Clipboard from 'vue-clipboard3';
@@ -77,6 +78,16 @@
       icon: logoicon,
     },
     {
+      name: 'Stash',
+      path: 'Stash',
+      icon: stash,
+    },
+    {
+      name: 'Clash.Meta',
+      path: 'ClashMeta',
+      icon: clashmeta,
+    },
+    {
       name: 'Clash',
       path: 'Clash',
       icon: clash,
@@ -95,11 +106,6 @@
       name: 'Loon',
       path: 'Loon',
       icon: loon,
-    },
-    {
-      name: 'Stash',
-      path: 'Stash',
-      icon: stash,
     },
     {
       name: 'ShadowRocket',

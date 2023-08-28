@@ -87,6 +87,7 @@
 
 <script lang="ts" setup>
 import clashIcon from '@/assets/icons/clash.png';
+import clashMetaIcon from '@/assets/icons/clashmeta.png';
 import loonIcon from '@/assets/icons/loon.png';
 import quanxIcon from '@/assets/icons/quanx.png';
 import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
@@ -137,6 +138,8 @@ const icon = computed(() => {
       return loonIcon;
     case 'Clash':
       return clashIcon;
+    case 'ClashMeta':
+      return clashMetaIcon;
     case 'Stash':
       return stashIcon;
     case 'ShadowRocket':

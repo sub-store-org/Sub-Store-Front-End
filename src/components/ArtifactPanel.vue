@@ -92,11 +92,12 @@
           v-model="editPanelData.platform"
           class="artifact-radio-group"
         >
+          <nut-radio label="ClashMeta">Clash.Meta</nut-radio>
           <nut-radio label="Surge">Surge</nut-radio>
-          <nut-radio label="QX">Quantumult X</nut-radio>
-          <nut-radio label="Loon">Loon</nut-radio>
-          <nut-radio label="Clash">Clash</nut-radio>
           <nut-radio label="Stash">Stash</nut-radio>
+          <nut-radio label="QX">Quantumult X</nut-radio>
+          <nut-radio label="Clash">Clash</nut-radio>
+          <nut-radio label="Loon">Loon</nut-radio>
           <nut-radio label="ShadowRocket">ShadowRocket</nut-radio>
           <nut-radio label="V2Ray">V2Ray</nut-radio>
         </nut-radiogroup>

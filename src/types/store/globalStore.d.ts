@@ -23,5 +23,7 @@ interface ENV {
     | 'Surge'
     | 'ShadowRocket'
     | 'Clash'
+    | 'ClashMeta'
+    | 'V2Ray'
     | 'Node';
 }

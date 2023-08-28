@@ -9,7 +9,8 @@ type ArtifactsPlatform =
   | 'Clash'
   | 'Stash'
   | 'ShadowRocket'
-  | 'V2Ray'
+  | 'ClashMeta'
+  | 'V2Ray';
 
 type ArtifactType = 'collection' | 'subscription';
 
