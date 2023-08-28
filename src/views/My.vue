@@ -119,30 +119,24 @@
           :title="$t(`apiSettingPage.apiSettingTitle`)"
           class="change-themes"
           @click.stop="onClickAPISetting"
+          is-link
         >
-          <template v-slot:link>
-            <nut-icon name="rect-right" />
-          </template>
         </nut-cell>
 
         <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="change-themes"
           @click.stop="onClickMore"
+          is-link
         >
-          <template v-slot:link>
-            <nut-icon name="rect-right" />
-          </template>
         </nut-cell>
 
         <nut-cell
           :title="$t(`navBar.pagesTitle.aboutUs`)"
           class="change-themes"
           @click.stop="onClickAbout"
+          is-link
         >
-          <template v-slot:link>
-            <nut-icon name="rect-right" />
-          </template>
         </nut-cell>
       </nut-cell-group>
     </div>

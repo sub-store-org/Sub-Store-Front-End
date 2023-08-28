@@ -90,10 +90,8 @@
           :title="$t(`themeSettingPage.dark`)"
           :desc="themeDes.darkDes"
           @click="openPicker('dark')"
+          is-link
         >
-          <!-- <template v-slot:link>
-            <nut-icon name="rect-right" ></nut-icon>
-          </template> -->
         </nut-cell>
 
         <nut-cell
@@ -101,10 +99,8 @@
           :title="$t(`themeSettingPage.light`)"
           :desc="themeDes.lightDes"
           @click="openPicker('light')"
+          is-link
         >
-          <!-- <template v-slot:link>
-            <nut-icon name="rect-right" ></nut-icon>
-          </template> -->
         </nut-cell>
       </template>
 

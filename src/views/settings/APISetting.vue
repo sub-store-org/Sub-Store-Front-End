@@ -84,7 +84,7 @@
         <nut-button
           class="save-btn"
           type="primary"
-          size="mini"
+          size="large"
           @click="addApiHandler"
           :disabled="!addForm.name || !addForm.url"
         >
