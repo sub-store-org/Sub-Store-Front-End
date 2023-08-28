@@ -547,6 +547,7 @@ export default {
       title: '项目信息（欢迎 Star 🌟）',
       fe: '前端',
       be: '后端',
+      module: '模块',
       mock: 'Mock 模块',
       team: '项目组',
       link: '在 GitHub 上查看',

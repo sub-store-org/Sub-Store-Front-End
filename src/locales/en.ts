@@ -541,6 +541,7 @@ export default {
       title: 'Project Info (Please Star 🌟)',
       fe: 'Front-End',
       be: 'Back-End',
+      module: 'Module',
       mock: 'Mock Module',
       team: 'Project Team',
       link: 'View on Github',

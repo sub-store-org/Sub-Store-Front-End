@@ -20,13 +20,14 @@
           <nut-cell
             class="cell-item"
             :desc="$t(`aboutUsPage.projectInfo.link`)"
-            url="https://github.com/sub-store-org/Sub-Store"
+            :url="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'"
           >
             <template v-slot:title>
               <span
-                >{{ $t(`aboutUsPage.projectInfo.be`) }}
-                <b class="bclass">v{{ env.version }}</b></span
-              >
+                >{{ env.backend === 'Node' ? $t(`aboutUsPage.projectInfo.be`) : $t(`aboutUsPage.projectInfo.module`) }}
+                <b v-if="env.hasNewVersion" class="bclass"><a target="_blank" :href="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'"><nut-badge value="NEW">v{{env.version}}</nut-badge></a></b>
+                <b v-else class="bclass">v{{ env.version }}</b>
+              </span>
             </template>
           </nut-cell>
 
