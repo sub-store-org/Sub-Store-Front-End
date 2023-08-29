@@ -143,7 +143,16 @@
 
     <div class="env-block">
       <img v-if="icon" :src="icon" alt="" class="auto-reverse" />
-      <a v-if="env.hasNewVersion" target="_blank" :href="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'"><nut-badge value="NEW">v{{env.version}}</nut-badge></a>
+      <a
+        v-if="env.hasNewVersion"
+        target="_blank"
+        :href="
+          env.backend === 'Node'
+            ? 'https://github.com/sub-store-org/Sub-Store/releases'
+            : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'
+        "
+        ><nut-badge value="NEW">v{{ env.version }}</nut-badge></a
+      >
       <p v-else>v{{ env.version }}</p>
       <p>{{ env.backend }}</p>
     </div>
@@ -279,7 +288,7 @@
 
     const res = await useSettingsApi().syncSettings(query);
 
-    if (res.data.status === 'success') {
+    if (res?.data?.status === 'success') {
       switch (query) {
         case 'download':
           await initStores(false, true, true);
