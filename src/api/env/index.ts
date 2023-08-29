@@ -1,6 +1,6 @@
 import request from '@/api';
+import { semverMajorMinorGt } from '@/utils/semver';
 import { AxiosPromise } from 'axios';
-import semverGt from 'semver/functions/gt';
 
 export function useEnvApi() {
   const localStorageKey = 'envCache'; // env 读取加入缓存 重启会自动清理
@@ -29,7 +29,7 @@ export function useEnvApi() {
             })
           ).data.tag_name;
           response.data.data.latestVersion = latestVersion;
-          response.data.data.hasNewVersion = semverGt(
+          response.data.data.hasNewVersion = semverMajorMinorGt(
             latestVersion,
             response.data.data.version
           );
