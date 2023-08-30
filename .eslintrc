@@ -1,0 +1,32 @@
+{
+  "extends": [
+    "@antfu"
+  ],
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "antfu/top-level-function": "off",
+    "antfu/if-newline": "off",
+    "vue/component-tags-order": [
+      "error",
+      {
+        "order": [
+          "template",
+          "script",
+          "style"
+        ]
+      }
+    ],
+    "@typescript-eslint/consistent-type-definitions": [
+      "error",
+      "type"
+    ],
+    "@typescript-eslint/semi": [
+      "error",
+      "always"
+    ]
+  }
+}

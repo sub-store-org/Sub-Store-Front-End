@@ -3,17 +3,17 @@
     <template v-if="isEnvReady">
       <nut-cell-group :title="$t(`apiSettingPage.currentApi.title`)">
         <nut-cell class="cell" center>
-          <template v-slot:icon>
-            <img :src="icon" alt="" class="auto-reverse backend-icon" />
+          <template #icon>
+            <img :src="icon" alt="" class="auto-reverse backend-icon">
           </template>
-          <template v-slot:title>
+          <template #title>
             <span class="backend-title">{{
               currentName === ''
                 ? $t(`apiSettingPage.apiList.defaultName`)
                 : currentName
             }}</span>
           </template>
-          <template v-slot:link>
+          <template #link>
             <span class="backend-version">{{
               `${env.backend} - ${env.version}`
             }}</span>
@@ -31,9 +31,9 @@
           <div class="api-item-left">
             <h2>
               {{ $t(`apiSettingPage.apiList.defaultName`) }}
-              <nut-tag v-if="currentName === ''" type="primary" plain>{{
-                $t(`apiSettingPage.apiList.currentTag`)
-              }}</nut-tag>
+              <nut-tag v-if="currentName === ''" type="primary" plain>
+                {{ $t(`apiSettingPage.apiList.currentTag`) }}
+              </nut-tag>
             </h2>
             <p>{{ defaultAPI }}</p>
           </div>
@@ -49,11 +49,11 @@
           <div class="api-item-left">
             <h2>
               {{ api.name }}
-              <nut-tag v-if="currentName === api.name" type="primary" plain
-                >{{ $t(`apiSettingPage.apiList.currentTag`) }}
+              <nut-tag v-if="currentName === api.name" type="primary" plain>
+                {{ $t(`apiSettingPage.apiList.currentTag`) }}
               </nut-tag>
             </h2>
-            <p>{{ api.url.slice(0, 20) + '******' }}</p>
+            <p>{{ `${api.url.slice(0, 20)}******` }}</p>
           </div>
           <div class="api-item-right">
             <font-awesome-icon
@@ -69,15 +69,15 @@
       <div class="add-api-wrapper">
         <div class="add-form-wrapper">
           <nut-input
-            class="input"
             v-model="addForm.name"
+            class="input"
             :placeholder="$t(`apiSettingPage.addApi.placeholder.name`)"
             type="text"
             input-align="left"
           />
           <nut-input
-            class="input"
             v-model="addForm.url"
+            class="input"
             :placeholder="$t(`apiSettingPage.addApi.placeholder.url`)"
             type="text"
             input-align="left"
@@ -86,15 +86,15 @@
         <nut-button
           class="save-btn"
           type="primary"
-          @click="addApiHandler"
           :disabled="!addForm.name || !addForm.url"
           :loading="checkingAPI"
+          @click="addApiHandler"
         >
           <font-awesome-icon
             v-if="!checkingAPI"
             icon="fa-solid fa-floppy-disk"
           />
-          <!--          {{ $t(`apiSettingPage.addApi.btn`) }}-->
+          <!--          {{ $t(`apiSettingPage.addApi.btn`) }} -->
         </nut-button>
       </div>
     </nut-cell-group>
@@ -105,38 +105,38 @@
         href="https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d"
         target="_blank"
       >
-        https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d</a
-      >
+        https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d</a>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { useBackend } from '@/hooks/useBackend';
-  import { useHostAPI } from '@/hooks/useHostAPI';
-  import { ref } from 'vue';
+import { ref } from 'vue';
 
-  const { icon, env, isEnvReady } = useBackend();
-  const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi } =
-    useHostAPI();
+import { useBackend } from '@/hooks/useBackend';
+import { useHostAPI } from '@/hooks/useHostAPI';
 
-  const addForm = ref<HostAPI>({
-    name: '',
-    url: '',
-  });
+const { icon, env, isEnvReady } = useBackend();
+const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi }
+    = useHostAPI();
 
-  const checkingAPI = ref(false);
-  const addApiHandler = async () => {
-    if (!addForm.value.name || !addForm.value.url) return;
-    checkingAPI.value = true;
-    const result = await addApi(addForm.value);
-    result &&
-      (addForm.value = {
+const addForm = ref<HostAPI>({
+  name: '',
+  url: '',
+});
+
+const checkingAPI = ref(false);
+const addApiHandler = async () => {
+  if (!addForm.value.name || !addForm.value.url) return;
+  checkingAPI.value = true;
+  const result = await addApi(addForm.value);
+  result
+      && (addForm.value = {
         name: '',
         url: '',
       });
-    checkingAPI.value = false;
-  };
+  checkingAPI.value = false;
+};
 </script>
 
 <style lang="scss" scoped>
