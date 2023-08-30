@@ -130,7 +130,7 @@
   };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .page-wrapper {
     min-height: 100%;
     padding: 16px var(--safe-area-side);

@@ -58,8 +58,8 @@ export const useArtifactsStore = defineStore('artifactsStore', {
     async syncAllArtifact() {
       const { showNotify } = useAppNotifyStore();
 
-      const { data } = await artifactsApi.syncAllArtifact();
-      if (data.status === 'success') {
+      const res = await artifactsApi.syncAllArtifact();
+      if (res?.data?.status === 'success') {
         await this.fetchArtifactsData();
         showNotify({
           title: t('syncPage.syncAllSucceed'),
@@ -71,7 +71,7 @@ export const useArtifactsStore = defineStore('artifactsStore', {
       const { showNotify } = useAppNotifyStore();
 
       const res = await artifactsApi.syncOneArtifact(name);
-      if (res.data.status === 'success') {
+      if (res?.data?.status === 'success') {
         const index = this.artifacts.findIndex(item => item.name === name);
         this.artifacts[index] = res.data.data;
         showNotify({
