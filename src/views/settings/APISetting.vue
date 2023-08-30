@@ -67,29 +67,34 @@
 
     <nut-cell-group :title="$t(`apiSettingPage.addApi.title`)">
       <div class="add-api-wrapper">
-        <nut-input
-          class="input"
-          v-model="addForm.name"
-          :placeholder="$t(`apiSettingPage.addApi.placeholder.name`)"
-          type="text"
-          input-align="left"
-        />
-        <nut-input
-          class="input"
-          v-model="addForm.url"
-          :placeholder="$t(`apiSettingPage.addApi.placeholder.url`)"
-          type="text"
-          input-align="left"
-        />
+        <div class="add-form-wrapper">
+          <nut-input
+            class="input"
+            v-model="addForm.name"
+            :placeholder="$t(`apiSettingPage.addApi.placeholder.name`)"
+            type="text"
+            input-align="left"
+          />
+          <nut-input
+            class="input"
+            v-model="addForm.url"
+            :placeholder="$t(`apiSettingPage.addApi.placeholder.url`)"
+            type="text"
+            input-align="left"
+          />
+        </div>
         <nut-button
           class="save-btn"
           type="primary"
-          size="large"
           @click="addApiHandler"
           :disabled="!addForm.name || !addForm.url"
+          :loading="checkingAPI"
         >
-          <font-awesome-icon icon="fa-solid fa-floppy-disk" />
-          {{ $t(`apiSettingPage.addApi.btn`) }}
+          <font-awesome-icon
+            v-if="!checkingAPI"
+            icon="fa-solid fa-floppy-disk"
+          />
+          <!--          {{ $t(`apiSettingPage.addApi.btn`) }}-->
         </nut-button>
       </div>
     </nut-cell-group>
@@ -119,14 +124,18 @@
     name: '',
     url: '',
   });
+
+  const checkingAPI = ref(false);
   const addApiHandler = async () => {
     if (!addForm.value.name || !addForm.value.url) return;
+    checkingAPI.value = true;
     const result = await addApi(addForm.value);
     result &&
       (addForm.value = {
         name: '',
         url: '',
       });
+    checkingAPI.value = false;
   };
 </script>
 
@@ -202,27 +211,37 @@
       padding: 16px;
       border-radius: 12px;
       display: flex;
-      flex-direction: column;
-      align-items: end;
+      align-items: center;
       gap: 16px;
 
-      .input {
-        background: transparent;
-        padding: 8px;
-        color: var(--second-text-color);
-        font-size: 14px;
+      .add-form-wrapper {
+        flex: 1;
 
-        :deep(img) {
-          width: 16px;
-          height: 16px;
-          margin-right: 6px;
-          opacity: 0.2;
-          filter: brightness(var(--img-brightness));
-        }
+        .input {
+          background: transparent;
+          padding: 8px;
+          color: var(--second-text-color);
+          font-size: 14px;
 
-        &:not(:first-child) {
-          margin-top: 8px;
+          :deep(img) {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            opacity: 0.2;
+            filter: brightness(var(--img-brightness));
+          }
+
+          &:not(:first-child) {
+            margin-top: 8px;
+          }
         }
+      }
+
+      .save-btn {
+        width: 5%;
+        flex-shrink: 0;
+        flex-grow: 0;
+        font-size: 18px;
       }
     }
 

@@ -350,8 +350,6 @@
         }
 
         .config-input-wrapper {
-          padding: 0 12px;
-
           .input.nut-input-disabled {
             :deep(input):disabled {
               -webkit-text-fill-color: var(--lowest-text-color);
