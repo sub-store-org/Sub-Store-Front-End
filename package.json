@@ -1,9 +1,10 @@
 {
   "name": "sub-store-front-end",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
   "scripts": {
     "dev": "vite --host",
+    "dev:production": "vite --host --mode production",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --host"
   },
@@ -43,6 +44,7 @@
     "consola": "^2.15.3",
     "eslint": "^8.47.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "fast-glob": "^3.2.11",
     "husky": "^8.0.1",

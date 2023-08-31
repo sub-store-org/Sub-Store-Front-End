@@ -1,23 +1,23 @@
 <template>
   <div
+    style="overflow: hidden"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
-    style="overflow: hidden"
   >
-    <!--添加订阅弹窗-->
+    <!-- 添加订阅弹窗 -->
     <div>
       <nut-popup
+        v-model:visible="addSubBtnIsVisible"
         pop-class="add-sub-popup"
         lock-scroll
         position="bottom"
         :style="{
-          height: bottomSafeArea + 200 + 'px',
+          height: `${bottomSafeArea + 200}px`,
           padding: '20px 12px 0 12px',
         }"
         close-icon="close-little"
         z-index="11000"
-        v-model:visible="addSubBtnIsVisible"
         closeable
         round
       >
@@ -38,9 +38,9 @@
         </ul>
       </nut-popup>
     </div>
-    <!--浮动按钮-->
+    <!-- 浮动按钮 -->
     <Teleport to="body">
-      <div class="drag-btn-wrapper" v-if="hasSubs || hasCollections">
+      <div v-if="hasSubs || hasCollections" class="drag-btn-wrapper">
         <nut-drag
           :attract="true"
           :boundary="{
@@ -64,8 +64,8 @@
       </div>
     </Teleport>
 
-    <!--页面内容-->
-    <!--有数据-->
+    <!-- 页面内容 -->
+    <!-- 有数据 -->
     <div class="subs-list-wrapper">
       <div v-if="hasSubs">
         <div class="sticky-title-wrappers">
@@ -74,13 +74,10 @@
 
         <draggable
           v-model="subs"
-          @change="changeSubs"
-          @start="handleDragStart"
-          @end="handleDragEnd"
-          itemKey="name"
+          item-key="name"
           :scroll-sensitivity="200"
           :force-fallback="true"
-          :scrollSpeed="8"
+          :scroll-speed="8"
           :scroll="true"
           v-bind="{
             animation: 200,
@@ -89,6 +86,9 @@
             chosenClass: 'chosensub',
             handle: 'div',
           }"
+          @change="changeSubs"
+          @start="handleDragStart"
+          @end="handleDragEnd"
         >
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
@@ -109,13 +109,10 @@
 
         <draggable
           v-model="collections"
-          @change="changeCollections"
-          @start="handleDragStart"
-          @end="handleDragEnd"
-          itemKey="name"
+          item-key="name"
           :scroll-sensitivity="200"
           :force-fallback="true"
-          :scrollSpeed="8"
+          :scroll-speed="8"
           :scroll="true"
           v-bind="{
             animation: 200,
@@ -124,6 +121,9 @@
             chosenClass: 'chosensub',
             handle: 'div',
           }"
+          @change="changeCollections"
+          @start="handleDragStart"
+          @end="handleDragEnd"
         >
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
@@ -137,7 +137,7 @@
         </draggable>
       </div>
     </div>
-    <!--没有数据-->
+    <!-- 没有数据 -->
     <div
       v-if="!isLoading && fetchResult && !hasSubs && !hasCollections"
       class="no-data-wrapper"
@@ -148,12 +148,12 @@
           <p>{{ $t(`subPage.emptySub.desc`) }}</p>
         </template>
       </nut-empty>
-      <nut-button @click="addSubBtnIsVisible = true" type="primary"
-        >{{ $t(`subPage.emptySub.btn`) }}
+      <nut-button type="primary" @click="addSubBtnIsVisible = true">
+        {{ $t(`subPage.emptySub.btn`) }}
       </nut-button>
     </div>
 
-    <!--数据加载失败-->
+    <!-- 数据加载失败 -->
     <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
       <nut-empty image="error" style="padding: 32px 30px">
         <template #description>
@@ -165,29 +165,27 @@
             <a
               href="https://t.me/cool_scripts"
               style="color: var(--primary-color)"
-              >Cool Scripts</a
             >
+              Cool Scripts
+            </a>
           </p>
         </template>
       </nut-empty>
-      <nut-button icon="refresh" type="primary" @click="refresh">{{
-        $t(`subPage.loadFailed.btn`)
-      }}</nut-button>
+      <nut-button icon="refresh" type="primary" @click="refresh">
+        {{ $t(`subPage.loadFailed.btn`) }}
+      </nut-button>
       <a
         href="https://www.notion.so/Sub-Store-6259586994d34c11a4ced5c406264b46"
         target="_blank"
-        ><span>{{ $t(`subPage.loadFailed.doc`) }}</span>
-        <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square"
-      /></a>
+      >
+        <span>{{ $t(`subPage.loadFailed.doc`) }}</span>
+        <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
+      </a>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import SubListItem from '@/components/SubListItem.vue';
-  import { useGlobalStore } from '@/store/global';
-  import { useSubsStore } from '@/store/subs';
-  import { initStores } from '@/utils/initApp';
   import { storeToRefs } from 'pinia';
   import { ref, toRaw } from 'vue';
   import draggable from 'vuedraggable';
@@ -195,8 +193,12 @@
   // import { useAppNotifyStore } from '@/store/appNotify';
   // import { Dialog, Toast } from '@nutui/nutui';
   // const { showNotify } = useAppNotifyStore();
-
   import { useSubsApi } from '@/api/subs';
+  import SubListItem from '@/components/SubListItem.vue';
+  import { useGlobalStore } from '@/store/global';
+  import { useSubsStore } from '@/store/subs';
+  import { initStores } from '@/utils/initApp';
+
   const subsApi = useSubsApi();
 
   const addSubBtnIsVisible = ref(false);
@@ -242,7 +244,6 @@
   //   subs.value = newSub;
   // };
   const changeSubs = async () => {
-    console.log('2233');
     await subsApi.sortSub(
       'subs',
       JSON.parse(JSON.stringify(toRaw(subs.value)))
