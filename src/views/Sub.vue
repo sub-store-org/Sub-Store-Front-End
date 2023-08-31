@@ -155,10 +155,19 @@
 
     <!--数据加载失败-->
     <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
-      <nut-empty image="error">
+      <nut-empty image="error" style="padding: 32px 30px">
         <template #description>
           <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
           <p>{{ $t(`subPage.loadFailed.desc`) }}</p>
+          <p>{{ $t(`subPage.loadFailed.followOfficialChannel`) }}</p>
+          <p>
+            {{ $t(`subPage.loadFailed.officialChannel`) }}
+            <a
+              href="https://t.me/cool_scripts"
+              style="color: var(--primary-color)"
+              >Cool Scripts</a
+            >
+          </p>
         </template>
       </nut-empty>
       <nut-button icon="refresh" type="primary" @click="refresh">{{

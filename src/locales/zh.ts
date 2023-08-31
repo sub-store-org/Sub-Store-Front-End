@@ -37,7 +37,7 @@ export default {
         },
         subEditor: {
           title: '下载不了订阅？',
-          content: '尝试更换 UA 下载试试，默认为QuanX UA',
+          content: '尝试更换 UA 下载试试，默认为 QuanX UA',
         },
         moreSetting: {
           title: '遇到问题？',
@@ -72,6 +72,8 @@ export default {
       desc: '请检查代理工具的 MITM、Rewrite 等配置',
       btn: '重试',
       doc: '查看 Sub-Store 教程',
+      followOfficialChannel: '或关注 Sub-Store 官方频道并进群提问',
+      officialChannel: '官方频道：',
     },
     collectionItem: {
       noSub: '没有包含子订阅',
@@ -521,21 +523,21 @@ export default {
     other: '其他设置',
     auto: '启动时自动下载 Gist 配置',
     desc: `注意事项：开启此开关会在打开 SubStore 时自动下载 Gist 远程配置并刷新。
-          刷新操作会覆盖当前配置，为防止数据丢失，可在修改后手动上传配置。 
+          刷新操作会覆盖当前配置，为防止数据丢失，可在修改后手动上传配置。
           打开开关不会上传，只有在重启后才会下载配置。`,
     simple: '简洁模式',
     islr: '卡片右滑呼出',
     isIC: '使用订阅图标原始颜色',
     isEditorCommon: '展示编辑页常用配置',
     isSimpleReicon: '展示订阅刷新按钮',
-    tabBar: '隐藏 “Gist 同步” 页',
+    tabBar: '隐藏“Gist 同步”页',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',
     currentHostApi: '当前后端 API',
     yhostapi: '默认:https://sub.store ',
-    serverDesc: `配置后端服务器地址,  例如 VPS 或 Render 上搭建的后端服务。 
+    serverDesc: `配置后端服务器地址，例如 VPS 或 Render 上搭建的后端服务。
                 配置后需要重启 Sub Store 以生效。如需删除 api，
-                使用原本的 ’默认后端‘ 需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
+                使用原本的’默认后端‘需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
     InputHostApi: {
       title: '链接验证失败 或无效链接',
       content:

@@ -7,7 +7,7 @@ export default {
   globalNotify: {
     refresh: {
       succeed: 'Refresh Successful!\nEnjoy the feeling',
-      flowFailed: 'Refresh flow of {name} failed！',
+      flowFailed: 'Refresh flow of {name} failed!',
       failed: 'Refresh Failed\n',
       loading: 'Refreshing Data...',
     },
@@ -36,7 +36,7 @@ export default {
             'Upload your subscriptions to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).',
         },
         subEditor: {
-          title: 'Download no subscription？',
+          title: 'Download no subscription?',
           content: 'Try replacing UA· Download. The default isQuanX UA',
         },
         moreSetting: {
@@ -69,9 +69,12 @@ export default {
     },
     loadFailed: {
       title: 'Load data failed',
-      desc: 'Please check MITM、Rewrite and others in Proxy Tool',
+      desc: 'Please check MITM, Rewrite and others in Proxy Tool',
       btn: 'Retry',
       doc: 'Visit Sub-Store Docs',
+      followOfficialChannel:
+        'You can also follow Sub-Store official channel and join the group to ask questions',
+      officialChannel: 'Official channel:',
     },
     collectionItem: {
       noSub: 'Not contains subscription',
@@ -119,7 +122,7 @@ export default {
         helpContent:
           'Proxy node actions will be executed in order, and you can drag and drop to sort them.\n\nThe preview switch is used to control whether the action takes effect in the instant preview.\n\nPlease note that node actions will be saved and take effect regardless of whether the preview switch is on or off.',
         helpBtn: 'I Understand',
-        errorTitle: 'Submit Error！',
+        errorTitle: 'Submit Error!',
         errorBtn: 'OK',
         succeedMsg: 'Save Successfully!',
         deleteTitle: 'Delete Confirm',
