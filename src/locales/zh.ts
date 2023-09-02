@@ -372,6 +372,9 @@ export default {
         succeed: '上传成功',
         failed: '上传失败',
       },
+      sortsub: {
+        failed: '排序保存失败',
+      }
     },
     btn: {
       download: '下载',

@@ -1,10 +1,10 @@
-import { useEnvApi } from '@/api/env';
-import i18n from '@/locales';
-import { useAppNotifyStore } from '@/store/appNotify';
-import { useArtifactsStore } from '@/store/artifacts';
-import { useGlobalStore } from '@/store/global';
-import { useSettingsStore } from '@/store/settings';
-import { useSubsStore } from '@/store/subs';
+import { useEnvApi } from "@/api/env";
+import i18n from "@/locales";
+import { useAppNotifyStore } from "@/store/appNotify";
+import { useArtifactsStore } from "@/store/artifacts";
+import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from "@/store/settings";
+import { useSubsStore } from "@/store/subs";
 // import { Toast } from '@nutui/nutui';
 
 export const initStores = async (
@@ -20,10 +20,12 @@ export const initStores = async (
 
   const { t } = i18n.global;
   let isSucceed = true;
-  showNotify({ title: t('globalNotify.refresh.loading') });
+  if (needRefreshCache) {
+    showNotify({ title: t("globalNotify.refresh.loading"), type: "primary" });
+  }
   // Toast.loading(t('globalNotify.refresh.loading'), {
-  //   cover: true,
-  //   id: 'refresh',
+  // cover: true,
+  // id: 'refresh',
   // });
   globalStore.setLoading(true);
   globalStore.setFetchResult(true);
@@ -31,14 +33,14 @@ export const initStores = async (
   // Toast.hide('refresh');
   // 更新所有数据
   try {
-    localStorage.removeItem('envCache');
+    localStorage.removeItem("envCache");
     await subsStore.fetchSubsData();
     await artifactsStore.fetchArtifactsData();
     await settingsStore.fetchSettings();
     await globalStore.setEnv();
     if (needRefreshCache) {
       const { data } = await useEnvApi().refreshCache();
-      if (data.status !== 'success') {
+      if (data.status !== "success") {
         globalStore.setFetchResult(false);
         isSucceed = false;
       }
@@ -52,7 +54,7 @@ export const initStores = async (
 
   // 发送通知
   if (isSucceed && needNotify) {
-    showNotify({ title: t('globalNotify.refresh.succeed') });
+    showNotify({ title: t("globalNotify.refresh.succeed"), type: "primary" });
   }
 
   globalStore.setLoading(false);

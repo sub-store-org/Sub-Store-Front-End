@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="my-page-wrapper"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
-  >
+  <div class="my-page-wrapper">
     <div class="profile-block">
       <div class="info">
         <div class="avatar-wrapper">
@@ -19,9 +14,9 @@
             </p>
             <p class="des">
               <span class="des-line1">{{ desText[0] }}</span>
-              <span class="des-line2" v-if="desText.length === 2">{{
-                desText[1]
-              }}</span>
+              <span class="des-line2" v-if="desText.length === 2">
+                {{ desText[1] }}
+              </span>
             </p>
           </div>
         </div>
@@ -39,8 +34,8 @@
               icon="fa-solid fa-cloud-arrow-up"
               v-if="!uploadIsLoading"
             />
-            {{ $t(`myPage.btn.upload`) }}</nut-button
-          >
+            {{ $t(`myPage.btn.upload`) }}
+          </nut-button>
           <nut-button
             class="download-btn"
             type="primary"
@@ -53,8 +48,8 @@
               v-if="!downloadIsLoading"
               icon="fa-solid fa-cloud-arrow-down"
             />
-            {{ $t(`myPage.btn.download`) }}</nut-button
-          >
+            {{ $t(`myPage.btn.download`) }}
+          </nut-button>
         </div>
       </div>
       <div class="config-card">
@@ -120,24 +115,22 @@
           class="change-themes"
           @click.stop="onClickAPISetting"
           is-link
-        >
-        </nut-cell>
+        ></nut-cell>
+        
 
         <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="change-themes"
           @click.stop="onClickMore"
           is-link
-        >
-        </nut-cell>
+        ></nut-cell>
 
         <nut-cell
           :title="$t(`navBar.pagesTitle.aboutUs`)"
           class="change-themes"
           @click.stop="onClickAbout"
           is-link
-        >
-        </nut-cell>
+        ></nut-cell>
       </nut-cell-group>
     </div>
 
@@ -151,8 +144,9 @@
             ? 'https://github.com/sub-store-org/Sub-Store/releases'
             : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'
         "
-        ><nut-badge value="NEW">v{{ env.version }}</nut-badge></a
       >
+        <nut-badge value="NEW">v{{ env.version }}</nut-badge>
+      </a>
       <p v-else>v{{ env.version }}</p>
       <p>{{ env.backend }}</p>
     </div>
@@ -160,328 +154,310 @@
 </template>
 
 <script lang="ts" setup>
-  import { useSettingsApi } from '@/api/settings';
-  import avatar from '@/assets/icons/avatar.svg?url';
-  import iconKey from '@/assets/icons/key-solid.png';
-  import iconUser from '@/assets/icons/user-solid.png';
-  import { useAppNotifyStore } from '@/store/appNotify';
-  import { useGlobalStore } from '@/store/global';
-  import { useSettingsStore } from '@/store/settings';
-  import { butifyDate } from '@/utils/butifyDate';
-  import { initStores } from '@/utils/initApp';
-  import { storeToRefs } from 'pinia';
-  import { computed, ref, watchEffect } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
-  import { useBackend } from '@/hooks/useBackend';
+import { useSettingsApi } from "@/api/settings";
+import avatar from "@/assets/icons/avatar.svg?url";
+import iconKey from "@/assets/icons/key-solid.png";
+import iconUser from "@/assets/icons/user-solid.png";
+import { useAppNotifyStore } from "@/store/appNotify";
+import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from "@/store/settings";
+import { butifyDate } from "@/utils/butifyDate";
+import { initStores } from "@/utils/initApp";
+import { storeToRefs } from "pinia";
+import { computed, ref, watchEffect } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import { useBackend } from "@/hooks/useBackend";
 
-  const { t } = useI18n();
+const { t } = useI18n();
 
-  // const route = useRoute();
-  const router = useRouter();
-  const { showNotify } = useAppNotifyStore();
-  const settingsStore = useSettingsStore();
-  const { githubUser, gistToken, syncTime, avatarUrl } =
-    storeToRefs(settingsStore);
+// const route = useRoute();
+const router = useRouter();
+const { showNotify } = useAppNotifyStore();
+const settingsStore = useSettingsStore();
+const { githubUser, gistToken, syncTime, avatarUrl } =
+  storeToRefs(settingsStore);
 
-  const displayAvatar = computed(() => {
-    return !githubUser.value ? avatar : avatarUrl.value;
-  });
+const displayAvatar = computed(() => {
+  return !githubUser.value ? avatar : avatarUrl.value;
+});
 
-  const { icon, env } = useBackend();
+const { icon, env } = useBackend();
 
-  const onClickAPISetting = () => {
-    router.push(`/settings/api`);
-  };
+const onClickAPISetting = () => {
+  router.push(`/settings/api`);
+};
 
-  const onClickMore = () => {
-    router.push(`/settings/more`);
-  };
-  const onClickAbout = () => {
-    router.push(`/aboutUs`);
-  };
+const onClickMore = () => {
+  router.push(`/settings/more`);
+};
+const onClickAbout = () => {
+  router.push(`/aboutUs`);
+};
 
-  // 编辑 更新
-  const userInput = ref('');
-  const tokenInput = ref('');
-  const isEditing = ref(false);
-  const isEditLoading = ref(false);
-  const isInit = ref(false);
-  const touchStartY = ref(null);
+// 编辑 更新
+const userInput = ref("");
+const tokenInput = ref("");
+const isEditing = ref(false);
+const isEditLoading = ref(false);
+const isInit = ref(false);
 
-  const onTouchStart = (event: TouchEvent) => {
-    touchStartY.value = Math.abs(event.touches[0].clientY);
-  };
-  const onTouchMove = (event: TouchEvent) => {
-    const deltaY = Math.abs(
-      event.changedTouches[0].clientY - touchStartY.value
-    );
-    const isScrollingUps = deltaY > 0;
-
-    if (isScrollingUps && isScrollingUps) {
-      event.preventDefault();
-    }
-  };
-
-  const onTouchEnd = () => {
-    touchStartY.value = null;
-  };
-  const toggleEditMode = async () => {
-    isEditLoading.value = true;
-    if (isEditing.value) {
-      await settingsStore.editSettings({
-        githubUser: userInput.value,
-        gistToken: tokenInput.value,
-      });
-      setDisplayInfo();
-    } else {
-      userInput.value = githubUser.value;
-      tokenInput.value = gistToken.value;
-    }
-    isEditLoading.value = false;
-    isEditing.value = !isEditing.value;
-  };
-
-  const exitEditMode = () => {
+const toggleEditMode = async () => {
+  isEditLoading.value = true;
+  if (isEditing.value) {
+    await settingsStore.editSettings({
+      githubUser: userInput.value,
+      gistToken: tokenInput.value,
+    });
     setDisplayInfo();
-    isEditing.value = false;
-    isEditLoading.value = false;
-  };
+  } else {
+    userInput.value = githubUser.value;
+    tokenInput.value = gistToken.value;
+  }
+  isEditLoading.value = false;
+  isEditing.value = !isEditing.value;
+};
 
-  const setDisplayInfo = () => {
-    userInput.value = githubUser.value || t(`myPage.placeholder.noGithubUser`);
-    tokenInput.value = gistToken.value
-      ? gistToken.value.slice(0, 6) + '************'
-      : t(`myPage.placeholder.noGistToken`);
-  };
+const exitEditMode = () => {
+  setDisplayInfo();
+  isEditing.value = false;
+  isEditLoading.value = false;
+};
 
-  // 同步 上传
-  const downloadIsLoading = ref(false);
-  const uploadIsLoading = ref(false);
-  const syncIsDisabled = computed(() => {
-    return (
-      uploadIsLoading.value ||
-      downloadIsLoading.value ||
-      !gistToken.value ||
-      !githubUser.value
-    );
-  });
+const setDisplayInfo = () => {
+  userInput.value = githubUser.value || t(`myPage.placeholder.noGithubUser`);
+  tokenInput.value = gistToken.value
+    ? gistToken.value.slice(0, 6) + "************"
+    : t(`myPage.placeholder.noGistToken`);
+};
 
-  const desText = computed(() => {
-    if (!gistToken.value || !githubUser.value) {
-      return [t(`myPage.placeholder.des`), ''];
-    } else {
-      if (!syncTime.value) return [t(`myPage.placeholder.haveNotDownload`), ''];
-      return [t(`myPage.placeholder.uploadTime`), butifyDate(syncTime.value)];
-    }
-  });
+// 同步 上传
+const downloadIsLoading = ref(false);
+const uploadIsLoading = ref(false);
+const syncIsDisabled = computed(() => {
+  return (
+    uploadIsLoading.value ||
+    downloadIsLoading.value ||
+    !gistToken.value ||
+    !githubUser.value
+  );
+});
 
-  const sync = async (query: 'download' | 'upload') => {
+const desText = computed(() => {
+  if (!gistToken.value || !githubUser.value) {
+    return [t(`myPage.placeholder.des`), ""];
+  } else {
+    if (!syncTime.value) return [t(`myPage.placeholder.haveNotDownload`), ""];
+    return [t(`myPage.placeholder.uploadTime`), butifyDate(syncTime.value)];
+  }
+});
+
+const sync = async (query: "download" | "upload") => {
+  switch (query) {
+    case "download":
+      downloadIsLoading.value = true;
+      break;
+    case "upload":
+      uploadIsLoading.value = true;
+      break;
+  }
+
+  const res = await useSettingsApi().syncSettings(query);
+
+  if (res?.data?.status === "success") {
     switch (query) {
-      case 'download':
-        downloadIsLoading.value = true;
+      case "download":
+        await initStores(false, true, true);
         break;
-      case 'upload':
-        uploadIsLoading.value = true;
+      case "upload":
+        await useSettingsStore().fetchSettings();
         break;
     }
+    showNotify({
+      type: "success",
+      title: t(`myPage.notify.${query}.succeed`),
+    });
+  }
 
-    const res = await useSettingsApi().syncSettings(query);
+  downloadIsLoading.value = false;
+  uploadIsLoading.value = false;
+};
 
-    if (res?.data?.status === 'success') {
-      switch (query) {
-        case 'download':
-          await initStores(false, true, true);
-          break;
-        case 'upload':
-          await useSettingsStore().fetchSettings();
-          break;
-      }
-      showNotify({
-        type: 'success',
-        title: t(`myPage.notify.${query}.succeed`),
-      });
-    }
-
-    downloadIsLoading.value = false;
-    uploadIsLoading.value = false;
-  };
-
-  // store 刷新数据完成后 复制内容给 input 绑定
-  const { isLoading: storeIsLoading } = storeToRefs(useGlobalStore());
-  watchEffect(() => {
-    if (!storeIsLoading.value && !isInit.value) {
-      setDisplayInfo();
-      isInit.value = true;
-    }
-  });
+// store 刷新数据完成后 复制内容给 input 绑定
+const { isLoading: storeIsLoading } = storeToRefs(useGlobalStore());
+watchEffect(() => {
+  if (!storeIsLoading.value && !isInit.value) {
+    setDisplayInfo();
+    isInit.value = true;
+  }
+});
 </script>
 
 <style lang="scss" scoped>
-  .my-page-wrapper {
-    height: 100%;
-    padding: var(--safe-area-side);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.my-page-wrapper {
+  min-height: 100%;
+  padding: var(--safe-area-side);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 
-    .profile-block {
+  .profile-block {
+    width: 100%;
+
+    .config-card {
+      margin-top: 20px;
       width: 100%;
+      padding: 12px;
+      border-radius: var(--item-card-radios);
+      color: var(--second-text-color);
+      background: var(--card-color);
 
-      .config-card {
-        margin-top: 20px;
-        width: 100%;
-        padding: 12px;
-        border-radius: var(--item-card-radios);
-        color: var(--second-text-color);
-        background: var(--card-color);
-
-        .title-wrapper {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        h1 {
-          font-size: 14px;
-          padding: 8px 0;
-          margin-bottom: 8px;
-        }
-
-        .config-input-wrapper {
-          .input.nut-input-disabled {
-            :deep(input):disabled {
-              -webkit-text-fill-color: var(--lowest-text-color);
-            }
-          }
-
-          .input {
-            background: transparent;
-            padding: 16px;
-            color: var(--second-text-color);
-
-            :deep(img) {
-              width: 16px;
-              height: 16px;
-              margin-right: 6px;
-              opacity: 0.2;
-              filter: brightness(var(--img-brightness));
-            }
-
-            &:not(:first-child) {
-              margin-top: 8px;
-            }
-          }
-        }
-
-        .config-btn-wrapper {
-          display: flex;
-          justify-content: flex-end;
-
-          .cancel-btn {
-            background: transparent;
-          }
-
-          .save-btn {
-            margin-left: 8px;
-          }
-        }
-      }
-
-      .info {
-        width: 100%;
+      .title-wrapper {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 24px 0;
+      }
 
-        .avatar-wrapper {
-          display: flex;
-          align-items: center;
-          max-width: 64%;
+      h1 {
+        font-size: 14px;
+        padding: 8px 0;
+        margin-bottom: 8px;
+      }
 
-          .avatar-normal {
-            :deep(img) {
-              width: 72%;
-            }
-          }
-
-          .name {
-            margin-left: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            max-width: 64%;
-            display: flex;
-            flex-direction: column;
-
-            p.title {
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              color: var(--primary-text-color);
-            }
-
-            .des {
-              margin-top: 6px;
-              font-size: 12px;
-              font-weight: normal;
-              display: flex;
-              flex-direction: column;
-              color: var(--comment-text-color);
-            }
+      .config-input-wrapper {
+        .input.nut-input-disabled {
+          :deep(input):disabled {
+            -webkit-text-fill-color: var(--lowest-text-color);
           }
         }
 
-        .actions {
+        .input {
+          background: transparent;
+          padding: 16px;
+          color: var(--second-text-color);
+
+          :deep(img) {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            opacity: 0.2;
+            filter: brightness(var(--img-brightness));
+          }
+
+          &:not(:first-child) {
+            margin-top: 8px;
+          }
+        }
+      }
+
+      .config-btn-wrapper {
+        display: flex;
+        justify-content: flex-end;
+
+        .cancel-btn {
+          background: transparent;
+        }
+
+        .save-btn {
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .info {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+
+      .avatar-wrapper {
+        display: flex;
+        align-items: center;
+        max-width: 64%;
+
+        .avatar-normal {
+          :deep(img) {
+            width: 72%;
+          }
+        }
+
+        .name {
           margin-left: 12px;
+          font-size: 18px;
+          font-weight: bold;
+          max-width: 64%;
           display: flex;
           flex-direction: column;
 
-          svg {
-            margin-right: 4px;
+          p.title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--primary-text-color);
           }
 
-          .upload-btn,
-          .download-btn {
-            padding: 0 12px;
-            width: 116px;
-          }
-
-          .upload-btn {
-            background: transparent;
-          }
-
-          .download-btn {
-            margin-top: 12px;
+          .des {
+            margin-top: 6px;
+            font-size: 12px;
+            font-weight: normal;
+            display: flex;
+            flex-direction: column;
+            color: var(--comment-text-color);
           }
         }
       }
 
-      .change-themes {
-        // color: var(--comment-text-color);
-        box-shadow: none;
-        font-weight: bold;
+      .actions {
+        margin-left: 12px;
+        display: flex;
+        flex-direction: column;
+
+        svg {
+          margin-right: 4px;
+        }
+
+        .upload-btn,
+        .download-btn {
+          padding: 0 12px;
+          width: 116px;
+        }
+
+        .upload-btn {
+          background: transparent;
+        }
+
+        .download-btn {
+          margin-top: 12px;
+        }
       }
     }
 
-    .env-block {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 12px;
-      color: var(--lowest-text-color);
-
-      img {
-        opacity: 0.4;
-        width: 54px;
-        height: 54px;
-      }
+    .change-themes {
+      // color: var(--comment-text-color);
+      box-shadow: none;
+      font-weight: bold;
     }
   }
 
-  .nut-icon {
+  .env-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
     color: var(--lowest-text-color);
+
+    img {
+      opacity: 0.4;
+      width: 54px;
+      height: 54px;
+    }
   }
+}
+
+.nut-icon {
+  color: var(--lowest-text-color);
+}
 </style>

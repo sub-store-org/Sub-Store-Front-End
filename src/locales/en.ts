@@ -378,6 +378,9 @@ export default {
         succeed: 'Upload succeed',
         failed: 'Upload failed',
       },
+      sortsub: {
+        failed: 'Sort failed',
+      }
     },
     config: 'Gist Configuration',
   },
