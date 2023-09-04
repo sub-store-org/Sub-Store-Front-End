@@ -155,6 +155,9 @@ import draggable from "vuedraggable";
 import { useSubsApi } from "@/api/subs";
 import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
+import { useBackend } from "@/hooks/useBackend";
+
+const { env } = useBackend();
 const subsApi = useSubsApi();
 // const { t } = useI18n();
 const globalStore = useGlobalStore();
@@ -233,13 +236,25 @@ const closeArtifactPanel = () => {
 let dragData = null;
 const changeArtifacts = async () => {
   try {
-    const sortArtifacts = await subsApi.sortSub(
-      "artifacts",
-      JSON.parse(JSON.stringify(toRaw(artifacts.value)))
-    );
+    let sortArtifacts: any;
+    if (env.value.version > "2.14.48") {
+      console.log("new sort > v2.14.48");
+      const nameSortArray = artifacts.value.map((k) => k.name);
+      console.log(nameSortArray);
+      sortArtifacts = await subsApi.newSortSub(
+        "artifacts",
+        JSON.parse(JSON.stringify(toRaw(nameSortArray)))
+      );
+      console.log(JSON.stringify(sortArtifacts));
+    } else {
+      console.log("old sort < v2.14.48");
+      sortArtifacts = await subsApi.sortSub(
+        "artifacts",
+        JSON.parse(JSON.stringify(toRaw(artifacts.value)))
+      );
+    }
     if (sortArtifacts.data.status !== "success") {
       sortFailed.value = true;
-      // console.log(JSON.stringify(sortArtifacts))
       showNotify({
         title: t("notify.sortsub.failed"),
         type: "danger",

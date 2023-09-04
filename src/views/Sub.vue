@@ -86,9 +86,9 @@
             chosenClass: 'chosensub',
             handle: 'div',
           }"
-          @change="changeSubs"
-          @start="handleDragStart"
-          @end="handleDragEnd"
+          @change="changeSort('subs', subs)"
+          @start="handleDragStart(subs)"
+          @end="handleDragEnd(subs)"
         >
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
@@ -121,9 +121,9 @@
             chosenClass: 'chosensub',
             handle: 'div',
           }"
-          @change="changeCollections"
-          @start="handleDragStartColl"
-          @end="handleDragEndColl"
+          @change="changeSort('collections', collections)"
+          @start="handleDragStart(collections)"
+          @end="handleDragEnd(collections)"
         >
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
@@ -199,6 +199,9 @@ import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
+import { useBackend } from "@/hooks/useBackend";
+
+const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subsApi = useSubsApi();
 const { t } = useI18n();
@@ -238,19 +241,34 @@ const refresh = () => {
 };
 
 let dragData = null;
-const changeSubs = async () => {
+const changeSort = async (
+  subColl: "subs" | "collections",
+  dataValue: any[]
+) => {
   try {
-    const sortSubRes = await subsApi.sortSub(
-      "subs",
-      JSON.parse(JSON.stringify(toRaw(subs.value)))
-    );
-    if (sortSubRes.data.status !== "success") {
+    let sortDataRes: any;
+    if (env.value.version > "2.14.48") {
+      console.log(`new sort > v2.14.48`);
+      const nameSortArray = dataValue.map((k: { name: string }) => k.name);
+      console.log(nameSortArray);
+      sortDataRes = await subsApi.newSortSub(
+        subColl,
+        JSON.parse(JSON.stringify(toRaw(nameSortArray)))
+      );
+    } else {
+      console.log(`old sort < v2.14.48 `);
+      sortDataRes = await subsApi.sortSub(
+        subColl,
+        JSON.parse(JSON.stringify(toRaw(dataValue)))
+      );
+    }
+    // console.log(JSON.stringify(sortDataRes))
+    if (sortDataRes.data.status !== "success") {
       sortFailed.value = true;
-      // console.log(JSON.stringify(sortSubRes))
       showNotify({
         title: t("notify.sortsub.failed"),
         type: "danger",
-        content: JSON.stringify(sortSubRes),
+        content: JSON.stringify(sortDataRes),
       });
     }
   } catch (error) {
@@ -258,47 +276,14 @@ const changeSubs = async () => {
   }
 };
 
-const changeCollections = async () => {
-  try {
-    const sortCollections = await subsApi.sortSub(
-      "collections",
-      JSON.parse(JSON.stringify(toRaw(collections.value)))
-    );
-    if (sortCollections.data.status !== "success") {
-      sortFailed.value = true;
-      showNotify({
-        title: t("notify.sortsub.failed"),
-        type: "danger",
-        content: JSON.stringify(sortCollections),
-      });
-    }
-  } catch (error) {
-    sortFailed.value = true;
-  }
-};
-
-const handleDragStart = () => {
+const handleDragStart = (dataValue: any) => {
   swipeDisabled.value = true;
-  dragData = subs.value;
-  // console.log(JSON.stringify(subs))
-};
-const handleDragStartColl = () => {
-  swipeDisabled.value = true;
-  dragData = collections.value;
+  dragData = dataValue.value;
 };
 
-const handleDragEnd = () => {
+const handleDragEnd = (dataValue: any) => {
   if (sortFailed.value) {
-    subs.value = dragData;
-  } else {
-    dragData = null;
-  }
-  swipeDisabled.value = false;
-};
-
-const handleDragEndColl = () => {
-  if (sortFailed.value) {
-    collections.value = dragData;
+    dataValue.value = dragData;
   } else {
     dragData = null;
   }

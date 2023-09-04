@@ -80,7 +80,16 @@ export function useSubsApi() {
         method: 'put',
         data,
       });
-      
+    },
+    newSortSub: (
+      type: string,
+      data: Sub | Collection | Artifacts
+    ): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/sort/${type}`,
+        method: 'post',
+        data,
+      });
     },
   };
 }
