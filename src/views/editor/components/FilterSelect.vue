@@ -37,6 +37,9 @@
       'http',
       'socks5',
       'snell',
+      'tuic',
+      'hysteria',
+      'wireguard',
     ],
   };
 
