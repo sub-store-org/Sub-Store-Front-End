@@ -279,6 +279,7 @@ export default {
             'Snell',
             'TUIC',
             'Hysteria',
+            'Hysteria2',
             'WireGuard',
           ],
           tipsTitle: 'Node Type Filter Tips',

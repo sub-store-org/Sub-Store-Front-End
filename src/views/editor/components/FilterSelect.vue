@@ -39,6 +39,7 @@
       'snell',
       'tuic',
       'hysteria',
+      'hysteria2',
       'wireguard',
     ],
   };

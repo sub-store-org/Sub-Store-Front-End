@@ -287,6 +287,7 @@ export default {
             'Snell',
             'TUIC',
             'Hysteria',
+            'Hysteria2',
             'WireGuard',
           ],
           tipsTitle: '节点类型过滤操作提示',
