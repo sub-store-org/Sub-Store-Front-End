@@ -268,7 +268,7 @@
   const ruleForm = ref<any>(null);
   const actionsChecked = reactive([]);
   const actionsList = reactive([]);
-
+  const isget = ref(false);
   const form = reactive<any>({
     name: '',
     displayName: '',
@@ -425,9 +425,18 @@
   };
 
   const submit = () => {
+    if (isget.value){
+    showNotify({
+        type: 'success',
+        title: '拉取订阅中，请勿重复点击...',
+      });
+    return;
+    }
     ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+      isget.value=true;
       // 如果验证失败
       if (!valid) {
+        isget.value=false;
         Dialog({
           title: t(`editorPage.subConfig.pop.errorTitle`),
           content: errors[0].message,
@@ -439,7 +448,7 @@
         });
         return;
       }
-
+      Toast.loading('拉取订阅中...', { id: 'submits', cover: true });
       // 如果验证成功，开始保存/修改
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data['display-name'] = data.displayName;
@@ -469,14 +478,17 @@
           await subsStore.fetchSubsData();
         }
       }
-
+      
       router.replace('/').then(() => {
         if (res)
+          isget.value=false;
           showNotify({
             type: 'success',
             title: t(`editorPage.subConfig.pop.succeedMsg`),
           });
+
       });
+      Toast.hide('submits');
     });
   };
 
