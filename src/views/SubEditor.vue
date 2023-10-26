@@ -481,13 +481,13 @@
       
       router.replace('/').then(() => {
         if (res)
-          isget.value=false;
           showNotify({
             type: 'success',
             title: t(`editorPage.subConfig.pop.succeedMsg`),
           });
 
       });
+      isget.value=false;
       Toast.hide('submits');
     });
   };
