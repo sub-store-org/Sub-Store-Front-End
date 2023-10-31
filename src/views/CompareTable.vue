@@ -45,7 +45,7 @@
 
           <!--表格内容-->
           <table class="compare-table-body">
-            <template v-for="[processed, original] in data" :key="processed.id">
+            <template v-for="[processed = {}, original = {}] in data" :key="processed.id">
               <tr
                 v-if="isProcessedVisible"
                 class="compare-table-row processed-tr"
