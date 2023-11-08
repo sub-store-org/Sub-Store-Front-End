@@ -1,6 +1,6 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="onclose">
+    <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="previewSource">
       <div class="sub-img-wrappers">
         <nut-avatar class="sub-item-customer-icon"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </div>
@@ -106,6 +106,7 @@ import { computed, createVNode, ref, toRaw, watch, watchEffect } from 'vue';
 import useV3Clipboard from 'vue-clipboard3';
 import { useI18n } from 'vue-i18n';
 import { useGlobalStore } from '@/store/global';
+import { useHostAPI } from '@/hooks/useHostAPI';
 const globalStore = useGlobalStore();
 
 const { isLeftRight, isSimpleMode } = storeToRefs(globalStore);
@@ -113,6 +114,7 @@ const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
+const { currentUrl: host } = useHostAPI();
 
 const { name } = defineProps<{
   name: string;
@@ -173,6 +175,30 @@ const sourceSub = computed(() => {
       return subsStore.getOneSub(name);
   }
 });
+
+const sourceUrl = computed(() => {
+  const urlTarget: string = artifact.value.platform !== null ? `?target=${artifact.value.platform}` : '';
+  return `${host.value}/download/${
+    artifact.value.type === 'subscription' ? '' : 'collection/'
+  }${artifact.value.source}${urlTarget}`;
+});
+
+const previewSource = () => {
+  Dialog({
+    title: t('tabBar.sub'),
+    content: sourceUrl.value,
+    onCancel: () => { },
+    onOk: () => {
+      window.open(sourceUrl.value);
+    },
+    onOpened: () => swipe.value.close(),
+    popClass: 'auto-dialog',
+    okText: t('editorPage.subConfig.basic.previewSwitch'),
+    closeOnPopstate: true,
+    lockScroll: true,
+  });
+  
+};
 
 const transferText = (type: string) => {
   const transType = () => {
