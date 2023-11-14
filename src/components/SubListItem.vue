@@ -243,6 +243,7 @@
     isIconColor,
     isSimpleReicon,
   } = storeToRefs(globalStore);
+
   const displayName =
     props[props.type].displayName || props[props.type]['display-name'];
 

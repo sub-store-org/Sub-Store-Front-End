@@ -23,6 +23,13 @@
     <div v-if="value.mode === 'script'">
       <div class="input-wrapper">
         <nut-textarea v-model="value.code" :placeholder="$t(`// This is example
+
+// backend version(>2.14.88):
+$server.name = 'prefix-' + $server.name
+$server.ecn = true
+$server['test-url'] = 'http://1.0.0.1/generate_204'
+
+// Script Operator
 function operator(proxies, targetPlatform) {
   return proxies.map( proxy => {
     // Change proxy information here
@@ -31,6 +38,7 @@ function operator(proxies, targetPlatform) {
   });
 }
 
+// Script Filter
 function filter(proxies, targetPlatform) {
   return proxies.map( proxy => {
     // Return true if the current proxy is selected
