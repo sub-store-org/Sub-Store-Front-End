@@ -26,12 +26,13 @@
 
   const allLength = ref(null);
 
-  // 处于 pwa 时将底部安全距离写入 global store
+  // 处于 pwa 且屏幕底部有小白条时将底部安全距离写入 global store
   type NavigatorExtend = Navigator & {
     standalone?: boolean;
   };
   const navigator: NavigatorExtend = window.navigator;
-  globalStore.setBottomSafeArea(navigator.standalone ? 18 : 0);
+  const hasHomeIndicator: boolean = window.matchMedia('(max-height: 812px) and (-webkit-touch-edge: pan-down)').matches;
+  globalStore.setBottomSafeArea(navigator.standalone && hasHomeIndicator ? 18 : 0);
 
   // 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
   const { handleUrlQuery } = useHostAPI();
