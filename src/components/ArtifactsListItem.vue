@@ -39,7 +39,9 @@
               <span v-if="!isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
-              <nut-switch class="my-switch" v-model="isSyncOpen" :loading="isSwitcherLoading" />
+              <span @click.stop>
+                <nut-switch class="my-switch" v-model="isSyncOpen" :loading="isSwitcherLoading" />
+              </span>
             </div>
           </div>
         </div>
