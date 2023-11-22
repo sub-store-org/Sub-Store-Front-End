@@ -153,9 +153,9 @@ export default {
         nodeActionsHelp: 'Node Actions Help',
         name: {
           label: 'Name',
-          placeholder: 'Enter a unique name for the subscription',
+          placeholder: 'Unique name(do not include / )',
           isEmpty: 'Name cannot be empty',
-          isExist: 'The name has been used',
+          isInvalid: 'The name has been used or is invalid',
         },
         displayName: {
           label: 'Display Name',

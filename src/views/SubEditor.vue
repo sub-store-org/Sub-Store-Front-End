@@ -18,7 +18,7 @@
             },
             {
               validator: nameValidator,
-              message: $t(`editorPage.subConfig.basic.name.isExist`),
+              message: $t(`editorPage.subConfig.basic.name.isInvalid`),
             },
           ]"
         >
@@ -495,10 +495,13 @@
     });
   };
 
-  // 唯一名称验证器
+  // 名称验证器
   const nameValidator = (val: string): Promise<boolean> => {
     return new Promise(resolve => {
       if (val === 'UNTITLED') resolve(false);
+      if (/\//.test(val)) {
+        resolve(false)
+      }
       const nameList = subsStore.subs.map(item => item.name);
       nameList.includes(val) && configName !== val
         ? resolve(false)
