@@ -182,7 +182,7 @@ const sourceUrl = computed(() => {
   const urlTarget: string = artifact.value.platform !== null ? `?target=${artifact.value.platform}` : '';
   return `${host.value}/download/${
     artifact.value.type === 'subscription' ? '' : 'collection/'
-  }${artifact.value.source}${urlTarget}`;
+  }${encodeURIComponent(artifact.value.source)}${urlTarget}`;
 });
 
 const previewSource = () => {

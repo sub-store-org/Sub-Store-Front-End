@@ -408,7 +408,7 @@
   };
 
   const onClickEdit = () => {
-    router.push(`/edit/${props.type}s/${name}`);
+    router.push(`/edit/${props.type}s/${encodeURIComponent(name)}`);
   };
 
   const onClickDelete = () => {
@@ -436,7 +436,7 @@
   const onClickCopyLink = async () => {
     const url = `${host.value}/download/${
       props.type === 'collection' ? 'collection/' : ''
-    }${name}`;
+    }${encodeURIComponent(name)}`;
 
     if (isSupported) {
       await copy(encodeURI(url));
