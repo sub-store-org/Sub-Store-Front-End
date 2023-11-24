@@ -45,7 +45,7 @@
   return false;
 }
 
-  globalStore.setBottomSafeArea((navigator.standalone && !isLegacyAspectRatio) ? 18: 0);
+  globalStore.setBottomSafeArea((navigator.standalone && !isLegacyAspectRatio()) ? 18 : 0);
 
   // 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
   const { handleUrlQuery } = useHostAPI();
