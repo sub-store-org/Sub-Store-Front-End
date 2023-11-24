@@ -12,7 +12,7 @@
         <a
           :href="`${host}/download/${
             type === 'sub' ? '' : 'collection/'
-          }${name}${platform.path !== null ? `?target=${platform.path}` : ''}`"
+          }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
           target="_blank"
         >
           <svg-icon
@@ -63,11 +63,11 @@
     const urlTarget: string = path !== null ? `?target=${path}` : '';
     const url = `${host.value}/download/${
       type === 'sub' ? '' : 'collection/'
-    }${name}${urlTarget}`;
+    }${encodeURIComponent(name)}${urlTarget}`;
     if (isSupported) {
-      await copy(encodeURI(url));
+      await copy(url);
     } else {
-      await copyFallback(encodeURI(url));
+      await copyFallback(url);
     }
     showNotify({ title: notify });
   };

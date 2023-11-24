@@ -153,9 +153,9 @@ export default {
         nodeActionsHelp: '节点操作帮助',
         name: {
           label: '名称',
-          placeholder: '请输入唯一的标识名称',
+          placeholder: '唯一的标识名称(请勿包含 / )',
           isEmpty: '订阅名称不能为空',
-          isExist: '订阅名称已存在',
+          isInvalid: '订阅名称已存在或不合法'
         },
         displayName: {
           label: '显示名称',

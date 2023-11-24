@@ -39,7 +39,9 @@
               <span v-if="!isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
-              <nut-switch class="my-switch" v-model="isSyncOpen" :loading="isSwitcherLoading" />
+              <span @click.stop>
+                <nut-switch class="my-switch" v-model="isSyncOpen" :loading="isSwitcherLoading" />
+              </span>
             </div>
           </div>
         </div>
@@ -180,7 +182,7 @@ const sourceUrl = computed(() => {
   const urlTarget: string = artifact.value.platform !== null ? `?target=${artifact.value.platform}` : '';
   return `${host.value}/download/${
     artifact.value.type === 'subscription' ? '' : 'collection/'
-  }${artifact.value.source}${urlTarget}`;
+  }${encodeURIComponent(artifact.value.source)}${urlTarget}`;
 });
 
 const previewSource = () => {
