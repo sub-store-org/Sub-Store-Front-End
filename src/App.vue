@@ -31,8 +31,21 @@
     standalone?: boolean;
   };
   const navigator: NavigatorExtend = window.navigator;
-  const hasHomeIndicator: boolean = window.matchMedia('(max-height: 812px) and (-webkit-touch-edge: pan-down)').matches;
-  globalStore.setBottomSafeArea(navigator.standalone && hasHomeIndicator ? 18 : 0);
+
+  // 判断是否为非全面屏设备
+  function isLegacyAspectRatio() {
+  const screenWidth = window.screen.width;
+  const screenHeight = window.screen.height;
+  const aspectRatio = screenWidth / screenHeight;
+  if ((screenWidth === 1334 && screenHeight === 750 && aspectRatio === 1.778) || // iPhone 6/7/8/SE2/SE3
+      (screenWidth === 1920 && screenHeight === 1080 && aspectRatio === 1.778) || // iPhone 6/7/8 Plus
+      (screenWidth === 1136 && screenHeight === 640 && aspectRatio === 1.778)) { // iPhone 5S
+    return true;
+  }
+  return false;
+}
+
+  globalStore.setBottomSafeArea((navigator.standalone && !isLegacyAspectRatio) ? 18: 0);
 
   // 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
   const { handleUrlQuery } = useHostAPI();
