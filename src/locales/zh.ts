@@ -358,10 +358,12 @@ export default {
       des: '同步功能配置 GitHub 用户名以及 Token 后可用',
       uploadTime: '上次上传',
       haveNotDownload: '暂无下载记录',
-      githubUser: '请输入 Github 用户名',
+      githubUser: '请输入 GitHub 用户名',
       gistToken: '请输入 GitHub 令牌',
-      noGithubUser: '未配置 Github 用户名',
+      defaultUserAgent: '请输入默认 User-Agent',
+      noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
+      noDefaultUserAgent: '未配置默认 User-Agent'
     },
     notify: {
       save: {
@@ -388,7 +390,7 @@ export default {
       save: '保存',
       clear: '清空',
     },
-    config: 'GitHub 配置',
+    config: '配置',
   },
   comparePage: {
     title: '即时预览',

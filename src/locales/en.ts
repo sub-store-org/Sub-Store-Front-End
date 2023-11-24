@@ -356,10 +356,12 @@ export default {
       des: 'Sync available after Gist configuration',
       uploadTime: 'Last upload time',
       haveNotDownload: 'Not download yet',
-      githubUser: 'Please input Github username',
+      githubUser: 'Please input GitHub username',
       gistToken: 'Please input Gist Token',
-      noGithubUser: 'Not set Github username',
+      defaultUserAgent: 'Please input Default User-Agent',
+      noGithubUser: 'Not set GitHub username',
       noGistToken: 'Not set Gist Token',
+      noDefaultUserAgent: 'Not set default user-agent'
     },
     btn: {
       download: 'Download',
@@ -386,7 +388,7 @@ export default {
         failed: 'Sort failed',
       }
     },
-    config: 'Gist Configuration',
+    config: 'Configuration',
   },
   comparePage: {
     title: 'Instant Preview',

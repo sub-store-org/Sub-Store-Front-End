@@ -106,6 +106,15 @@
             input-align="left"
             :left-icon="iconKey"
           />
+          <nut-input
+            class="input"
+            v-model="uaInput"
+            :disabled="!isEditing"
+            :placeholder="$t(`myPage.placeholder.defaultUserAgent`)"
+            type="text"
+            input-align="left"
+            :left-icon="iconUA"
+          />
         </div>
       </div>
 
@@ -158,6 +167,7 @@ import { useSettingsApi } from "@/api/settings";
 import avatar from "@/assets/icons/avatar.svg?url";
 import iconKey from "@/assets/icons/key-solid.png";
 import iconUser from "@/assets/icons/user-solid.png";
+import iconUA from "@/assets/icons/user-agent.svg";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
@@ -175,7 +185,7 @@ const { t } = useI18n();
 const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -198,6 +208,7 @@ const onClickAbout = () => {
 // 编辑 更新
 const userInput = ref("");
 const tokenInput = ref("");
+const uaInput = ref("");
 const isEditing = ref(false);
 const isEditLoading = ref(false);
 const isInit = ref(false);
@@ -208,11 +219,13 @@ const toggleEditMode = async () => {
     await settingsStore.editSettings({
       githubUser: userInput.value,
       gistToken: tokenInput.value,
+      defaultUserAgent: uaInput.value,
     });
     setDisplayInfo();
   } else {
     userInput.value = githubUser.value;
     tokenInput.value = gistToken.value;
+    uaInput.value = defaultUserAgent.value;
   }
   isEditLoading.value = false;
   isEditing.value = !isEditing.value;
@@ -229,6 +242,7 @@ const setDisplayInfo = () => {
   tokenInput.value = gistToken.value
     ? gistToken.value.slice(0, 6) + "************"
     : t(`myPage.placeholder.noGistToken`);
+    uaInput.value = defaultUserAgent.value || t(`myPage.placeholder.noDefaultUserAgent`);
 };
 
 // 同步 上传
@@ -284,13 +298,14 @@ const sync = async (query: "download" | "upload") => {
 };
 
 // store 刷新数据完成后 复制内容给 input 绑定
-const { isLoading: storeIsLoading } = storeToRefs(useGlobalStore());
+const { isLoading: storeIsLoading, env: backendEnv } = storeToRefs(useGlobalStore());
 watchEffect(() => {
   if (!storeIsLoading.value && !isInit.value) {
     setDisplayInfo();
     isInit.value = true;
   }
 });
+    
 </script>
 
 <style lang="scss" scoped>
