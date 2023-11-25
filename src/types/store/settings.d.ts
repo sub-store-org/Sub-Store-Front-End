@@ -10,6 +10,7 @@ interface SettingsBase {
 interface SettingsPostData {
   gistToken?: string;
   githubUser?: string;
+  defaultUserAgent?: string;
   theme?: {
     auto: boolean;
     name?: CustomTheme;
