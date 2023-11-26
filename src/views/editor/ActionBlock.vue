@@ -274,7 +274,18 @@ const pop = (type: string, tipsDes: string) => {
       .drag-handler {
         padding-left: 16px;
         color: var(--lowest-text-color);
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
       }
+
+      .drag-handler:active {
+          cursor: grabbing;
+          cursor: -moz-grabbing;
+          cursor: -webkit-grabbing;
+      }
+  
     }
   }
 }
@@ -345,9 +356,9 @@ const pop = (type: string, tipsDes: string) => {
   min-height: 20px;
 }
 
-.list-group-item {
-  cursor: move;
-}
+// .list-group-item {
+//   cursor: move;
+// }
 
 .list-group-item li {
   cursor: pointer;
