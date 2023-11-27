@@ -32,8 +32,13 @@
           </li>
         </ul>
       </nut-tabpane>
+      <nut-tabpane title="JSON">
+        <div class="input-wrapper">
+          <nut-textarea :model-value="JSON.stringify(nodeInfo, null, 2)" :rows="15" readonly/>
+        </div>
+      </nut-tabpane>
     </nut-tabs>
-    <img :src="qrcode" alt="QR Code" class="qrcode" />
+    <img v-if="currentTab < 1" :src="qrcode" alt="QR Code" class="qrcode" />
   </div>
   <nut-overlay
     v-model:visible="overlayVisible"
@@ -117,6 +122,23 @@
     li:not(:first-child) {
       margin-bottom: 8px;
       color: var(--comment-text-color);
+    }
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+
+    >view.nut-textarea {
+      background: transparent;
+      padding: 8px 12px;
+      // border-bottom: 1px solid;
+      color: var(--second-text-color);
+      border-color: var(--lowest-text-color);
+
+      :deep(textarea) {
+        color: inherit;
+      }
     }
   }
 
