@@ -12,7 +12,7 @@
             <template v-slot:title>
               <span
                 >{{ $t(`aboutUsPage.projectInfo.fe`) }}
-                <b class="bclass">v2.14.13</b></span
+                <b class="bclass">v2.14.14</b></span
               >
             </template>
           </nut-cell>

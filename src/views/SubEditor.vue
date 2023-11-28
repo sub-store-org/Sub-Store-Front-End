@@ -512,7 +512,12 @@
   // url 格式验证器
   const urlValidator = (val: string): Promise<boolean> => {
     return new Promise(resolve => {
-      resolve(/^(http|https):\/\/\S+$/.test(val));
+      if (/\n/.test(val)) {
+        resolve(val.split(/[\r\n]+/).map(i => i.trim()).filter(i => i.length).every(i => /^(http|https):\/\/\S+$/.test(i)))
+      } else {
+        resolve(/^(http|https):\/\/\S+$/.test(val));  
+      }
+      
     });
   };
 
