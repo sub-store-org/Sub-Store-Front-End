@@ -165,6 +165,10 @@ export default {
           label: 'Source',
           remote: 'Remote URL',
           local: 'Local',
+          mergeSources: 'Merge Sources',
+          noMerge: 'No Merge',
+          localFirst: 'Local Fist',
+          remoteFirst: 'Remote First',
         },
         url: {
           label: 'URL',

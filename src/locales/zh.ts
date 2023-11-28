@@ -165,6 +165,10 @@ export default {
           label: '来源',
           remote: '远程订阅',
           local: '本地订阅',
+          mergeSources: '合并来源',
+          noMerge: '不合并',
+          localFirst: '本地优先',
+          remoteFirst: '远程优先',
         },
         url: {
           label: '链接',

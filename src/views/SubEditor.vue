@@ -130,6 +130,25 @@
               type="text"
             />
           </nut-form-item>
+
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
+            prop="mergeSources"
+          >
+            <div class="radio-wrapper">
+              <nut-radiogroup direction="horizontal" v-model="form.mergeSources">
+                <nut-radio shape="button" label=""
+                  >{{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="localFirst"
+                  >{{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="remoteFirst"
+                  >{{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
+                </nut-radio>
+              </nut-radiogroup>
+            </div>
+          </nut-form-item>
         </template>
         <template v-else-if="editType === 'collections'">
           <nut-form-item
@@ -272,6 +291,7 @@
   const form = reactive<any>({
     name: '',
     displayName: '',
+    mergeSources: '',
     icon: '',
     process: [
       {
@@ -306,6 +326,7 @@
 
     const sourceData: any = toRaw(sub.value) || toRaw(collection.value);
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
+    form.mergeSources = sourceData.mergeSources;
     form.name = sourceData.name;
     form.displayName = sourceData.displayName || sourceData['display-name'];
     form.icon = sourceData.icon;
