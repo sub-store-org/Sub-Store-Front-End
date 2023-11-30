@@ -82,6 +82,20 @@
             type="text"
             input-align="left"
           />
+          <nut-input
+            v-model="addForm.bearer_token"
+            class="input"
+            :placeholder="$t(`apiSettingPage.addApi.placeholder.bearer_token`)"
+            type="text"
+            input-align="left"
+          />
+          <nut-input
+            v-model="addForm.d_token"
+            class="input"
+            :placeholder="$t(`apiSettingPage.addApi.placeholder.d_token`)"
+            type="text"
+            input-align="left"
+          />
         </div>
         <nut-button
           class="save-btn"
@@ -123,6 +137,8 @@ const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi }
 const addForm = ref<HostAPI>({
   name: '',
   url: '',
+  bearer_token: '',
+  d_token: '',
 });
 
 const checkingAPI = ref(false);
@@ -134,6 +150,8 @@ const addApiHandler = async () => {
       && (addForm.value = {
         name: '',
         url: '',
+        bearer_token: '',
+        d_token: '',
       });
   checkingAPI.value = false;
 };

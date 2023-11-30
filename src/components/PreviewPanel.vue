@@ -12,7 +12,7 @@
         <a
           :href="`${host}/download/${
             type === 'sub' ? '' : 'collection/'
-          }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
+          }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}&d_token=${getHostAPIDToken()}` : `?d_token=${getHostAPIDToken()}`}`"
           target="_blank"
         >
           <svg-icon
@@ -47,7 +47,7 @@
   import useV3Clipboard from 'vue-clipboard3';
   import { useAppNotifyStore } from '@/store/appNotify';
   import SvgIcon from '@/components/SvgIcon.vue';
-  import { useHostAPI } from '@/hooks/useHostAPI';
+  import { useHostAPI, getHostAPIDToken } from '@/hooks/useHostAPI';
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
@@ -60,7 +60,7 @@
 
   const { currentUrl: host } = useHostAPI();
   const targetCopy = async (path: string) => {
-    const urlTarget: string = path !== null ? `?target=${path}` : '';
+    const urlTarget: string = path !== null ? `?target=${path}&d_token=${getHostAPIDToken()}` : `?d_token=${getHostAPIDToken()}`;
     const url = `${host.value}/download/${
       type === 'sub' ? '' : 'collection/'
     }${encodeURIComponent(name)}${urlTarget}`;

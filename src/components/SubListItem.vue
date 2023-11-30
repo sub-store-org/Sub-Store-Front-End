@@ -210,7 +210,7 @@
   import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
-  import { useHostAPI } from '@/hooks/useHostAPI';
+  import { useHostAPI, getHostAPIDToken } from '@/hooks/useHostAPI';
 
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
@@ -436,7 +436,7 @@
   const onClickCopyLink = async () => {
     const url = `${host.value}/download/${
       props.type === 'collection' ? 'collection/' : ''
-    }${encodeURIComponent(name)}`;
+    }${encodeURIComponent(name)}?d_token=${getHostAPIDToken()}`;
 
     if (isSupported) {
       await copy(encodeURI(url));

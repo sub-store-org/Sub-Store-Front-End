@@ -1,6 +1,6 @@
 import { useAppNotifyStore } from '@/store/appNotify';
 import axios, { AxiosError, AxiosPromise, AxiosResponse } from 'axios';
-import { getHostAPIUrl } from '@/hooks/useHostAPI';
+import { getHostAPIUrl, getHostAPIBearerToken } from '@/hooks/useHostAPI';
 
 let appNotifyStore = null;
 
@@ -13,7 +13,10 @@ const notifyConfig: { type: 'danger'; duration: number } = {
 const service = axios.create({
   baseURL: getHostAPIUrl(),
   timeout: 50000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: Object.assign(
+    { 'Content-Type': 'application/json' },
+    (getHostAPIBearerToken() !== '' ? { Authorization: 'Bearer ' + getHostAPIBearerToken() } : {})
+  ),
 });
 
 service.interceptors.response.use(

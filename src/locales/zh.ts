@@ -527,6 +527,8 @@ export default {
       placeholder: {
         name: '请输入后端名称，必须唯一',
         url: '请输入后端地址',
+        bearer_token: '前后端通信的 Token',
+        d_token: '获取订阅的 Token',
       },
       btn: '添加',
     },
