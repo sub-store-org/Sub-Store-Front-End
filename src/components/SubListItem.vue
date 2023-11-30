@@ -439,9 +439,9 @@
     }${encodeURIComponent(name)}`;
 
     if (isSupported) {
-      await copy(encodeURI(url));
+      await copy(url);
     } else {
-      await copyFallback(encodeURI(url));
+      await copyFallback(url);
     }
     showNotify({ title: t('subPage.copyNotify.succeed') });
   };
