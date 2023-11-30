@@ -161,7 +161,7 @@ export const useHostAPI = () => {
       return setCurrent(isExist.name);
     }
 
-    const bearer_token = query.get('bearer_token') ?? '';
+    const bearer_token = (query.get('bearer_token') || query.get('token')) ?? '';
     const d_token = query.get('d_token') ?? '';
     const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
     await addApi({ name, url, bearer_token, d_token });
