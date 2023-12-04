@@ -1,8 +1,33 @@
 <template>
   <div class="my-page-wrapper">
     <div class="profile-block">
+      <div class="radio-wrapper" >
+        <nut-radiogroup v-model="storageType" direction="horizontal">
+          <nut-radio shape="button" label="gist">{{ $t(`myPage.storage.gist.label`) }}</nut-radio>
+          <nut-radio shape="button" label="manual">{{ $t(`myPage.storage.manual.label`) }}</nut-radio>
+        </nut-radiogroup>
+      </div>
+    
       <div class="info">
-        <div class="avatar-wrapper">
+        <div v-if="storageType === 'manual'" class="avatar-wrapper">
+          <nut-avatar
+            :class="{ 'avatar-normal': !githubUser }"
+            size="72"
+            :icon="displayAvatar"
+          />
+          <div class="name">
+            <p class="title">
+              {{ $t(`myPage.storage.manual.label`) }}
+            </p>
+            <p class="des">
+              <span class="des-line1">{{ $t(`myPage.storage.manual.desc`) }}</span>
+              <!-- <span class="des-line2" v-if="desText.length === 2">
+                {{ desText[1] }}
+              </span> -->
+            </p>
+          </div>
+        </div>
+        <div v-else class="avatar-wrapper">
           <nut-avatar
             :class="{ 'avatar-normal': !githubUser }"
             size="72"
@@ -20,7 +45,38 @@
             </p>
           </div>
         </div>
-        <div class="actions">
+        <div v-if="storageType === 'manual'" class="actions">
+          <!-- <input type="file" @change="uploadFile" /> -->
+          <input type="file" ref="fileInput" accept="application/json,text/json,.json" @change="fileChange" style="display: none">
+          <nut-button
+            class="upload-btn"
+            plain
+            type="primary"
+            :disabled="restoreIsLoading"
+            size="small"
+            :loading="restoreIsLoading"
+            @click="upload()"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-cloud-arrow-up"
+              v-if="!uploadIsLoading"
+            />
+            {{ $t(`myPage.storage.manual.restore`) }}
+          </nut-button>
+          <a :href="host + '/api/storage'" target="_blank">
+            <nut-button
+              class="download-btn"
+              type="primary"
+              size="small"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-cloud-arrow-down"
+              />
+              {{ $t(`myPage.storage.manual.backup`) }}
+            </nut-button>
+          </a>
+        </div>
+        <div v-else class="actions">
           <nut-button
             class="upload-btn"
             plain
@@ -89,6 +145,7 @@
         </div>
         <div class="config-input-wrapper">
           <nut-input
+            v-if="storageType !== 'manual'"
             class="input"
             v-model="userInput"
             :disabled="!isEditing"
@@ -98,6 +155,7 @@
             :left-icon="iconUser"
           />
           <nut-input
+            v-if="storageType !== 'manual'"
             class="input"
             v-model="tokenInput"
             :disabled="!isEditing"
@@ -178,12 +236,14 @@ import { computed, ref, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
+import { useHostAPI } from '@/hooks/useHostAPI';
 
 const { t } = useI18n();
 
 // const route = useRoute();
 const router = useRouter();
 const { showNotify } = useAppNotifyStore();
+const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
 const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent } =
   storeToRefs(settingsStore);
@@ -212,6 +272,8 @@ const uaInput = ref("");
 const isEditing = ref(false);
 const isEditLoading = ref(false);
 const isInit = ref(false);
+const storageType = ref('gist');
+const fileInput = ref(null);
 
 const toggleEditMode = async () => {
   isEditLoading.value = true;
@@ -248,6 +310,7 @@ const setDisplayInfo = () => {
 // 同步 上传
 const downloadIsLoading = ref(false);
 const uploadIsLoading = ref(false);
+const restoreIsLoading = ref(false);
 const syncIsDisabled = computed(() => {
   return (
     uploadIsLoading.value ||
@@ -265,6 +328,48 @@ const desText = computed(() => {
     return [t(`myPage.placeholder.uploadTime`), butifyDate(syncTime.value)];
   }
 });
+const fileChange = async (event) => {
+  const file = event.target.files[0];
+  if(!file) return
+  try {
+    restoreIsLoading.value = true;
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async () => {
+      
+      const res = await useSettingsApi().restoreSettings({ content: String(reader.result) });
+      if (res?.data?.status === "success") {
+        await initStores(false, true, true);
+        showNotify({
+          type: "success",
+          title: t(`myPage.notify.restore.succeed`),
+        });
+      } else {
+        throw new Error('restore failed')
+      }
+    }
+
+    reader.onerror = e => {
+      throw e
+    }
+    
+  } catch (e) {
+    showNotify({
+      type: "danger",
+      title: t(`myPage.notify.restore.failed`),
+    });
+    console.error(e);
+  } finally {
+    restoreIsLoading.value = false;
+  }
+};
+const upload = async() => {
+  try {
+    fileInput.value.click()
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 const sync = async (query: "download" | "upload") => {
   switch (query) {
@@ -319,6 +424,17 @@ watchEffect(() => {
 
   .profile-block {
     width: 100%;
+
+    .radio-wrapper {
+      display: flex;
+      justify-content: end;
+
+      :deep(.nut-radio__button.false) {
+        background: var(--divider-color);
+        border-color: transparent;
+        color: var(--second-text-color);
+      }
+    }
 
     .config-card {
       margin-top: 20px;
@@ -385,7 +501,7 @@ watchEffect(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 0;
+      padding: 12px 0 0 0;
 
       .avatar-wrapper {
         display: flex;

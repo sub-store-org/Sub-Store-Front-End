@@ -374,6 +374,10 @@ export default {
         succeed: '保存成功',
         failed: '保存失败',
       },
+      restore: {
+        succeed: '恢复成功',
+        failed: '恢复失败',
+      },
       download: {
         succeed: '下载成功',
         failed: '下载失败',
@@ -395,6 +399,17 @@ export default {
       clear: '清空',
     },
     config: '配置',
+    storage: {
+      gist: {
+        label: 'Gist 同步'
+      },
+      manual: {
+        label: '手动管理',
+        desc: '为防止意外 请先备份数据 再进行恢复操作',
+        backup: '备份',
+        restore: '恢复',
+      }
+    }
   },
   comparePage: {
     title: '即时预览',

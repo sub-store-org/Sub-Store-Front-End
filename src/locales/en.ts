@@ -380,6 +380,10 @@ export default {
         succeed: 'Save succeed',
         failed: 'Save failed',
       },
+      restore: {
+        succeed: 'Restore succeed',
+        failed: 'Restore failed',
+      },
       download: {
         succeed: 'Download succeed',
         failed: 'Download failed',
@@ -393,6 +397,17 @@ export default {
       }
     },
     config: 'Configuration',
+    storage: {
+      gist: {
+        label: 'Gist'
+      },
+      manual: {
+        label: 'Manual',
+        desc: 'To prevent accidents, backup your data before restoring.',
+        backup: 'Backup',
+        restore: 'Restore',
+      }
+    }
   },
   comparePage: {
     title: 'Instant Preview',
