@@ -100,7 +100,9 @@
     </nut-cell-group>
 
     <p class="desc-text">
-      {{ $t(`apiSettingPage.apiSettingDesc`) }}
+      <p>{{ $t(`apiSettingPage.apiSettingDesc0`) }}</p>
+      <p>{{ $t(`apiSettingPage.apiSettingDesc1`) }}</p>
+      {{ $t(`apiSettingPage.apiSettingDesc2`) }}
       <a
         href="https://xream.notion.site/Node-js-render-fork-3334b3943c4f4671b25a24908613e63d"
         target="_blank"
