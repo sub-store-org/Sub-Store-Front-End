@@ -32,6 +32,7 @@ jobs:
           pnpm build
       - name: zip
         run: |
+          tar -czvf dist.tar.gz dist
           zip -r dist.zip dist
       - id: tag
         name: Generate release tag
