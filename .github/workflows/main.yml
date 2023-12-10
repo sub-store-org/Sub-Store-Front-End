@@ -47,3 +47,4 @@ jobs:
           generate_release_notes: true
           files: |
             dist.zip
+            dist.tar.gz
