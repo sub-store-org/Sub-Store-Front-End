@@ -42,4 +42,4 @@ jobs:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           generate_release_notes: true
           files: |
-            dist
+            dist/*
