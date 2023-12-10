@@ -1,5 +1,6 @@
 import vue from '@vitejs/plugin-vue';
 import * as path from 'path';
+import fs from 'fs';
 import { ConfigEnv, defineConfig, loadEnv } from 'vite';
 import { createStyleImportPlugin } from 'vite-plugin-style-import';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
@@ -172,6 +173,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       __VUE_I18N_FULL_INSTALL__: true,
       __VUE_I18N_LEGACY_API__: false,
       __INTLIFY_PROD_DEVTOOLS__: false,
+      'import.meta.env.PACKAGE_VERSION': JSON.stringify(JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf-8')).version.trim()),
     },
   };
 });

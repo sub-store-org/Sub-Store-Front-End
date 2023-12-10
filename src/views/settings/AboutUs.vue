@@ -12,7 +12,7 @@
             <template v-slot:title>
               <span
                 >{{ $t(`aboutUsPage.projectInfo.fe`) }}
-                <b class="bclass">v2.14.16</b></span
+                <b class="bclass">v{{ version }}</b></span
               >
             </template>
           </nut-cell>
@@ -129,6 +129,8 @@
 
   const changelogs = useChangelogs();
   const active = ref(changelogs[0].date.format('YYYY-MM-DD'));
+
+  const version = import.meta.env.PACKAGE_VERSION
 </script>
 
 <style lang="scss" scoped>
