@@ -527,7 +527,7 @@ export default {
     apiSettingTitle: 'Backend Setting',
     apiSettingDesc0: `1. When the backend server address is https://api.com, an attempt is made to request https://api.com/api/utils/env to verify backend availability. When the backend server address cannot be added, try accessing this address first.`,
     apiSettingDesc1: `2. HTTPS front-end cannot request non-local HTTP backend. Please configure a reverse proxy or host your own HTTP front-end on your LAN.`,
-    apiSettingDesc2: `Add the backend server address, such as the backend service built on VPS or Render. You can refer to XiaoYi's tutorial on setting up a backend: `,
+    apiSettingDesc2: `Add the backend server address, such as the backend service built on server/NAS/Android/cloud platform. You can refer to XiaoYi's tutorial on setting up a backend: `,
     currentApi: {
       title: 'Current Backend',
     },
