@@ -56,6 +56,7 @@ export default {
   notFoundPage: {
     title: '啊哦～ URL 错误！',
     desc: '回首页',
+    backendDesc: '如果你看到这个 可能是因为浏览器前端路由拦截的问题 可以强制刷新查看或直接使用该链接 不影响此链接的使用',
   },
   // 订阅管理页
   subPage: {

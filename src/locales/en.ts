@@ -56,6 +56,7 @@ export default {
   notFoundPage: {
     title: 'Oops! URL Error!',
     desc: 'Back to Home Page',
+    backendDesc: 'If you are seeing this, it is probably due to a routing interception issue on the front end of your browser. You can force a refresh to see it or use the link directly without affecting the use of this link.',
   },
   // subscription management page
   subPage: {
