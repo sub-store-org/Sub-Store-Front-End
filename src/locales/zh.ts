@@ -188,6 +188,9 @@ export default {
           label: '图标链接',
           placeholder: '填入图标链接，不要使用 jpg',
         },
+        ignoreFailedRemoteSub: {
+          label: '忽略失败的远程订阅'
+        },
         ua: {
           label: 'User-Agent',
           placeholder: '下载订阅使用的 UA，不填使用默认',

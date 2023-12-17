@@ -188,6 +188,9 @@ export default {
           label: 'Icon',
           placeholder: 'The URL of the icon',
         },
+        ignoreFailedRemoteSub: {
+          label: 'Ignore failed remote subscription(s)'
+        },
         ua: {
           label: 'User-Agent',
           placeholder:

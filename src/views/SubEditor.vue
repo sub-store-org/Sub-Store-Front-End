@@ -150,6 +150,7 @@
             </div>
           </nut-form-item>
         </template>
+
         <template v-else-if="editType === 'collections'">
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.subscriptions.label`)"
@@ -181,6 +182,16 @@
             </nut-checkboxgroup>
           </nut-form-item>
         </template>
+
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.label`)"
+          prop="ignoreFailedRemoteSub"
+          class="ignore-failed-wrapper"
+        >
+          <div class="swtich-wrapper">
+            <nut-switch v-model="form.ignoreFailedRemoteSub"/>
+          </div>
+        </nut-form-item>
       </nut-form>
     </div>
 
@@ -292,6 +303,7 @@
     name: '',
     displayName: '',
     mergeSources: '',
+    ignoreFailedRemoteSub: false,
     icon: '',
     process: [
       {
@@ -327,6 +339,7 @@
     const sourceData: any = toRaw(sub.value) || toRaw(collection.value);
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
     form.mergeSources = sourceData.mergeSources;
+    form.ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
     form.name = sourceData.name;
     form.displayName = sourceData.displayName || sourceData['display-name'];
     form.icon = sourceData.icon;
@@ -605,6 +618,18 @@
 
     .submit-btn {
       width: 62%;
+    }
+  }
+
+  .ignore-failed-wrapper {
+    flex-direction: row;
+    justify-content: space-between;
+    :deep(.nut-form-item__label) {
+      width: auto;
+    }
+    .swtich-wrapper {
+      display: flex;
+      justify-content: end;
     }
   }
 
