@@ -318,7 +318,7 @@
     });
     const nodeData = toRaw(val);
     const res = await useSubsApi().getSubInfo(nodeData);
-    if (res.data.status === 'success') {
+    if (res?.data?.status === 'success') {
       ipApi.value = res.data.data;
       nodeInfo.value = nodeData;
       nodeInfoIsVisible.value = true;

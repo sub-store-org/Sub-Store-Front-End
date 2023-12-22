@@ -96,7 +96,7 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     async setEnv() {
       const res = await envApi.getEnv();
-      if (res.data.status === 'success') {
+      if (res?.data?.status === 'success') {
         this.env = res.data.data;
       }
     },

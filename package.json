@@ -1,6 +1,6 @@
 {
   "name": "sub-store-front-end",
-  "version": "2.14.22",
+  "version": "2.14.23",
   "private": true,
   "scripts": {
     "dev": "vite --host",
@@ -30,6 +30,7 @@
     "vue-clipboard3": "^2.0.0",
     "vue-i18n": "^9.2.0-beta.36",
     "vue-router": "^4.0.16",
+    "vue3-toastify": "^0.2.0",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

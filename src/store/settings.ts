@@ -48,7 +48,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         if (ressss) {
           console.log("启动时自动下载 Gist 成功");
             const syncRes = await settingsApi.syncSettings('download');
-            if (syncRes.data.status === 'success') {
+            if (syncRes?.data?.status === 'success') {
               console.log('自动下载 Gist 成功');
               const subsStore = useSubsStore();
               await subsStore.fetchSubsData();
@@ -85,10 +85,10 @@ export const useSettingsStore = defineStore('settingsStore', {
         let tfvalue = res.data.autoDownloadGistSync;
         this.autoDownloadGistSync = tfvalue;
         // const syncRes = await settingsApi.syncSettings('upload');
-        // if (syncRes.data.status === 'success') {
+        // if (syncRes?.data?.status === 'success') {
         //   // console.log('上载')
         //   // const syncRes = await settingsApi.syncSettings('download');
-        //   // if (syncRes.data.status === 'success') {
+        //   // if (syncRes?.data?.status === 'success') {
         //   //   console.log('下载')
         //   //   showNotify({ type: 'primary', duration:500, title: t(`同步成功 状态：${tfvalue}`) });
         //   //   const subsStore = useSubsStore();

@@ -89,7 +89,7 @@ export const useHostAPI = () => {
         const res = await axios.get<{ status: 'success' | 'failed' }>(
           url + '/api/utils/env'
         );
-        if (res && res.data && res.data.status === 'success') {
+        if (res?.data?.status === 'success') {
           apis.value.push({ name, url });
           return true;
         } else {

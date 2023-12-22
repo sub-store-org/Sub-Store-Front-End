@@ -332,12 +332,12 @@
   };
 
   const compareSub = async () => {
-    Toast.loading('生成节点对比中...', { id: 'compare', cover: true });
+    Toast.loading('生成节点对比中...', { id: 'compare', cover: true, duration: 1500 });
     const res = await useSubsApi().compareSub(
       props.type,
       props.sub ?? props.collection
     );
-    if (res.data.status === 'success') {
+    if (res?.data?.status === 'success') {
       compareData.value = res.data.data;
       compareTableIsVisible.value = true;
       Toast.hide('compare');

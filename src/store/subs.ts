@@ -45,7 +45,7 @@ export const useSubsStore = defineStore('subsStore', {
       } else if (type === 'collections') {
         res = await subsApi.getOne('collection', name);
       }
-      if (res.data.status === 'success') {
+      if (res?.data?.status === 'success') {
         const index = this[type].findIndex(item => item.name === name);
         this[type][index] = res.data.data;
       }

@@ -145,7 +145,7 @@ router.beforeResolve(async to => {
       .then(async res => {
         const envNow = res;
         const storeEnv = toRaw(globalStore.env);
-        if (envNow.data.status === 'success') {
+        if (envNow?.data?.status === 'success') {
           const backend = envNow.data.data.backend;
           const version = envNow.data.data.version;
           const hasNewVersion = envNow.data.data.hasNewVersion;

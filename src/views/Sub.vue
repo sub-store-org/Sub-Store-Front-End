@@ -263,7 +263,7 @@ const changeSort = async (
       );
     }
     // console.log(JSON.stringify(sortDataRes))
-    if (sortDataRes.data.status !== "success") {
+    if (sortDataRes?.data?.status !== "success") {
       sortFailed.value = true;
       showNotify({
         title: t("notify.sortsub.failed"),

@@ -434,7 +434,7 @@
         return;
       }
 
-      Toast.loading('生成节点对比中...', { id: 'compare', cover: true });
+      Toast.loading('生成节点对比中...', { id: 'compare', cover: true, duration: 1500 });
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
@@ -450,7 +450,7 @@
 
       const type = editType === 'collections' ? 'collection' : 'sub';
       const res = await subsApi.compareSub(type, data);
-      if (res.data.status === 'success') {
+      if (res?.data?.status === 'success') {
         compareData.value = res.data.data;
         compareTableIsVisible.value = true;
         Toast.hide('compare');
@@ -482,7 +482,7 @@
         });
         return;
       }
-      Toast.loading('拉取订阅中...', { id: 'submits', cover: true });
+      Toast.loading('拉取订阅中...', { id: 'submits', cover: true, duration: 1500 });
       // 如果验证成功，开始保存/修改
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data['display-name'] = data.displayName;

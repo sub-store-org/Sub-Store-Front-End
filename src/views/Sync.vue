@@ -253,7 +253,7 @@ const changeArtifacts = async () => {
         JSON.parse(JSON.stringify(toRaw(artifacts.value)))
       );
     }
-    if (sortArtifacts.data.status !== "success") {
+    if (sortArtifacts?.data?.status !== "success") {
       sortFailed.value = true;
       showNotify({
         title: t("notify.sortsub.failed"),
