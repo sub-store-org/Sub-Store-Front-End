@@ -17,11 +17,11 @@ export const useAppNotifyStore = defineStore('appNotify', {
       this.title = title;
       this.content = content || '';
       this.type = type || 'primary';
-      this.duration = duration || 800;
+      this.duration = duration || 2500;
       this.isVisible = true;
       setTimeout(() => {
         this.setVisible(false);
-      }, 1000); // 防止重复通知 持续时间过长
+      }, this.duration); // 防止重复通知 持续时间过长
     },
     setVisible(isVisible: boolean) {
       this.isVisible = isVisible;
