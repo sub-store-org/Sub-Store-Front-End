@@ -21,6 +21,9 @@
           v-model="dragData"
           :force-fallback="true"
           :scroll="true"
+          v-bind="{
+            chosenClass: 'chosentag',
+          }"
         >
         <template #item="{ element, index }">
             <nut-tag
@@ -227,6 +230,13 @@
     user-select: none;
     margin-bottom: 12px;
     max-width: 100%;
+    cursor: pointer;
+
+    &:active {
+      cursor: grabbing;
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
+    }
 
     .tag-item {
       max-width: 100%;
@@ -245,6 +255,11 @@
         -webkit-box-orient: vertical;
       }
     }
+  }
+
+  .chosentag {
+    box-shadow: 0 0 5px var(--primary-color);
+    overflow: hidden;
   }
 
   .input-wrapper {

@@ -436,11 +436,6 @@ const handleDragEnd = (dataValue: any) => {
   // overflow: hidden;
 }
 
-.drag-handler {
-  padding-left: 16px;
-  color: var(--lowest-text-color);
-}
-
 .chosensub {
   box-shadow: 0 0 10px var(--primary-color);
   border-radius: var(--item-card-radios);
