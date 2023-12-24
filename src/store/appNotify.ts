@@ -31,7 +31,6 @@ export const useAppNotifyStore = defineStore('appNotify', {
       // primary，success ，danger，warning
       // info, success, warning, error, default
       const types = {primary: 'INFO', success: 'SUCCESS', danger: 'ERROR', warning: 'WARNING'};
-      console.log(`html`, html)
       toast(html, {
         theme: 'colored',
         type: toast.TYPE[types[type] || 'DEFAULT'],

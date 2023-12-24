@@ -16,19 +16,28 @@
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
     </p>
     <div class="tag-wrapper">
-      <nut-tag
-        @click="onClickTag"
-        class="tag-item"
-        v-for="(content, index) in value"
-        closeable
-        @close="deleteRegexItem(index)"
-      >
-        <span>{{
-          type === 'Regex Rename Operator'
-            ? `${content.expr}  ⇒  ${content.now}`
-            : content
-        }}</span>
-      </nut-tag>
+      <draggable
+          item-key="id"
+          v-model="dragData"
+          :force-fallback="true"
+          :scroll="true"
+        >
+        <template #item="{ element, index }">
+            <nut-tag
+              @click="onClickTag"
+              class="tag-item"
+              closeable
+              @close="deleteRegexItem(index)"
+            >
+              <span>{{
+                type === 'Regex Rename Operator'
+                  ? `${element.value.expr}  ⇒  ${element.value.now}`
+                  : element.value
+              }}
+              </span>
+            </nut-tag>
+          </template>
+      </draggable>
     </div>
     <div class="input-wrapper">
       <nut-input
@@ -54,10 +63,11 @@
 
 <script lang="ts" setup>
   import { Dialog } from '@nutui/nutui';
-  import { inject, onMounted, ref, watch } from 'vue';
+  import { inject, onMounted, ref, watch, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { onBeforeRouteLeave, useRouter } from 'vue-router';
-
+  import draggable from "vuedraggable";
+  
   const { t } = useI18n();
   const router = useRouter();
   const { type, id } = defineProps<{
@@ -78,6 +88,19 @@
 
   const mode = ref();
   const value = ref();
+  const dragData = computed({
+    get() {
+      return Array.isArray(value.value) ? value.value.map((item, index) => ({
+        id: index + JSON.stringify(item),
+        value: item,
+      })) : []
+    },
+    set(val) {
+      val.map((item, index) => {
+        value.value[index] = item.value
+      })
+    }
+  })
 
   const onClickTag = el => {
     const index = [...el.currentTarget.parentElement.children].indexOf(
@@ -208,6 +231,7 @@
 
       span {
         max-width: 95%;
+        min-width: 20px;
         display: -webkit-box;
         white-space: normal !important;
         overflow: hidden;
