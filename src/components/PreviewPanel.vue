@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+  import surfboard from '@/assets/icons/surfboard.png';
   import surge from '@/assets/icons/surge.png';
   import clash from '@/assets/icons/clash.png';
   import quanx from '@/assets/icons/quanx.png';
@@ -83,7 +84,7 @@
       icon: stash,
     },
     {
-      name: 'Clash.Meta',
+      name: 'Clash.Meta(mihomo)',
       path: 'ClashMeta',
       icon: clashmeta,
     },
@@ -93,24 +94,30 @@
       icon: clash,
     },
     {
-      name: 'Quantumult X',
-      path: 'QX',
-      icon: quanx,
+      name: 'Surfboard',
+      path: 'Surfboard',
+      icon: surfboard,
     },
     {
       name: 'Surge',
       path: 'Surge',
       icon: surge,
     },
+
     {
       name: 'Loon',
       path: 'Loon',
       icon: loon,
     },
     {
-      name: 'ShadowRocket',
+      name: 'Shadowrocket',
       path: 'ShadowRocket',
       icon: shadowrocket,
+    },
+    {
+      name: 'Quantumult X',
+      path: 'QX',
+      icon: quanx,
     },
     {
       name: 'V2Ray',
@@ -144,7 +151,7 @@
 
       .infos {
         flex: 1;
-        padding: 12px 0;
+        padding: 8px 0;
         display: flex;
         align-items: center;
         gap: 4px;
