@@ -367,9 +367,11 @@ export default {
       githubUser: 'Please input GitHub username',
       gistToken: 'Please input Gist Token',
       defaultUserAgent: 'Please input Default User-Agent',
+      defaultTimeout: 'Please input Default Timeout (in milliseconds)',
       noGithubUser: 'Not set GitHub username',
       noGistToken: 'Not set Gist Token',
-      noDefaultUserAgent: 'Not set default user-agent'
+      noDefaultUserAgent: 'Not set default user-agent',
+      noDefaultTimeout: 'Not set default timeout'
     },
     btn: {
       download: 'Download',

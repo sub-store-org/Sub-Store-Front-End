@@ -15,6 +15,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       gistToken: '',
       githubUser: '',
       defaultUserAgent: '',
+      defaultTimeout: '',
       syncTime: 0,
       theme: {
         auto: true,
@@ -36,6 +37,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.gistToken = res.data.gistToken || '';
         this.githubUser = res.data.githubUser || '';
         this.defaultUserAgent = res.data.defaultUserAgent || '';
+        this.defaultTimeout = res.data.defaultTimeout || '';
         this.syncTime = res.data.syncTime || 0;
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
@@ -64,6 +66,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.gistToken = res.data.gistToken || '';
         this.githubUser = res.data.githubUser || '';
         this.defaultUserAgent = res.data.defaultUserAgent || '';
+        this.defaultTimeout = res.data.defaultTimeout || '';
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
         showNotify({ type: 'success', title: t(`myPage.notify.save.succeed`) });

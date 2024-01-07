@@ -11,6 +11,7 @@ interface SettingsPostData {
   gistToken?: string;
   githubUser?: string;
   defaultUserAgent?: string;
+  defaultTimeout?: string;
   theme?: {
     auto: boolean;
     name?: CustomTheme;

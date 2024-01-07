@@ -369,9 +369,11 @@ export default {
       githubUser: '请输入 GitHub 用户名',
       gistToken: '请输入 GitHub 令牌',
       defaultUserAgent: '请输入默认 User-Agent',
+      defaultTimeout: '请输入默认超时(单位: 毫秒)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
-      noDefaultUserAgent: '未配置默认 User-Agent'
+      noDefaultUserAgent: '未配置默认 User-Agent',
+      noDefaultTimeout: '未配置默认超时'
     },
     notify: {
       save: {

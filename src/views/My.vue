@@ -173,6 +173,15 @@
             input-align="left"
             :left-icon="iconUA"
           />
+          <nut-input
+            class="input"
+            v-model="timeoutInput"
+            :disabled="!isEditing"
+            :placeholder="$t(`myPage.placeholder.defaultTimeout`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconTimeout"
+          />
         </div>
       </div>
 
@@ -226,6 +235,7 @@ import avatar from "@/assets/icons/avatar.svg?url";
 import iconKey from "@/assets/icons/key-solid.png";
 import iconUser from "@/assets/icons/user-solid.png";
 import iconUA from "@/assets/icons/user-agent.svg";
+import iconTimeout from "@/assets/icons/timeout.svg";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
@@ -245,7 +255,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultTimeout } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -269,6 +279,7 @@ const onClickAbout = () => {
 const userInput = ref("");
 const tokenInput = ref("");
 const uaInput = ref("");
+const timeoutInput = ref("");
 const isEditing = ref(false);
 const isEditLoading = ref(false);
 const isInit = ref(false);
@@ -282,12 +293,14 @@ const toggleEditMode = async () => {
       githubUser: userInput.value,
       gistToken: tokenInput.value,
       defaultUserAgent: uaInput.value,
+      defaultTimeout: timeoutInput.value,
     });
     setDisplayInfo();
   } else {
     userInput.value = githubUser.value;
     tokenInput.value = gistToken.value;
     uaInput.value = defaultUserAgent.value;
+    timeoutInput.value = defaultTimeout.value;
   }
   isEditLoading.value = false;
   isEditing.value = !isEditing.value;
@@ -305,6 +318,7 @@ const setDisplayInfo = () => {
     ? gistToken.value.slice(0, 6) + "************"
     : t(`myPage.placeholder.noGistToken`);
     uaInput.value = defaultUserAgent.value || t(`myPage.placeholder.noDefaultUserAgent`);
+    timeoutInput.value = defaultTimeout.value || t(`myPage.placeholder.noDefaultTimeout`);
 };
 
 // 同步 上传
