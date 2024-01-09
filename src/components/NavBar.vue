@@ -5,14 +5,16 @@
         :tit-icon="currentTitleWhetherAsk" @on-click-icon="onClickNavbarIcon">
         <template #left>
           <div :class="isNeedBack ? 'icon-back' : 'icon-null'"></div>
+          <font-awesome-icon v-if="!isNeedBack && !showFloatingRefreshButton" @click.stop="refresh" class="fa-arrow-rotate-right" icon="fa-solid fa-arrow-rotate-right" />
+          <!-- <font-awesome-icon v-if="['/subs', '/sync'].includes(route.path) && !isNeedBack && showFloatingRefreshButton" @click.stop="setSimpleMode(true)" class="fa-plus" icon="fa-solid fa-plus" /> -->
         </template>
 
         <template #right>
           <font-awesome-icon v-if="isSimpleMode" @click.stop="setSimpleMode(false)" class="navBar-right-icon fa-toggle"
             icon="fa-solid fa-toggle-on " />
           <font-awesome-icon v-else @click.stop="setSimpleMode(true)" class="navBar-right-icon fa-toggle"
-            icon="fa-solid fa-toggle-off " />
-          <font-awesome-icon class="navBar-right-icon fa-lg" icon="fa-solid fa-language " />
+            icon="fa-solid fa-toggle-off" />
+          <font-awesome-icon class="navBar-right-icon fa-lg" icon="fa-solid fa-language" />
         </template>
       </nut-navbar>
     </nav>
@@ -45,6 +47,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useGlobalStore } from '@/store/global';
 import { storeToRefs } from 'pinia';
 import { Toast } from '@nutui/nutui';
+import { initStores } from "@/utils/initApp";
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -52,7 +55,7 @@ const route = useRoute();
 const globalStore = useGlobalStore();
 const showLangSwitchPopup = ref(false);
 const langList = ['zh', 'en'];
-const { isSimpleMode } = storeToRefs(globalStore);
+const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
 
 const isNeedBack = computed(() => {
   return route.meta.needNavBack ?? false;
@@ -97,6 +100,15 @@ const back = () => {
 };
 const setSimpleMode = (isSimpleMode: boolean) => {
   globalStore.setSimpleMode(isSimpleMode);
+};
+
+const refresh = () => {
+  if (['/subs', '/sync'].includes(route.path)) {
+    initStores(true, true, true);
+  } else {
+    window.location.reload();
+  }
+  
 };
 
 </script>
@@ -156,6 +168,20 @@ const setSimpleMode = (isSimpleMode: boolean) => {
         color: var(--icon-nav-bar-right);
       }
 
+      .fa-plus {
+        color: var(--icon-nav-bar-right);
+        position: absolute;
+        left: 45px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .fa-arrow-rotate-right {
+        color: var(--icon-nav-bar-right);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
       .fa-lg {
         position: absolute;
         right: 15px;

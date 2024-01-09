@@ -20,6 +20,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isIconColor: localStorage.getItem('iconColor') === '1',
       isEditorCommon: localStorage.getItem('iseditorCommon') !== '1',
       isSimpleReicon: localStorage.getItem('isSimpleReicon') === '1',
+      showFloatingRefreshButton: localStorage.getItem('showFloatingRefreshButton') === '1',
       istabBar: localStorage.getItem('istabBar') === '1',
       ishostApi: getHostAPIUrl(),
     };
@@ -80,6 +81,14 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('isSimpleReicon');
       }
       this.isSimpleReicon = isSimpleReicon;
+    },
+    setShowFloatingRefreshButton(showFloatingRefreshButton: boolean) {
+      if (showFloatingRefreshButton) {
+        localStorage.setItem('showFloatingRefreshButton', '1');
+      } else {
+        localStorage.removeItem('showFloatingRefreshButton');
+      }
+      this.showFloatingRefreshButton = showFloatingRefreshButton;
     },
     settabBar(istabBar: boolean) {
       if (istabBar) {

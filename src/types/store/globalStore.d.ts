@@ -10,6 +10,7 @@ interface GlobalStoreState {
   isIconColor: boolean;
   isEditorCommon: boolean;
   isSimpleReicon: boolean;
+  showFloatingRefreshButton: boolean;
   istabBar: boolean;
   ishostApi: string;
 }

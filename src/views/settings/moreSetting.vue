@@ -59,6 +59,16 @@
           />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awShowFloatingRefreshButton"
+            size="mini"
+            @change="setShowFloatingRefreshButton"
+          />
+        </template>
+      </nut-cell>
 
       <nut-cell :title="$t(`moreSettingPage.tabBar`)" class="cell-item">
         <template v-slot:link>
@@ -168,6 +178,7 @@
     isIconColor,
     isEditorCommon,
     isSimpleReicon,
+    showFloatingRefreshButton,
     istabBar,
   } = storeToRefs(globalStore);
 
@@ -178,6 +189,7 @@
   const awIconColor = ref(false);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
+  const awShowFloatingRefreshButton = ref(false);
   const awtabBar = ref(true);
   // const isEditing = ref(false);
   const isInit = ref(false);
@@ -205,6 +217,10 @@
 
   const setSimpleReicon = (isSimpleReicon: boolean) => {
     globalStore.setSimpleReicon(isSimpleReicon);
+  };
+
+  const setShowFloatingRefreshButton = (showFloatingRefreshButton: boolean) => {
+    globalStore.setShowFloatingRefreshButton(showFloatingRefreshButton);
   };
 
   const settabBar = (istabBar: boolean) => {
@@ -337,6 +353,7 @@
     awEditorCommon.value = isEditorCommon.value;
     awEditorCommon.value = isEditorCommon.value;
     awSimpleReicon.value = isSimpleReicon.value;
+    awShowFloatingRefreshButton.value = showFloatingRefreshButton.value;
     awtabBar.value = istabBar.value;
     autoSwitch.value = isAuto();
     if (!isInit.value) {

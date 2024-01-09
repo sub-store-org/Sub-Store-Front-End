@@ -566,6 +566,7 @@ export default {
     isIC: '使用订阅图标原始颜色',
     isEditorCommon: '展示编辑页常用配置',
     isSimpleReicon: '展示订阅刷新按钮',
+    showFloatingRefreshButton: '显示悬浮刷新按钮',
     tabBar: '隐藏“Gist 同步”页',
     auto2: '自定义设置 Key',
     hostapi: '自定义后端 API',

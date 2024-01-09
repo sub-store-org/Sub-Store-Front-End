@@ -52,7 +52,7 @@
           :style="{ right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
         >
           <!-- 刷新 -->
-          <div class="drag-btn refresh" @click="refresh">
+          <div v-if="showFloatingRefreshButton" class="drag-btn refresh" @click="refresh">
             <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
           </div>
 
@@ -209,7 +209,7 @@ const addSubBtnIsVisible = ref(false);
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
-const { isLoading, fetchResult, bottomSafeArea } = storeToRefs(globalStore);
+const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);

@@ -562,6 +562,7 @@ export default {
     isIC: 'Use original color for icons',
     isEditorCommon: 'Show editor common settings',
     isSimpleReicon: 'Show items refresh button',
+    showFloatingRefreshButton: 'Show floating refresh button',
     tabBar: 'Hide "Sync" Page',
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
