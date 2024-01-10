@@ -173,7 +173,7 @@ export default {
         },
         url: {
           label: '链接',
-          placeholder: '填入机场原始订阅链接',
+          placeholder: '订阅链接(多个订阅请换行)',
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },

@@ -173,7 +173,7 @@ export default {
         },
         url: {
           label: 'URL',
-          placeholder: 'The original subscription URL',
+          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line)',
           isEmpty: 'URL cannot be empty',
           isIllegal: 'Invalid URL',
         },
