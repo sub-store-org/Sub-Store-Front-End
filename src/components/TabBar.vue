@@ -8,6 +8,7 @@
       size="22px"
     >
       <nut-tabbar-item class="tabbar-item" to="/subs" icon="link" />
+      <nut-tabbar-item class="tabbar-item" to="/files" icon="category" />
 
       <nut-tabbar-item
         v-show="!istabBar"
@@ -28,7 +29,7 @@
   import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
   const route = useRoute();
-  const routeList = ['/subs', '/sync', '/my'];
+  const routeList = ['/subs', '/files', '/sync', '/my'];
   const activeTab = ref(routeList.indexOf(route.path));
 
   onBeforeRouteUpdate((to, from, next) => {

@@ -11,13 +11,13 @@ export function useArtifactsApi() {
     },
     getOneArtifact: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: `/api/artifact/${name}`,
+        url: `/api/artifact/${encodeURIComponent(name)}`,
         method: 'get',
       });
     },
     syncOneArtifact: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: `/api/sync/artifact/${name}`,
+        url: `/api/sync/artifact/${encodeURIComponent(name)}`,
         method: 'get',
       });
     },
@@ -30,14 +30,14 @@ export function useArtifactsApi() {
     },
     editArtifact: (name: string, data: Artifact): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: `/api/artifact/${name}`,
+        url: `/api/artifact/${encodeURIComponent(name)}`,
         method: 'patch',
         data,
       });
     },
     deleteArtifact: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: `/api/artifact/${name}`,
+        url: `/api/artifact/${encodeURIComponent(name)}`,
         method: 'delete',
       });
     },

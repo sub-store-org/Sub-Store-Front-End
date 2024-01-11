@@ -1,4 +1,5 @@
 import { useSubsApi } from '@/api/subs';
+import { useFilesApi } from '@/api/files';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
@@ -6,6 +7,7 @@ import { defineStore } from 'pinia';
 
 const { t } = i18n.global;
 const subsApi = useSubsApi();
+const filesApi = useFilesApi();
 
 export const useSubsStore = defineStore('subsStore', {
   state: (): SubsStoreState => {
@@ -13,6 +15,7 @@ export const useSubsStore = defineStore('subsStore', {
       subs: [],
       collections: [],
       flows: {},
+      files: [],
     };
   },
   getters: {
@@ -26,15 +29,23 @@ export const useSubsStore = defineStore('subsStore', {
       ({ collections }): GetOne<Collection> =>
       (name: string): Collection =>
         collections.find(collection => collection.name === name),
+    hasFiles: ({ files }): boolean => files.length > 0,
+    getOneFile:
+      ({ files }): GetOne<any> =>
+      (name: string) =>
+        files.find(file => file.name === name),
   },
   actions: {
     async fetchSubsData() {
-      Promise.all([subsApi.getSubs(), subsApi.getCollections()]).then(res => {
+      Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles()]).then(res => {
         if ('data' in res[0].data) {
           this.subs = res[0].data.data;
         }
         if ('data' in res[1].data) {
           this.collections = res[1].data.data;
+        }
+        if ('data' in res[2].data) {
+          this.files = res[2].data.data;
         }
       });
     },
@@ -44,6 +55,8 @@ export const useSubsStore = defineStore('subsStore', {
         res = await subsApi.getOne('sub', name);
       } else if (type === 'collections') {
         res = await subsApi.getOne('collection', name);
+      } else if (type === 'files') {
+        res = await filesApi.getWholeFile(name);
       }
       if (res?.data?.status === 'success') {
         const index = this[type].findIndex(item => item.name === name);
@@ -81,6 +94,26 @@ export const useSubsStore = defineStore('subsStore', {
         showNotify({
           type: 'danger',
           title: t('subPage.deleteSub.succeedNotify'),
+        });
+      }
+    },
+    async fetchFiles() {
+      Promise.all([filesApi.getWholeFiles()]).then(res => {
+        if ('data' in res[0].data) {
+          this.files = res[0].data.data;
+        }
+      });
+    },
+
+    async deleteFile(name: string) {
+      const { showNotify } = useAppNotifyStore();
+
+      const { data } = await filesApi.deleteFile(name);
+      if (data.status === 'success') {
+        await this.fetchFiles();
+        showNotify({
+          type: 'danger',
+          title: t('filePage.deleteFile.succeedNotify'),
         });
       }
     },

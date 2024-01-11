@@ -21,9 +21,11 @@ export default {
     },
     pagesTitle: {
       sub: 'Management',
+      file: 'File',
       sync: 'Sync Subscription',
       my: 'My Profile',
       subEditor: 'Subscription Editor',
+      fileEditor: 'File Editor',
       themeSetting: 'Theme Setting',
       moreSetting: 'More Setting',
       apiSetting: 'Backend Setting',
@@ -58,6 +60,14 @@ export default {
     desc: 'Back to Home Page',
     backendDesc: 'If you are seeing this, it is probably due to a routing interception issue on the front end of your browser. You can force a refresh to see it or use the link directly without affecting the use of this link.',
   },
+  filePage: {
+    deleteFile: {
+      succeedNotify: 'Successfully deleted!',
+    },
+    content: {
+      placeholder: 'The content of the file'
+    }
+  },
   // subscription management page
   subPage: {
     addSubTitle: 'Which type you want to create?',
@@ -91,8 +101,8 @@ export default {
       noExpiresInfo: 'No expires info',
     },
     deleteSub: {
-      title: 'Delete Subscription',
-      desc: 'Are you sure to delete subscription {displayName}? \nDeleted cannot be restored!',
+      title: 'Delete',
+      desc: 'Are you sure to delete {displayName}? \nDeleted cannot be restored!',
       succeedNotify: 'Successfully deleted!',
       btn: {
         confirm: 'Delete',
@@ -160,7 +170,7 @@ export default {
         },
         displayName: {
           label: 'Display Name',
-          placeholder: 'The display name for the subscription',
+          placeholder: 'The display name',
         },
         source: {
           label: 'Source',

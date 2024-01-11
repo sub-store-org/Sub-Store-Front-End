@@ -240,12 +240,12 @@ const changeArtifacts = async () => {
     if (env.value.version > "2.14.48") {
       console.log("new sort > v2.14.48");
       const nameSortArray = artifacts.value.map((k) => k.name);
-      console.log(nameSortArray);
+      // console.log(nameSortArray);
       sortArtifacts = await subsApi.newSortSub(
         "artifacts",
         JSON.parse(JSON.stringify(toRaw(nameSortArray)))
       );
-      console.log(JSON.stringify(sortArtifacts));
+      // console.log(JSON.stringify(sortArtifacts));
     } else {
       console.log("old sort < v2.14.48");
       sortArtifacts = await subsApi.sortSub(

@@ -7,6 +7,9 @@ import { initStores } from '@/utils/initApp';
 import My from '@/views/My.vue';
 import NotFound from '@/views/NotFound.vue';
 
+import File from '@/views/File.vue';
+import FileEditor from '@/views/FileEditor.vue';
+
 import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
 
@@ -66,6 +69,24 @@ const router = createRouter({
             title: 'my',
             needTabBar: true,
             needNavBack: false,
+          },
+        },
+        {
+          path: '/files',
+          component: File,
+          meta: {
+            title: 'file',
+            needTabBar: true,
+            needNavBack: false,
+          },
+        },
+        {
+          path: '/edit/:editType(files)/:id',
+          component: FileEditor,
+          meta: {
+            title: 'fileEditor',
+            needTabBar: false,
+            needNavBack: true,
           },
         },
         {

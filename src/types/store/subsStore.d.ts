@@ -2,6 +2,7 @@ interface SubsStoreState {
   subs: Sub[];
   collections: Collection[];
   flows: FlowsDict;
+  files: any[];
 }
 
 interface FlowsDict {

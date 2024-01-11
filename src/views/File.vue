@@ -5,42 +5,10 @@
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
   >
-    <!-- 添加订阅弹窗 -->
-    <div>
-      <nut-popup
-        v-model:visible="addSubBtnIsVisible"
-        pop-class="add-sub-popup"
-        lock-scroll
-        position="bottom"
-        :style="{
-          height: `${bottomSafeArea + 200}px`,
-          padding: '20px 12px 0 12px',
-        }"
-        close-icon="close-little"
-        z-index="11000"
-        closeable
-        round
-      >
-        <p class="add-sub-panel-title">{{ $t(`subPage.addSubTitle`) }}</p>
-        <ul class="add-sub-panel-list">
-          <li>
-            <router-link to="/edit/subs/UNTITLED" class="router-link">
-              <svg-icon name="singleSubs" />
-              <span>{{ $t(`specificWord.singleSub`) }}</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/edit/collections/UNTITLED" class="router-link">
-              <svg-icon name="collectionSubs" />
-              <span>{{ $t(`specificWord.collectionSub`) }}</span>
-            </router-link>
-          </li>
-        </ul>
-      </nut-popup>
-    </div>
+
     <!-- 浮动按钮 -->
     <Teleport to="body">
-      <div v-if="hasSubs || hasCollections" class="drag-btn-wrapper">
+      <div v-if="hasFiles" class="drag-btn-wrapper">
         <nut-drag
           :attract="true"
           :boundary="{
@@ -57,9 +25,11 @@
           </div>
 
           <!-- 加号 -->
-          <div class="drag-btn" @click="addSubBtnIsVisible = true">
-            <font-awesome-icon icon="fa-solid fa-plus" />
-          </div>
+          <router-link to="/edit/files/UNTITLED" class="router-link">
+            <div class="drag-btn">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+            </div>
+          </router-link>
         </nut-drag>
       </div>
     </Teleport>
@@ -67,13 +37,9 @@
     <!-- 页面内容 -->
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
-      <div v-if="hasSubs">
-        <div class="sticky-title-wrappers">
-          <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
-        </div>
-
+      <div v-if="hasFiles">
         <draggable
-          v-model="subs"
+          v-model="files"
           item-key="name"
           :scroll-sensitivity="200"
           :force-fallback="true"
@@ -86,50 +52,15 @@
             chosenClass: 'chosensub',
             handle: 'div',
           }"
-          @change="changeSort('subs', subs)"
-          @start="handleDragStart(subs)"
-          @end="handleDragEnd(subs)"
+          @change="changeSort('files', files)"
+          @start="handleDragStart(files)"
+          @end="handleDragEnd(files)"
         >
           <template #item="{ element }">
             <div :key="element.name" class="draggable-item">
-              <SubListItem
-                :sub="element"
-                type="sub"
-                :disabled="swipeDisabled"
-              />
-            </div>
-          </template>
-        </draggable>
-      </div>
-
-      <div v-if="hasCollections">
-        <div class="sticky-title-wrappers">
-          <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
-        </div>
-
-        <draggable
-          v-model="collections"
-          item-key="name"
-          :scroll-sensitivity="200"
-          :force-fallback="true"
-          :scroll-speed="8"
-          :scroll="true"
-          v-bind="{
-            animation: 200,
-            disabled: false,
-            delay: 200,
-            chosenClass: 'chosensub',
-            handle: 'div',
-          }"
-          @change="changeSort('collections', collections)"
-          @start="handleDragStart(collections)"
-          @end="handleDragEnd(collections)"
-        >
-          <template #item="{ element }">
-            <div :key="element.name" class="draggable-item">
-              <SubListItem
-                :collection="element"
-                type="collection"
+              <FileListItem
+                :file="element"
+                type="file"
                 :disabled="swipeDisabled"
               />
             </div>
@@ -139,7 +70,7 @@
     </div>
     <!-- 没有数据 -->
     <div
-      v-if="!isLoading && fetchResult && !hasSubs && !hasCollections"
+      v-if="!isLoading && fetchResult && !hasFiles"
       class="no-data-wrapper"
     >
       <nut-empty image="empty">
@@ -148,9 +79,11 @@
           <p>{{ $t(`subPage.emptySub.desc`) }}</p>
         </template>
       </nut-empty>
-      <nut-button type="primary" @click="addSubBtnIsVisible = true">
-        {{ $t(`subPage.emptySub.btn`) }}
-      </nut-button>
+      <router-link to="/edit/files/UNTITLED" class="router-link">
+        <nut-button type="primary">
+          {{ $t(`subPage.emptySub.btn`) }}
+        </nut-button>
+      </router-link>
     </div>
 
     <!-- 数据加载失败 -->
@@ -194,7 +127,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 // import { Dialog, Toast } from '@nutui/nutui';
 
 import { useSubsApi } from "@/api/subs";
-import SubListItem from "@/components/SubListItem.vue";
+import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
@@ -203,12 +136,11 @@ import { useBackend } from "@/hooks/useBackend";
 
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
-const subsApi = useSubsApi();
+const subApi = useSubsApi();
 const { t } = useI18n();
-const addSubBtnIsVisible = ref(false);
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
-const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
+const { hasFiles, files } = storeToRefs(subsStore);
 const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
@@ -242,26 +174,18 @@ const refresh = () => {
 
 let dragData = null;
 const changeSort = async (
-  subColl: "subs" | "collections",
+  subColl: "files",
   dataValue: any[]
 ) => {
   try {
     let sortDataRes: any;
-    if (env.value.version > "2.14.48") {
-      console.log(`new sort > v2.14.48`);
-      const nameSortArray = dataValue.map((k: { name: string }) => k.name);
-      // console.log(nameSortArray);
-      sortDataRes = await subsApi.newSortSub(
-        subColl,
-        JSON.parse(JSON.stringify(toRaw(nameSortArray)))
-      );
-    } else {
-      console.log(`old sort < v2.14.48 `);
-      sortDataRes = await subsApi.sortSub(
-        subColl,
-        JSON.parse(JSON.stringify(toRaw(dataValue)))
-      );
-    }
+  
+    const nameSortArray = dataValue.map((k: { name: string }) => k.name);
+    // console.log(nameSortArray);
+    sortDataRes = await subApi.newSortSub(
+      subColl,
+      JSON.parse(JSON.stringify(toRaw(nameSortArray)))
+    );
     // console.log(JSON.stringify(sortDataRes))
     if (sortDataRes?.data?.status !== "success") {
       sortFailed.value = true;

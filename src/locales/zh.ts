@@ -21,9 +21,11 @@ export default {
     },
     pagesTitle: {
       sub: '订阅管理',
+      file: '文件管理',
       sync: '同步订阅',
       my: '我的',
       subEditor: '订阅编辑',
+      fileEditor: '文件编辑',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
       apiSetting: '后端设置',
@@ -58,6 +60,18 @@ export default {
     desc: '回首页',
     backendDesc: '如果你看到这个 可能是因为浏览器前端路由拦截的问题 可以强制刷新查看或直接使用该链接 不影响此链接的使用',
   },
+  filePage: {
+    deleteFile: {
+      succeedNotify: '删除文件成功',
+    },
+    content: {
+      placeholder: '填入文件内容'
+    },
+    copyNotify: {
+      succeed: '复制文件链接成功',
+      failed: '复制文件链接失败\n{e}',
+    }
+  },
   // 订阅管理页
   subPage: {
     addSubTitle: '选择要创建的订阅类型',
@@ -90,9 +104,9 @@ export default {
       noExpiresInfo: '无有效期信息',
     },
     deleteSub: {
-      title: '删除订阅',
-      desc: '是否确认删除订阅 {displayName}？删除后不可恢复！',
-      succeedNotify: '删除订阅成功！',
+      title: '删除',
+      desc: '是否确认删除 {displayName}？删除后不可恢复！',
+      succeedNotify: '删除成功！',
       btn: {
         confirm: '确认删除',
         cancel: '取消',
@@ -155,12 +169,12 @@ export default {
         name: {
           label: '名称',
           placeholder: '唯一的标识名称(请勿包含 / )',
-          isEmpty: '订阅名称不能为空',
-          isInvalid: '订阅名称已存在或不合法'
+          isEmpty: '名称不能为空',
+          isInvalid: '名称已存在或不合法'
         },
         displayName: {
           label: '显示名称',
-          placeholder: '输入展示的订阅名称',
+          placeholder: '输入展示的名称',
         },
         source: {
           label: '来源',
