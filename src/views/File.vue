@@ -75,13 +75,13 @@
     >
       <nut-empty image="empty">
         <template #description>
-          <h3>{{ $t(`subPage.emptySub.title`) }}</h3>
-          <p>{{ $t(`subPage.emptySub.desc`) }}</p>
+          <h3>{{ $t(`filePage.emptySub.title`) }}</h3>
+          <p>{{ $t(`filePage.emptySub.desc`) }}</p>
         </template>
       </nut-empty>
       <router-link to="/edit/files/UNTITLED" class="router-link">
         <nut-button type="primary">
-          {{ $t(`subPage.emptySub.btn`) }}
+          {{ $t(`filePage.emptySub.btn`) }}
         </nut-button>
       </router-link>
     </div>

@@ -70,7 +70,12 @@ export default {
     copyNotify: {
       succeed: '复制文件链接成功',
       failed: '复制文件链接失败\n{e}',
-    }
+    },
+    emptySub: {
+      title: '你还没有添加文件',
+      desc: '添加后开始使用文件',
+      btn: '立即添加',
+    },
   },
   // 订阅管理页
   subPage: {

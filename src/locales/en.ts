@@ -66,7 +66,12 @@ export default {
     },
     content: {
       placeholder: 'The content of the file'
-    }
+    },
+    emptySub: {
+      title: 'You have no File yet',
+      desc: 'After adding you can enjoy the love of YM Peng',
+      btn: 'Create File Now',
+    },
   },
   // subscription management page
   subPage: {

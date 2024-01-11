@@ -5,7 +5,9 @@
       class="sub-item-wrapper"
       :style="{ padding: isSimpleMode ? '9px' : '16px' }"
     >
-      <div
+      <a
+      :href="`${host}/api/file/${encodeURIComponent(name)}`"
+          target="_blank"
         class="sub-img-wrappers"
         :style="{ 'margin-top': isSimpleMode ? '5px' : '0' }"
       >
@@ -32,7 +34,7 @@
             bg-color=""
           />
         </div>
-      </div>
+      </a>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
 
@@ -287,18 +289,6 @@
     router.back();
   };
 
-  const compareSub = async () => {
-    Toast.loading('生成节点对比中...', { id: 'compare', cover: true, duration: 1500 });
-    const res = await useSubsApi().compareSub(
-      props.type,
-      props.sub ?? props.collection
-    );
-    if (res?.data?.status === 'success') {
-      compareData.value = res.data.data;
-      compareTableIsVisible.value = true;
-      Toast.hide('compare');
-    }
-  };
   const swipeClose = () => {
     swipe.value.close();
   };
