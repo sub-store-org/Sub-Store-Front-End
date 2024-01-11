@@ -68,6 +68,10 @@ export default {
     content: {
       placeholder: 'The content of the file'
     },
+    copyNotify: {
+      succeed: 'Successfully copied link!\nIf you use it internally, just {path}',
+      failed: 'Failed to copy file link!\n{e}',
+    },
     emptySub: {
       title: 'You have no File yet',
       desc: 'After adding you can enjoy the love of YM Peng',
@@ -357,7 +361,7 @@ export default {
           label: 'Script Filter',
           options: ['Link', 'Script'],
           des: ['Type', 'Content'],
-          placeholder: 'Input Script Link',
+          placeholder: 'Input Script Link or Internal File like /api/file/name',
           openEditorBtn: 'Open Code Editor',
           tipsTitle: 'Script Filter Tips',
           tipsDes: '脚本操作操作说明',

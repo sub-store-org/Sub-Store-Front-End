@@ -69,7 +69,7 @@ export default {
       placeholder: '填入文件内容'
     },
     copyNotify: {
-      succeed: '复制文件链接成功',
+      succeed: '复制文件链接成功\n如果你只在内部使用, 仅需 {path}',
       failed: '复制文件链接失败\n{e}',
     },
     emptySub: {
@@ -270,7 +270,7 @@ export default {
           label: '脚本操作',
           options: ['链接', '脚本'],
           des: ['类型', '内容'],
-          placeholder: '填入脚本链接',
+          placeholder: '填入完整远程脚本链接 或 类似 /api/file/name 的内部文件调用路径',
           openEditorBtn: '打开脚本编辑器',
           tipsTitle: '脚本操作操作提示',
           tipsDes: '使用一段 JavaScript 脚本来修改节点信息',

@@ -353,14 +353,15 @@
   const { currentUrl: host } = useHostAPI();
 
   const onClickCopyLink = async () => {
-    const url = `${host.value}/api/file/${encodeURIComponent(name)}`;
+    const path = `/api/file/${encodeURIComponent(name)}`;
+    const url = `${host.value}${path}`;
 
     if (isSupported) {
       await copy(url);
     } else {
       await copyFallback(url);
     }
-    showNotify({ title: t('filePage.copyNotify.succeed') });
+    showNotify({ title: t('filePage.copyNotify.succeed', { path }) });
   };
 
 
