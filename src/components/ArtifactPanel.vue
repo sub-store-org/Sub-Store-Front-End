@@ -86,7 +86,7 @@
         ></nut-cascader>
 
       </nut-form-item>
-      <nut-form-item :label="$t(`syncPage.addArtForm.platform.label`)">
+      <nut-form-item v-if="sourceInput && ['subscription', 'collection'].includes(editPanelData.type) " :label="$t(`syncPage.addArtForm.platform.label`)">
         <nut-radiogroup
           direction="horizontal"
           v-model="editPanelData.platform"
@@ -142,7 +142,7 @@
     name: '',
     displayName: '',
     source: '',
-    type: 'subscription',
+    type: 'file',
     platform: 'Surge',
   });
 
@@ -163,6 +163,12 @@
           collection.name,
       };
     });
+    const filesNameList = useSubsStore().files.map(file => {
+      return {
+        name: file.name,
+        displayName: file.displayName || file['display-name'] || file.name,
+      };
+    });
 
     const options = [];
     if (subsNameList.length > 0) {
@@ -181,6 +187,16 @@
         value: 'collection',
         text: t('specificWord.collectionSub'),
         children: collectionNameList.map(item => ({
+          value: item.name,
+          text: item.displayName,
+        })),
+      });
+    }
+    if (filesNameList.length > 0) {
+      options.push({
+        value: 'file',
+        text: t('specificWord.file'),
+        children: filesNameList.map(item => ({
           value: item.name,
           text: item.displayName,
         })),
@@ -210,7 +226,7 @@
 
   const onClickNameInput = () => {
     if (isEditMode.value) {
-      Toast.warn('同步订阅配置的名称不支持修改', { duration: 1000 });
+      Toast.warn('同步配置的名称不支持修改', { duration: 1000 });
     }
   };
   const submit = () => {

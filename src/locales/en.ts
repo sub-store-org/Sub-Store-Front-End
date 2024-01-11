@@ -3,6 +3,7 @@ export default {
   specificWord: {
     singleSub: 'Single',
     collectionSub: 'Collection',
+    file: 'File',
   },
   globalNotify: {
     refresh: {
@@ -22,7 +23,7 @@ export default {
     pagesTitle: {
       sub: 'Management',
       file: 'File',
-      sync: 'Sync Subscription',
+      sync: 'Sync',
       my: 'My Profile',
       subEditor: 'Subscription Editor',
       fileEditor: 'File Editor',
@@ -33,9 +34,9 @@ export default {
       notFound: '404 Not Found',
       askWhat: {
         sync: {
-          title: 'What is Sync Subscription?',
+          title: 'What is Sync?',
           content:
-            'Upload your subscriptions to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).',
+            'Upload your subscriptions/files to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).',
         },
         subEditor: {
           title: 'Download no subscription?',

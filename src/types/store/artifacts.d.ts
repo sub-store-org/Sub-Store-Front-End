@@ -12,7 +12,7 @@ type ArtifactsPlatform =
   | 'ClashMeta'
   | 'V2Ray';
 
-type ArtifactType = 'collection' | 'subscription';
+type ArtifactType = 'collection' | 'subscription' | 'file';
 
 interface Artifact {
   name: string;

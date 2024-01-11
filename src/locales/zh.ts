@@ -3,6 +3,7 @@ export default {
   specificWord: {
     singleSub: '单条订阅',
     collectionSub: '组合订阅',
+    file: '文件',
   },
   globalNotify: {
     refresh: {
@@ -22,7 +23,7 @@ export default {
     pagesTitle: {
       sub: '订阅管理',
       file: '文件管理',
-      sync: '同步订阅',
+      sync: '同步',
       my: '我的',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
@@ -33,9 +34,9 @@ export default {
       notFound: '地址未找到',
       askWhat: {
         sync: {
-          title: '什么是同步订阅？',
+          title: '什么是同步？',
           content:
-            '将您的订阅信息上传到私有 Gist，在无法运行 Sub Store 的设备（例如路由器等）上也可以随时访问。',
+            '将订阅/文件上传到私有 Gist，在无法运行 Sub Store 的设备（例如路由器等）上也可以随时访问。',
         },
         subEditor: {
           title: '下载不了订阅？',

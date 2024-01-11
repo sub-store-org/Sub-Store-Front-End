@@ -1,9 +1,9 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
     <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="previewSource">
-      <div class="sub-img-wrappers">
+      <a class="sub-img-wrappers" :href="artifact.url" target="_blank">
         <nut-avatar class="sub-item-customer-icon"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
-      </div>
+      </a>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
           <h3 class="sub-item-title">
@@ -175,6 +175,8 @@ const sourceSub = computed(() => {
       return subsStore.getOneCollection(name);
     case 'subscription':
       return subsStore.getOneSub(name);
+    case 'file':
+      return subsStore.getOneFile(name);
   }
 });
 
@@ -209,6 +211,8 @@ const transferText = (type: string) => {
         return t('specificWord.singleSub');
       case 'collection':
         return t('specificWord.collectionSub');
+      case 'file':
+        return t('specificWord.file');
     }
   };
 
