@@ -5,9 +5,8 @@
       class="sub-item-wrapper"
       :style="{ padding: isSimpleMode ? '9px' : '16px' }"
     >
-      <a
-      :href="`${host}/api/file/${encodeURIComponent(name)}`"
-          target="_blank"
+      <div
+        @click.stop="previewFile"
         class="sub-img-wrappers"
         :style="{ 'margin-top': isSimpleMode ? '5px' : '0' }"
       >
@@ -34,7 +33,7 @@
             bg-color=""
           />
         </div>
-      </a>
+      </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
 
@@ -138,11 +137,11 @@
     </template>
   </nut-swipe>
 
-  <CompareTable
-    v-if="compareTableIsVisible"
+  <FilePreview
+    v-if="filePreviewIsVisible"
     :name="name"
-    :compareData="compareData"
-    @closeCompare="closeCompare"
+    :previewData="previewData"
+    @closePreview="closePreview"
   />
 </template>
 
@@ -157,7 +156,7 @@
   import { useSubsStore } from '@/store/subs';
   import { getString } from '@/utils/flowTransfer';
   import { isMobile } from '@/utils/isMobile';
-  import CompareTable from '@/views/CompareTable.vue';
+  import FilePreview from '@/views/FilePreview.vue';
   import { Dialog, Toast } from '@nutui/nutui';
   import { useClipboard } from '@vueuse/core';
   import dayjs from 'dayjs';
@@ -182,9 +181,9 @@
   }>();
   // console.log('props.disabled')
   // console.log(props.disabled)
-  const compareTableIsVisible = ref(false);
-  usePopupRoute(compareTableIsVisible);
-
+  const filePreviewIsVisible = ref(false);
+  usePopupRoute(filePreviewIsVisible);
+  const previewData = ref();
   const moreAction = ref();
   const swipe = ref();
   const swipeIsOpen = ref(false);
@@ -284,9 +283,23 @@
     }
   });
 
-  const closeCompare = () => {
-    compareTableIsVisible.value = false;
+  const closePreview = () => {
+    filePreviewIsVisible.value = false;
     router.back();
+  };
+
+  const previewFile = async () => {
+    Toast.loading('生成中...', { id: 'compare', cover: true, duration: 1500 });
+    const res = await useSubsApi().compareSub(
+      'file',
+      props.file
+    );
+
+    if (res?.data?.status === 'success') {
+      previewData.value = res.data.data;
+      filePreviewIsVisible.value = true;
+      Toast.hide('compare');
+    }
   };
 
   const swipeClose = () => {

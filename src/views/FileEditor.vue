@@ -75,11 +75,21 @@
       
       </nut-form>
     </div>
-
+    <ActionBlock
+      :checked="actionsChecked"
+      :list="actionsList"
+      sourceType="file"
+      @addAction="addAction"
+      @deleteAction="deleteAction"
+    />
   </div>
 
   <div class="bottom-btn-wrapper">
-
+    <nut-button @click="compare" class="compare-btn btn" plain shape="square">
+      <font-awesome-icon icon="fa-solid fa-eye" />{{
+        $t('editorPage.subConfig.btn.compare')
+      }}
+    </nut-button>
     <nut-button
       @click="submit"
       class="submit-btn btn"
@@ -90,15 +100,27 @@
       {{ $t('editorPage.subConfig.btn.save') }}
     </nut-button>
   </div>
+
+  <FilePreview
+    v-if="filePreviewIsVisible"
+    :name="configName"
+    :previewData="previewData"
+    @closePreview="closePreview"
+  />
 </template>
 
 <script lang="ts" setup>
   import { useSubsApi } from '@/api/subs';
   import { useFilesApi } from '@/api/files';
+  import { usePopupRoute } from '@/hooks/usePopupRoute';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
   import { useSubsStore } from '@/store/subs';
-
+  import ActionBlock from '@/views/editor/ActionBlock.vue';
+  import { addItem, deleteItem } from '@/utils/actionsOperate';
+  import { actionsToProcess } from '@/utils/actionsToPorcess';
+  import Script from '@/views/editor/components/Script.vue';
+  import FilePreview from '@/views/FilePreview.vue';
   import { initStores } from '@/utils/initApp';
   import { Dialog, Toast } from '@nutui/nutui';
   import { storeToRefs } from 'pinia';
@@ -129,17 +151,23 @@
   const padding = bottomSafeArea.value + 'px';
 
   const file = computed(() => subsStore.getOneFile(configName));
-
+  const filePreviewIsVisible = ref(false);
+  usePopupRoute(filePreviewIsVisible);
+  const previewData = ref();
   const isInit = ref(false);
   const ruleForm = ref<any>(null);
+  const actionsChecked = reactive([]);
+  const actionsList = reactive([]);
   const isget = ref(false);
   const form = reactive<any>({
     name: '',
     displayName: '',
     icon: '',
+    process: [],
   });
   provide('form', form);
-
+  // 排除非动作卡片
+  const ignoreList = ['Quick Setting Operator'];
 
   watchEffect(() => {
     if (isInit.value) return;
@@ -151,11 +179,37 @@
 
     const sourceData: any = toRaw(file.value);
     if (sourceData) {
+      if (!Array.isArray(sourceData.process)) {
+        sourceData.process = []
+      }
       form.name = sourceData.name;
       form.displayName = sourceData.displayName || sourceData['display-name'];
       form.icon = sourceData.icon;
 
       form.content = sourceData.content;
+      const newProcess = JSON.parse(JSON.stringify(sourceData.process));
+      form.process = newProcess;
+      if (sourceData.process.length > 0) {
+        form.process.forEach(item => {
+          const { type, id } = item;
+          actionsChecked.push([id, true]);
+          const action = {
+            type,
+            id,
+            tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
+            component: null,
+          };
+          switch (type) {
+            case 'Script Operator':
+              action.component = shallowRef(Script);
+              break;
+            default:
+              break;
+          }
+          actionsList.push(action);
+          
+        });
+      }
       // 标记 加载完成
       isInit.value = true;
       return;
@@ -163,6 +217,55 @@
   
   });
 
+  const addAction = val => {
+    addItem(form, actionsList, actionsChecked, val, t);
+  };
+
+  const deleteAction = id => {
+    deleteItem(form, actionsList, actionsChecked, id);
+  };
+  const closePreview = () => {
+    filePreviewIsVisible.value = false;
+    router.back();
+  };
+  const compare = () => {
+    ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+      // 如果验证失败
+      if (!valid) {
+        Dialog({
+          title: t(`editorPage.subConfig.pop.errorTitle`),
+          content: errors[0].message,
+          popClass: 'auto-dialog',
+          noCancelBtn: true,
+          okText: t(`editorPage.subConfig.pop.errorBtn`),
+          // @ts-ignore
+          closeOnClickOverlay: true,
+        });
+        return;
+      }
+
+      Toast.loading('生成中...', { id: 'compare', cover: true, duration: 1500 });
+      const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+      data.process = actionsToProcess(data.process, actionsList, ignoreList);
+
+      // 过滤掉预览开关关闭的操作
+      actionsChecked.forEach(item => {
+        if (!item[1]) {
+          const index = data.process.findIndex(i => i.id === item[0]);
+          if (index > -1) {
+            data.process.splice(index, 1);
+          }
+        }
+      });
+
+      const res = await subsApi.compareSub('file', data);
+      if (res?.data?.status === 'success') {
+        previewData.value = res.data.data;
+        filePreviewIsVisible.value = true;
+        Toast.hide('compare');
+      }
+    });
+  };
 
   const submit = () => {
     if (isget.value){
@@ -192,7 +295,7 @@
       // 如果验证成功，开始保存/修改
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
       data['display-name'] = data.displayName;
-      
+      data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
       let res = null;
 
@@ -303,7 +406,7 @@
     // }
 
     .submit-btn {
-      width: 100%;
+      width: 67%;
     }
   }
 

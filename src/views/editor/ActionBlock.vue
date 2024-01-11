@@ -1,6 +1,6 @@
 <template>
   <div class="form-block-wrapper">
-    <div class="sticky-title-wrapper actions-title-wrapper">
+    <div v-if="sourceType !== 'file'" class="sticky-title-wrapper actions-title-wrapper">
       <p>{{ $t(`editorPage.subConfig.actions.label`) }}</p>
       <button @click="popActionsHelp">
         <font-awesome-icon icon="fa-solid fa-circle-question" />
@@ -43,7 +43,7 @@
               </div>
             </div>
           </div>
-          <Component :is="element.component" :type="element.type" :id="element.id" />
+          <Component :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
         </nut-cell>
       </template>
     </Draggable>
@@ -71,7 +71,7 @@
         <span>{{
           $t(`editorPage.subConfig.actions.addAction.title`)
         }}</span>
-        <font-awesome-icon @click="popActionsHelp" icon="fa-solid fa-circle-question" />
+        <font-awesome-icon v-if="sourceType !== 'file'"  @click="popActionsHelp" icon="fa-solid fa-circle-question" />
       </div>
       <div class="horizontal-button-container">
         <button v-for="(item, index) in columns" :key="index" @click="onButtonClick(item)" class="custom-button">
@@ -93,16 +93,28 @@ import Draggable from 'vuedraggable';
 const { t } = useI18n();
 const drag = ref(true);
 
+// 列表渲染的数据
+// 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
+const { checked, list, sourceType } = defineProps<{
+  checked: Array<[string, boolean]>;
+  list: ActionModuleProps[];
+  sourceType?: string;
+}>();
+
 // 通过 i18n 构造 picker 选项
 // const showAddPicker = ref(false);
 // const showAddPicker = ref(true);
 const types = Object.keys(i18nFile.editorPage.subConfig.nodeActions);
-const items = types.map(type => {
+let items = types.map(type => {
   return {
     text: t(`editorPage.subConfig.nodeActions['${type}'].label`),
     value: type,
   };
 });
+
+if (sourceType === 'file') {
+  items = items.filter(item => ['Script Operator'].includes(item.value));
+}
 const columns = ref(items);
 // useMousePicker();
 
@@ -111,12 +123,9 @@ const onButtonClick = (item) => {
   emit('addAction', [item]);
 };
 
-// 列表渲染的数据
-// 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
-const { checked, list } = defineProps<{
-  checked: Array<[string, boolean]>;
-  list: ActionModuleProps[];
-}>();
+
+
+
 
 const emit = defineEmits(['addAction', 'deleteAction']);
 // 示例数据

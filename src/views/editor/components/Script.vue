@@ -22,7 +22,7 @@
 
     <div v-if="value.mode === 'script'">
       <div class="input-wrapper">
-        <nut-textarea v-model="value.code" :placeholder="$t(`// This is example
+        <nut-textarea v-model="value.code" :placeholder="sourceType !== 'file' ? $t(`// This is example
 // Script Operator
 // 1. backend version(>2.14.88):
 $server.name = 'prefix-' + $server.name
@@ -50,7 +50,7 @@ function filter(proxies, targetPlatform) {
     return true;
   });
 }
-`)" :rows="23" />
+`) : $t(`$content += 'anything'`) " :rows="23" />
         <!-- <span>
         <font-awesome-icon icon="fa-solid fa-code" />
         {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}
@@ -107,9 +107,10 @@ import { Dialog } from '@nutui/nutui';
 import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
-const { type, id } = defineProps<{
+const { type, id, sourceType } = defineProps<{
   type: string;
   id: string;
+  sourceType?: string;
 }>();
 
 const { t } = useI18n();

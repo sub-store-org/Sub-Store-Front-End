@@ -63,7 +63,7 @@ export function useSubsApi() {
     },
     compareSub: (
       type: string,
-      data: Sub | Collection
+      data: Sub | Collection | any
     ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/preview/${type}`,
