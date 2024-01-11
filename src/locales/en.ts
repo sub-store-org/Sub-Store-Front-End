@@ -68,6 +68,12 @@ export default {
     content: {
       placeholder: 'The content of the file'
     },
+    url: {
+      label: 'URL',
+      placeholder: 'URL (please separate multiple urls with a new line)',
+      isEmpty: 'URL cannot be empty',
+      isIllegal: 'Invalid URL',
+    },
     copyNotify: {
       succeed: 'Successfully copied link!\nIf you use it internally, just {path}',
       failed: 'Failed to copy file link!\n{e}',
@@ -76,6 +82,13 @@ export default {
       title: 'You have no File yet',
       desc: 'After adding you can enjoy the love of YM Peng',
       btn: 'Create File Now',
+    },
+    source: {
+      local: 'Local',
+      remote: 'Remote',
+    },
+    ignoreFailedRemoteFile: {
+      label: 'Ignore failed remote file(s)'
     },
   },
   // subscription management page
@@ -120,7 +133,7 @@ export default {
       },
     },
     copyNotify: {
-      succeed: 'Successfully copied link!\nYou can paste in Proxy Tool now!',
+      succeed: 'Successfully copied link!',
       failed: 'Failed to copy subscription link!\n{e}',
     },
     copyConfigNotify: {
@@ -214,7 +227,7 @@ export default {
         ua: {
           label: 'User-Agent',
           placeholder:
-            'The User-Agent for downloading the original subscription',
+            'The User-Agent for downloading resource(s)',
         },
       },
       commonOptions: {

@@ -37,7 +37,10 @@
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
 
-          <h3 style="color: var(--primary-text-color); font-size: 16px; position: relative; top: 8px;">
+          <h3 v-if="!isSimpleMode" class="sub-item-title">
+            {{ displayName || name }}
+          </h3>
+          <h3 v-else style="color: var(--primary-text-color); font-size: 16px">
             {{ displayName || name }}
           </h3>
 
@@ -73,7 +76,25 @@
             </button>
           </div>
         </div>
+        <template v-if="!isSimpleMode">
+          <p v-if="type === 'sub'" class="sub-item-detail">
+            <template v-if="typeof flow === 'string'">
+              <span>
+                {{ flow }}
+              </span>
+            </template>
+          </p>
+        </template>
 
+        <template v-else>
+          <p class="sub-item-detail-isSimple">
+            <template v-if="typeof flow === 'string'">
+              <span style="font-weight: normal">
+                {{ flow }}
+              </span>
+            </template>
+          </p>
+        </template>
       </div>
     </div>
     <!-- 加入判断 开启拖动不显示 -->
@@ -222,65 +243,8 @@
   });
 
   const flow = computed(() => {
-    if (props.type === 'sub') {
-      const urlList = Object.keys(flows.value);
-      if (props.sub.source === 'local') return t('subPage.subItem.local');
-      if (isFlowFetching.value && !urlList.includes(props.sub.url))
-        return t('subPage.subItem.loading');
-
-      const target = toRaw(flows.value[props.sub.url]);
-      if (!target) {
-        return {
-          firstLine: t('subPage.subItem.noRecord'),
-          secondLine: ``,
-        };
-      }
-
-      if (target.status === 'success') {
-        const {
-          expires,
-          total,
-          usage: { upload, download },
-        } = target.data;
-
-        let secondLine: string;
-        if (isSimpleMode.value) {
-          secondLine = !expires
-            ? ''
-            : `${dayjs.unix(expires).format('YYYY-MM-DD')}`;
-          return {
-            firstLine: `${getString(upload + download, total, 'B')}`,
-            secondLine,
-          };
-        } else {
-          secondLine = !expires
-            ? t('subPage.subItem.noExpiresInfo')
-            : `${t('subPage.subItem.expires')}：${dayjs
-                .unix(expires)
-                .format('YYYY-MM-DD')}`;
-          return {
-            firstLine: `${t('subPage.subItem.flow')}：${getString(
-              upload + download,
-              total,
-              'B'
-            )}`,
-            secondLine,
-          };
-        }
-      } else if (target?.status === 'failed') {
-        if (target.error.code === 'NO_FLOW_INFO') {
-          return {
-            firstLine: t('subPage.subItem.noFlowInfo'),
-            secondLine: ``,
-          };
-        } else {
-          return {
-            firstLine: `${target.error?.type}`,
-            secondLine: `${target.error?.message}`,
-          };
-        }
-      }
-    }
+    if (props.file.source === 'remote') return t('filePage.source.remote');
+    return t('filePage.source.local');
   });
 
   const closePreview = () => {

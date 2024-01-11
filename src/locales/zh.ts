@@ -68,6 +68,12 @@ export default {
     content: {
       placeholder: '填入文件内容'
     },
+    url: {
+      label: '链接',
+      placeholder: '链接(多个链接请换行)',
+      isEmpty: '链接不能为空',
+      isIllegal: '链接格式非法',
+    },
     copyNotify: {
       succeed: '复制文件链接成功\n如果你只在内部使用, 仅需 {path}',
       failed: '复制文件链接失败\n{e}',
@@ -76,6 +82,13 @@ export default {
       title: '你还没有添加文件',
       desc: '添加后开始使用文件',
       btn: '立即添加',
+    },
+    source: {
+      local: '本地',
+      remote: '远程',
+    },
+    ignoreFailedRemoteFile: {
+      label: '忽略失败的远程文件'
     },
   },
   // 订阅管理页
@@ -213,7 +226,7 @@ export default {
         },
         ua: {
           label: 'User-Agent',
-          placeholder: '下载订阅使用的 UA，不填使用默认',
+          placeholder: '下载时使用的 UA，不填使用默认',
         },
       },
       commonOptions: {
@@ -497,7 +510,7 @@ export default {
       },
     },
     copyNotify: {
-      succeed: '复制 Gist 链接成功\n可以前往代理工具使用咯～',
+      succeed: '复制 Gist 链接成功',
       failed: '复制 Gist 链接失败\n{e}',
     },
     addArtForm: {

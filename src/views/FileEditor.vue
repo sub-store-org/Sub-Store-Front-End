@@ -53,7 +53,49 @@
             type="text"
           />
         </nut-form-item>
+        <nut-form-item
+            required
+            :label="$t(`editorPage.subConfig.basic.source.label`)"
+            prop="source"
+          >
+          <div class="radio-wrapper">
+            <nut-radiogroup direction="horizontal" v-model="form.source">
+              <nut-radio shape="button" label="remote"
+                >{{ $t(`filePage.source.remote`) }}
+              </nut-radio>
+              <nut-radio shape="button" label="local"
+                >{{ $t(`filePage.source.local`) }}
+              </nut-radio>
+            </nut-radiogroup>
+          </div>
+        </nut-form-item>
+        <nut-form-item
+            required
+            v-if="form.source === 'remote'"
+            :label="$t(`editorPage.subConfig.basic.url.label`)"
+            prop="url"
+            :rules="[
+              {
+                required: true,
+                message: $t(`filePage.url.isEmpty`),
+              },
+              {
+                validator: urlValidator,
+                message: $t(`filePage.url.isIllegal`),
+              },
+            ]"
+          >
+            <nut-textarea
+              class="textarea-wrapper"
+              @blur="customerBlurValidate('url')"
+              v-model="form.url"
+              :autosize="{ maxHeight: 110, minHeight: 50 }"
+              :placeholder="$t(`filePage.url.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
           <nut-form-item
+            v-else-if="form.source === 'local'"
             :label="undefined"
             prop="content"
           >
@@ -68,11 +110,47 @@
               type="text"
             />
           </nut-form-item>
+        <!-- ua -->
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.ua.label`)"
+          prop="ua"
+          v-if="form.source === 'remote'"
+        >
+          <input
+            class="nut-input-text"
+            v-model.trim="form.ua"
+            :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
+            type="text"
+          />
+        </nut-form-item>
 
-
-    
-
-      
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
+          prop="mergeSources"
+        >
+          <div class="radio-wrapper">
+            <nut-radiogroup direction="horizontal" v-model="form.mergeSources">
+              <nut-radio shape="button" label=""
+                >{{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
+              </nut-radio>
+              <nut-radio shape="button" label="localFirst"
+                >{{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
+              </nut-radio>
+              <nut-radio shape="button" label="remoteFirst"
+                >{{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
+              </nut-radio>
+            </nut-radiogroup>
+          </div>
+        </nut-form-item>
+        <nut-form-item
+          :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
+          prop="ignoreFailedRemoteFile"
+          class="ignore-failed-wrapper"
+        >
+          <div class="swtich-wrapper">
+            <nut-switch v-model="form.ignoreFailedRemoteFile"/>
+          </div>
+        </nut-form-item>
       </nut-form>
     </div>
     <ActionBlock
@@ -163,6 +241,7 @@
     name: '',
     displayName: '',
     icon: '',
+    source: 'local',
     process: [],
   });
   provide('form', form);
@@ -185,8 +264,12 @@
       form.name = sourceData.name;
       form.displayName = sourceData.displayName || sourceData['display-name'];
       form.icon = sourceData.icon;
-
+      form.source = sourceData.source || 'local';
+      form.url = sourceData.url;
+      form.ua = sourceData.ua;
+      form.mergeSources = sourceData.mergeSources;
       form.content = sourceData.content;
+      form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
       const newProcess = JSON.parse(JSON.stringify(sourceData.process));
       form.process = newProcess;
       if (sourceData.process.length > 0) {
@@ -344,6 +427,17 @@
     });
   };
 
+  // url 格式验证器
+  const urlValidator = (val: string): Promise<boolean> => {
+    return new Promise(resolve => {
+      if (/\n/.test(val)) {
+        resolve(val.split(/[\r\n]+/).map(i => i.trim()).filter(i => i.length).every(i => /^(http|https):\/\/\S+$/.test(i)))
+      } else {
+        resolve(/^(http|https):\/\/\S+$/.test(val));  
+      }
+      
+    });
+  };
   // 失去焦点触发验证
   const customerBlurValidate = (prop: string) => {
     ruleForm.value.validate(prop);
