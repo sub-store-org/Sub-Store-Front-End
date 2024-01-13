@@ -142,7 +142,6 @@
 </template>
 
 <script lang="ts" setup>
-import semverGt from 'semver/functions/gt';
 import ArtifactsListItem from "@/components/ArtifactsListItem.vue";
 import { useArtifactsStore } from "@/store/artifacts";
 import { storeToRefs } from "pinia";
@@ -204,13 +203,7 @@ const uploadAllIsDisabled = computed(() => {
 const uploadAllIsLoading = ref(false);
 const uploadAll = async () => {
   uploadAllIsLoading.value = true;
-  let method = 'get'
-  try {
-    if (semverGt(env.value.version, '2.14.151')) {
-      method = 'post'
-    }
-  } catch (e) {}
-  await artifactsStore.syncAllArtifact(method);
+  await artifactsStore.syncAllArtifact();
   uploadAllIsLoading.value = false;
 };
 

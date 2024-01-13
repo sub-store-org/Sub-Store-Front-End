@@ -88,7 +88,6 @@
 </template>
 
 <script lang="ts" setup>
-import semverGt from 'semver/functions/gt';
 import singboxIcon from '@/assets/icons/sing-box.png';
 import clashIcon from '@/assets/icons/clash.png';
 import clashMetaIcon from '@/assets/icons/clashmeta.png';
@@ -113,7 +112,7 @@ import { useGlobalStore } from '@/store/global';
 import { useHostAPI } from '@/hooks/useHostAPI';
 const globalStore = useGlobalStore();
 
-const { env, isLeftRight, isSimpleMode } = storeToRefs(globalStore);
+const { isLeftRight, isSimpleMode } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -303,13 +302,7 @@ const onClickSync = async () => {
     cover: true,
     id: 'sync-toast',
   });
-  let method = 'get'
-  try {
-    if (semverGt(env.value.version, '2.14.151')) {
-      method = 'post'
-    }
-  } catch (e) {}
-  await artifactsStore.syncOneArtifact(artifact.value.name, method);
+  await artifactsStore.syncOneArtifact(artifact.value.name);
   Toast.hide('sync-toast');
 };
 
