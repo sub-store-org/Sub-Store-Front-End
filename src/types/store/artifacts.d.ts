@@ -10,6 +10,7 @@ type ArtifactsPlatform =
   | 'Stash'
   | 'ShadowRocket'
   | 'ClashMeta'
+  | 'sing-box'
   | 'V2Ray';
 
 type ArtifactType = 'collection' | 'subscription' | 'file';

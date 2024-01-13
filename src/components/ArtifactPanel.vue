@@ -92,6 +92,7 @@
           v-model="editPanelData.platform"
           class="artifact-radio-group"
         >
+          <nut-radio label="sing-box">sing-box</nut-radio>
           <nut-radio label="Stash">Stash</nut-radio>
           <nut-radio label="ClashMeta">Clash.Meta(mihomo)</nut-radio>
           <nut-radio label="Clash">Clash</nut-radio>

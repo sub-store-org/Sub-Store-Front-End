@@ -20,6 +20,7 @@ interface ENV {
   latestVersion?: string;
   version?: string;
   backend?:
+    | 'sing-box'
     | 'Stash'
     | 'QX'
     | 'Loon'

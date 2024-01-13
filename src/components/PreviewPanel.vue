@@ -42,6 +42,7 @@
   import stash from '@/assets/icons/stash.png';
   import shadowrocket from '@/assets/icons/shadowrocket.png';
   import v2ray from '@/assets/icons/v2ray.png';
+  import singbox from '@/assets/icons/sing-box.png';
   import clashmeta from '@/assets/icons/clashmeta.png';
   import logoicon from '@/assets/icons/logo.svg';
   import { useClipboard } from '@vueuse/core';
@@ -77,6 +78,11 @@
       name: general,
       path: null,
       icon: logoicon,
+    },
+    {
+      name: 'sing-box',
+      path: 'sing-box',
+      icon: singbox,
     },
     {
       name: 'Stash',
@@ -151,7 +157,7 @@
 
       .infos {
         flex: 1;
-        padding: 8px 0;
+        padding: 6px 0;
         display: flex;
         align-items: center;
         gap: 4px;

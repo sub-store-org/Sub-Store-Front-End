@@ -22,7 +22,7 @@
 
     <div v-if="value.mode === 'script'">
       <div class="input-wrapper">
-        <nut-textarea v-model="value.code" :placeholder="sourceType !== 'file' ? $t(`// This is example
+        <nut-textarea v-model="value.code" :placeholder="sourceType !== 'file' ? $t(`// Example:
 // Script Operator
 // 1. backend version(>2.14.88):
 $server.name = 'prefix-' + $server.name
@@ -50,7 +50,17 @@ function filter(proxies, targetPlatform) {
     return true;
   });
 }
-`) : $t(`$content += 'anything'`) " :rows="23" />
+`) : $t(`// Example:
+// backend version(>2.14.147):
+// $files: ['0', '1']
+// $content: '0\\n1'
+
+$content = ProxyUtils.yaml.safeDump({})
+$content = JSON.stringify({}, null, 2)
+
+// { $content, $files } will be passed to the next operator 
+// $content is the final content of the file
+`) " :rows="23" />
         <!-- <span>
         <font-awesome-icon icon="fa-solid fa-code" />
         {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}

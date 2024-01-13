@@ -88,6 +88,7 @@
 </template>
 
 <script lang="ts" setup>
+import singboxIcon from '@/assets/icons/sing-box.png';
 import clashIcon from '@/assets/icons/clash.png';
 import clashMetaIcon from '@/assets/icons/clashmeta.png';
 import loonIcon from '@/assets/icons/loon.png';
@@ -150,6 +151,8 @@ const icon = computed(() => {
       return shadowRocketIcon;
     case 'V2Ray':
       return v2rayIcon;
+    case 'sing-box':
+      return singboxIcon;
   }
 });
 
