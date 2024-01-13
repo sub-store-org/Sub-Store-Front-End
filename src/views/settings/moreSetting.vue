@@ -70,6 +70,16 @@
         </template>
       </nut-cell>
 
+      <nut-cell :title="$t(`moreSettingPage.tabBar2`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awtabBar2"
+            size="mini"
+            @change="settabBar2"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.tabBar`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -180,6 +190,7 @@
     isSimpleReicon,
     showFloatingRefreshButton,
     istabBar,
+    istabBar2,
   } = storeToRefs(globalStore);
 
   const InputHostApi = ref('');
@@ -191,6 +202,7 @@
   const awSimpleReicon = ref(true);
   const awShowFloatingRefreshButton = ref(false);
   const awtabBar = ref(true);
+  const awtabBar2 = ref(true);
   // const isEditing = ref(false);
   const isInit = ref(false);
 
@@ -225,6 +237,9 @@
 
   const settabBar = (istabBar: boolean) => {
     globalStore.settabBar(istabBar);
+  };
+  const settabBar2 = (istabBar2: boolean) => {
+    globalStore.settabBar2(istabBar2);
   };
 
   const SwitchSyncIsChange = (val: boolean) => {
@@ -355,6 +370,7 @@
     awSimpleReicon.value = isSimpleReicon.value;
     awShowFloatingRefreshButton.value = showFloatingRefreshButton.value;
     awtabBar.value = istabBar.value;
+    awtabBar2.value = istabBar2.value;
     autoSwitch.value = isAuto();
     if (!isInit.value) {
       setDisplayInfo();

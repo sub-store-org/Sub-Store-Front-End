@@ -22,6 +22,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isSimpleReicon: localStorage.getItem('isSimpleReicon') === '1',
       showFloatingRefreshButton: localStorage.getItem('showFloatingRefreshButton') === '1',
       istabBar: localStorage.getItem('istabBar') === '1',
+      istabBar2: localStorage.getItem('istabBar2') === '1',
       ishostApi: getHostAPIUrl(),
     };
   },
@@ -97,6 +98,14 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('istabBar');
       }
       this.istabBar = istabBar;
+    },
+    settabBar2(istabBar2: boolean) {
+      if (istabBar2) {
+        localStorage.setItem('istabBar2', '1');
+      } else {
+        localStorage.removeItem('istabBar2');
+      }
+      this.istabBar2 = istabBar2;
     },
     async setHostAPI(hostApi: string) {
       this.ishostApi = hostApi;

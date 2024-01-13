@@ -12,6 +12,7 @@ interface GlobalStoreState {
   isSimpleReicon: boolean;
   showFloatingRefreshButton: boolean;
   istabBar: boolean;
+  istabBar2: boolean;
   ishostApi: string;
 }
 

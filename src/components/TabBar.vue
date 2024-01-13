@@ -8,7 +8,7 @@
       size="22px"
     >
       <nut-tabbar-item class="tabbar-item" to="/subs" icon="link" />
-      <nut-tabbar-item class="tabbar-item" to="/files" icon="category" />
+      <nut-tabbar-item v-show="!istabBar2" class="tabbar-item" to="/files" icon="category" />
 
       <nut-tabbar-item
         v-show="!istabBar"
@@ -38,7 +38,7 @@
   });
 
   const globalStore = useGlobalStore();
-  const { bottomSafeArea, istabBar, env } = storeToRefs(globalStore);
+  const { bottomSafeArea, istabBar, istabBar2, env } = storeToRefs(globalStore);
   const style = {
     height: `${bottomSafeArea.value + 12 + 44}px`,
     paddingBottom: bottomSafeArea.value + 'px',

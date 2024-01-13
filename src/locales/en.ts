@@ -597,6 +597,7 @@ export default {
     isSimpleReicon: 'Show items refresh button',
     showFloatingRefreshButton: 'Show floating refresh button',
     tabBar: 'Hide "Sync" Page',
+    tabBar2: 'Hide "File" Page',
     auto2: 'MoreSetting Key',
     hostapi: 'Custom Backend API',
     currentHostApi: 'Current Backend API',
