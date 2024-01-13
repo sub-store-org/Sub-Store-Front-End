@@ -55,10 +55,10 @@ export const useArtifactsStore = defineStore('artifactsStore', {
         });
       }
     },
-    async syncAllArtifact() {
+    async syncAllArtifact(method: string) {
       const { showNotify } = useAppNotifyStore();
 
-      const res = await artifactsApi.syncAllArtifact();
+      const res = await artifactsApi.syncAllArtifact(method);
       if (res?.data?.status === 'success') {
         await this.fetchArtifactsData();
         showNotify({
@@ -67,10 +67,10 @@ export const useArtifactsStore = defineStore('artifactsStore', {
         });
       }
     },
-    async syncOneArtifact(name: string) {
+    async syncOneArtifact(name: string, method: string) {
       const { showNotify } = useAppNotifyStore();
 
-      const res = await artifactsApi.syncOneArtifact(name);
+      const res = await artifactsApi.syncOneArtifact(name, method);
       if (res?.data?.status === 'success') {
         const index = this.artifacts.findIndex(item => item.name === name);
         this.artifacts[index] = res.data.data;

@@ -15,10 +15,10 @@ export function useArtifactsApi() {
         method: 'get',
       });
     },
-    syncOneArtifact: (name: string): AxiosPromise<MyAxiosRes> => {
+    syncOneArtifact: (name: string, method = 'get'): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/sync/artifact/${encodeURIComponent(name)}`,
-        method: 'get',
+        method,
       });
     },
     createArtifact: (data: Artifact): AxiosPromise<MyAxiosRes> => {
@@ -41,10 +41,10 @@ export function useArtifactsApi() {
         method: 'delete',
       });
     },
-    syncAllArtifact: (): AxiosPromise<MyAxiosRes> => {
+    syncAllArtifact: (method = 'get'): AxiosPromise<MyAxiosRes> => {
       return request({
         url: '/api/sync/artifacts',
-        method: 'get',
+        method,
       });
     },
   };
