@@ -51,11 +51,27 @@ function filter(proxies, targetPlatform) {
   });
 }
 `) : $t(`// Example:
-// backend version(>2.14.147):
+// backend version(>2.14.148):
 // $files: ['0', '1']
 // $content: '0\\n1'
 
+// produce proxies
+let singboxProxies = JSON.parse(await produceArtifact({
+    type: 'subscription', // type: 'subscription' 或 'collection'
+    name: 'sub', // subscription name
+    platform: 'sing-box' // target platform
+}))
+
+let clashMetaProxies = ProxyUtils.yaml.safeLoad(await produceArtifact({
+    type: 'subscription',
+    name: 'sub',
+    platform: 'ClashMeta'
+})).proxies
+
+// YAML
 $content = ProxyUtils.yaml.safeDump({})
+
+// JSON
 $content = JSON.stringify({}, null, 2)
 
 // { $content, $files } will be passed to the next operator 

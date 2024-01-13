@@ -1,5 +1,6 @@
 import { useEnvApi } from '@/api/env';
 import { useSubsApi } from '@/api/subs';
+import { useFilesApi } from '@/api/files';
 
 import AppLayout from '@/layout/AppLayout.vue';
 import { useGlobalStore } from '@/store/global';
@@ -194,6 +195,8 @@ router.beforeResolve(async to => {
           await useSubsApi().getOne('sub', name);
         } else if (to.params.editType === 'collections') {
           await useSubsApi().getOne('collection', name);
+        }else if (to.params.editType === 'files') {
+          await useFilesApi().getOneFile(name);
         }
       } catch {
         router.replace('/404');
