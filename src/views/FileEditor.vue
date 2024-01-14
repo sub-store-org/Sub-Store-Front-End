@@ -143,15 +143,6 @@
           </div>
         </nut-form-item>
         <nut-form-item
-          :label="$t(`filePage.isTpl.label`)"
-          prop="isTpl"
-          class="ignore-failed-wrapper"
-        >
-          <div class="swtich-wrapper">
-            <nut-switch v-model="form.isTpl"/>
-          </div>
-        </nut-form-item>
-        <nut-form-item
           :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
           prop="ignoreFailedRemoteFile"
           class="ignore-failed-wrapper"
@@ -279,7 +270,6 @@
       form.mergeSources = sourceData.mergeSources;
       form.content = sourceData.content;
       form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
-      form.isTpl = sourceData.isTpl;
       const newProcess = JSON.parse(JSON.stringify(sourceData.process));
       form.process = newProcess;
       if (sourceData.process.length > 0) {

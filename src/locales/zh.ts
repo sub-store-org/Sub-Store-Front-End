@@ -90,9 +90,6 @@ export default {
     ignoreFailedRemoteFile: {
       label: '忽略失败的远程文件'
     },
-    isTpl: {
-      label: '启用模板渲染'
-    },
   },
   // 订阅管理页
   subPage: {
