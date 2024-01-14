@@ -90,6 +90,9 @@ export default {
     ignoreFailedRemoteFile: {
       label: 'Ignore failed remote file(s)'
     },
+    isTpl: {
+      label: 'Enable template rendering'
+    },
   },
   // subscription management page
   subPage: {
