@@ -219,7 +219,6 @@
   const router = useRouter();
   const subsApi = useSubsApi();
   const filesApi = useFilesApi();
-  const editType = route.params.editType as string;
   const configName = route.params.id as string;
   const subsStore = useSubsStore();
   const { showNotify } = useAppNotifyStore();
@@ -391,7 +390,7 @@
     
         if (configName === data.name) {
           // @ts-ignore
-          await subsStore.updateOneData(editType, configName);
+          await subsStore.updateOneData('files', configName);
         } else {
           await subsStore.fetchSubsData();
         }
