@@ -462,11 +462,12 @@ watchEffect(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 0 0 0 10px;
       }
 
       h1 {
         font-size: 14px;
-        padding: 8px 0;
+        padding: 8px 0 2px 0;
         margin-bottom: 8px;
       }
 
@@ -479,7 +480,7 @@ watchEffect(() => {
 
         .input {
           background: transparent;
-          padding: 16px;
+          padding: 12px;
           color: var(--second-text-color);
 
           :deep(img) {

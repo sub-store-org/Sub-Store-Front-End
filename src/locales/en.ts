@@ -200,7 +200,7 @@ export default {
           remote: 'Remote URL',
           local: 'Local',
           mergeSources: 'Merge Sources',
-          noMerge: 'No Merge',
+          noMerge: 'Disabled',
           localFirst: 'Local Fist',
           remoteFirst: 'Remote First',
         },

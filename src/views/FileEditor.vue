@@ -462,6 +462,9 @@
       border-color: transparent;
       color: var(--second-text-color);
     }
+    :deep(.nut-radio__button) {
+      padding: 5px 10px;
+    }
   }
 
   .form-block-wrapper {
