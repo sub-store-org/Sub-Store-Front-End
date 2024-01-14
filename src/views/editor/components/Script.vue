@@ -56,17 +56,20 @@ function filter(proxies, targetPlatform) {
 // $content: '0\\n1'
 
 // produce proxies
-let singboxProxies = JSON.parse(await produceArtifact({
+// backend version(>2.14.156):
+let singboxProxies = await produceArtifact({
     type: 'subscription', // type: 'subscription' 或 'collection'
     name: 'sub', // subscription name
-    platform: 'sing-box' // target platform
-}))
+    platform: 'sing-box', // target platform
+    produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( JSON.parse('JSON String') )
+})
 
-let clashMetaProxies = ProxyUtils.yaml.safeLoad(await produceArtifact({
+let clashMetaProxies = await produceArtifact({
     type: 'subscription',
     name: 'sub',
-    platform: 'ClashMeta'
-})).proxies
+    platform: 'ClashMeta',
+    produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( ProxyUtils.yaml.safeLoad('YAML String') )
+}))
 
 // YAML
 $content = ProxyUtils.yaml.safeDump({})
