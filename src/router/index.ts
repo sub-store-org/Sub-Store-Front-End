@@ -196,7 +196,7 @@ router.beforeResolve(async to => {
         } else if (to.params.editType === 'collections') {
           await useSubsApi().getOne('collection', name);
         }else if (to.params.editType === 'files') {
-          await useFilesApi().getOneFile(name);
+          await useFilesApi().getWholeFile(name);
         }
       } catch {
         router.replace('/404');

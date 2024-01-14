@@ -15,7 +15,7 @@ export function useFilesApi() {
         method: 'get',
       });
     },
-    getOneFile: (name: string): AxiosPromise<MyAxiosRes> => {
+    getFile: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/file/${encodeURIComponent(name)}`,
         method: 'get',
