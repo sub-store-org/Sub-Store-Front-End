@@ -68,7 +68,7 @@ let clashMetaProxies = await produceArtifact({
     type: 'subscription',
     name: 'sub',
     platform: 'ClashMeta',
-    produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( ProxyUtils.yaml.safeLoad('YAML String') )
+    produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( ProxyUtils.yaml.safeLoad('YAML String').proxies )
 }))
 
 // YAML
