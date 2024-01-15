@@ -233,6 +233,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { useArtifactsStore } from "@/store/artifacts";
   import { useSubsApi } from '@/api/subs';
   import icon from '@/assets/icons/logo.svg';
   import { usePopupRoute } from '@/hooks/usePopupRoute';
@@ -510,6 +511,7 @@
           await subsStore.updateOneData(editType, configName);
         } else {
           await subsStore.fetchSubsData();
+          await useArtifactsStore().fetchArtifactsData();
         }
       }
 

@@ -26,7 +26,7 @@
           </p>
           <div class="second-line-wrapper">
             <p>{{ detail.secondLine }}</p>
-            <div class="task-switch" :style="{'margin-top': isSimpleMode ? '-22px' : '0' }">
+            <div class="task-switch">
               <div v-if="isSimpleMode">
                 <button v-if="artifact.url" class="copy-sub-link"
                   style="padding: 0 12px;" @click.stop="onClickCopyLink">
@@ -244,11 +244,9 @@ const transferText = (type: string) => {
 
 
 const detail = computed(() => {
+  const name = sourceSub.value ? (sourceSub.value?.displayName ||
+      sourceSub.value?.['display-name'] || sourceSub.value?.name) : '';
   if (isSimpleMode.value) {
-    const name =
-      sourceSub.value?.displayName ||
-      sourceSub.value?.['display-name'] ||
-      sourceSub.value?.name;
     return {
       firstLine: '',
       secondLine: transferText('type') + ' ' + name + ' ' + transferText('time'),
@@ -257,10 +255,7 @@ const detail = computed(() => {
     return {
       firstLine: t(`syncPage.detail.firstLine`, {
         type: transferText('type'),
-        name:
-          sourceSub.value?.displayName ||
-          sourceSub.value?.['display-name'] ||
-          sourceSub.value?.name,
+        name
       }),
       secondLine: transferText('time'),
     };
