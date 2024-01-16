@@ -50,6 +50,19 @@
             />
           </nut-button>
           <nut-button
+            class="upload-all-btn btn"
+            type="info"
+            plain
+            size="small"
+            :loading="downloadAllIsLoading"
+            @click="downloadAll"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-cloud-arrow-down"
+              v-if="!downloadAllIsLoading"
+            />
+          </nut-button>
+          <nut-button
             class="preview-btn btn"
             type="info"
             plain
@@ -95,6 +108,19 @@
       <div class="sticky-title-wrapper sync-title">
         <p class="list-title">{{ $t(`syncPage.title`) }}</p>
         <div class="actions-wrapper">
+          <nut-button
+            class="upload-all-btn btn"
+            type="info"
+            plain
+            size="small"
+            :loading="downloadAllIsLoading"
+            @click="downloadAll"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-cloud-arrow-down"
+              v-if="!downloadAllIsLoading"
+            />
+          </nut-button>
           <nut-button
             class="preview-btn btn"
             type="info"
@@ -221,6 +247,36 @@ const uploadAll = async () => {
   uploadAllIsLoading.value = true;
   await artifactsStore.syncAllArtifact();
   uploadAllIsLoading.value = false;
+};
+const downloadAllIsLoading = ref(false);
+const downloadAll = async () => {
+  downloadAllIsLoading.value = true;
+  Dialog({
+    popClass: 'auto-dialog',
+    title: t(`syncPage.preview.title`),
+    content: artifactStoreUrl.value ? `${t('syncPage.download.content')}\n\n${t('syncPage.preview.content', { status: artifactStoreStatus.value || 'VALID' })}\n${t('syncPage.preview.url')}` : `${t('syncPage.download.content')}\n\n${t('syncPage.preview.content', { status: artifactStoreStatus.value || '-' })}\n${t('syncPage.preview.noUrl')}`,
+    noOkBtn: !artifactStoreUrl.value,
+    okText: t(`syncPage.download.confirm`),
+    cancelText: t(`syncPage.preview.cancel`),
+    // @ts-ignore
+    closeOnClickOverlay: true,
+    onOk: async () => {
+      try {
+        await artifactsStore.restoreArtifacts();
+      } catch (e) {
+        showNotify({
+          title: t("myPage.notify.restore.failed"),
+          type: "danger",
+          content: `${ e.message ?? e}`,
+        });
+      } finally {
+        downloadAllIsLoading.value = false;
+      }
+    },
+    onCancel: async () => {
+      downloadAllIsLoading.value = false;
+    },
+  });
 };
 
 const refresh = () => {

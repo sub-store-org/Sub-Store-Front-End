@@ -55,6 +55,19 @@ export const useArtifactsStore = defineStore('artifactsStore', {
         });
       }
     },
+    async restoreArtifacts() {
+      const { showNotify } = useAppNotifyStore();
+
+      const res = await artifactsApi.restoreArtifacts();
+      if (res?.data?.status === 'success') {
+        await this.fetchArtifactsData();
+        showNotify({
+          type: "success",
+          title: t(`myPage.notify.restore.succeed`),
+          content: ``,
+        });
+      }
+    },
     async syncAllArtifact() {
       const { showNotify } = useAppNotifyStore();
 

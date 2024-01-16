@@ -47,5 +47,11 @@ export function useArtifactsApi() {
         method: 'get',
       });
     },
+    restoreArtifacts: (): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: '/api/artifacts/restore',
+        method: 'get',
+      });
+    },
   };
 }

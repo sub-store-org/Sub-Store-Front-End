@@ -505,7 +505,7 @@ export default {
     },
     deleteArt: {
       title: '删除同步配置',
-      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！',
+      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置进行过同步, 将尝试删除对应的 gist 文件',
       succeedNotify: '删除同步配置成功！',
       btn: {
         confirm: '确认删除',
@@ -561,7 +561,11 @@ export default {
       noUrl: '检查成功并上传同步配置后 即可查看',
       cancel: '取消',
       confirm: '查看 gist',
-    }
+    },
+    download: {
+      content: '⚠️ 只会获取不在同步配置中的 gist 文件\n你需要手动设置来源',
+      confirm: '从 gist 恢复',
+    },
   },
   themeSettingPage: {
     themeSettingTitle: '外观设置',

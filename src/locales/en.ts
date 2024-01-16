@@ -503,7 +503,7 @@ export default {
     },
     deleteArt: {
       title: 'Delete Sync Configuration',
-      desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!',
+      desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been synced before, an attempt will be made to delete the gist file.',
       succeedNotify: 'Successfully deleted!',
       btn: {
         confirm: 'Delete',
@@ -560,7 +560,11 @@ export default {
       noUrl: 'Once you have successfully checked and uploaded the synchronized configuration, you can view the gist.',
       cancel: 'Cancel',
       confirm: 'View Gist',
-    }
+    },
+    download: {
+      content: '⚠️ This feature will only add files to the sync configuration that are not already in the sync configuration.\nYou need to manually set the source.',
+      confirm: 'Restore From Gist',
+    },
   },
   themeSettingPage: {
     themeSettingTitle: 'Appearance',
