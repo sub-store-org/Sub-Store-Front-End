@@ -4,6 +4,9 @@ export default {
     singleSub: 'Single',
     collectionSub: 'Collection',
     file: 'File',
+    unknownType: 'Unknown Type',
+    unknownSource: 'Unknown Source',
+    unknown: 'Unknown',
   },
   globalNotify: {
     refresh: {

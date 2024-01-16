@@ -234,6 +234,8 @@ const transferText = (type: string) => {
         return t('specificWord.collectionSub');
       case 'file':
         return t('specificWord.file');
+      default:
+        return t('specificWord.unknownType');
     }
   };
 
@@ -263,16 +265,17 @@ const transferText = (type: string) => {
 
 const detail = computed(() => {
   const name = sourceSub.value ? (sourceSub.value?.displayName ||
-      sourceSub.value?.['display-name'] || sourceSub.value?.name) : '';
+      sourceSub.value?.['display-name'] || sourceSub.value?.name) : t('specificWord.unknownSource')
+  const type = transferText('type') || ''
   if (isSimpleMode.value) {
     return {
       firstLine: '',
-      secondLine: transferText('type') + ' ' + name + ' ' + transferText('time'),
+      secondLine: type + ' ' + name + ' ' + transferText('time'),
     };
   } else {
     return {
       firstLine: t(`syncPage.detail.firstLine`, {
-        type: transferText('type'),
+        type,
         name
       }),
       secondLine: transferText('time'),

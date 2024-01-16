@@ -4,6 +4,9 @@ export default {
     singleSub: '单条订阅',
     collectionSub: '组合订阅',
     file: '文件',
+    unknownType: '未知类型',
+    unknownSource: '未知来源',
+    unknown: '未知',
   },
   globalNotify: {
     refresh: {

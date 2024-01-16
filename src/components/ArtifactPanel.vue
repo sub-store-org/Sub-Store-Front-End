@@ -222,15 +222,15 @@
 
   const displayType = computed(() => {
     const typeValue = editPanelData.value.type;
-    return sourceOptions.value.find(item => item.value === typeValue).text;
+    return sourceOptions.value.find(item => item.value === typeValue)?.text ?? t(`specificWord.unknown`);
   });
 
   const displayName = computed(() => {
     const typeValue = editPanelData.value.type;
     const typeObj = sourceOptions.value.find(item => item.value === typeValue);
-    return typeObj.children.find(
+    return typeObj?.children?.find(
       item => item.value === editPanelData.value.source
-    ).text;
+    )?.text ?? t(`specificWord.unknown`);
   });
 
   const sourceChange = v1 => {
