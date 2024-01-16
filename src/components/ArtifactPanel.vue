@@ -92,7 +92,6 @@
           v-model="editPanelData.platform"
           class="artifact-radio-group"
         >
-          <nut-radio label="sing-box">sing-box</nut-radio>
           <nut-radio label="Stash">Stash</nut-radio>
           <nut-radio label="ClashMeta">Clash.Meta(mihomo)</nut-radio>
           <nut-radio label="Clash">Clash</nut-radio>
@@ -101,6 +100,7 @@
           <nut-radio label="Loon">Loon</nut-radio>
           <nut-radio label="ShadowRocket">Shadowrocket</nut-radio>
           <nut-radio label="QX">Quantumult X</nut-radio>
+          <nut-radio label="sing-box">sing-box</nut-radio>
           <nut-radio label="V2Ray">V2Ray</nut-radio>
         </nut-radiogroup>
       </nut-form-item>
@@ -144,7 +144,7 @@
     displayName: '',
     source: '',
     type: 'file',
-    platform: 'Surge',
+    platform: 'Stash',
   });
 
   const sourceSelectorIsVisible = ref(false);

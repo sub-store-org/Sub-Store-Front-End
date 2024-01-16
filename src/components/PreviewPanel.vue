@@ -80,11 +80,6 @@
       icon: logoicon,
     },
     {
-      name: 'sing-box',
-      path: 'sing-box',
-      icon: singbox,
-    },
-    {
       name: 'Stash',
       path: 'Stash',
       icon: stash,
@@ -124,6 +119,11 @@
       name: 'Quantumult X',
       path: 'QX',
       icon: quanx,
+    },
+    {
+      name: 'sing-box',
+      path: 'sing-box',
+      icon: singbox,
     },
     {
       name: 'V2Ray',
