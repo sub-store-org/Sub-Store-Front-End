@@ -18,6 +18,7 @@ type ArtifactType = 'collection' | 'subscription' | 'file';
 interface Artifact {
   name: string;
   displayName?: string;
+  icon?: string;
   type: ArtifactType;
   source: string;
   platform: ArtifactsPlatform;

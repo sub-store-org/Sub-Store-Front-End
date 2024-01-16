@@ -164,6 +164,10 @@ const sourceSub = computed(() => {
 });
 
 const icon = computed(() => {
+  const icon = artifact.value.icon
+  if (icon) {
+    return icon;
+  }
   let platform = String(artifact.value.platform)
   if (['file'].includes(artifact.value.type)) {
     if (sourceSub.value?.icon) {

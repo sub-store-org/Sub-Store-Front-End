@@ -56,6 +56,19 @@
         />
       </nut-form-item>
       <nut-form-item
+        :label="$t(`editorPage.subConfig.basic.icon.label`)"
+        prop="icon"
+      >
+        <nut-input
+          input-align="left"
+          class="nut-input-text"
+          :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
+          v-model="editPanelData.icon"
+          type="text"
+        />
+      </nut-form-item>
+
+      <nut-form-item
         :label="$t(`syncPage.addArtForm.source.label`)"
         required
         prop="source"
@@ -142,6 +155,7 @@
   const editPanelData = ref<Artifact>({
     name: '',
     displayName: '',
+    icon: '',
     source: '',
     type: 'file',
     platform: 'Stash',
