@@ -551,6 +551,14 @@ export default {
     selectSource: {
       title: '选择来源',
     },
+    preview: {
+      title: 'Sub-Store Gist',
+      content: '最近一次检查的状态: {status}\n更新配置后将自动触发一次检查',
+      url: '当前的 gist 为最后一次检查正常的 gist',
+      noUrl: '检查成功并上传同步配置后 即可查看',
+      cancel: '取消',
+      confirm: '查看 gist',
+    }
   },
   themeSettingPage: {
     themeSettingTitle: '外观设置',

@@ -4,6 +4,7 @@ interface SettingsBase {
   syncTime: number;
   avatarUrl: string;
   artifactStore: string;
+  artifactStoreStatus?: string;
   // ishostApi: string;
 }
 

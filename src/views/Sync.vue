@@ -55,7 +55,6 @@
             plain
             size="small"
             @click="preview"
-            v-if="artifactStoreUrl"
           >
             <font-awesome-icon icon="fa-solid fa-eye" />
           </nut-button>
@@ -91,6 +90,22 @@
           </div>
         </template>
       </draggable>
+    </div>
+    <div v-else class="subs-list-wrapper">
+      <div class="sticky-title-wrapper sync-title">
+        <p class="list-title">{{ $t(`syncPage.title`) }}</p>
+        <div class="actions-wrapper">
+          <nut-button
+            class="preview-btn btn"
+            type="info"
+            plain
+            size="small"
+            @click="preview"
+          >
+            <font-awesome-icon icon="fa-solid fa-eye" />
+          </nut-button>
+        </div>
+      </div>
     </div>
 
     <!--没有数据-->
@@ -156,6 +171,7 @@ import { useSubsApi } from "@/api/subs";
 import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
+import { Dialog } from '@nutui/nutui';
 
 const { env } = useBackend();
 const subsApi = useSubsApi();
@@ -165,7 +181,7 @@ const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
 const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
-const { artifactStore: artifactStoreUrl } = storeToRefs(settingsStore);
+const { artifactStore: artifactStoreUrl, artifactStoreStatus } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const swipeDisabled = ref(false);
 const isEditPanelVisible = ref(false);
@@ -212,8 +228,23 @@ const refresh = () => {
 };
 
 const preview = () => {
-  // console.log(artifactStoreUrl.value);
-  window.open(artifactStoreUrl.value);
+  if (artifactStoreUrl.value && (!artifactStoreStatus.value ||artifactStoreStatus.value === "VALID")) {
+    window.open(artifactStoreUrl.value);
+  } else {
+    Dialog({
+      popClass: 'auto-dialog',
+      title: t(`syncPage.preview.title`),
+      content: artifactStoreUrl.value ? `${t('syncPage.preview.content', { status: artifactStoreStatus.value || 'VALID' })}\n${t('syncPage.preview.url')}` : `${t('syncPage.preview.content', { status: artifactStoreStatus.value || '-' })}\n${t('syncPage.preview.noUrl')}`,
+      noOkBtn: !artifactStoreUrl.value,
+      okText: t(`syncPage.preview.confirm`),
+      cancelText: t(`syncPage.preview.cancel`),
+      // @ts-ignore
+      closeOnClickOverlay: true,
+      onOk: () => {
+        window.open(artifactStoreUrl.value);
+      },
+    });
+  }
 };
 
 const onClickEdit = (artifact: Artifact) => {

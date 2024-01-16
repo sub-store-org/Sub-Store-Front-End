@@ -25,6 +25,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       },
       avatarUrl: '',
       artifactStore: '',
+      artifactStoreStatus: '',
       autoDownloadGistSync: false,
       // ishostApi: localStorage.getItem('hostApi'),
     };
@@ -41,6 +42,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.syncTime = res.data.syncTime || 0;
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
+        this.artifactStoreStatus = res.data.artifactStoreStatus || '';
 
         this.theme.auto = res.data.theme?.auto ?? true;
         this.theme.name = res.data.theme?.name ?? 'light';
@@ -69,6 +71,7 @@ export const useSettingsStore = defineStore('settingsStore', {
         this.defaultTimeout = res.data.defaultTimeout || '';
         this.avatarUrl = res.data.avatarUrl || '';
         this.artifactStore = res.data.artifactStore || '';
+        this.artifactStoreStatus = res.data.artifactStoreStatus || '';
         showNotify({ type: 'success', title: t(`myPage.notify.save.succeed`) });
       }
     },

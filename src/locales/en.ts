@@ -550,6 +550,14 @@ export default {
     selectSource: {
       title: 'Select Source',
     },
+    preview: {
+      title: 'Sub-Store Gist',
+      content: '⚠️ The status of the latest check: {status}.\nYou can update the configuration to trigger a new check.',
+      url: 'The current gist is the last one that was checked successfully.',
+      noUrl: 'Once you have successfully checked and uploaded the synchronized configuration, you can view the gist.',
+      cancel: 'Cancel',
+      confirm: 'View Gist',
+    }
   },
   themeSettingPage: {
     themeSettingTitle: 'Appearance',
