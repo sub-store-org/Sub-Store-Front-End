@@ -77,7 +77,7 @@
           </div>
         </div>
         <template v-if="!isSimpleMode">
-          <p v-if="type === 'sub'" class="sub-item-detail">
+          <p class="sub-item-detail">
             <template v-if="typeof flow === 'string'">
               <span>
                 {{ flow }}
