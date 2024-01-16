@@ -604,7 +604,7 @@ export default {
           打开开关不会上传，只有在重启后才会下载配置。`,
     simple: '简洁模式',
     islr: '卡片右滑呼出',
-    isIC: '使用订阅图标原始颜色',
+    isIC: '自定义图标使用原始颜色',
     isEditorCommon: '展示编辑页常用配置',
     isSimpleReicon: '展示订阅刷新按钮',
     showFloatingRefreshButton: '显示悬浮刷新按钮',

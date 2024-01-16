@@ -2,7 +2,7 @@
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
     <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="previewSource">
       <a class="sub-img-wrappers" :href="artifact.url" target="_blank">
-        <nut-avatar class="sub-item-customer-icon"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
+        <nut-avatar :class="{ 'sub-item-customer-icon': !isIconColor }"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
       </a>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -88,6 +88,7 @@
 </template>
 
 <script lang="ts" setup>
+import logoIcon from '@/assets/icons/logo.svg';
 import singboxIcon from '@/assets/icons/sing-box.png';
 import clashIcon from '@/assets/icons/clash.png';
 import clashMetaIcon from '@/assets/icons/clashmeta.png';
@@ -112,7 +113,7 @@ import { useGlobalStore } from '@/store/global';
 import { useHostAPI } from '@/hooks/useHostAPI';
 const globalStore = useGlobalStore();
 
-const { isLeftRight, isSimpleMode } = storeToRefs(globalStore);
+const { isLeftRight, isSimpleMode, isIconColor } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -133,28 +134,7 @@ const artifact = computed(() => {
 });
 const emit = defineEmits(['edit']);
 
-const icon = computed(() => {
-  switch (artifact.value.platform) {
-    case 'Surge':
-      return surgeIcon;
-    case 'QX':
-      return quanxIcon;
-    case 'Loon':
-      return loonIcon;
-    case 'Clash':
-      return clashIcon;
-    case 'ClashMeta':
-      return clashMetaIcon;
-    case 'Stash':
-      return stashIcon;
-    case 'ShadowRocket':
-      return shadowRocketIcon;
-    case 'V2Ray':
-      return v2rayIcon;
-    case 'sing-box':
-      return singboxIcon;
-  }
-});
+
 
 const displayName = computed(() => {
   return (
@@ -180,6 +160,40 @@ const sourceSub = computed(() => {
       return subsStore.getOneSub(name);
     case 'file':
       return subsStore.getOneFile(name);
+  }
+});
+
+const icon = computed(() => {
+  let platform = String(artifact.value.platform)
+  if (['file'].includes(artifact.value.type)) {
+    if (sourceSub.value?.icon) {
+      return sourceSub.value.icon;  
+    } else {
+      platform = ''
+    }
+    
+  }
+  switch (platform) {
+    case 'Surge':
+      return surgeIcon;
+    case 'QX':
+      return quanxIcon;
+    case 'Loon':
+      return loonIcon;
+    case 'Clash':
+      return clashIcon;
+    case 'ClashMeta':
+      return clashMetaIcon;
+    case 'Stash':
+      return stashIcon;
+    case 'ShadowRocket':
+      return shadowRocketIcon;
+    case 'V2Ray':
+      return v2rayIcon;
+    case 'sing-box':
+      return singboxIcon;
+    default:
+      return logoIcon;
   }
 });
 
