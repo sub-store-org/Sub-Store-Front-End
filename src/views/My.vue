@@ -181,6 +181,8 @@
             type="number"
             input-align="left"
             :left-icon="iconTimeout"
+            right-icon="tips"
+            @click-right-icon="timeoutTips"
           />
         </div>
       </div>
@@ -247,6 +249,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from '@/hooks/useHostAPI';
+import { Dialog, Toast } from '@nutui/nutui';
 
 const { t } = useI18n();
 
@@ -415,7 +418,17 @@ const sync = async (query: "download" | "upload") => {
   downloadIsLoading.value = false;
   uploadIsLoading.value = false;
 };
-
+const timeoutTips = () => {
+  Dialog({
+      title: '可尝试设置为 3000~4000',
+      content: '防止拉取结果的总时长超过代理 app 加载外部资源的最大等待时长, 确保拉取成功',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: true,
+    });
+};
 // store 刷新数据完成后 复制内容给 input 绑定
 const { isLoading: storeIsLoading, env: backendEnv } = storeToRefs(useGlobalStore());
 watchEffect(() => {
