@@ -299,7 +299,7 @@ export default {
         },
         'Resolve Domain Operator': {
           label: 'Resolve Domain',
-          des: 'Providers',
+          des: 'Providers(IPv4 only. Can be controlled by the node field "no-resolve")',
           options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
           tipsTitle: 'domain Tips',
           tipsDes: '节点域名解析操作说明',
