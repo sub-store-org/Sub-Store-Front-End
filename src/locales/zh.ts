@@ -565,7 +565,7 @@ export default {
     download: {
       content: '⚠️ 只会获取不在同步配置中的 gist 文件\n你需要手动设置来源',
       confirm: '从 gist 恢复',
-    },
+    }
   },
   themeSettingPage: {
     themeSettingTitle: '外观设置',
