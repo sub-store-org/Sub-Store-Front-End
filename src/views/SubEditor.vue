@@ -415,6 +415,13 @@
   };
 
   const closeCompare = () => {
+    document.querySelector('html').style['overflow-y'] = '';
+    document.querySelector('html').style.height = '';
+    document.body.style.height = '';
+    document.body.style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style.height = '';
+    
     compareTableIsVisible.value = false;
     router.back();
   };
@@ -453,6 +460,14 @@
       const res = await subsApi.compareSub(type, data);
       if (res?.data?.status === 'success') {
         compareData.value = res.data.data;
+
+        document.querySelector('html').style['overflow-y'] = 'hidden';
+        document.querySelector('html').style.height = '100%';
+        document.body.style.height = '100%';
+        document.body.style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style.height = '100%';
+
         compareTableIsVisible.value = true;
         Toast.hide('compare');
       }

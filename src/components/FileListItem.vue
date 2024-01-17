@@ -247,6 +247,13 @@
   });
 
   const closePreview = () => {
+    document.querySelector('html').style['overflow-y'] = '';
+    document.querySelector('html').style.height = '';
+    document.body.style.height = '';
+    document.body.style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style.height = '';
+    
     filePreviewIsVisible.value = false;
     router.back();
   };
@@ -260,6 +267,14 @@
 
     if (res?.data?.status === 'success') {
       previewData.value = res.data.data;
+
+      document.querySelector('html').style['overflow-y'] = 'hidden';
+      document.querySelector('html').style.height = '100%';
+      document.body.style.height = '100%';
+      document.body.style['overflow-y'] = 'hidden';
+      (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
+      (document.querySelector('#app') as HTMLElement).style.height = '100%';
+
       filePreviewIsVisible.value = true;
       Toast.hide('compare');
     }
