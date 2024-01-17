@@ -95,9 +95,20 @@ import clashMetaIcon from '@/assets/icons/clashmeta.png';
 import loonIcon from '@/assets/icons/loon.png';
 import quanxIcon from '@/assets/icons/quanx.png';
 import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
+import surfboardIcon from '@/assets/icons/surfboard.png';
 import stashIcon from '@/assets/icons/stash.png';
 import surgeIcon from '@/assets/icons/surge.png';
 import v2rayIcon from '@/assets/icons/v2ray.png';
+import singboxColorIcon from '@/assets/icons/sing-box_color.png';
+import clashColorIcon from '@/assets/icons/clash_color.png';
+import clashMetaColorIcon from '@/assets/icons/clashmeta_color.png';
+import loonColorIcon from '@/assets/icons/loon_color.png';
+import quanxColorIcon from '@/assets/icons/quanx_color.png';
+import shadowRocketColorIcon from '@/assets/icons/shadowrocket_color.png';
+import surfboardColorIcon from '@/assets/icons/surfboard_color.png';
+import stashColorIcon from '@/assets/icons/stash_color.png';
+import surgeColorIcon from '@/assets/icons/surge_color.png';
+import v2rayColorIcon from '@/assets/icons/v2ray_color.png';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { useArtifactsStore } from '@/store/artifacts';
 import { useSubsStore } from '@/store/subs';
@@ -179,23 +190,25 @@ const icon = computed(() => {
   }
   switch (platform) {
     case 'Surge':
-      return surgeIcon;
+      return isIconColor.value ? surgeColorIcon: surgeIcon;
     case 'QX':
-      return quanxIcon;
+      return isIconColor.value ? quanxColorIcon: quanxIcon;
     case 'Loon':
-      return loonIcon;
+      return isIconColor.value ? loonColorIcon: loonIcon;
     case 'Clash':
-      return clashIcon;
+      return isIconColor.value ? clashColorIcon: clashIcon;
     case 'ClashMeta':
-      return clashMetaIcon;
+      return isIconColor.value ? clashMetaColorIcon: clashMetaIcon;
     case 'Stash':
-      return stashIcon;
+      return isIconColor.value ? stashColorIcon: stashIcon;
     case 'ShadowRocket':
-      return shadowRocketIcon;
+      return isIconColor.value ? shadowRocketColorIcon: shadowRocketIcon;
     case 'V2Ray':
-      return v2rayIcon;
+      return isIconColor.value ? v2rayColorIcon: v2rayIcon;
     case 'sing-box':
-      return singboxIcon;
+      return isIconColor.value ? singboxColorIcon: singboxIcon;
+    case 'Surfboard':
+      return isIconColor.value ? surfboardColorIcon: surfboardIcon;
     default:
       return logoIcon;
   }

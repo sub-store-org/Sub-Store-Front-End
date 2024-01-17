@@ -21,7 +21,6 @@
           />
           <nut-avatar
             v-else
-            class="sub-item-customer-icon"
             :size="isSimpleMode ? '36' : '48'"
             :url="icon"
             bg-color=""
