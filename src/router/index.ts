@@ -172,8 +172,16 @@ const router = createRouter({
 });
 
 // 全局前置守卫
+// router.afterEach(async to => {
+//   if (/\/edit\/(collections|subs)\/UNTITLED/.test(to.fullPath)) {
+//     (document.querySelector('#app') as HTMLElement).style.height = '100%';
+//   } else {
+//     (document.querySelector('#app') as HTMLElement).style.height = '';
+//   }
+//   return true;
+// });
 router.beforeResolve(async to => {
-  document.body.classList.remove('nut-overflow-hidden');
+  // document.body.classList.remove('nut-overflow-hidden');
   // 路由跳转时查询环境，决定是否更新数据
   if (globalStore !== null) {
     useEnvApi()

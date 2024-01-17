@@ -20,6 +20,22 @@ import { createApp } from 'vue';
 import App from './App.vue';
 
 export function initializeApp() {
+  // 创建一个回调函数来处理变化
+  const callback = function(mutationsList, observer) {
+    for(let mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            if (document.body.classList.contains('nut-overflow-hidden')) {
+                document.body.classList.remove('nut-overflow-hidden');
+            }
+        }
+    }
+  };
+
+  // 创建一个观察器实例，将回调函数作为参数
+  const observer = new MutationObserver(callback);
+
+  // 开始观察`body`元素上的`class`属性的变化
+  observer.observe(document.body, { attributes: true });
   const pinia = createPinia();
   const app = createApp(App);
 
