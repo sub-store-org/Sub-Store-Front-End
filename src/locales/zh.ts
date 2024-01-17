@@ -550,7 +550,7 @@ export default {
         label: '包含官方/商店版不支持的协议',
         tips: {
           title: '包含官方/商店版不支持的协议',
-          content: 'sing-box: ShadowsocksR\nQuantumult X: VLESS'
+          content: 'sing-box: +ShadowsocksR\nQuantumult X: +VLESS'
         }
       },
       pop: {

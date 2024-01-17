@@ -100,16 +100,13 @@
 
       </nut-form-item>
       <template v-if="sourceInput && ['subscription', 'collection'].includes(editPanelData.type)">
-        <nut-form-item
-            :label="$t(`syncPage.addArtForm.includeUnsupportedProxy.label`)"
-            prop="includeUnsupportedProxy"
-            class="include-unsupported-proxy-wrapper"
-        >
-          <div class="swtich-wrapper">
-            <nut-icon name="tips"  @click="includeUnsupportedProxyTips"></nut-icon>
-            <nut-switch v-model="editPanelData.includeUnsupportedProxy"/>
+        <div class="include-unsupported-proxy-wrapper">
+          <div class="label" @click="includeUnsupportedProxyTips">
+            <p>{{ $t(`syncPage.addArtForm.includeUnsupportedProxy.label`) }}</p>
+            <nut-icon name="tips"></nut-icon>
           </div>
-        </nut-form-item>
+          <nut-switch v-model="editPanelData.includeUnsupportedProxy"/>
+        </div>
 
         <nut-form-item :label="$t(`syncPage.addArtForm.platform.label`)">
           <nut-radiogroup
@@ -344,6 +341,20 @@
 <style lang="scss">
 
   .artifact-panel {
+    .include-unsupported-proxy-wrapper {
+      flex-direction: row;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 0 8px 0 8px;
+      .label {
+        color: var(--comment-text-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
     .nut-dialog {
       width: 88vw;
 
@@ -375,16 +386,6 @@
                 .nut-radio {
                   margin: 20px 0 0 0;
                 }
-              }
-            }
-            .include-unsupported-proxy-wrapper {
-              flex-direction: row;
-              justify-content: space-between;
-              .swtich-wrapper {
-                color: var(--comment-text-color);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
               }
             }
           }

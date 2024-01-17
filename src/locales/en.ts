@@ -545,7 +545,7 @@ export default {
         label: 'Includes protocols not supported by the official/store version',
         tips: {
           title: 'Includes protocols not supported by the official/store version',
-          content: 'sing-box: ShadowsocksR\nQuantumult X: VLESS'
+          content: 'sing-box: +ShadowsocksR\nQuantumult X: +VLESS'
         }
       },
       platform: {
