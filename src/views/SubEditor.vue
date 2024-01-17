@@ -427,7 +427,7 @@
 
     window.scrollTo({
         top: scrollTop,
-        behavior: "instant"
+        behavior: "instant" as any
     });
 
     router.back();
