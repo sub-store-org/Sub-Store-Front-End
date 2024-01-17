@@ -227,6 +227,8 @@
   const { bottomSafeArea } = storeToRefs(globalStore);
   const padding = bottomSafeArea.value + 'px';
 
+  let scrollTop = 0;
+
   const file = computed(() => subsStore.getOneFile(configName));
   const filePreviewIsVisible = ref(false);
   usePopupRoute(filePreviewIsVisible);
@@ -307,7 +309,20 @@
     deleteItem(form, actionsList, actionsChecked, id);
   };
   const closePreview = () => {
+    document.querySelector('html').style['overflow-y'] = '';
+    document.querySelector('html').style.height = '';
+    document.body.style.height = '';
+    document.body.style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style.height = '';
+    
     filePreviewIsVisible.value = false;
+
+    window.scrollTo({
+        top: scrollTop,
+        behavior: "instant"
+    });
+
     router.back();
   };
   const compare = () => {
@@ -343,6 +358,16 @@
       const res = await subsApi.compareSub('file', data);
       if (res?.data?.status === 'success') {
         previewData.value = res.data.data;
+
+        scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+
+        document.querySelector('html').style['overflow-y'] = 'hidden';
+        document.querySelector('html').style.height = '100%';
+        document.body.style.height = '100%';
+        document.body.style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style.height = '100%';
+        
         filePreviewIsVisible.value = true;
         Toast.hide('compare');
       }

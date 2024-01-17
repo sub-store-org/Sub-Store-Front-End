@@ -295,6 +295,7 @@
   usePopupRoute(compareTableIsVisible);
   const compareData = ref();
 
+  let scrollTop = 0
   const isInit = ref(false);
   const ruleForm = ref<any>(null);
   const actionsChecked = reactive([]);
@@ -415,7 +416,20 @@
   };
 
   const closeCompare = () => {
+    document.querySelector('html').style['overflow-y'] = '';
+    document.querySelector('html').style.height = '';
+    document.body.style.height = '';
+    document.body.style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style.height = '';
+    
     compareTableIsVisible.value = false;
+
+    window.scrollTo({
+        top: scrollTop,
+        behavior: "instant"
+    });
+
     router.back();
   };
 
@@ -453,6 +467,16 @@
       const res = await subsApi.compareSub(type, data);
       if (res?.data?.status === 'success') {
         compareData.value = res.data.data;
+
+        scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+
+        document.querySelector('html').style['overflow-y'] = 'hidden';
+        document.querySelector('html').style.height = '100%';
+        document.body.style.height = '100%';
+        document.body.style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
+        (document.querySelector('#app') as HTMLElement).style.height = '100%';
+
         compareTableIsVisible.value = true;
         Toast.hide('compare');
       }
