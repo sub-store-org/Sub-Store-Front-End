@@ -515,6 +515,9 @@
   }
 
   .compare-page-wrapper {
+    top: 0;
+    left: 0;
+    position: absolute;
     width: 100vw;
     height: 100vh;
     z-index: 1000;
