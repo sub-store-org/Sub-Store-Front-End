@@ -41,6 +41,7 @@
       'hysteria',
       'hysteria2',
       'wireguard',
+      'external'
     ],
   };
 

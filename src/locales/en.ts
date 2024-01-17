@@ -325,6 +325,7 @@ export default {
             'Hysteria',
             'Hysteria2',
             'WireGuard',
+            'External',
           ],
           tipsTitle: 'Node Type Filter Tips',
           tipsDes: '节点类型过滤器操作说明',

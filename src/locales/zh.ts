@@ -333,6 +333,7 @@ export default {
             'Hysteria',
             'Hysteria2',
             'WireGuard',
+            'External',
           ],
           tipsTitle: '节点类型过滤操作提示',
           tipsDes: '按照代理协议类型过滤节点',
