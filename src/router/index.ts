@@ -173,6 +173,7 @@ const router = createRouter({
 
 // 全局前置守卫
 router.beforeResolve(async to => {
+  document.body.classList.remove('nut-overflow-hidden');
   // 路由跳转时查询环境，决定是否更新数据
   if (globalStore !== null) {
     useEnvApi()

@@ -15,7 +15,7 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
+          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
         >
           <div class="drag-btn" @click="onclickAddArtifact">
             <font-awesome-icon icon="fa-solid fa-plus" />

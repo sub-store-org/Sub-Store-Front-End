@@ -17,7 +17,7 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
+          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
         >
           <!-- 刷新 -->
           <div v-if="showFloatingRefreshButton" class="drag-btn refresh" @click="refresh">
