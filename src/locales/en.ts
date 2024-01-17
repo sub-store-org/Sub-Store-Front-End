@@ -146,6 +146,11 @@ export default {
     },
     panel: {
       general: 'General',
+      tips: {
+        desc: 'Subscription Link Parameters Description',
+        title: 'Subscription Link Parameters',
+        content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true"\nIncludes protocols not supported by the official/store version',
+      }
     },
   },
   editorPage: {
@@ -504,7 +509,7 @@ export default {
     },
     deleteArt: {
       title: 'Delete Sync Configuration',
-      desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been synced before, an attempt will be made to delete the gist file.',
+      desc: 'Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been synced before, an attempt will be made to delete gist files with the original filename and the encoded filename.',
       succeedNotify: 'Successfully deleted!',
       btn: {
         confirm: 'Delete',
@@ -535,6 +540,13 @@ export default {
         label: 'Source',
         isRequired: 'Source is required',
         placeholder: 'Please select a source',
+      },
+      includeUnsupportedProxy: {
+        label: 'Includes protocols not supported by the official/store version',
+        tips: {
+          title: 'Includes protocols not supported by the official/store version',
+          content: 'sing-box: ShadowsocksR\nQuantumult X: VLESS'
+        }
       },
       platform: {
         label: 'Target Platform',

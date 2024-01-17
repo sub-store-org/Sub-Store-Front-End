@@ -23,6 +23,7 @@ interface Artifact {
   source: string;
   platform: ArtifactsPlatform;
   sync?: boolean;
+  includeUnsupportedProxy?: boolean;
   updated?: number;
   url?: string;
 }

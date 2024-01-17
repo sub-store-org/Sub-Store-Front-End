@@ -1,41 +1,47 @@
 <template>
-  <ul class="preview-list">
-    <li v-for="platform in platformList" :key="platform.name">
-      <div class="infos">
-        <div>
-          <img :src="platform.icon" class="auto-reverse" />
+  <div>
+    <div class="desc" @click="tips">
+      <span>{{ desc }}</span>
+      <nut-icon name="tips"></nut-icon>
+    </div>
+    <ul class="preview-list">
+      <li v-for="platform in platformList" :key="platform.name">
+        <div class="infos">
+          <div>
+            <img :src="platform.icon" class="auto-reverse" />
+          </div>
+          <p>{{ platform.name }}</p>
+          <nut-icon name="tips" v-if="platform.name === 'Surge'" @click="tips"></nut-icon>
         </div>
-        <p>{{ platform.name }}</p>
-        <nut-icon name="tips" v-if="platform.name === 'Surge'" @click="surgeTips"></nut-icon>
-      </div>
 
-      <div class="actions">
-        <a
-          :href="`${host}/download/${
-            type === 'sub' ? '' : 'collection/'
-          }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
-          target="_blank"
-        >
-          <svg-icon
-            name="view"
-            class="action-icon"
-            color="var(--comment-text-color)"
-          />
-        </a>
-        <button class="copy-sub-link" @click.stop="targetCopy(platform.path)">
-          <svg-icon
-            name="copy"
-            class="action-icon"
-            color="var(--comment-text-color)"
-          />
-        </button>
-      </div>
-    </li>
-  </ul>
+        <div class="actions">
+          <a
+            :href="`${host}/download/${
+              type === 'sub' ? '' : 'collection/'
+            }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
+            target="_blank"
+          >
+            <svg-icon
+              name="view"
+              class="action-icon"
+              color="var(--comment-text-color)"
+            />
+          </a>
+          <button class="copy-sub-link" @click.stop="targetCopy(platform.path)">
+            <svg-icon
+              name="copy"
+              class="action-icon"
+              color="var(--comment-text-color)"
+            />
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import { Toast } from '@nutui/nutui';
+  import { Toast, Dialog } from '@nutui/nutui';
   import surfboard from '@/assets/icons/surfboard.png';
   import surge from '@/assets/icons/surge.png';
   import clash from '@/assets/icons/clash.png';
@@ -56,11 +62,14 @@
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
-  const { name, type, general, notify } = defineProps<{
+  const { name, type, general, notify, tipsTitle, tipsContent, desc } = defineProps<{
     name: string;
     type: 'sub' | 'collection';
     general: string;
     notify: string;
+    desc: string;
+    tipsTitle?: string;
+    tipsContent?: string;
   }>();
 
   const { currentUrl: host } = useHostAPI();
@@ -134,20 +143,26 @@
       icon: v2ray,
     },
   ];
-  const surgeTips = () => {
-    Toast.text('"target=SurgeMac" - supports ShadowsocksR/External Proxy Program', {
-      title: 'Surge Tips',
-      duration: 0,
-      cover: true,
-      'close-on-click-overlay': true,
-      'bg-color': 'rgba(0, 0, 0, 0.8)',
-      'cover-color': 'rgba(0, 0, 0, 0.2)',
-      'text-align-center': false,
+  const tips = () => {
+    Dialog({
+      title: tipsTitle,
+      content: tipsContent,
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: true,
     });
+
   };
 </script>
 
 <style lang="scss" scoped>
+  .desc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .preview-list {
     flex: 1;
     margin: 0;

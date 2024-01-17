@@ -169,7 +169,6 @@
   import { useSubsApi } from '@/api/subs';
   import { useFilesApi } from '@/api/files';
   import icon from '@/assets/icons/logo.svg';
-  import PreviewPanel from '@/components/PreviewPanel.vue';
   import { usePopupRoute } from '@/hooks/usePopupRoute';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';

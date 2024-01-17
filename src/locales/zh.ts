@@ -145,6 +145,11 @@ export default {
     },
     panel: {
       general: '通用订阅',
+      tips: {
+        desc: '订阅链接参数说明',
+        title: '订阅链接参数',
+        content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true" 包含官方/商店版不支持的协议',
+      }
     },
   },
   editorPage: {
@@ -506,7 +511,7 @@ export default {
     },
     deleteArt: {
       title: '删除同步配置',
-      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置进行过同步, 将尝试删除对应的 gist 文件',
+      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置进行过同步, 将尝试原文件名和编码后的文件名对应的文件',
       succeedNotify: '删除同步配置成功！',
       btn: {
         confirm: '确认删除',
@@ -540,6 +545,13 @@ export default {
       platform: {
         label: '目标平台',
         isRequired: '目标平台不能为空',
+      },
+      includeUnsupportedProxy: {
+        label: '包含官方/商店版不支持的协议',
+        tips: {
+          title: '包含官方/商店版不支持的协议',
+          content: 'sing-box: ShadowsocksR\nQuantumult X: VLESS'
+        }
       },
       pop: {
         errorTitle: '提交出错',

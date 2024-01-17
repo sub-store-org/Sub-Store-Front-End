@@ -215,13 +215,30 @@ const icon = computed(() => {
 });
 
 const sourceUrl = computed(() => {
+  if (!artifact.value.type) {
+    return ''
+  }
+  if (artifact.value.type === 'file') {
+    const path = `/api/file/${encodeURIComponent(artifact.value.source)}`;
+    const url = `${host.value}${path}`;
+    return url
+  }
   const urlTarget: string = artifact.value.platform !== null ? `?target=${artifact.value.platform}` : '';
+  let urlIncludeUnsupportedProxy = artifact.value.includeUnsupportedProxy ? `includeUnsupportedProxy=true` : '';
+  if (urlTarget && urlIncludeUnsupportedProxy) {
+    urlIncludeUnsupportedProxy = `&${urlIncludeUnsupportedProxy}`
+  } else {
+    urlIncludeUnsupportedProxy = `?${urlIncludeUnsupportedProxy}`
+  }
   return `${host.value}/download/${
     artifact.value.type === 'subscription' ? '' : 'collection/'
-  }${encodeURIComponent(artifact.value.source)}${urlTarget}`;
+  }${encodeURIComponent(artifact.value.source)}${urlTarget}${urlIncludeUnsupportedProxy}`;
 });
 
 const previewSource = () => {
+  if (!sourceUrl.value) {
+    return
+  }
   Dialog({
     title: t('tabBar.sub'),
     content: sourceUrl.value,
