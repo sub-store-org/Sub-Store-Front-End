@@ -135,7 +135,7 @@
     },
   ];
   const surgeTips = () => {
-    Toast.text('"target=SurgeMac" - supports SSR external', {
+    Toast.text('"target=SurgeMac" - supports ShadowsocksR/External Proxy Program', {
       title: 'Surge Tips',
       duration: 0,
       cover: true,
