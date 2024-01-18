@@ -32,10 +32,7 @@
   const routeList = ['/subs', '/files', '/sync', '/my'];
   const activeTab = ref(routeList.indexOf(route.path));
 
-  onBeforeRouteUpdate((to, from, next) => {
-    activeTab.value = routeList.indexOf(to.path);
-    next();
-  });
+
 
   const globalStore = useGlobalStore();
   const { bottomSafeArea, istabBar, istabBar2, env } = storeToRefs(globalStore);
@@ -43,6 +40,12 @@
     height: `${bottomSafeArea.value + 12 + 44}px`,
     paddingBottom: bottomSafeArea.value + 'px',
   };
+  onBeforeRouteUpdate((to, from, next) => {
+    activeTab.value = routeList.indexOf(to.path);
+    // const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+    // globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
+    next();
+  });
 </script>
 
 <style lang="scss" scoped>

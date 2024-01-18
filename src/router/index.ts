@@ -46,8 +46,16 @@ const router = createRouter({
       }
     }
     if (savedPosition) {
+      // console.log(`接受到 ${to.path} savedPosition 滚动位置：${savedPosition?.top}`)
       return savedPosition
     } else {
+      if (globalStore !== null && to?.meta?.needTabBar) {
+        const savedPositions = toRaw(globalStore.savedPositions);
+        if (savedPositions[to.path]) {
+          // console.log(`读取到 ${to.path} 保存的滚动位置：${savedPositions[to.path]?.top}`)
+          return savedPositions[to.path]
+        }
+      }
       return { top: 0, left: 0 }
     }
   },
@@ -180,6 +188,14 @@ const router = createRouter({
 //   }
 //   return true;
 // });
+router.beforeEach((to, from) => {
+  if (from?.meta?.needTabBar) {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+    // console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
+    globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
+  }
+  return true
+})
 router.beforeResolve(async to => {
   // document.body.classList.remove('nut-overflow-hidden');
   // 路由跳转时查询环境，决定是否更新数据

@@ -24,6 +24,7 @@ export const useGlobalStore = defineStore('globalStore', {
       istabBar: localStorage.getItem('istabBar') === '1',
       istabBar2: localStorage.getItem('istabBar2') === '1',
       ishostApi: getHostAPIUrl(),
+      savedPositions: {},
     };
   },
   getters: {},
@@ -117,6 +118,9 @@ export const useGlobalStore = defineStore('globalStore', {
       if (res?.data?.status === 'success') {
         this.env = res.data.data;
       }
+    },
+    setSavedPositions(key: string, value: any) {
+      this.savedPositions[key] = value;
     },
   },
 });
