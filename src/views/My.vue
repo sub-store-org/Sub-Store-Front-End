@@ -426,7 +426,7 @@ const timeoutTips = () => {
       okText: 'OK',
       noCancelBtn: true,
       closeOnPopstate: true,
-      lockScroll: true,
+      lockScroll: false,
     });
 };
 // store 刷新数据完成后 复制内容给 input 绑定

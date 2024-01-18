@@ -151,7 +151,7 @@
       okText: 'OK',
       noCancelBtn: true,
       closeOnPopstate: true,
-      lockScroll: true,
+      lockScroll: false,
     });
 
   };
@@ -162,6 +162,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
   }
   .preview-list {
     flex: 1;

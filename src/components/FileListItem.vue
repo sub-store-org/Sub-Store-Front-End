@@ -344,7 +344,7 @@
       cancelText: t('subPage.deleteSub.btn.cancel'),
       okText: t('subPage.deleteSub.btn.confirm'),
       closeOnPopstate: true,
-      lockScroll: true,
+      lockScroll: false,
     });
   };
 
