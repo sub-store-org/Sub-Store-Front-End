@@ -470,6 +470,8 @@
 
         scrollTop = document.documentElement.scrollTop || document.body.scrollTop
 
+        globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop })
+
         document.querySelector('html').style['overflow-y'] = 'hidden';
         document.querySelector('html').style.height = '100%';
         document.body.style.height = '100%';

@@ -39,23 +39,31 @@ declare module 'vue-router' {
 const history = createWebHistory();
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
+    // console.log(`scrollBehavior ${from.path} => ${to.path}`)
+    document.querySelector('html').style['overflow-y'] = '';
+    document.querySelector('html').style.height = '';
+    document.body.style.height = '';
+    document.body.style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+    (document.querySelector('#app') as HTMLElement).style.height = '';
+
     if (to.hash) {
       return {
         el: to.hash,
         behavior: 'smooth',
       }
     }
+    if (globalStore !== null) {
+      const savedPositions = toRaw(globalStore.savedPositions);
+      if (savedPositions[to.path]) {
+        // console.log(`读取到 ${to.path} 保存的滚动位置：${savedPositions[to.path]?.top}`)
+        return savedPositions[to.path]
+      }
+    }
     if (savedPosition) {
       // console.log(`接受到 ${to.path} savedPosition 滚动位置：${savedPosition?.top}`)
       return savedPosition
     } else {
-      if (globalStore !== null && to?.meta?.needTabBar) {
-        const savedPositions = toRaw(globalStore.savedPositions);
-        if (savedPositions[to.path]) {
-          // console.log(`读取到 ${to.path} 保存的滚动位置：${savedPositions[to.path]?.top}`)
-          return savedPositions[to.path]
-        }
-      }
       return { top: 0, left: 0 }
     }
   },
@@ -189,7 +197,9 @@ const router = createRouter({
 //   return true;
 // });
 router.beforeEach((to, from) => {
-  if (from?.meta?.needTabBar) {
+  // console.log(`beforeEach ${from.path} => ${to.path}`)
+  if (from?.meta?.needTabBar && from?.path !== to?.path) {
+  // if (from?.meta?.needTabBar) {
     const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
     // console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
     globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })

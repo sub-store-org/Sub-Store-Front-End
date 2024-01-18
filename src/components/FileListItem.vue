@@ -183,7 +183,7 @@
   import { computed, createVNode, ref, toRaw } from 'vue';
   import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import { useHostAPI } from '@/hooks/useHostAPI';
 
   const { copy, isSupported } = useClipboard();
@@ -209,6 +209,7 @@
   const swipeIsOpen = ref(false);
   const compareData = ref();
   const router = useRouter();
+  const route = useRoute();
   const globalStore = useGlobalStore();
   const subsStore = useSubsStore();
   const subsApi = useSubsApi();
@@ -275,6 +276,8 @@
       previewData.value = res.data.data;
 
       scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+
+      globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop })
 
       document.querySelector('html').style['overflow-y'] = 'hidden';
       document.querySelector('html').style.height = '100%';
