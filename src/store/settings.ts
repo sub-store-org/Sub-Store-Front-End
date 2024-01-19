@@ -12,6 +12,7 @@ const { t } = i18n.global;
 export const useSettingsStore = defineStore('settingsStore', {
   state: (): SettingsStoreState => {
     return {
+      syncPlatform: '',
       gistToken: '',
       githubUser: '',
       defaultUserAgent: '',
@@ -36,6 +37,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.getSettings();
       if (res?.data?.status === 'success' && res?.data?.data) {
+        this.syncPlatform = res.data.data.syncPlatform || '';
         this.gistToken = res.data.data.gistToken || '';
         this.githubUser = res.data.data.githubUser || '';
         this.defaultUserAgent = res.data.data.defaultUserAgent || '';
@@ -71,6 +73,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.setSettings(data);
       if (res?.data?.status === 'success' && res?.data?.data) {
+        this.syncPlatform = res.data.data.syncPlatform || '';
         this.gistToken = res.data.data.gistToken || '';
         this.githubUser = res.data.data.githubUser || '';
         this.defaultUserAgent = res.data.data.defaultUserAgent || '';

@@ -50,6 +50,7 @@
             />
           </nut-button>
           <nut-button
+            v-if="syncPlatform !== 'gitlab'"
             class="upload-all-btn btn"
             type="info"
             plain
@@ -207,7 +208,7 @@ const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
 const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
-const { artifactStore: artifactStoreUrl, artifactStoreStatus } = storeToRefs(settingsStore);
+const { artifactStore: artifactStoreUrl, artifactStoreStatus, syncPlatform } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const swipeDisabled = ref(false);
 const isEditPanelVisible = ref(false);
