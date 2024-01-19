@@ -228,7 +228,7 @@ const sourceUrl = computed(() => {
   let urlIncludeUnsupportedProxy = artifact.value.includeUnsupportedProxy ? `includeUnsupportedProxy=true` : '';
   if (urlTarget && urlIncludeUnsupportedProxy) {
     urlIncludeUnsupportedProxy = `&${urlIncludeUnsupportedProxy}`
-  } else {
+  } else if (urlIncludeUnsupportedProxy){
     urlIncludeUnsupportedProxy = `?${urlIncludeUnsupportedProxy}`
   }
   return `${host.value}/download/${
