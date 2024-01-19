@@ -190,17 +190,23 @@ const router = createRouter({
 
 // 全局前置守卫
 router.afterEach(async (to, from) => {
-  console.log(`afterEach ${from.path} => ${to.path}`)
+  document.querySelector('html').style['overflow-y'] = '';
+  document.querySelector('html').style.height = '';
+  document.body.style.height = '';
+  document.body.style['overflow-y'] = '';
+  (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+  (document.querySelector('#app') as HTMLElement).style.height = '';
+  // console.log(`afterEach ${from.path} => ${to.path}`)
   if (to?.path && from?.path !== to?.path) {
     let scrollTop = 0;
     if (to?.meta?.needTabBar && globalStore !== null) {
       const savedPositions = toRaw(globalStore.savedPositions);
       if (savedPositions[to.path]?.top) {
         scrollTop = savedPositions[to.path]?.top
-        console.log(`读取到 ${to.path} 保存的滚动位置：${scrollTop}`)
+        // console.log(`读取到 ${to.path} 保存的滚动位置：${scrollTop}`)
       }
     }
-    console.log(`${to.path} 滚动到：${scrollTop}`)
+    // console.log(`${to.path} 滚动到：${scrollTop}`)
     await nextTick()
     window.scrollTo({
       top: scrollTop,
@@ -209,7 +215,7 @@ router.afterEach(async (to, from) => {
   }
 });
 router.beforeEach((to, from) => {
-  console.log(`beforeEach ${from.path} => ${to.path}`)
+  // console.log(`beforeEach ${from.path} => ${to.path}`)
   if (!globalStore) {
     globalStore = useGlobalStore();
   }
@@ -217,7 +223,7 @@ router.beforeEach((to, from) => {
     if (from?.meta?.needTabBar && from?.path !== to?.path) {
       // if (from?.meta?.needTabBar) {
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-        console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
+        // console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
         globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
       }
   }
