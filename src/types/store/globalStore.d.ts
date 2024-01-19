@@ -1,5 +1,6 @@
 interface GlobalStoreState {
   isLoading: boolean;
+  isDefaultIcon: boolean;
   isFlowFetching: boolean;
   fetchResult: boolean;
   bottomSafeArea: number;

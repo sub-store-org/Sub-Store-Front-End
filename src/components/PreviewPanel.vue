@@ -52,7 +52,7 @@
   import v2ray from '@/assets/icons/v2ray.png';
   import singbox from '@/assets/icons/sing-box.png';
   import clashmeta from '@/assets/icons/clashmeta.png';
-  import logoicon from '@/assets/icons/logo.svg';
+  import logoIcon from '@/assets/icons/logo.png';
   import { useClipboard } from '@vueuse/core';
   import useV3Clipboard from 'vue-clipboard3';
   import { useAppNotifyStore } from '@/store/appNotify';
@@ -89,7 +89,7 @@
     {
       name: general,
       path: null,
-      icon: logoicon,
+      icon: logoIcon,
     },
     {
       name: 'Stash',

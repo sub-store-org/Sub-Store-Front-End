@@ -27,6 +27,16 @@
         </template>
       </nut-cell>
 
+      <nut-cell :title="$t(`moreSettingPage.isDefaultIcon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awIsDefaultIcon"
+            size="mini"
+            @change="setIsDefaultIcon"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isIC`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -186,6 +196,7 @@
     isLeftRight,
     ishostApi,
     isIconColor,
+    isDefaultIcon,
     isEditorCommon,
     isSimpleReicon,
     showFloatingRefreshButton,
@@ -198,6 +209,7 @@
   const SimpleSwitch = ref(false);
   const LeftRight = ref(false);
   const awIconColor = ref(false);
+  const awIsDefaultIcon = ref(false);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awShowFloatingRefreshButton = ref(false);
@@ -221,6 +233,9 @@
 
   const setIconColor = (isIconColor: boolean) => {
     globalStore.setIconColor(isIconColor);
+  };
+  const setIsDefaultIcon = (isDefaultIcon: boolean) => {
+    globalStore.setIsDefaultIcon(isDefaultIcon);
   };
 
   const setEditorCommon = (isIconColor: boolean) => {
@@ -365,6 +380,7 @@
     LeftRight.value = isLeftRight.value;
     autoSwitchSync.value = autoDownloadGistSync.value;
     awIconColor.value = isIconColor.value;
+    awIsDefaultIcon.value = isDefaultIcon.value;
     awEditorCommon.value = isEditorCommon.value;
     awEditorCommon.value = isEditorCommon.value;
     awSimpleReicon.value = isSimpleReicon.value;

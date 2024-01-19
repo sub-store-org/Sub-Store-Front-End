@@ -168,7 +168,8 @@
 <script lang="ts" setup>
   import { useSubsApi } from '@/api/subs';
   import { useFilesApi } from '@/api/files';
-  import icon from '@/assets/icons/logo.svg';
+  import logoIcon from '@/assets/icons/logo.png';
+  import logoRedIcon from '@/assets/icons/logo-red.png';
   import { usePopupRoute } from '@/hooks/usePopupRoute';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { useGlobalStore } from '@/store/global';
@@ -220,6 +221,7 @@
     isLeftRight,
     isIconColor,
     isSimpleReicon,
+    isDefaultIcon
   } = storeToRefs(globalStore);
 
   const displayName =
@@ -227,6 +229,9 @@
 
   const name = props[props.type].name;
   const { flows } = storeToRefs(subsStore);
+  const icon = computed(() => {
+    return isDefaultIcon.value ? logoIcon : logoRedIcon;
+  })
   const collectionDetail = computed(() => {
     const nameList = props?.collection.subscriptions || [];
     if (nameList.length === 0) {

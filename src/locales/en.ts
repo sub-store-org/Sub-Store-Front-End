@@ -621,6 +621,7 @@ export default {
     simple: 'Simple Mode',
     islr: 'Card right swipe to call out',
     isIC: 'Use original color for custom icons',
+    isDefaultIcon: 'Restore default icon',
     isEditorCommon: 'Show editor common settings',
     isSimpleReicon: 'Show items refresh button',
     showFloatingRefreshButton: 'Show floating refresh button',

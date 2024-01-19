@@ -88,7 +88,8 @@
 </template>
 
 <script lang="ts" setup>
-import logoIcon from '@/assets/icons/logo.svg';
+import logoIcon from '@/assets/icons/logo.png';
+import logoRedIcon from '@/assets/icons/logo-red.png';
 import singboxIcon from '@/assets/icons/sing-box.png';
 import clashIcon from '@/assets/icons/clash.png';
 import clashMetaIcon from '@/assets/icons/clashmeta.png';
@@ -124,7 +125,7 @@ import { useGlobalStore } from '@/store/global';
 import { useHostAPI } from '@/hooks/useHostAPI';
 const globalStore = useGlobalStore();
 
-const { isLeftRight, isSimpleMode, isIconColor } = storeToRefs(globalStore);
+const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -210,7 +211,7 @@ const icon = computed(() => {
     case 'Surfboard':
       return isIconColor.value ? surfboardColorIcon: surfboardIcon;
     default:
-      return logoIcon;
+      return isDefaultIcon.value ? logoIcon : logoRedIcon;
   }
 });
 
