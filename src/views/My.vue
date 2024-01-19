@@ -154,9 +154,9 @@
             input-align="left"
             :left-icon="iconUser"
           >
-            <template #button>
+            <!-- <template #button>
               <nut-button :disabled="!isEditing" :plain="!isEditing" size="mini" :type="isEditing ? 'primary' : 'info' " @click="toggleSyncPlatform">{{ syncPlatformInput === 'gitlab' ? ( isEditing ?'切换回 Gist' : 'GitLab Snippet (β)') : ( isEditing ?'切换到 GitLab Snippet (β)' : 'Gist') }}</nut-button>
-            </template>
+            </template> -->
           </nut-input>
           <nut-input
             v-if="storageType !== 'manual'"
