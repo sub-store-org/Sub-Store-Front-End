@@ -286,7 +286,12 @@
         };
       }
 
-      if (target.status === 'success') {
+      if (target.status === 'noFlow') {
+        return {
+            firstLine: t('subPage.subItem.noFlow'),
+            secondLine: ``,
+          };
+      } else if (target.status === 'success') {
         const {
           expires,
           total,

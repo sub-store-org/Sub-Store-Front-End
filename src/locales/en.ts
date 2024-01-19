@@ -123,6 +123,7 @@ export default {
       flow: 'Usage / Total',
       expires: 'Expires',
       noRecord: 'Refresh to get usage',
+      noFlow: 'No flow',
       noFlowInfo: 'No flow info',
       noExpiresInfo: 'No expires info',
     },

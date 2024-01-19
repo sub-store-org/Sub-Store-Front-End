@@ -64,9 +64,13 @@ export const useSubsStore = defineStore('subsStore', {
       }
     },
     async fetchFlows(sub?: Sub[]) {
-      const asyncGetFlow = async ([url, name]) => {
-        const { data } = await subsApi.getFlow(name);
-        this.flows[url] = data;
+      const asyncGetFlow = async ([url, name, noFlow]) => {
+        if (noFlow) {
+          this.flows[url] = { status:'noFlow' };
+        } else {
+          const { data } = await subsApi.getFlow(name);
+          this.flows[url] = data;
+        }
       };
       // const subs = sub || this.subs;
       // getFlowsUrlList(subs).forEach(asyncGetFlow);

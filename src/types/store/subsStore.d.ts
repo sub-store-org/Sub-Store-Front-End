@@ -58,7 +58,7 @@ interface Artifacts {
 }
 
 interface Flow {
-  status: 'success';
+  status: 'success' | 'noFlow';
   data: {
     expires: number;
     total: number;
