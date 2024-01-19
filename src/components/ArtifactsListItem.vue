@@ -1,9 +1,9 @@
 <template>
   <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
     <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="previewSource">
-      <a class="sub-img-wrappers" :href="artifact.url" target="_blank">
+      <div class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar :class="{ 'sub-item-customer-icon': !isIconColor }"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
-      </a>
+      </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
           <h3 class="sub-item-title">
@@ -236,6 +236,11 @@ const sourceUrl = computed(() => {
   }${encodeURIComponent(artifact.value.source)}${urlTarget}${urlIncludeUnsupportedProxy}`;
 });
 
+const openUrl = () => {
+  if (artifact.value.url) {
+    window.open(artifact.value.url); 
+  }
+}
 const previewSource = () => {
   if (!sourceUrl.value) {
     return

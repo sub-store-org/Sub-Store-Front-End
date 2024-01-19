@@ -62,7 +62,7 @@
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
-  const { name, type, general, notify, tipsTitle, tipsContent, desc } = defineProps<{
+  const { name, type, general, notify, tipsTitle, tipsContent, desc,tipsCancelText, tipsOkText } = defineProps<{
     name: string;
     type: 'sub' | 'collection';
     general: string;
@@ -70,6 +70,8 @@
     desc: string;
     tipsTitle?: string;
     tipsContent?: string;
+    tipsCancelText?: string;
+    tipsOkText?: string;
   }>();
 
   const { currentUrl: host } = useHostAPI();
@@ -144,15 +146,20 @@
     },
   ];
   const tips = () => {
-    Dialog({
-      title: tipsTitle,
-      content: tipsContent,
-      popClass: 'auto-dialog',
-      okText: 'OK',
-      noCancelBtn: true,
-      closeOnPopstate: true,
-      lockScroll: false,
-    });
+    window.open('https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E');
+    // Dialog({
+    //   title: tipsTitle,
+    //   content: tipsContent,
+    //   popClass: 'auto-dialog',
+    //   onOk: () => {
+    //     window.open('https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E');
+    //   },
+    //   okText: tipsOkText,
+    //   cancelText: tipsCancelText,
+    //   // noCancelBtn: true,
+    //   closeOnPopstate: true,
+    //   lockScroll: false,
+    // });
 
   };
 </script>

@@ -147,6 +147,8 @@ export default {
     panel: {
       general: 'General',
       tips: {
+        ok: 'View Document',
+        cancel: 'Cancel',
         desc: 'Subscription Link Parameters Description',
         title: 'Subscription Link Parameters',
         content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true"\nIncludes protocols not supported by the official/store version',
@@ -223,7 +225,7 @@ export default {
         },
         content: {
           label: 'Content',
-          placeholder: 'The content of the subscription',
+          placeholder: 'The content of the subscription: 1. Multiple single-line proxy protocols/JSON/URI 2. Complete Base64/YAML',
         },
         icon: {
           label: 'Icon',

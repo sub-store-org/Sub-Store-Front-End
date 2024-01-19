@@ -146,6 +146,8 @@ export default {
     panel: {
       general: '通用订阅',
       tips: {
+        ok: '查看文档',
+        cancel: '取消',
         desc: '订阅链接参数说明',
         title: '订阅链接参数',
         content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true" 包含官方/商店版不支持的协议',
@@ -223,7 +225,7 @@ export default {
         },
         content: {
           label: '内容',
-          placeholder: '填入订阅内容',
+          placeholder: '填入订阅内容: 1. 多个单行的代理协议/JSON/URI 2. 完整 Base64/YAML',
         },
         icon: {
           label: '图标链接',

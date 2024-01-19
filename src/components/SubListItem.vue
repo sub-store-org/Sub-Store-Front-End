@@ -410,6 +410,8 @@
         tipsTitle: t(`subPage.panel.tips.title`),
         tipsContent: `${t('subPage.panel.tips.content')}\n${t('syncPage.addArtForm.includeUnsupportedProxy.tips.content')}`,
         desc: t(`subPage.panel.tips.desc`),
+        tipsOkText: t(`subPage.panel.tips.ok`),
+        tipsCancelText: t(`subPage.panel.tips.cancel`),
       }),
       onOpened: () => swipe.value.close(),
       popClass: 'auto-dialog',
