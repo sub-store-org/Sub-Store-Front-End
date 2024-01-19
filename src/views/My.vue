@@ -153,7 +153,11 @@
             type="text"
             input-align="left"
             :left-icon="iconUser"
-          />
+          >
+            <template #button>
+              <nut-button :disabled="!isEditing" :plain="!isEditing" size="mini" :type="isEditing ? 'primary' : 'info' " @click="toggleSyncPlatform">{{ syncPlatformInput === 'gitlab' ? ( isEditing ?'切换回 Gist' : 'GitLab Snippet (β)') : ( isEditing ?'切换到 GitLab Snippet (β)' : 'Gist') }}</nut-button>
+            </template>
+          </nut-input>
           <nut-input
             v-if="storageType !== 'manual'"
             class="input"
@@ -258,7 +262,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultTimeout } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultTimeout, syncPlatform } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -278,7 +282,9 @@ const onClickAbout = () => {
   router.push(`/aboutUs`);
 };
 
+
 // 编辑 更新
+const syncPlatformInput = ref("");
 const userInput = ref("");
 const tokenInput = ref("");
 const uaInput = ref("");
@@ -293,6 +299,7 @@ const toggleEditMode = async () => {
   isEditLoading.value = true;
   if (isEditing.value) {
     await settingsStore.editSettings({
+      syncPlatform: syncPlatformInput.value,
       githubUser: userInput.value,
       gistToken: tokenInput.value,
       defaultUserAgent: uaInput.value,
@@ -300,6 +307,7 @@ const toggleEditMode = async () => {
     });
     setDisplayInfo();
   } else {
+    syncPlatformInput.value = syncPlatform.value;
     userInput.value = githubUser.value;
     tokenInput.value = gistToken.value;
     uaInput.value = defaultUserAgent.value;
@@ -314,7 +322,32 @@ const exitEditMode = () => {
   isEditing.value = false;
   isEditLoading.value = false;
 };
+const toggleSyncPlatform = () => {
+  if (syncPlatformInput.value === 'gitlab') {
+    syncPlatformInput.value = ''
+    Toast.text(`已切换到 ${syncPlatformInput.value === 'gitlab' ? 'GitLab Snippet' : 'Gist'}`);
+  } else {
+      Dialog({
+        title: '切换同步平台',
+        content: 'GitLab Snippet 正在测试中, 相关文案仍然是 Gist, 请备份数据后使用',
+        popClass: 'auto-dialog',
+        okText: `使用 ${syncPlatformInput.value === 'gitlab' ? 'Gist' : ' Snippet'}`,
+        cancelText: '取消',
+        onOk: () => {
+          if (syncPlatformInput.value === 'gitlab') {
+            syncPlatformInput.value = ''
+          } else {
+            syncPlatformInput.value = 'gitlab'
+          }
+          Toast.text(`已切换到 ${syncPlatformInput.value === 'gitlab' ? 'GitLab Snippet' : 'Gist'}`);
+        },
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  }
 
+  
+};
 const setDisplayInfo = () => {
   userInput.value = githubUser.value || t(`myPage.placeholder.noGithubUser`);
   tokenInput.value = gistToken.value

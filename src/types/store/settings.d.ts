@@ -9,6 +9,7 @@ interface SettingsBase {
 }
 
 interface SettingsPostData {
+  syncPlatform?: string;
   gistToken?: string;
   githubUser?: string;
   defaultUserAgent?: string;
