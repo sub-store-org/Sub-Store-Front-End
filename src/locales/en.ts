@@ -306,8 +306,10 @@ export default {
         },
         'Resolve Domain Operator': {
           label: 'Resolve Domain',
-          des: 'Providers(IPv4 only. Can be controlled by the node field "no-resolve")',
+          des: 'Providers(can be controlled by the node field "no-resolve")',
           options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
+          types: ['IPv4', 'IPv6'],
+          filters: ['Disabled', 'Remove Failed', 'IP Only', 'IPv4 Only', 'IPv6 Only'],
           tipsTitle: 'domain Tips',
           tipsDes: '节点域名解析操作说明',
         },

@@ -314,8 +314,10 @@ export default {
         },
         'Resolve Domain Operator': {
           label: '域名解析',
-          des: '提供商(仅 IPv4. 可由节点字段 "no-resolve" 控制)',
+          des: '提供商(可由节点字段 "no-resolve" 控制)',
           options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
+          types: ['IPv4', 'IPv6'],
+          filters: ['不过滤', '移除失败', '只保留 IP', '只保留 IPv4', '只保留 IPv6'],
           tipsTitle: '域名解析操作提示',
           tipsDes: '将节点域名解析成为 IP 地址，减少一次额外的 DNS 请求',
         },
