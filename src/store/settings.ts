@@ -33,22 +33,23 @@ export const useSettingsStore = defineStore('settingsStore', {
   getters: {},
   actions: {
     async fetchSettings() {
-      const { data: res } = await settingsApi.getSettings();
-      if (res.status === 'success') {
-        this.gistToken = res.data.gistToken || '';
-        this.githubUser = res.data.githubUser || '';
-        this.defaultUserAgent = res.data.defaultUserAgent || '';
-        this.defaultTimeout = res.data.defaultTimeout || '';
-        this.syncTime = res.data.syncTime || 0;
-        this.avatarUrl = res.data.avatarUrl || '';
-        this.artifactStore = res.data.artifactStore || '';
-        this.artifactStoreStatus = res.data.artifactStoreStatus || '';
+      const { showNotify } = useAppNotifyStore();
+      const res = await settingsApi.getSettings();
+      if (res?.data?.status === 'success' && res?.data?.data) {
+        this.gistToken = res.data.data.gistToken || '';
+        this.githubUser = res.data.data.githubUser || '';
+        this.defaultUserAgent = res.data.data.defaultUserAgent || '';
+        this.defaultTimeout = res.data.data.defaultTimeout || '';
+        this.syncTime = res.data.data.syncTime || 0;
+        this.avatarUrl = res.data.data.avatarUrl || '';
+        this.artifactStore = res.data.data.artifactStore || '';
+        this.artifactStoreStatus = res.data.data.artifactStoreStatus || '';
 
-        this.theme.auto = res.data.theme?.auto ?? true;
-        this.theme.name = res.data.theme?.name ?? 'light';
-        this.theme.dark = res.data.theme?.dark ?? 'dark';
-        this.theme.light = res.data.theme?.light ?? 'light';
-        let ressss = res.data.autoDownloadGistSync ?? false;
+        this.theme.auto = res.data.data.theme?.auto ?? true;
+        this.theme.name = res.data.data.theme?.name ?? 'light';
+        this.theme.dark = res.data.data.theme?.dark ?? 'dark';
+        this.theme.light = res.data.data.theme?.light ?? 'light';
+        let ressss = res.data.data.autoDownloadGistSync ?? false;
         if (ressss) {
           console.log("启动时自动下载 Gist 成功");
             const syncRes = await settingsApi.syncSettings('download');
@@ -59,36 +60,52 @@ export const useSettingsStore = defineStore('settingsStore', {
             }
         }
         this.autoDownloadGistSync = ressss;
+      } else {
+        showNotify({
+          title: `获取配置失败`,
+          type: 'danger',
+        });
       }
     },
     async editSettings(data: SettingsPostData) {
       const { showNotify } = useAppNotifyStore();
-      const { data: res } = await settingsApi.setSettings(data);
-      if (res.status === 'success') {
-        this.gistToken = res.data.gistToken || '';
-        this.githubUser = res.data.githubUser || '';
-        this.defaultUserAgent = res.data.defaultUserAgent || '';
-        this.defaultTimeout = res.data.defaultTimeout || '';
-        this.avatarUrl = res.data.avatarUrl || '';
-        this.artifactStore = res.data.artifactStore || '';
-        this.artifactStoreStatus = res.data.artifactStoreStatus || '';
+      const res = await settingsApi.setSettings(data);
+      if (res?.data?.status === 'success' && res?.data?.data) {
+        this.gistToken = res.data.data.gistToken || '';
+        this.githubUser = res.data.data.githubUser || '';
+        this.defaultUserAgent = res.data.data.defaultUserAgent || '';
+        this.defaultTimeout = res.data.data.defaultTimeout || '';
+        this.avatarUrl = res.data.data.avatarUrl || '';
+        this.artifactStore = res.data.data.artifactStore || '';
+        this.artifactStoreStatus = res.data.data.artifactStoreStatus || '';
         showNotify({ type: 'success', title: t(`myPage.notify.save.succeed`) });
+      } else {
+        showNotify({
+          title: `更新配置失败`,
+          type: 'danger',
+        });
       }
     },
     async changeTheme(data: SettingsPostData) {
       Toast.loading('切换主题中...', { cover: true, id: 'theme__loading' });
-      const { data: res } = await settingsApi.setSettings(data);
-      if (res.status === 'success') {
-        this.theme = res.data.theme;
+      const { showNotify } = useAppNotifyStore();
+      const res = await settingsApi.setSettings(data);
+      if (res?.data?.status === 'success' && res?.data?.data) {
+        this.theme = res.data.data.theme;
+      } else {
+        showNotify({
+          title: `切换主题失败`,
+          type: 'danger',
+        });
       }
       Toast.hide('theme__loading');
     },
     async changeAutoDownloadGist(data: SettingsPostData) {
       const { showNotify } = useAppNotifyStore();
       Toast.loading('同步 Gist Config 配置中...', { cover: true, id: 'isAutoDownloadGistSync__loading' });
-      const { data: res } = await settingsApi.setSettings(data);
-      if (res.status === 'success') {
-        let tfvalue = res.data.autoDownloadGistSync;
+      const res = await settingsApi.setSettings(data);
+      if (res?.data?.status === 'success' && res?.data?.data) {
+        let tfvalue = res.data.data.autoDownloadGistSync;
         this.autoDownloadGistSync = tfvalue;
         // const syncRes = await settingsApi.syncSettings('upload');
         // if (syncRes?.data?.status === 'success') {
@@ -105,6 +122,11 @@ export const useSettingsStore = defineStore('settingsStore', {
         //   showNotify({ type: 'primary', duration:800, title: t(`同步成功 重启时自动加载状态：${tfvalue}`) });
         // }
         Toast.hide('isAutoDownloadGistSync__loading');
+      } else {
+        showNotify({
+          title: `同步 Gist Config 配置失败`,
+          type: 'danger',
+        });
       }
     },
   },
