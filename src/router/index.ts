@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { useEnvApi } from '@/api/env';
 import { useSubsApi } from '@/api/subs';
 import { useFilesApi } from '@/api/files';
@@ -38,35 +39,35 @@ declare module 'vue-router' {
 
 const history = createWebHistory();
 const router = createRouter({
-  scrollBehavior(to, from, savedPosition) {
-    // console.log(`scrollBehavior ${from.path} => ${to.path}`)
-    document.querySelector('html').style['overflow-y'] = '';
-    document.querySelector('html').style.height = '';
-    document.body.style.height = '';
-    document.body.style['overflow-y'] = '';
-    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
-    (document.querySelector('#app') as HTMLElement).style.height = '';
+  // scrollBehavior(to, from, savedPosition) {
+  //   // console.log(`scrollBehavior ${from.path} => ${to.path}`)
+  //   document.querySelector('html').style['overflow-y'] = '';
+  //   document.querySelector('html').style.height = '';
+  //   document.body.style.height = '';
+  //   document.body.style['overflow-y'] = '';
+  //   (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
+  //   (document.querySelector('#app') as HTMLElement).style.height = '';
 
-    if (to.hash) {
-      return {
-        el: to.hash,
-        behavior: 'smooth',
-      }
-    }
-    if (globalStore !== null) {
-      const savedPositions = toRaw(globalStore.savedPositions);
-      if (savedPositions[to.path]) {
-        // console.log(`读取到 ${to.path} 保存的滚动位置：${savedPositions[to.path]?.top}`)
-        return savedPositions[to.path]
-      }
-    }
-    if (savedPosition) {
-      // console.log(`接受到 ${to.path} savedPosition 滚动位置：${savedPosition?.top}`)
-      return savedPosition
-    } else {
-      return { top: 0, left: 0 }
-    }
-  },
+  //   if (to.hash) {
+  //     return {
+  //       el: to.hash,
+  //       behavior: 'smooth',
+  //     }
+  //   }
+  //   if (globalStore !== null) {
+  //     const savedPositions = toRaw(globalStore.savedPositions);
+  //     if (savedPositions[to.path]) {
+  //       // console.log(`读取到 ${to.path} 保存的滚动位置：${savedPositions[to.path]?.top}`)
+  //       return savedPositions[to.path]
+  //     }
+  //   }
+  //   if (savedPosition) {
+  //     // console.log(`接受到 ${to.path} savedPosition 滚动位置：${savedPosition?.top}`)
+  //     return savedPosition
+  //   } else {
+  //     return { top: 0, left: 0 }
+  //   }
+  // },
   history,
   routes: [
     {
@@ -188,26 +189,45 @@ const router = createRouter({
 });
 
 // 全局前置守卫
-// router.afterEach(async to => {
-//   if (/\/edit\/(collections|subs)\/UNTITLED/.test(to.fullPath)) {
-//     (document.querySelector('#app') as HTMLElement).style.height = '100%';
-//   } else {
-//     (document.querySelector('#app') as HTMLElement).style.height = '';
-//   }
-//   return true;
-// });
+router.afterEach(async (to, from) => {
+  console.log(`afterEach ${from.path} => ${to.path}`)
+  if (to?.path && from?.path !== to?.path) {
+    let scrollTop = 0;
+    if (to?.meta?.needTabBar && globalStore !== null) {
+      const savedPositions = toRaw(globalStore.savedPositions);
+      if (savedPositions[to.path]?.top) {
+        scrollTop = savedPositions[to.path]?.top
+        console.log(`读取到 ${to.path} 保存的滚动位置：${scrollTop}`)
+      }
+    }
+    console.log(`${to.path} 滚动到：${scrollTop}`)
+    await nextTick()
+    window.scrollTo({
+      top: scrollTop,
+      behavior: "instant" as any
+    });
+  }
+});
 router.beforeEach((to, from) => {
-  // console.log(`beforeEach ${from.path} => ${to.path}`)
-  if (from?.meta?.needTabBar && from?.path !== to?.path) {
-  // if (from?.meta?.needTabBar) {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-    // console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
-    globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
+  console.log(`beforeEach ${from.path} => ${to.path}`)
+  if (!globalStore) {
+    globalStore = useGlobalStore();
+  }
+  if (globalStore) {
+    if (from?.meta?.needTabBar && from?.path !== to?.path) {
+      // if (from?.meta?.needTabBar) {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
+        globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
+      }
   }
   return true
 })
-router.beforeResolve(async to => {
+router.beforeResolve(async (to, from) => {
   // document.body.classList.remove('nut-overflow-hidden');
+  if (!globalStore) {
+    globalStore = useGlobalStore();
+  }
   // 路由跳转时查询环境，决定是否更新数据
   if (globalStore !== null) {
     useEnvApi()
@@ -252,6 +272,22 @@ router.beforeResolve(async to => {
     }
   }
 
+  // console.log(`beforeResolve ${from.path} => ${to.path}`)
+  // if (to?.path && from?.path !== to?.path) {
+  //   let scrollTop = 0;
+  //   if (to?.meta?.needTabBar && globalStore !== null) {
+  //     const savedPositions = toRaw(globalStore.savedPositions);
+  //     if (savedPositions[to.path]?.top) {
+  //       scrollTop = savedPositions[to.path]?.top
+  //       console.log(`读取到 ${to.path} 保存的滚动位置：${scrollTop}`)
+  //     }
+  //   }
+  //   console.log(`${to.path} 滚动到：${scrollTop}`)
+  //   window.scrollTo({
+  //     top: 1000,
+  //     behavior: "instant" as any
+  //   });
+  // }
   // 允许跳转
   return true;
 });

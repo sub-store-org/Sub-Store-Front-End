@@ -95,7 +95,15 @@ const changeLang = (type: string) => {
 
 const back = () => {
   if (isNeedBack.value) {
-    router.back();
+    try {
+      if (router.options.history.state.back) {
+        router.back();
+      } else {
+        router.push('/');
+      }
+    } catch (error) {
+      router.push('/');
+    }
   }
 };
 const setSimpleMode = (isSimpleMode: boolean) => {
