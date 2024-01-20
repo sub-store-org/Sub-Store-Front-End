@@ -342,7 +342,7 @@ const toggleSyncPlatform = () => {
           Toast.text(`已切换到 ${syncPlatformInput.value === 'gitlab' ? 'GitLab Snippet' : 'Gist'}`);
         },
         closeOnPopstate: true,
-        lockScroll: false,
+        lockScroll: true,
       });
   }
 
@@ -460,7 +460,7 @@ const timeoutTips = () => {
       okText: 'OK',
       noCancelBtn: true,
       closeOnPopstate: true,
-      lockScroll: false,
+      lockScroll: true,
     });
 };
 // store 刷新数据完成后 复制内容给 input 绑定

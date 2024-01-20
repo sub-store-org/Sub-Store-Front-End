@@ -319,7 +319,7 @@
       okText: 'OK',
       noCancelBtn: true,
       closeOnPopstate: true,
-      lockScroll: false,
+      lockScroll: true,
     });
   };
 

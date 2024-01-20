@@ -425,7 +425,7 @@
       noOkBtn: true,
       noCancelBtn: true,
       closeOnPopstate: true,
-      lockScroll: false,
+      lockScroll: true,
     });
   };
 
@@ -468,7 +468,7 @@
       cancelText: t('subPage.deleteSub.btn.cancel'),
       okText: t('subPage.deleteSub.btn.confirm'),
       closeOnPopstate: true,
-      lockScroll: false,
+      lockScroll: true,
     });
   };
 

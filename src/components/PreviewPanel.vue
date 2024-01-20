@@ -158,7 +158,7 @@
     //   cancelText: tipsCancelText,
     //   // noCancelBtn: true,
     //   closeOnPopstate: true,
-    //   lockScroll: false,
+    //   lockScroll: true,
     // });
 
   };

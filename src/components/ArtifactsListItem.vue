@@ -256,7 +256,7 @@ const previewSource = () => {
     popClass: 'auto-dialog',
     okText: t('editorPage.subConfig.basic.previewSwitch'),
     closeOnPopstate: true,
-    lockScroll: false,
+    lockScroll: true,
   });
   
 };
@@ -382,7 +382,7 @@ const onClickDelete = () => {
     cancelText: t('syncPage.deleteArt.btn.cancel'),
     okText: t('syncPage.deleteArt.btn.confirm'),
     closeOnPopstate: true,
-    lockScroll: false,
+    lockScroll: true,
   });
 };
 
