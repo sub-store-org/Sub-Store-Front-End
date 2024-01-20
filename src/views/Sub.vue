@@ -6,9 +6,9 @@
     @touchend="onTouchEnd"
   >
     <!-- 添加订阅弹窗 -->
+    <!-- lock-scroll -->
     <div>
       <nut-popup
-        lock-scroll
         v-model:visible="addSubBtnIsVisible"
         pop-class="add-sub-popup"
         position="bottom"

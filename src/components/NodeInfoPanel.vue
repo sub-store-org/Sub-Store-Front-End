@@ -40,8 +40,8 @@
     </nut-tabs>
     <img v-if="qrcode && currentTab < 1" :src="qrcode" alt="QR Code" class="qrcode" />
   </div>
+  <!-- lock-scroll -->
   <nut-overlay
-    lock-scroll
     v-model:visible="overlayVisible"
     :z-index="1001"
     @click="closePanel"
