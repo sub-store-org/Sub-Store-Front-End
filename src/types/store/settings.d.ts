@@ -20,7 +20,6 @@ interface SettingsPostData {
     dark: CustomTheme;
     light: CustomTheme;
   };
-  autoDownloadGistSync?: boolean;
 }
 
 interface StoragePostData {

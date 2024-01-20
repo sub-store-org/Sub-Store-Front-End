@@ -143,26 +143,6 @@
         is-link
       />
     </nut-cell-group>
-
-    <p class="More-title">
-      {{ $t(`moreSettingPage.other`) }}
-    </p>
-
-    <nut-cell :title="$t(`moreSettingPage.auto`)" class="cell-item">
-      <template v-slot:link>
-        <nut-switch
-          class="my-switch"
-          v-model="autoSwitchSync"
-          size="mini"
-          @change="SwitchSyncIsChange"
-        />
-      </template>
-    </nut-cell>
-
-    <p class="desc-title">
-      {{ $t(`moreSettingPage.desc`) }}
-    </p>
-
     <nut-picker
       v-model="selectedValue"
       v-model:visible="showThemePicker"
@@ -187,8 +167,6 @@
 
   const { t } = useI18n();
   const settingsStore = useSettingsStore();
-  const { changeAutoDownloadGist } = settingsStore;
-  const { autoDownloadGistSync } = storeToRefs(settingsStore);
   const globalStore = useGlobalStore();
   const {
     // env,
@@ -257,9 +235,6 @@
     globalStore.settabBar2(istabBar2);
   };
 
-  const SwitchSyncIsChange = (val: boolean) => {
-    changeAutoDownloadGist({ autoDownloadGistSync: val });
-  };
 
   const { changeTheme } = settingsStore;
   const { theme } = storeToRefs(settingsStore);
@@ -378,7 +353,6 @@
   watchEffect(() => {
     SimpleSwitch.value = isSimpleMode.value;
     LeftRight.value = isLeftRight.value;
-    autoSwitchSync.value = autoDownloadGistSync.value;
     awIconColor.value = isIconColor.value;
     awIsDefaultIcon.value = isDefaultIcon.value;
     awEditorCommon.value = isEditorCommon.value;
