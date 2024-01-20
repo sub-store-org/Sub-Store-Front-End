@@ -1,4 +1,5 @@
 <template>
+  <!-- lock-scroll  -->
   <nut-dialog
     teleport="#app"
     pop-class="artifact-panel auto-dialog"
@@ -9,7 +10,6 @@
     @cancel="closePanel"
     closeOnPopstate
     visible
-    lock-scroll
   >
     <nut-form :model-value="editPanelData" ref="ruleForm">
       <nut-form-item
@@ -89,15 +89,16 @@
           type="text"
         />
         <!-- readonly 只读 -->
-
-        <nut-cascader
-          :title="$t('syncPage.selectSource.title')"
-          v-model:visible="sourceSelectorIsVisible"
-          v-model="sourceModel"
-          @change="sourceChange"
-          :options="sourceOptions"
-        ></nut-cascader>
-
+          
+        <Teleport to="body">
+          <nut-cascader
+            :title="$t('syncPage.selectSource.title')"
+            v-model:visible="sourceSelectorIsVisible"
+            v-model="sourceModel"
+            @change="sourceChange"
+            :options="sourceOptions"
+          ></nut-cascader>
+        </Teleport>
       </nut-form-item>
       <template v-if="sourceInput && ['subscription', 'collection'].includes(editPanelData.type)">
         <div class="include-unsupported-proxy-wrapper">
@@ -135,7 +136,7 @@
   import { useArtifactsStore } from '@/store/artifacts';
   import { useSubsStore } from '@/store/subs';
   import { Dialog, Toast } from '@nutui/nutui';
-  import { computed, ref, toRaw, watchEffect } from 'vue';
+  import { computed, ref, toRaw, watchEffect, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
@@ -334,6 +335,12 @@
       sourceInput.value = displayType.value + ' - ' + displayName.value;
       isEditMode.value = true;
       isInit.value = true;
+    }
+  });
+  watch(sourceSelectorIsVisible, visible => {
+    if (visible) {
+    } else {
+
     }
   });
 </script>
