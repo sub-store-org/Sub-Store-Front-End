@@ -237,7 +237,7 @@ router.beforeResolve(async (to, from) => {
   // 路由跳转时查询环境，决定是否更新数据
   if (globalStore !== null) {
     const storeEnv = toRaw(globalStore.env);
-    // if (storeEnv?.backend && storeEnv?.version) {
+    if (storeEnv?.backend && storeEnv?.version) {
       useEnvApi()
       .getEnv()
       .then(async res => {
@@ -257,7 +257,7 @@ router.beforeResolve(async (to, from) => {
           }
         }
       });
-    // }
+    }
   } else {
     globalStore = useGlobalStore();
   }
