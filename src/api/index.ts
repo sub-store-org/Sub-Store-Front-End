@@ -22,10 +22,10 @@ service.interceptors.response.use(
     return Promise.resolve(response);
   },
   (e: AxiosError<ErrorResponse>): AxiosPromise<ErrorResponse | undefined> => {
-    // console.log('eeeeeeeee', e.response);
+    // console.log(e.config.url);
 
     // 流量信息接口的报错,不通知，直接返回
-    if (e.config.url.startsWith('/api/sub/flow'))
+    if (e.config.url.startsWith('/api/sub/flow') || e.config.url.startsWith('https://api.github.com/'))
       return Promise.resolve(e.response);
 
     if (appNotifyStore) {
