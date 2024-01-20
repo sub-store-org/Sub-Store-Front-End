@@ -37,7 +37,7 @@ export const useSubsStore = defineStore('subsStore', {
   },
   actions: {
     async fetchSubsData() {
-      Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles()]).then(res => {
+      await Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles()]).then(res => {
         if ('data' in res[0].data) {
           this.subs = res[0].data.data;
         }

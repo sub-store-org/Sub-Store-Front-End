@@ -35,6 +35,7 @@ export const initStores = async (
   try {
     localStorage.removeItem("envCache");
     await subsStore.fetchSubsData();
+    await new Promise((resolve) => setTimeout(resolve, 50));
     await artifactsStore.fetchArtifactsData();
     await settingsStore.fetchSettings();
     await globalStore.setEnv();
