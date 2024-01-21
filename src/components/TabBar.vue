@@ -61,6 +61,7 @@
     }
 
     :deep(.tabbar-item) {
+      cursor: pointer;
       &.nut-tabbar-item__icon--unactive {
         color: var(--lowest-text-color);
       }

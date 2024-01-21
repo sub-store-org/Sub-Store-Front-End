@@ -426,6 +426,7 @@ watch(isSyncOpen, async () => {
   flex-direction: row;//
   justify-content: flex-end; //
   background: var(--card-color);
+  cursor: pointer;
 
   :deep(.nut-avatar) {
     flex-shrink: 0;

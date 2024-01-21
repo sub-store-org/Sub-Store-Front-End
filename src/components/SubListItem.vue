@@ -516,6 +516,7 @@
     border-radius: var(--item-card-radios);
     display: flex;
     background: var(--card-color);
+    cursor: pointer;
 
     :deep(.nut-avatar) {
       flex-shrink: 0;

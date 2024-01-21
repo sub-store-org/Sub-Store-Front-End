@@ -537,6 +537,9 @@ watchEffect(() => {
             opacity: 0.2;
             filter: brightness(var(--img-brightness));
           }
+          :deep(.nut-icon-tips:before) {
+            cursor: pointer;
+          }
 
           &:not(:first-child) {
             margin-top: 8px;
