@@ -503,7 +503,7 @@ export default {
     syncSwitcher: 'Enable Sync',
     syncAllSucceed: 'Sync succeed',
     emptySub: {
-      title: "You haven' add any synced artifacts",
+      title: "You haven't add any synced artifacts",
       desc: 'You can access the artifact anywhere via Gist',
       btn: 'Add an artifact',
     },
