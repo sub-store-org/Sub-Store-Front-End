@@ -278,6 +278,7 @@ const pop = (type: string, tipsDes: string) => {
       .delete {
         padding: 0 24px;
         color: var(--danger-color);
+        cursor: pointer;
       }
 
       .drag-handler {
@@ -382,6 +383,7 @@ const pop = (type: string, tipsDes: string) => {
   border: none;
   font-weight: normal;
   // box-shadow: 0 1px 40px var(--background-color);
+  cursor: pointer;
 }
 
 .horizontal-button-container {

@@ -146,3 +146,10 @@ textarea::-webkit-input-placeholder {
   left: -10px;
   bottom: -10px;
 }
+
+.nut-radio, .nut-radio--round, .nut-checkbox, .nut-checkbox--round  {
+  cursor: pointer;
+}
+.fa-circle-question, .fa-location-arrow {
+  cursor: pointer;
+}
