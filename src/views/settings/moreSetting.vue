@@ -152,10 +152,27 @@
       :ok-text="$t(`themeSettingPage.themePicker.confirm`)"
       @confirm="confirm"
     />
+    <nut-cell-group>
+      <nut-cell
+          :title="$t(`moreSettingPage.clearFrontEndData.label`)"
+          class="change-themes"
+          @click.stop="clearFrontEndData"
+          is-link
+        ></nut-cell>
+      <nut-cell
+          :title="$t(`moreSettingPage.clearData.label`)"
+          class="change-themes"
+          @click.stop="clearData"
+          is-link
+        ></nut-cell>
+    </nut-cell-group>
+  
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { initStores } from "@/utils/initApp";
+  import { Dialog, Toast } from '@nutui/nutui';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
@@ -163,6 +180,8 @@
   import { useThemes } from '@/hooks/useThemes';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useAppNotifyStore } from "@/store/appNotify";
+  import { useSettingsApi } from "@/api/settings";
   // import { Dialog } from '@nutui/nutui';
 
   const { t } = useI18n();
@@ -181,6 +200,8 @@
     istabBar,
     istabBar2,
   } = storeToRefs(globalStore);
+
+  const { showNotify } = useAppNotifyStore();
 
   const InputHostApi = ref('');
   const autoSwitchSync = ref(false);
@@ -292,6 +313,62 @@
     InputHostApi.value = ishostApi.value
       ? ishostApi.value.slice(0, 9) + '************'
       : t(`moreSettingPage.yhostapi`);
+  };
+  const clearData = () => {
+    Dialog({
+      title: t('moreSettingPage.clearData.title'),
+      content: t('moreSettingPage.clearData.content'),
+      onCancel: () => {},
+      onOk: async () => {
+        try {
+            const res = await useSettingsApi().restoreSettings({ content: JSON.stringify({}) });
+            if (res?.data?.status === "success") {
+              await initStores(false, true, true);
+              showNotify({
+                type: "success",
+                title: t(`moreSettingPage.clearData.succeed`),
+              });
+            } else {
+              throw new Error('clear data failed')
+            }
+        } catch (e) {
+          showNotify({
+            type: "danger",
+            title: t(`moreSettingPage.clearData.failed`),
+          });
+          console.error(e);
+        } 
+      },
+      popClass: 'auto-dialog',
+      cancelText: t('moreSettingPage.clearData.cancel'),
+      okText: t('moreSettingPage.clearData.conform'),
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+  };
+  const clearFrontEndData = () => {
+    Dialog({
+      title: t('moreSettingPage.clearFrontEndData.title'),
+      content: t('moreSettingPage.clearFrontEndData.content'),
+      onCancel: () => {},
+      onOk: async () => {
+        try {
+          localStorage.clear()
+          window.location.reload()
+        } catch (e) {
+          showNotify({
+            type: "danger",
+            title: t(`moreSettingPage.clearFrontEndData.failed`),
+          });
+          console.error(e);
+        } 
+      },
+      popClass: 'auto-dialog',
+      cancelText: t('moreSettingPage.clearFrontEndData.cancel'),
+      okText: t('moreSettingPage.clearFrontEndData.conform'),
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
   };
 
   // const exitEditMode = () => {
