@@ -1,8 +1,23 @@
 <template>
-  <nut-swipe class="sub-item-swipe" ref="swipe" :disabled="$props.disabled">
-    <div class="sub-item-wrapper" :style="{'padding': isSimpleMode ? '9px' : '16px' }" @click.stop="previewSource">
+  <nut-swipe
+    class="sub-item-swipe"
+    ref="swipe"
+    @close="setIsMoveClose()"
+    @open="setIsMoveOpen()"
+    @click.stop="previewSource"
+    :disabled="$props.disabled"
+  >
+    <div
+      class="sub-item-wrapper"
+      :style="{ padding: isSimpleMode ? '9px' : '16px' }"
+    >
       <div class="sub-img-wrappers" @click.stop="openUrl">
-        <nut-avatar :class="{ 'sub-item-customer-icon': !isIconColor }"  :size="isSimpleMode ? '36' : '48'" :url="icon" bg-color=""></nut-avatar>
+        <nut-avatar
+          :class="{ 'sub-item-customer-icon': !isIconColor }"
+          :size="isSimpleMode ? '36' : '48'"
+          :url="icon"
+          bg-color=""
+        ></nut-avatar>
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
@@ -10,11 +25,21 @@
             {{ displayName }}
           </h3>
           <div class="title-right-wrapper" v-if="!isSimpleMode">
-            <button class="copy-sub-link" style="padding: 0 12px;" v-if="artifact.url" @click.stop="onClickCopyLink">
+            <button
+              class="copy-sub-link"
+              style="padding: 0 12px"
+              v-if="artifact.url"
+              @click.stop="onClickCopyLink"
+            >
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
             </button>
 
-            <button class="copy-sub-link" @click.stop="swipeController" v-if="!isMobile()" ref="moreAction">
+            <button
+              class="copy-sub-link"
+              @click.stop="swipeController"
+              v-if="!isMobile()"
+              ref="moreAction"
+            >
               <font-awesome-icon icon="fa-solid fa-angles-right" />
             </button>
           </div>
@@ -28,11 +53,22 @@
             <p>{{ detail.secondLine }}</p>
             <div class="task-switch">
               <div v-if="isSimpleMode">
-                <button v-if="artifact.url" class="copy-sub-link"
-                  style="padding: 0 12px;" @click.stop="onClickCopyLink">
-                  <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
-                  <button class="copy-sub-link" @click.stop="swipeController" v-if="!isMobile()" ref="moreAction">
-                  <font-awesome-icon icon="fa-solid fa-angles-right" />
+                <button
+                  v-if="artifact.url"
+                  class="copy-sub-link"
+                  style="padding: 0 12px"
+                  @click.stop="onClickCopyLink"
+                >
+                  <font-awesome-icon
+                    icon="fa-solid fa-clone"
+                  ></font-awesome-icon>
+                  <button
+                    class="copy-sub-link"
+                    @click.stop="swipeController"
+                    v-if="!isMobile()"
+                    ref="moreAction"
+                  >
+                    <font-awesome-icon icon="fa-solid fa-angles-right" />
                   </button>
                 </button>
               </div>
@@ -40,7 +76,11 @@
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
               <span @click.stop>
-                <nut-switch class="my-switch" v-model="isSyncOpen" :loading="isSwitcherLoading" />
+                <nut-switch
+                  class="my-switch"
+                  v-model="isSyncOpen"
+                  :loading="isSwitcherLoading"
+                />
               </span>
             </div>
           </div>
@@ -48,20 +88,34 @@
       </div>
     </div>
 
-
     <template v-if="isLeftRight" #left>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="primary" class="sub-item-swipe-btn" @click="onClickSync">
+        <nut-button
+          shape="square"
+          type="primary"
+          class="sub-item-swipe-btn"
+          @click="onClickSync"
+        >
           <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="warning" class="sub-item-swipe-btn" @click="onClickEdit">
+        <nut-button
+          shape="square"
+          type="warning"
+          class="sub-item-swipe-btn"
+          @click="onClickEdit"
+        >
           <font-awesome-icon icon="fa-solid fa-pen-nib" />
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="danger" class="sub-item-swipe-btn" @click="onClickDelete">
+        <nut-button
+          shape="square"
+          type="danger"
+          class="sub-item-swipe-btn"
+          @click="onClickDelete"
+        >
           <font-awesome-icon icon="fa-solid fa-trash-can" />
         </nut-button>
       </div>
@@ -69,17 +123,32 @@
 
     <template v-else #right>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="primary" class="sub-item-swipe-btn" @click="onClickSync">
+        <nut-button
+          shape="square"
+          type="primary"
+          class="sub-item-swipe-btn"
+          @click="onClickSync"
+        >
           <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="warning" class="sub-item-swipe-btn" @click="onClickEdit">
+        <nut-button
+          shape="square"
+          type="warning"
+          class="sub-item-swipe-btn"
+          @click="onClickEdit"
+        >
           <font-awesome-icon icon="fa-solid fa-pen-nib" />
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="danger" class="sub-item-swipe-btn" @click="onClickDelete">
+        <nut-button
+          shape="square"
+          type="danger"
+          class="sub-item-swipe-btn"
+          @click="onClickDelete"
+        >
           <font-awesome-icon icon="fa-solid fa-trash-can" />
         </nut-button>
       </div>
@@ -88,44 +157,45 @@
 </template>
 
 <script lang="ts" setup>
-import logoIcon from '@/assets/icons/logo.png';
-import logoRedIcon from '@/assets/icons/logo-red.png';
-import singboxIcon from '@/assets/icons/sing-box.png';
-import clashIcon from '@/assets/icons/clash.png';
-import clashMetaIcon from '@/assets/icons/clashmeta.png';
-import loonIcon from '@/assets/icons/loon.png';
-import quanxIcon from '@/assets/icons/quanx.png';
-import shadowRocketIcon from '@/assets/icons/shadowrocket.png';
-import surfboardIcon from '@/assets/icons/surfboard.png';
-import stashIcon from '@/assets/icons/stash.png';
-import surgeIcon from '@/assets/icons/surge.png';
-import v2rayIcon from '@/assets/icons/v2ray.png';
-import singboxColorIcon from '@/assets/icons/sing-box_color.png';
-import clashColorIcon from '@/assets/icons/clash_color.png';
-import clashMetaColorIcon from '@/assets/icons/clashmeta_color.png';
-import loonColorIcon from '@/assets/icons/loon_color.png';
-import quanxColorIcon from '@/assets/icons/quanx_color.png';
-import shadowRocketColorIcon from '@/assets/icons/shadowrocket_color.png';
-import surfboardColorIcon from '@/assets/icons/surfboard_color.png';
-import stashColorIcon from '@/assets/icons/stash_color.png';
-import surgeColorIcon from '@/assets/icons/surge_color.png';
-import v2rayColorIcon from '@/assets/icons/v2ray_color.png';
-import { useAppNotifyStore } from '@/store/appNotify';
-import { useArtifactsStore } from '@/store/artifacts';
-import { useSubsStore } from '@/store/subs';
-import { butifyDate } from '@/utils/butifyDate';
-import { isMobile } from '@/utils/isMobile';
-import { Dialog, Toast } from '@nutui/nutui';
-import { useClipboard } from '@vueuse/core';
-import { storeToRefs } from 'pinia';
-import { computed, createVNode, ref, toRaw, watch, watchEffect } from 'vue';
-import useV3Clipboard from 'vue-clipboard3';
-import { useI18n } from 'vue-i18n';
-import { useGlobalStore } from '@/store/global';
-import { useHostAPI } from '@/hooks/useHostAPI';
+import logoIcon from "@/assets/icons/logo.png";
+import logoRedIcon from "@/assets/icons/logo-red.png";
+import singboxIcon from "@/assets/icons/sing-box.png";
+import clashIcon from "@/assets/icons/clash.png";
+import clashMetaIcon from "@/assets/icons/clashmeta.png";
+import loonIcon from "@/assets/icons/loon.png";
+import quanxIcon from "@/assets/icons/quanx.png";
+import shadowRocketIcon from "@/assets/icons/shadowrocket.png";
+import surfboardIcon from "@/assets/icons/surfboard.png";
+import stashIcon from "@/assets/icons/stash.png";
+import surgeIcon from "@/assets/icons/surge.png";
+import v2rayIcon from "@/assets/icons/v2ray.png";
+import singboxColorIcon from "@/assets/icons/sing-box_color.png";
+import clashColorIcon from "@/assets/icons/clash_color.png";
+import clashMetaColorIcon from "@/assets/icons/clashmeta_color.png";
+import loonColorIcon from "@/assets/icons/loon_color.png";
+import quanxColorIcon from "@/assets/icons/quanx_color.png";
+import shadowRocketColorIcon from "@/assets/icons/shadowrocket_color.png";
+import surfboardColorIcon from "@/assets/icons/surfboard_color.png";
+import stashColorIcon from "@/assets/icons/stash_color.png";
+import surgeColorIcon from "@/assets/icons/surge_color.png";
+import v2rayColorIcon from "@/assets/icons/v2ray_color.png";
+import { useAppNotifyStore } from "@/store/appNotify";
+import { useArtifactsStore } from "@/store/artifacts";
+import { useSubsStore } from "@/store/subs";
+import { butifyDate } from "@/utils/butifyDate";
+import { isMobile } from "@/utils/isMobile";
+import { Dialog, Toast } from "@nutui/nutui";
+import { useClipboard } from "@vueuse/core";
+import { storeToRefs } from "pinia";
+import { computed, createVNode, ref, toRaw, watch, watchEffect } from "vue";
+import useV3Clipboard from "vue-clipboard3";
+import { useI18n } from "vue-i18n";
+import { useGlobalStore } from "@/store/global";
+import { useHostAPI } from "@/hooks/useHostAPI";
 const globalStore = useGlobalStore();
 
-const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } = storeToRefs(globalStore);
+const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } =
+  storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -134,7 +204,7 @@ const { currentUrl: host } = useHostAPI();
 
 const { name } = defineProps<{
   name: string;
-  disabled?: boolean,
+  disabled?: boolean;
 }>();
 
 const { showNotify } = useAppNotifyStore();
@@ -142,16 +212,14 @@ const subsStore = useSubsStore();
 const artifactsStore = useArtifactsStore();
 const { artifacts } = storeToRefs(artifactsStore);
 const artifact = computed(() => {
-  return artifacts.value.find(item => item.name === name);
+  return artifacts.value.find((item) => item.name === name);
 });
-const emit = defineEmits(['edit']);
-
-
+const emit = defineEmits(["edit"]);
 
 const displayName = computed(() => {
   return (
     artifact.value.displayName ||
-    artifact.value['display-name'] ||
+    artifact.value["display-name"] ||
     artifact.value.name
   );
 });
@@ -166,50 +234,49 @@ const swipeIsOpen = ref(false);
 const sourceSub = computed(() => {
   const name = artifact.value.source;
   switch (artifact.value.type) {
-    case 'collection':
+    case "collection":
       return subsStore.getOneCollection(name);
-    case 'subscription':
+    case "subscription":
       return subsStore.getOneSub(name);
-    case 'file':
+    case "file":
       return subsStore.getOneFile(name);
   }
 });
 
 const icon = computed(() => {
-  const icon = artifact.value.icon
+  const icon = artifact.value.icon;
   if (icon) {
     return icon;
   }
-  let platform = String(artifact.value.platform)
-  if (['file'].includes(artifact.value.type)) {
+  let platform = String(artifact.value.platform);
+  if (["file"].includes(artifact.value.type)) {
     if (sourceSub.value?.icon) {
-      return sourceSub.value.icon;  
+      return sourceSub.value.icon;
     } else {
-      platform = ''
+      platform = "";
     }
-    
   }
   switch (platform) {
-    case 'Surge':
-      return isIconColor.value ? surgeColorIcon: surgeIcon;
-    case 'QX':
-      return isIconColor.value ? quanxColorIcon: quanxIcon;
-    case 'Loon':
-      return isIconColor.value ? loonColorIcon: loonIcon;
-    case 'Clash':
-      return isIconColor.value ? clashColorIcon: clashIcon;
-    case 'ClashMeta':
-      return isIconColor.value ? clashMetaColorIcon: clashMetaIcon;
-    case 'Stash':
-      return isIconColor.value ? stashColorIcon: stashIcon;
-    case 'ShadowRocket':
-      return isIconColor.value ? shadowRocketColorIcon: shadowRocketIcon;
-    case 'V2Ray':
-      return isIconColor.value ? v2rayColorIcon: v2rayIcon;
-    case 'sing-box':
-      return isIconColor.value ? singboxColorIcon: singboxIcon;
-    case 'Surfboard':
-      return isIconColor.value ? surfboardColorIcon: surfboardIcon;
+    case "Surge":
+      return isIconColor.value ? surgeColorIcon : surgeIcon;
+    case "QX":
+      return isIconColor.value ? quanxColorIcon : quanxIcon;
+    case "Loon":
+      return isIconColor.value ? loonColorIcon : loonIcon;
+    case "Clash":
+      return isIconColor.value ? clashColorIcon : clashIcon;
+    case "ClashMeta":
+      return isIconColor.value ? clashMetaColorIcon : clashMetaIcon;
+    case "Stash":
+      return isIconColor.value ? stashColorIcon : stashIcon;
+    case "ShadowRocket":
+      return isIconColor.value ? shadowRocketColorIcon : shadowRocketIcon;
+    case "V2Ray":
+      return isIconColor.value ? v2rayColorIcon : v2rayIcon;
+    case "sing-box":
+      return isIconColor.value ? singboxColorIcon : singboxIcon;
+    case "Surfboard":
+      return isIconColor.value ? surfboardColorIcon : surfboardIcon;
     default:
       return isDefaultIcon.value ? logoIcon : logoRedIcon;
   }
@@ -217,104 +284,127 @@ const icon = computed(() => {
 
 const sourceUrl = computed(() => {
   if (!artifact.value.type) {
-    return ''
+    return "";
   }
-  if (artifact.value.type === 'file') {
+  if (artifact.value.type === "file") {
     const path = `/api/file/${encodeURIComponent(artifact.value.source)}`;
     const url = `${host.value}${path}`;
-    return url
+    return url;
   }
-  const urlTarget: string = artifact.value.platform !== null ? `?target=${artifact.value.platform}` : '';
-  let urlIncludeUnsupportedProxy = artifact.value.includeUnsupportedProxy ? `includeUnsupportedProxy=true` : '';
+  const urlTarget: string =
+    artifact.value.platform !== null
+      ? `?target=${artifact.value.platform}`
+      : "";
+  let urlIncludeUnsupportedProxy = artifact.value.includeUnsupportedProxy
+    ? `includeUnsupportedProxy=true`
+    : "";
   if (urlTarget && urlIncludeUnsupportedProxy) {
-    urlIncludeUnsupportedProxy = `&${urlIncludeUnsupportedProxy}`
-  } else if (urlIncludeUnsupportedProxy){
-    urlIncludeUnsupportedProxy = `?${urlIncludeUnsupportedProxy}`
+    urlIncludeUnsupportedProxy = `&${urlIncludeUnsupportedProxy}`;
+  } else if (urlIncludeUnsupportedProxy) {
+    urlIncludeUnsupportedProxy = `?${urlIncludeUnsupportedProxy}`;
   }
   return `${host.value}/download/${
-    artifact.value.type === 'subscription' ? '' : 'collection/'
-  }${encodeURIComponent(artifact.value.source)}${urlTarget}${urlIncludeUnsupportedProxy}`;
+    artifact.value.type === "subscription" ? "" : "collection/"
+  }${encodeURIComponent(
+    artifact.value.source
+  )}${urlTarget}${urlIncludeUnsupportedProxy}`;
 });
 
 const openUrl = () => {
   if (artifact.value.url) {
-    window.open(artifact.value.url); 
+    window.open(artifact.value.url);
   }
-}
+};
+
+const ismove = ref(false);
+
+const setIsMoveOpen = () => {
+  ismove.value = true;
+  setTimeoutTF();
+};
+
+const setIsMoveClose = () => {
+  ismove.value = true;
+  setTimeoutTF();
+};
+
+// 增加延迟防止打开时 触发不了
+const setTimeoutTF = () => {
+  setTimeout(() => {
+    ismove.value = false;
+  }, 200);
+};
+
 const previewSource = () => {
-  if (!sourceUrl.value) {
-    return
-  }
+  if (ismove.value || !sourceUrl.value) return;
   Dialog({
-    title: t('tabBar.sub'),
+    title: t("tabBar.sub"),
     content: sourceUrl.value,
-    onCancel: () => { },
+    onCancel: () => {},
     onOk: () => {
       window.open(sourceUrl.value);
     },
     onOpened: () => swipe.value.close(),
-    popClass: 'auto-dialog',
-    okText: t('editorPage.subConfig.basic.previewSwitch'),
+    popClass: "auto-dialog",
+    okText: t("editorPage.subConfig.basic.previewSwitch"),
     closeOnPopstate: true,
     lockScroll: false,
   });
-  
 };
 
 const transferText = (type: string) => {
   const transType = () => {
     switch (artifact.value.type) {
-      case 'subscription':
-        return t('specificWord.singleSub');
-      case 'collection':
-        return t('specificWord.collectionSub');
-      case 'file':
-        return t('specificWord.file');
+      case "subscription":
+        return t("specificWord.singleSub");
+      case "collection":
+        return t("specificWord.collectionSub");
+      case "file":
+        return t("specificWord.file");
       default:
-        return t('specificWord.unknownType');
+        return t("specificWord.unknownType");
     }
   };
 
   const transTime = () => {
     if (isSimpleMode.value) {
-      return artifact.value.updated
-        ? butifyDate(artifact.value.updated)
-        : '';
+      return artifact.value.updated ? butifyDate(artifact.value.updated) : "";
     } else {
       return artifact.value.updated
         ? t(`syncPage.detail.secondLine`, {
-          time: butifyDate(artifact.value.updated),
-        })
+            time: butifyDate(artifact.value.updated),
+          })
         : t(`syncPage.detail.notSync`);
     }
-
   };
 
   switch (type) {
-    case 'type':
+    case "type":
       return transType();
-    case 'time':
+    case "time":
       return transTime();
   }
 };
 
-
 const detail = computed(() => {
-  const name = sourceSub.value ? (sourceSub.value?.displayName ||
-      sourceSub.value?.['display-name'] || sourceSub.value?.name) : t('specificWord.unknownSource')
-  const type = transferText('type') || ''
+  const name = sourceSub.value
+    ? sourceSub.value?.displayName ||
+      sourceSub.value?.["display-name"] ||
+      sourceSub.value?.name
+    : t("specificWord.unknownSource");
+  const type = transferText("type") || "";
   if (isSimpleMode.value) {
     return {
-      firstLine: '',
-      secondLine: type + ' ' + name + ' ' + transferText('time'),
+      firstLine: "",
+      secondLine: type + " " + name + " " + transferText("time"),
     };
   } else {
     return {
       firstLine: t(`syncPage.detail.firstLine`, {
         type,
-        name
+        name,
       }),
-      secondLine: transferText('time'),
+      secondLine: transferText("time"),
     };
   }
 });
@@ -323,14 +413,14 @@ const swipeController = () => {
   if (swipeIsOpen.value) {
     swipe.value.close();
     swipeIsOpen.value = false;
-    moreAction.value.style.transform = 'rotate(0deg)';
+    moreAction.value.style.transform = "rotate(0deg)";
   } else {
     if (isLeftRight.value) {
-      swipe.value.open('right');
+      swipe.value.open("right");
     } else {
-      swipe.value.open('left');
+      swipe.value.open("left");
       swipeIsOpen.value = true;
-      moreAction.value.style.transform = 'rotate(180deg)';
+      moreAction.value.style.transform = "rotate(180deg)";
     }
   }
 };
@@ -341,7 +431,7 @@ const onClickCopyLink = async () => {
   } else {
     await copyFallback(encodeURI(artifact.value.url));
   }
-  showNotify({ title: t('syncPage.copyNotify.succeed'), type: 'success' });
+  showNotify({ title: t("syncPage.copyNotify.succeed"), type: "success" });
 };
 
 const onDeleteConfirm = async () => {
@@ -350,17 +440,17 @@ const onDeleteConfirm = async () => {
 
 const onClickSync = async () => {
   swipe.value.close();
-  Toast.loading('同步中...', {
+  Toast.loading("同步中...", {
     cover: true,
-    id: 'sync-toast',
+    id: "sync-toast",
   });
   await artifactsStore.syncOneArtifact(artifact.value.name);
-  Toast.hide('sync-toast');
+  Toast.hide("sync-toast");
 };
 
 const onClickEdit = () => {
   swipe.value.close();
-  emit('edit', artifact.value);
+  emit("edit", artifact.value);
 };
 
 const onclose = () => {
@@ -369,18 +459,18 @@ const onclose = () => {
 
 const onClickDelete = () => {
   Dialog({
-    title: t('syncPage.deleteArt.title'),
+    title: t("syncPage.deleteArt.title"),
     content: createVNode(
-      'span',
+      "span",
       {},
-      t('syncPage.deleteArt.desc', { displayName: displayName.value })
+      t("syncPage.deleteArt.desc", { displayName: displayName.value })
     ),
-    onCancel: () => { },
+    onCancel: () => {},
     onOk: onDeleteConfirm,
     onOpened: () => swipe.value.close(),
-    popClass: 'auto-dialog',
-    cancelText: t('syncPage.deleteArt.btn.cancel'),
-    okText: t('syncPage.deleteArt.btn.confirm'),
+    popClass: "auto-dialog",
+    cancelText: t("syncPage.deleteArt.btn.cancel"),
+    okText: t("syncPage.deleteArt.btn.confirm"),
     closeOnPopstate: true,
     lockScroll: false,
   });
@@ -423,7 +513,7 @@ watch(isSyncOpen, async () => {
   border-radius: var(--item-card-radios);
   // padding: var(--safe-area-side);
   display: flex;
-  flex-direction: row;//
+  flex-direction: row; //
   justify-content: flex-end; //
   background: var(--card-color);
   cursor: pointer;
@@ -459,8 +549,6 @@ watch(isSyncOpen, async () => {
         font-size: 16px;
         color: var(--primary-text-color);
       }
-
-
     }
 
     .sub-item-detail {
@@ -504,7 +592,6 @@ watch(isSyncOpen, async () => {
               height: 18px;
             }
           }
-
         }
       }
 

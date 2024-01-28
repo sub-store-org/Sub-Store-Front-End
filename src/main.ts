@@ -9,7 +9,7 @@ import '@/plugin/awesomeIcon';
 
 import nutUi from '@/plugin/nutui';
 import router from '@/router';
-
+import '@/plugin/touch.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import 'modern-css-reset/dist/reset.min.css';
