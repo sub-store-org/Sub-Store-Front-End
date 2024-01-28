@@ -15,7 +15,7 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
+          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36 + (!isMobile() ? (isSimpleMode ? 44 : 48) : 0) }px` }"
         >
           <div class="drag-btn" @click="onclickAddArtifact">
             <font-awesome-icon icon="fa-solid fa-plus" />
@@ -199,6 +199,7 @@ import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
 import { Dialog } from '@nutui/nutui';
+import { isMobile } from '@/utils/isMobile';
 
 const { env } = useBackend();
 const subsApi = useSubsApi();
@@ -206,7 +207,7 @@ const subsApi = useSubsApi();
 const globalStore = useGlobalStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
-const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
+const { isSimpleMode, isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const { artifactStore: artifactStoreUrl, artifactStoreStatus, syncPlatform } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();

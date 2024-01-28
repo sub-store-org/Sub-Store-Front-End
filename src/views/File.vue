@@ -17,7 +17,7 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36}px` }"
+          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36 + (!isMobile() ? (isSimpleMode ? 44 : 48) : 0) }px` }"
         >
           <!-- 刷新 -->
           <div v-if="showFloatingRefreshButton" class="drag-btn refresh" @click="refresh">
@@ -133,6 +133,7 @@ import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
+import { isMobile } from '@/utils/isMobile';
 
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
@@ -141,7 +142,7 @@ const { t } = useI18n();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasFiles, files } = storeToRefs(subsStore);
-const { isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
+const { isSimpleMode, isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
