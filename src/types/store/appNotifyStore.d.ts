@@ -4,6 +4,7 @@ interface AppNotifyStoreState {
   content?: string;
   type?: 'primary' | 'success' | 'danger' | 'warning';
   duration?: number;
+  navBartop?: number;
 }
 
 type NotifySettings = {
@@ -11,4 +12,5 @@ type NotifySettings = {
   content?: string;
   type?: 'primary' | 'success' | 'danger' | 'warning';
   duration?: number;
+  navBartop?: number;
 };

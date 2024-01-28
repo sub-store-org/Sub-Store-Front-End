@@ -2,8 +2,6 @@
   "name": "Sub Store",
   "short_name": "Sub Store",
   "description": "A sub-converter running in a Progressive Web App",
-  "theme_color": "#121212",
-  "background_color": "#121212",
   "id": "/",
   "start_url": "/",
   "scope": "/",
