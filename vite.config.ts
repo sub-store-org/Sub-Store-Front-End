@@ -57,8 +57,6 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           name: 'Sub Store',
           short_name: 'Sub Store',
           description: 'A sub-converter running in a Progressive Web App',
-          theme_color: '#121212',
-          background_color: '#121212',
           id: '/',
           start_url: '/',
           scope: '/',
@@ -94,9 +92,11 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           ],
         },
         workbox: {
-          navigateFallbackDenylist: [/(^|\/.+)\/(api|download)\/.+/],
-          // globPatterns: ['**/*.{css,js,gz,eot,html,svg,png,ico,ttf,woff2}'],
           runtimeCaching: [
+            {
+              urlPattern: /^https?:\/\/.+?\/(?:api|download)\/.+/,
+              handler: "NetworkOnly",
+            },
             {
               urlPattern: /.*\.(?:js|css|gz|html|json)/i, // json
               handler: 'CacheFirst',
