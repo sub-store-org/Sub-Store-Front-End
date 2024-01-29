@@ -92,11 +92,9 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           ],
         },
         workbox: {
+          navigateFallbackDenylist: [/(^|\/.+)\/(api|download)\/.+/],
+          // globPatterns: ['**/*.{css,js,gz,eot,html,svg,png,ico,ttf,woff2}'],
           runtimeCaching: [
-            {
-              urlPattern: /^https?:\/\/.+?\/(?:api|download)\/.+/,
-              handler: "NetworkOnly",
-            },
             {
               urlPattern: /.*\.(?:js|css|gz|html|json)/i, // json
               handler: 'CacheFirst',
