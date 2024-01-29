@@ -1,11 +1,10 @@
 <template>
   <div
-    style="overflow: hidden"
+    style="overflow: hidden; -webkit-user-select: none; user-select: none"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
   >
-
     <!-- 浮动按钮 -->
     <Teleport to="body">
       <div v-if="hasFiles" class="drag-btn-wrapper">
@@ -17,19 +16,37 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36 + (!isMobile() ? (isSimpleMode ? 44 : 48) : 0) }px` }"
+          :style="{
+            cursor: 'pointer',
+            right: '16px',
+            bottom: `${
+              bottomSafeArea +
+              48 +
+              36 +
+              (!isMobile() ? (isSimpleMode ? 44 : 48) : 0)
+            }px`,
+          }"
         >
           <!-- 刷新 -->
-          <div v-if="showFloatingRefreshButton" class="drag-btn refresh" @click="refresh">
+          <div
+            v-if="showFloatingRefreshButton"
+            class="drag-btn refresh"
+            @click="refresh"
+          >
             <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
           </div>
 
           <!-- 加号 -->
-          <router-link to="/edit/files/UNTITLED" class="router-link">
+          <div
+            @touchmove="onTa"
+            @touchend="enTa"
+            @click="editFile"
+            class="router-link"
+          >
             <div class="drag-btn">
               <font-awesome-icon icon="fa-solid fa-plus" />
             </div>
-          </router-link>
+          </div>
         </nut-drag>
       </div>
     </Teleport>
@@ -69,10 +86,7 @@
       </div>
     </div>
     <!-- 没有数据 -->
-    <div
-      v-if="!isLoading && fetchResult && !hasFiles"
-      class="no-data-wrapper"
-    >
+    <div v-if="!isLoading && fetchResult && !hasFiles" class="no-data-wrapper">
       <nut-empty image="empty">
         <template #description>
           <h3>{{ $t(`filePage.emptySub.title`) }}</h3>
@@ -133,7 +147,27 @@ import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
-import { isMobile } from '@/utils/isMobile';
+import { isMobile } from "@/utils/isMobile";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const as = ref(false);
+
+const onTa = () => {
+  as.value = true;
+};
+
+const enTa = () => {
+  setTimeout(() => {
+    as.value = false;
+  }, 100);
+};
+
+const editFile = () => {
+  if (as.value) return;
+  router.push("/edit/files/UNTITLED");
+};
 
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
@@ -142,7 +176,13 @@ const { t } = useI18n();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasFiles, files } = storeToRefs(subsStore);
-const { isSimpleMode, isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
+const {
+  isSimpleMode,
+  isLoading,
+  fetchResult,
+  bottomSafeArea,
+  showFloatingRefreshButton,
+} = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
@@ -174,13 +214,10 @@ const refresh = () => {
 };
 
 let dragData = null;
-const changeSort = async (
-  subColl: "files",
-  dataValue: any[]
-) => {
+const changeSort = async (subColl: "files", dataValue: any[]) => {
   try {
     let sortDataRes: any;
-  
+
     const nameSortArray = dataValue.map((k: { name: string }) => k.name);
     // console.log(nameSortArray);
     sortDataRes = await subApi.newSortSub(

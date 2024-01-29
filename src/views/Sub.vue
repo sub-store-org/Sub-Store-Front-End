@@ -49,15 +49,33 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36 + (!isMobile() ? (isSimpleMode ? 44 : 48) : 0) }px` }"
+          :style="{
+            cursor: 'pointer',
+            right: '16px',
+            bottom: `${
+              bottomSafeArea +
+              48 +
+              36 +
+              (!isMobile() ? (isSimpleMode ? 44 : 48) : 0)
+            }px`,
+          }"
         >
           <!-- 刷新 -->
-          <div v-if="showFloatingRefreshButton" class="drag-btn refresh" @click="refresh">
+          <div
+            v-if="showFloatingRefreshButton"
+            class="drag-btn refresh"
+            @click="refresh"
+          >
             <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
           </div>
 
           <!-- 加号 -->
-          <div class="drag-btn" @click="addSubBtnIsVisible = true">
+          <div
+            class="drag-btn"
+            @touchmove="onTa"
+            @touchend="enTa"
+            @click="setaddSubBtnIsVisible"
+          >
             <font-awesome-icon icon="fa-solid fa-plus" />
           </div>
         </nut-drag>
@@ -200,7 +218,7 @@ import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
-import { isMobile } from '@/utils/isMobile';
+import { isMobile } from "@/utils/isMobile";
 
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
@@ -210,7 +228,13 @@ const addSubBtnIsVisible = ref(false);
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
-const { isSimpleMode, isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
+const {
+  isSimpleMode,
+  isLoading,
+  fetchResult,
+  bottomSafeArea,
+  showFloatingRefreshButton,
+} = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
@@ -239,6 +263,23 @@ const onTouchEnd = () => {
 
 const refresh = () => {
   initStores(true, true, true);
+};
+
+const as = ref(false);
+
+const onTa = () => {
+  as.value = true;
+};
+
+const enTa = () => {
+  setTimeout(() => {
+    as.value = false;
+  }, 100);
+};
+
+const setaddSubBtnIsVisible = () => {
+  if (as.value) return;
+  addSubBtnIsVisible.value = true;
 };
 
 let dragData = null;

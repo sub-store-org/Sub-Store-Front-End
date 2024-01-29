@@ -15,9 +15,23 @@
             bottom: bottomSafeArea + 48 + 12 + 8,
             right: 16,
           }"
-          :style="{ cursor: 'pointer', right: '16px', bottom: `${bottomSafeArea + 48 + 36 + (!isMobile() ? (isSimpleMode ? 44 : 48) : 0) }px` }"
+          :style="{
+            cursor: 'pointer',
+            right: '16px',
+            bottom: `${
+              bottomSafeArea +
+              48 +
+              36 +
+              (!isMobile() ? (isSimpleMode ? 44 : 48) : 0)
+            }px`,
+          }"
         >
-          <div class="drag-btn" @click="onclickAddArtifact">
+          <div
+            class="drag-btn"
+            @touchmove="onTa"
+            @touchend="enTa"
+            @click="onclickAddArtifact"
+          >
             <font-awesome-icon icon="fa-solid fa-plus" />
           </div>
         </nut-drag>
@@ -198,8 +212,8 @@ import { useSubsApi } from "@/api/subs";
 import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
-import { Dialog } from '@nutui/nutui';
-import { isMobile } from '@/utils/isMobile';
+import { Dialog } from "@nutui/nutui";
+import { isMobile } from "@/utils/isMobile";
 
 const { env } = useBackend();
 const subsApi = useSubsApi();
@@ -207,9 +221,19 @@ const subsApi = useSubsApi();
 const globalStore = useGlobalStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
-const { isSimpleMode, isLoading, fetchResult, bottomSafeArea, showFloatingRefreshButton } = storeToRefs(globalStore);
+const {
+  isSimpleMode,
+  isLoading,
+  fetchResult,
+  bottomSafeArea,
+  showFloatingRefreshButton,
+} = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
-const { artifactStore: artifactStoreUrl, artifactStoreStatus, syncPlatform } = storeToRefs(settingsStore);
+const {
+  artifactStore: artifactStoreUrl,
+  artifactStoreStatus,
+  syncPlatform,
+} = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const swipeDisabled = ref(false);
 const isEditPanelVisible = ref(false);
@@ -254,9 +278,15 @@ const downloadAllIsLoading = ref(false);
 const downloadAll = async () => {
   downloadAllIsLoading.value = true;
   Dialog({
-    popClass: 'auto-dialog',
+    popClass: "auto-dialog",
     title: t(`syncPage.preview.title`),
-    content: artifactStoreUrl.value ? `${t('syncPage.download.content')}\n\n${t('syncPage.preview.content', { status: artifactStoreStatus.value || 'VALID' })}\n${t('syncPage.preview.url')}` : `${t('syncPage.download.content')}\n\n${t('syncPage.preview.content', { status: artifactStoreStatus.value || '-' })}\n${t('syncPage.preview.noUrl')}`,
+    content: artifactStoreUrl.value
+      ? `${t("syncPage.download.content")}\n\n${t("syncPage.preview.content", {
+          status: artifactStoreStatus.value || "VALID",
+        })}\n${t("syncPage.preview.url")}`
+      : `${t("syncPage.download.content")}\n\n${t("syncPage.preview.content", {
+          status: artifactStoreStatus.value || "-",
+        })}\n${t("syncPage.preview.noUrl")}`,
     noOkBtn: !artifactStoreUrl.value,
     okText: t(`syncPage.download.confirm`),
     cancelText: t(`syncPage.preview.cancel`),
@@ -269,7 +299,7 @@ const downloadAll = async () => {
         showNotify({
           title: t("myPage.notify.restore.failed"),
           type: "danger",
-          content: `${ e.message ?? e}`,
+          content: `${e.message ?? e}`,
         });
       } finally {
         downloadAllIsLoading.value = false;
@@ -286,13 +316,22 @@ const refresh = () => {
 };
 
 const preview = () => {
-  if (artifactStoreUrl.value && (!artifactStoreStatus.value ||artifactStoreStatus.value === "VALID")) {
+  if (
+    artifactStoreUrl.value &&
+    (!artifactStoreStatus.value || artifactStoreStatus.value === "VALID")
+  ) {
     window.open(artifactStoreUrl.value);
   } else {
     Dialog({
-      popClass: 'auto-dialog',
+      popClass: "auto-dialog",
       title: t(`syncPage.preview.title`),
-      content: artifactStoreUrl.value ? `${t('syncPage.preview.content', { status: artifactStoreStatus.value || 'VALID' })}\n${t('syncPage.preview.url')}` : `${t('syncPage.preview.content', { status: artifactStoreStatus.value || '-' })}\n${t('syncPage.preview.noUrl')}`,
+      content: artifactStoreUrl.value
+        ? `${t("syncPage.preview.content", {
+            status: artifactStoreStatus.value || "VALID",
+          })}\n${t("syncPage.preview.url")}`
+        : `${t("syncPage.preview.content", {
+            status: artifactStoreStatus.value || "-",
+          })}\n${t("syncPage.preview.noUrl")}`,
       noOkBtn: !artifactStoreUrl.value,
       okText: t(`syncPage.preview.confirm`),
       cancelText: t(`syncPage.preview.cancel`),
@@ -310,7 +349,20 @@ const onClickEdit = (artifact: Artifact) => {
   isEditPanelVisible.value = true;
 };
 
+const as = ref(false);
+
+const onTa = () => {
+  as.value = true;
+};
+
+const enTa = () => {
+  setTimeout(() => {
+    as.value = false;
+  }, 100);
+};
+
 const onclickAddArtifact = () => {
+  if (as.value) return;
   isEditPanelVisible.value = true;
 };
 
