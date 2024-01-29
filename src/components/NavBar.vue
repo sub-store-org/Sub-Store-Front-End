@@ -3,6 +3,8 @@
   <div v-if="isPWA" style="padding-top: 60px" />
   <div class="nav-bar-wrapper">
     <nav>
+      <!-- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ navBarHeight }} {{ wh }}    {{ topHeight }}-->
+
       <nut-navbar
         @on-click-back="back"
         @on-click-right="showLangSwitchPopup = true"
@@ -79,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, onBeforeMount, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
@@ -104,10 +106,17 @@ const isPWA = ref(
     false
 );
 
+// 736 <8p
 if (isPWA.value) {
-  navBarHeight.value = "110px";
-  navBartop.value = "58px";
-  navBartopRight.value = "70px";
+  if (window.innerHeight < 750 || /iPad/.test(navigator.userAgent)) {
+    navBarHeight.value = "78px";
+    navBartop.value = "25px";
+    navBartopRight.value = "38px";
+  } else {
+    navBarHeight.value = "110px";
+    navBartop.value = "58px";
+    navBartopRight.value = "70px";
+  }
 }
 
 const isNeedBack = computed(() => {

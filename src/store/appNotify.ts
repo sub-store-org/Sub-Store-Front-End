@@ -3,12 +3,21 @@ import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
 const isPWA = () => {
-  return (
-    (window.matchMedia("(display-mode: standalone)").matches &&
-      !/Android/.test(navigator.userAgent)) ||
-    false
-  );
+  let h = 0 as number;
+  if (
+    window.matchMedia("(display-mode: standalone)").matches &&
+    !/Android/.test(navigator.userAgent)
+  ) {
+    h = 60;
+    if (window.innerHeight < 750 || /iPad/.test(navigator.userAgent)) {
+      h = 18;
+    }
+  } else {
+    h = 0;
+  }
+  return h;
 };
+
 export const useAppNotifyStore = defineStore("appNotify", {
   state: (): AppNotifyStoreState => {
     return {
@@ -17,7 +26,7 @@ export const useAppNotifyStore = defineStore("appNotify", {
       content: "",
       type: "primary",
       duration: 800,
-      navBartop: isPWA() ? 60 : 0,
+      navBartop: isPWA(),
     };
   },
   getters: {},
