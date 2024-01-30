@@ -217,7 +217,7 @@ export default {
         },
         url: {
           label: '链接',
-          placeholder: '订阅链接(多个订阅请换行) 支持参数: noFlow 不查询流量, noCache 不使用缓存. 例: http://a.com?token=1#noFlow&noCache',
+          placeholder: '订阅链接(多个订阅请换行) 支持参数: validCheck 过期或无剩余流量时报错, noFlow 不查询流量, noCache 不使用缓存. 例: http://a.com?token=1#noFlow&noCache',
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },
