@@ -1,6 +1,6 @@
 <template>
   <!-- isPWA 时候顶部边距 -->
-  <div v-if="isPWA" style="padding-top: 60px" />
+  <div v-if="isPWA" class="pwa_top_padding" />
   <div class="nav-bar-wrapper">
     <nav>
       <!-- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ navBarHeight }} {{ wh }}    {{ topHeight }}-->
@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onBeforeMount, onMounted } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
@@ -99,7 +99,7 @@ const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
 const navBarHeight = ref("56px");
 const navBartop = ref("0px");
 const navBartopRight = ref("15px");
-
+const Pwa_top = ref("60px");
 const isPWA = ref(
   (window.matchMedia("(display-mode: standalone)").matches &&
     !/Android/.test(navigator.userAgent)) ||
@@ -112,10 +112,12 @@ if (isPWA.value) {
     navBarHeight.value = "78px";
     navBartop.value = "25px";
     navBartopRight.value = "38px";
+    Pwa_top.value = "20px"
   } else {
     navBarHeight.value = "110px";
     navBartop.value = "58px";
     navBartopRight.value = "70px";
+    Pwa_top.value = "60px"
   }
 }
 
@@ -181,6 +183,9 @@ const refresh = () => {
 </script>
 
 <style lang="scss">
+.pwa_top_padding {
+  padding-top: v-bind(Pwa_top);
+}
 .nav-bar-wrapper {
   position: fixed;
   width: 100%;
