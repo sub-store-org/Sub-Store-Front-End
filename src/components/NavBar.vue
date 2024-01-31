@@ -96,30 +96,58 @@ const globalStore = useGlobalStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
 const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
-const navBarHeight = ref("56px");
-const navBartop = ref("0px");
-const navBartopRight = ref("15px");
-const Pwa_top = ref("60px");
+
 const isPWA = ref(
   (window.matchMedia("(display-mode: standalone)").matches &&
     !/Android/.test(navigator.userAgent)) ||
     false
 );
 
-// 736 <8p
-if (isPWA.value) {
-  if (window.innerHeight < 750 || /iPad/.test(navigator.userAgent)) {
-    navBarHeight.value = "78px";
-    navBartop.value = "25px";
-    navBartopRight.value = "38px";
-    Pwa_top.value = "20px"
-  } else {
-    navBarHeight.value = "110px";
-    navBartop.value = "58px";
-    navBartopRight.value = "70px";
-    Pwa_top.value = "60px"
+const isSmall = ref(
+  window.innerHeight < 750 || /iPad/.test(navigator.userAgent) || false
+);
+// isPWA.value = true;
+
+const navBarHeight = computed(() => {
+  if (isPWA.value) {
+    if (isSmall.value) {
+      return "78px";
+    }
+    return "110px";
   }
-}
+  return "56px";
+});
+
+const navBartop = computed(() => {
+  if (isPWA.value) {
+    if (isSmall.value) {
+      return "38px";
+    }
+    return "70px";
+  }
+  return "0px";
+});
+
+const navBartopRight = computed(() => {
+  if (isPWA.value) {
+    if (isSmall.value) {
+      return "25px";
+    }
+    return "58px";
+  }
+  return "15px";
+});
+
+
+const Pwa_top = computed(() => {
+  if (isPWA.value) {
+    if (isSmall.value) {
+      return "20px";
+    }
+    return "60px";
+  }
+  return "60px";
+});
 
 const isNeedBack = computed(() => {
   return route.meta.needNavBack ?? false;
