@@ -371,6 +371,7 @@
 
   .compare-table-row {
     padding: 0 var(--safe-area-side);
+    width: 100vw;
   }
 
   .compare-table-head {
@@ -518,7 +519,8 @@
     width: 100vw;
     height: 100vh;
     z-index: 1000;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background: var(--background-color);
   }

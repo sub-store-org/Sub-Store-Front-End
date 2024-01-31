@@ -256,7 +256,8 @@
     width: 100vw;
     height: 100vh;
     z-index: 1000;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background: var(--background-color);
   }
