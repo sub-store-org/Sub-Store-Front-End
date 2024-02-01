@@ -34,16 +34,6 @@
           <nut-cell
             class="cell-item"
             :desc="$t(`aboutUsPage.projectInfo.link`)"
-            url="https://github.com/Keywos/rule/raw/main/module/Sub-Store-Mock.sgmodule"
-          >
-            <template v-slot:title>
-              <span>{{ $t(`aboutUsPage.projectInfo.mock`) }}</span>
-            </template>
-          </nut-cell>
-
-          <nut-cell
-            class="cell-item"
-            :desc="$t(`aboutUsPage.projectInfo.link`)"
             url="https://github.com/sub-store-org"
           >
             <template v-slot:title>
