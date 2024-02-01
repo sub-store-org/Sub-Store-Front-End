@@ -666,7 +666,6 @@ export default {
       fe: 'Front-End',
       be: 'Back-End',
       module: 'Module',
-      mock: 'Mock Module',
       team: 'Project Team',
       link: 'View on Github',
     },
