@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
@@ -96,20 +96,30 @@ const globalStore = useGlobalStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
 const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
+const isLandscape = ref(false);
+const isSmall = ref(false);
+const screenWidth = ref(window.innerWidth);
+const screenHeight = ref(window.innerHeight);
 
+const handleResize = () => {
+  screenWidth.value = window.innerWidth;
+  screenHeight.value = window.innerHeight;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", handleResize);
+});
 const isPWA = ref(
   (window.matchMedia("(display-mode: standalone)").matches &&
     !/Android/.test(navigator.userAgent)) ||
     false
 );
 
-const isSmall = ref(
-  window.innerHeight < 750 || /iPad/.test(navigator.userAgent) || false
-);
 // isPWA.value = true;
+// isSmall.value = true;
 
 const navBarHeight = computed(() => {
-  if (isPWA.value) {
+  if (isPWA.value && !isLandscape.value) {
     if (isSmall.value) {
       return "78px";
     }
@@ -119,7 +129,7 @@ const navBarHeight = computed(() => {
 });
 
 const navBartop = computed(() => {
-  if (isPWA.value) {
+  if (isPWA.value && !isLandscape.value) {
     if (isSmall.value) {
       return "38px";
     }
@@ -129,15 +139,14 @@ const navBartop = computed(() => {
 });
 
 const navBartopRight = computed(() => {
-  if (isPWA.value) {
+  if (isPWA.value && !isLandscape.value) {
     if (isSmall.value) {
-      return "25px";
+      return "52px";
     }
-    return "58px";
+    return "80px";
   }
   return "15px";
 });
-
 
 const Pwa_top = computed(() => {
   if (isPWA.value) {
@@ -208,6 +217,11 @@ const refresh = () => {
     window.location.reload();
   }
 };
+watchEffect(() => {
+  handleResize();
+  isSmall.value = screenHeight.value < 750 || /iPad/.test(navigator.userAgent);
+  isLandscape.value = screenWidth.value > screenHeight.value;
+});
 </script>
 
 <style lang="scss">
