@@ -2,6 +2,7 @@
   <div class="editor-action-card">
     <p class="des-label">
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
+      <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E8%84%9A%E6%9C%AC%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E" target="_blank">{{ $t('subPage.panel.tips.ok') }}</a>
     </p>
     <nut-radiogroup direction="horizontal" v-model="value.mode">
       <nut-radio v-for="(key, index) in modeList" :label="key" :key="index">{{
@@ -227,6 +228,9 @@ const onclearEditor = () => {
 
   &:not(:first-child) {
     margin-top: 16px;
+  }
+  a {
+    color: var(--primary-color);
   }
 }
 
