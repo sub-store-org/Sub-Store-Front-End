@@ -7,9 +7,20 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import viteCompression from 'vite-plugin-compression';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const version = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf-8')).version.trim()
+
 const alias: Record<string, string> = {
   '@': path.resolve(__dirname, 'src'),
   vue: 'vue/dist/vue.esm-bundler.js',
+};
+
+const htmlPlugin = () => {
+  return {
+      name: "html-transform",
+      transformIndexHtml(html: string) {
+          return html.replace(/__SUB_STORE_FRONT_END_VERSION__/g, version);
+      },
+  };
 };
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
@@ -17,6 +28,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
 
   return {
     plugins: [
+      htmlPlugin(),
       vue(),
       createStyleImportPlugin({
         // resolves: [NutuiResolve()],
@@ -172,7 +184,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       __VUE_I18N_FULL_INSTALL__: true,
       __VUE_I18N_LEGACY_API__: false,
       __INTLIFY_PROD_DEVTOOLS__: false,
-      'import.meta.env.PACKAGE_VERSION': JSON.stringify(JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf-8')).version.trim()),
+      'import.meta.env.PACKAGE_VERSION': JSON.stringify(version),
     },
   };
 });
