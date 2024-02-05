@@ -14,6 +14,7 @@ export const addItem = (
 ) => {
   const id = Math.random() * 100000000 + '';
   const type = selectedOptions[0].value;
+  const args = selectedOptions[0].args;
   const obj = {
     id,
     type,
@@ -28,29 +29,29 @@ export const addItem = (
     case 'Sort Operator':
     case 'Resolve Domain Operator':
       obj.component = shallowRef(ActionRadio);
-      form.process.push({ id, type, args: null });
+      form.process.push({ id, type, args: args ?? null });
       break;
     case 'Region Filter':
     case 'Type Filter':
       obj.component = shallowRef(FilterSelect);
-      form.process.push({ id, type, args: [] });
+      form.process.push({ id, type, args: args ?? [] });
       break;
     case 'Regex Filter':
       obj.component = shallowRef(Regex);
-      form.process.push({ id, type, args: { keep: true, regex: [] } });
+      form.process.push({ id, type, args: args ?? { keep: true, regex: [] } });
       break;
     case 'Regex Sort Operator':
     case 'Regex Delete Operator':
     case 'Regex Rename Operator':
       obj.component = shallowRef(Regex);
-      form.process.push({ id, type, args: [] });
+      form.process.push({ id, type, args: args ?? [] });
       break;
     case 'Handle Duplicate Operator':
       obj.component = shallowRef(HandleDuplicate);
       form.process.push({
         id,
         type,
-        args: {
+        args: args ?? {
           action: 'rename',
           link: '-',
           position: 'back',
@@ -64,7 +65,7 @@ export const addItem = (
       form.process.push({
         id,
         type,
-        args: {
+        args: args ?? {
           content: '',
           mode: 'link',
         },

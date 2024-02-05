@@ -36,6 +36,9 @@
                   {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
                 </span>
               </div>
+              <div class="copy">
+                <font-awesome-icon icon="fa-solid fa-clone" @click="copyItem(element)"></font-awesome-icon>
+              </div>
               <div class="delete">
                 <font-awesome-icon icon="fa-solid fa-trash-can" @click="deleteItem(element.id)" />
               </div>
@@ -78,22 +81,48 @@
         <button v-for="(item, index) in columns" :key="index" @click="onButtonClick(item)" class="custom-button">
           {{ item.text }}
         </button>
+        <button @click="paste" class="custom-button">
+          {{ $t(`editorPage.subConfig.actions.pasteAction.label`) }}
+        </button>
       </div>
     </nut-cell>
+    <nut-form v-if="showPasteboard" class="paste-action">
+      <nut-form-item>
+        <nut-textarea
+          class="textarea-wrapper"
+          v-model="pasteboard"
+          :autosize="{ maxHeight: 110, minHeight: 50 }"
+          :placeholder="$t(`editorPage.subConfig.actions.pasteAction.placeholder`)"
+          text-align="center"
+        />
+        <div class="horizontal-button-container">
+          <button @click="paste" class="custom-button">
+            {{ $t(`editorPage.subConfig.actions.pasteAction.label`) }}
+          </button>
+        </div>
+      </nut-form-item>
+  </nut-form>
   </div>
 </template>
 
 <script lang="ts" setup>
 // import { useMousePicker } from '@/hooks/useMousePicker';
 import i18nFile from '@/locales/zh';
-import { Dialog } from '@nutui/nutui';
-import { ref } from 'vue';
+import { Dialog, Toast } from '@nutui/nutui';
+import { ref, inject, createVNode } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import { useClipboard } from '@vueuse/core';
+import useV3Clipboard from "vue-clipboard3";
+// const { copy, isSupported, text } = useClipboard({ read: true });
+const { copy, isSupported } = useClipboard();
+const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
+const pasteboard = ref("");
+const showPasteboard = ref(false);
 const drag = ref(true);
-
+const form = inject<Sub | Collection>('form');
 // 列表渲染的数据
 // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
 const { checked, list, sourceType } = defineProps<{
@@ -122,6 +151,60 @@ const columns = ref(items);
 
 const onButtonClick = (item) => {
   emit('addAction', [item]);
+};
+
+const copyItem = async element => {
+  const item = form.process.find(item => item.id === element.id);
+  const data = JSON.stringify({ source: sourceType, data: item })
+  if (isSupported) {
+    await copy(data);
+  } else {
+    await copyFallback(data);
+  }
+  Toast.text(`已复制数据 可用于导入`);
+
+};
+const paste = async () => {
+  try {
+    let text = ''
+  if (showPasteboard.value) {
+    text = pasteboard.value
+    showPasteboard.value = false
+    pasteboard.value = ''
+  } else {
+    try {
+      text = await navigator.clipboard.readText()
+    } catch (e) {
+      console.error(e)
+      pasteboard.value = ''
+      showPasteboard.value = true
+      return
+    }
+  }
+  let item
+  try {
+    item = JSON.parse(text)
+  } catch (e) {
+    
+  }
+  // console.log(`item`, item)
+  if (item?.data?.id && item?.data?.type) {
+    if (item?.source !== sourceType) {
+      throw new Error('文件操作与订阅操作不通用')
+    }
+    const data = [{
+      ...item.data,
+      value: item.data.type,
+    }]
+    // console.log(data)
+    emit('addAction', data);
+  } else {
+    throw new Error('数据格式错误')
+  }
+  } catch (e) {
+    console.error(e)
+    Toast.text(`导入失败 ${e.message ?? e}`);
+  }
 };
 
 
@@ -199,6 +282,17 @@ const pop = (type: string, tipsDes: string) => {
 </script>
 
 <style lang="scss" scoped>
+.paste-action {
+  background-color: var(--dialog-color);
+  box-shadow: 0 1px 40px var(--background-color);
+  border-radius: var(--item-card-radios);
+  border: solid 1px var(--divider-color);
+  position: fixed;
+  width: 80vw;
+  height: 20vw;
+  left: calc(50vw - 40vw);
+  top: calc(50vh - 20vw);
+}
 .add-action-btn {
   font-size: 14px;
   width: 100%;
@@ -282,6 +376,10 @@ const pop = (type: string, tipsDes: string) => {
         }
       }
 
+      .copy {
+        padding: 0 12px;
+        cursor: pointer;
+      }
       .delete {
         padding: 0 12px;
         color: var(--danger-color);

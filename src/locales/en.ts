@@ -289,6 +289,10 @@ export default {
           cancel: 'Cancel',
           confirm: 'Confirm',
         },
+        pasteAction: {
+          label: 'Import Data From Clipboard',
+          placeholder: 'Failed to read clipboard automatically, please paste data manually.'
+        },
       },
       nodeActions: {
         'Flag Operator': {

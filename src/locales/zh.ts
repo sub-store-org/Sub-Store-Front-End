@@ -288,6 +288,10 @@ export default {
           cancel: '取消',
           confirm: '确认',
         },
+        pasteAction: {
+          label: '从剪贴板导入',
+          placeholder: '自动读取剪贴板失败, 请手动粘贴数据'
+        },
       },
       nodeActions: {
         'Script Operator': {
