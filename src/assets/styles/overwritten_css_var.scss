@@ -31,6 +31,7 @@
 
 // picker
 .nut-popup {
+  -webkit-user-select: none;
   user-select: none;
   .nut-picker-roller {
     @media screen and (min-width: 560px) {

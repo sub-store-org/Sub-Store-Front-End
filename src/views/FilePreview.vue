@@ -169,6 +169,7 @@
 
   .processed-item::before {
     background: var(--third-color);
+    flex-shrink: 0;
   }
 
   .block-wrapper {

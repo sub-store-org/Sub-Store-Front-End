@@ -69,9 +69,9 @@
                   </span>
                 </td>
                 <td>
-                  <span :class="processed.tfo ? 'item-true' : 'item-false'">
+                  <span :class="(processed.tfo || processed['fast-open']) ? 'item-true' : 'item-false'">
                     <font-awesome-icon
-                      v-if="processed.tfo"
+                      v-if="(processed.tfo || processed['fast-open'])"
                       icon="fa-solid fa-check"
                     />
                   </span>
@@ -116,9 +116,9 @@
                   </span>
                 </td>
                 <td>
-                  <span :class="original.tfo ? 'item-true' : 'item-false'">
+                  <span :class="(original.tfo || original['fast-open']) ? 'item-true' : 'item-false'">
                     <font-awesome-icon
-                      v-if="original.tfo"
+                      v-if="(original.tfo || original['fast-open'])"
                       icon="fa-solid fa-check"
                     />
                   </span>
@@ -435,6 +435,7 @@
 
   .processed-item::before {
     background: var(--third-color);
+    flex-shrink: 0;
   }
 
   .block-wrapper {

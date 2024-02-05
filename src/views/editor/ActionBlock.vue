@@ -30,10 +30,11 @@
             </div>
             <div class="right">
               <div class="preview-switch">
-                <span>
+                <!-- <nut-switch class="my-switch" v-model="getItem(element.id)[1]" /> -->
+                <nut-checkbox class="my-switch" v-model="getItem(element.id)[1]"></nut-checkbox>
+                <span @click="togglePreviewSwitch(element.id)">
                   {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
                 </span>
-                <nut-switch class="my-switch" v-model="getItem(element.id)[1]" />
               </div>
               <div class="delete">
                 <font-awesome-icon icon="fa-solid fa-trash-can" @click="deleteItem(element.id)" />
@@ -146,6 +147,10 @@ const emit = defineEmits(['addAction', 'deleteAction']);
 const getItem = (id: string) => {
   return checked.find(item => item[0] === id);
 };
+const togglePreviewSwitch = (id: string) => {
+  const item = getItem(id);
+  return item[1] = !item[1];
+};
 
 // 删除条目，actionsList 中记录的顺序 和 对应预览开关
 const deleteItem = id => {
@@ -253,9 +258,12 @@ const pop = (type: string, tipsDes: string) => {
       display: flex;
 
       .preview-switch {
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
         display: flex;
         align-items: center;
-        margin-right: 12px;
+        // margin-right: 12px;
 
         span {
           margin-right: 8px;
@@ -264,19 +272,18 @@ const pop = (type: string, tipsDes: string) => {
         }
 
         .my-switch {
-          height: 22px;
-          width: 45px;
-          min-width: 40px;
+          width: 18px;
+          // width: 45px;
+          // min-width: 40px;
 
-          :deep(.switch-button) {
-            width: 18px;
-            height: 18px;
+          :deep(.nut-icon) {
+            font-size: 16px;
           }
         }
       }
 
       .delete {
-        padding: 0 24px;
+        padding: 0 12px;
         color: var(--danger-color);
         cursor: pointer;
       }
