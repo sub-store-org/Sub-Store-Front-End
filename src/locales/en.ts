@@ -291,7 +291,7 @@ export default {
         },
         pasteAction: {
           label: 'Import Data From Clipboard',
-          placeholder: 'Failed to read clipboard automatically, please paste data manually.'
+          placeholder: 'Failed to read the clipboard automatically, please paste the data manually in this text box.'
         },
       },
       nodeActions: {

@@ -96,6 +96,9 @@
           text-align="center"
         />
         <div class="horizontal-button-container">
+          <button @click="cancelPaste" class="custom-button">
+            {{ $t(`editorPage.subConfig.actions.addAction.cancel`) }}
+          </button>
           <button @click="paste" class="custom-button">
             {{ $t(`editorPage.subConfig.actions.pasteAction.label`) }}
           </button>
@@ -164,6 +167,10 @@ const copyItem = async element => {
   Toast.text(`已复制数据 可用于导入`);
 
 };
+const cancelPaste = async () => {
+  showPasteboard.value = false
+  pasteboard.value = ''
+}
 const paste = async () => {
   try {
     let text = ''
@@ -289,7 +296,7 @@ const pop = (type: string, tipsDes: string) => {
   border: solid 1px var(--divider-color);
   position: fixed;
   width: 80vw;
-  height: 20vw;
+  height: 40vw;
   left: calc(50vw - 40vw);
   top: calc(50vh - 20vw);
 }

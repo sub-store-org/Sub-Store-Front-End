@@ -290,7 +290,7 @@ export default {
         },
         pasteAction: {
           label: '从剪贴板导入',
-          placeholder: '自动读取剪贴板失败, 请手动粘贴数据'
+          placeholder: '自动读取剪贴板失败, 请在此文本框内手动粘贴数据'
         },
       },
       nodeActions: {
