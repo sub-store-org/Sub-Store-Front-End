@@ -295,10 +295,10 @@ const pop = (type: string, tipsDes: string) => {
   border-radius: var(--item-card-radios);
   border: solid 1px var(--divider-color);
   position: fixed;
-  width: 80vw;
-  height: 40vw;
-  left: calc(50vw - 40vw);
-  top: calc(50vh - 20vw);
+  width: 300px;
+  height: 140px;
+  left: calc(50vw - 150px);
+  top: calc(50vh - 70px);
 }
 .add-action-btn {
   font-size: 14px;

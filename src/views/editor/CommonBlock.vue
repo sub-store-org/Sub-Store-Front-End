@@ -1,11 +1,15 @@
 <template>
   <div class="form-block-wrapper">
     <div class="sticky-title-wrapper">
-      <p>
-        {{ $t(`editorPage.subConfig.commonOptions.label`) }}
-      </p>
+      <div class="title" @click="toggleFold">
+        <p>
+          {{ $t(`editorPage.subConfig.commonOptions.label`) }}
+        </p>
+        <nut-icon v-if="!isFold" name="rect-left" size="12px"></nut-icon>
+        <nut-icon v-else name="rect-down" size="12px"></nut-icon>
+      </div>
     </div>
-    <nut-form class="form">
+    <nut-form v-if="!isFold" class="form">
       <nut-form-item>
         <p class="options-label">
           {{ $t(`editorPage.subConfig.commonOptions.useless.label`) }}
@@ -137,7 +141,46 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, watchEffect } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import { inject, watchEffect, ref } from 'vue';
+  const route = useRoute();
+
+  const storageKey = 'common-block-fold';
+
+  function getFoldState() {
+    let states = []
+    try {
+      let raw = localStorage.getItem(storageKey)
+      states = raw ? JSON.parse(raw) : []
+      if (!Array.isArray(states)) {
+        states = []
+      }
+    } catch (e) {}
+
+    
+
+    return states.find(item => item.path === route.path)?.isFold ? true : false;
+  }
+  function setFoldState(isFold) {
+    let states = []
+    try {
+      let raw = localStorage.getItem(storageKey)
+      states = raw ? JSON.parse(raw) : []
+      if (!Array.isArray(states)) {
+        states = []
+      }
+    } catch (e) {}
+    states = states.filter((state) => state.path !== route.path && state.isFold);
+    if (isFold) {
+      states.unshift({ path: route.path, isFold: 1 });
+      if (states.length > 50) {
+        states.pop();
+      }
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(states));
+  }
+  const isFold = ref(getFoldState());
 
   const item = ['DEFAULT', 'ENABLED', 'DISABLED'];
 
@@ -145,6 +188,10 @@
   const quick = form.process.find(
     item => item.type === 'Quick Setting Operator'
   );
+  const toggleFold = () => {
+    isFold.value = !isFold.value;
+    setFoldState(isFold.value)
+  };
   watchEffect(() => {
     if (!quick.args) {
       quick.args = {
@@ -159,6 +206,24 @@
 </script>
 
 <style lang="scss" scoped>
+  .form-block-wrapper {
+    .sticky-title-wrapper {
+      .title {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        cursor: pointer;
+        p {
+          margin-right: 6px;
+        }
+        :deep(.nut-icon) {
+          transform: rotate(270deg);
+          font-size: 12px;
+          height: 12px;
+        }
+      }
+    }
+  }
   .options-label {
     font-size: 12px;
     margin-bottom: 16px;
