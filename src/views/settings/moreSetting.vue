@@ -100,6 +100,25 @@
           />
         </template>
       </nut-cell>
+      <nut-cell
+          class="cell-item"
+          :title="$t(`moreSettingPage.subProgress.title`)"
+          :desc="$t(`moreSettingPage.subProgress.${subProgressStyle}`)"
+          @click="()=>{showSubProgressPicker=true}"
+          is-link
+        >
+      </nut-cell>
+      <nut-picker
+        v-model="subProgressStyleValue"
+        v-model:visible="showSubProgressPicker"
+        :columns="[
+        { text: $t(`moreSettingPage.subProgress.hidden`), value: 'hidden' },
+        { text: $t(`moreSettingPage.subProgress.background`), value: 'background' }
+      ]"
+        :title="$t(`moreSettingPage.subProgress.title`)"
+        @confirm="subProgressStyleConfirm"
+      >
+      </nut-picker>
     </nut-cell-group>
 
     <nut-cell-group>
@@ -199,6 +218,7 @@
     showFloatingRefreshButton,
     istabBar,
     istabBar2,
+    subProgressStyle,
   } = storeToRefs(globalStore);
 
   const { showNotify } = useAppNotifyStore();
@@ -216,12 +236,17 @@
   const awtabBar2 = ref(true);
   // const isEditing = ref(false);
   const isInit = ref(false);
+  const subProgressStyleValue = ref(['hidden']);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
   const showThemePicker = ref(false);
   // const isEditLoading = ref(false);
+  const showSubProgressPicker = ref(false);
 
+  const subProgressStyleConfirm = ({ selectedValue }) => {
+    globalStore.setSubProgressStyle(selectedValue[0]);
+  };
   const setSimpleMode = (isSimpleMode: boolean) => {
     globalStore.setSimpleMode(isSimpleMode);
   };
@@ -255,6 +280,8 @@
   const settabBar2 = (istabBar2: boolean) => {
     globalStore.settabBar2(istabBar2);
   };
+
+  
 
 
   const { changeTheme } = settingsStore;
@@ -438,6 +465,7 @@
     awShowFloatingRefreshButton.value = showFloatingRefreshButton.value;
     awtabBar.value = istabBar.value;
     awtabBar2.value = istabBar2.value;
+    subProgressStyleValue.value = [subProgressStyle.value];
     autoSwitch.value = isAuto();
     if (!isInit.value) {
       setDisplayInfo();

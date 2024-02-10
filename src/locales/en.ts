@@ -141,9 +141,9 @@ export default {
       failed: 'Failed to copy subscription link!\n{e}',
     },
     copyConfigNotify: {
-      loading: 'Copying...',
-      succeed: 'Successfully copied config!',
-      failed: 'Failed to copy config!\n{e}',
+      loading: 'Cloning...',
+      succeed: 'Successfully cloned config!',
+      failed: 'Failed to clone config!\n{e}',
     },
     panel: {
       general: 'General',
@@ -623,6 +623,11 @@ export default {
     },
   },
   moreSettingPage: {
+    subProgress: {
+      title: 'Subscription Progress Style',
+      hidden: 'Hidden',
+      background: 'Show As Background',
+    },
     moreSettingTitle: 'More Setting',
     clearData: {
       label: 'Clear Backend Data',

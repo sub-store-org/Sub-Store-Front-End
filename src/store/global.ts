@@ -9,6 +9,7 @@ const envApi = useEnvApi();
 export const useGlobalStore = defineStore('globalStore', {
   state: (): GlobalStoreState => {
     return {
+      subProgressStyle: localStorage.getItem('subProgressStyle') || 'hidden',
       isLoading: true,
       isFlowFetching: true,
       fetchResult: false,
@@ -30,6 +31,14 @@ export const useGlobalStore = defineStore('globalStore', {
   },
   getters: {},
   actions: {
+    setSubProgressStyle(style: string) {
+      if (style && style !== 'hidden') {
+        localStorage.setItem('subProgressStyle', style);
+      } else {
+        localStorage.removeItem('subProgressStyle');
+      }
+      this.subProgressStyle = style;
+    },
     setBottomSafeArea(height: number) {
       this.bottomSafeArea = height;
     },

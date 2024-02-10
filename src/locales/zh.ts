@@ -140,9 +140,9 @@ export default {
       failed: '复制订阅链接失败\n{e}',
     },
     copyConfigNotify: {
-      loading: '拷贝配置中...',
-      succeed: '配置拷贝成功！',
-      failed: '配置拷贝失败！\n{e}',
+      loading: '克隆配置中...',
+      succeed: '配置克隆成功！',
+      failed: '配置克隆失败！\n{e}',
     },
     panel: {
       general: '通用订阅',
@@ -625,6 +625,11 @@ export default {
     },
   },
   moreSettingPage: {
+    subProgress: {
+      title: '订阅进度样式',
+      hidden: '不显示',
+      background: '显示为背景',
+    },
     moreSettingTitle: '更多设置',
     clearData: {
       label: '清除后端数据',

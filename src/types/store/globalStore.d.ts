@@ -16,6 +16,7 @@ interface GlobalStoreState {
   istabBar2: boolean;
   ishostApi: string;
   savedPositions: any;
+  subProgressStyle: any;
 }
 
 interface ENV {

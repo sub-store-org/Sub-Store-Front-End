@@ -144,8 +144,12 @@ textarea::-webkit-input-placeholder {
 
 .Toastify__close-button {
   position: relative;
-  left: -10px;
-  bottom: -10px;
+  left: -8px;
+  bottom: -8px;
+}
+
+.Toastify__toast-container, .Toastify__toast-container--top-center  {
+  --toastify-toast-min-height: 48px;
 }
 
 .nut-radio, .nut-radio--round, .nut-checkbox, .nut-checkbox--round  {

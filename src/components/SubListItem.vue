@@ -12,6 +12,7 @@
       class="sub-item-wrapper"
       :style="{ padding: isSimpleMode ? '9px' : '16px' }"
     >
+      <div v-if="subProgressStyle === 'background' && typeof flow === 'object' && flow.progress" class="progress" :style="{width: flow.progress*100+'%'}"></div>
       <!-- compareSub -->
       <div
         @click.stop="compareSub"
@@ -165,7 +166,7 @@
           shape="square"
           type="primary"
           class="sub-item-swipe-btn"
-          @click="onClickCopyConfig"
+          @click.stop="onClickCopyConfig"
         >
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
@@ -180,7 +181,7 @@
           shape="square"
           type="danger"
           class="sub-item-swipe-btn"
-          @click="onClickDelete"
+          @click.stop="onClickDelete"
         >
           <font-awesome-icon icon="fa-solid fa-trash-can" />
         </nut-button>
@@ -252,6 +253,7 @@ const {
   isIconColor,
   isSimpleReicon,
   isDefaultIcon,
+  subProgressStyle,
 } = storeToRefs(globalStore);
 
 const displayName =
@@ -303,7 +305,14 @@ const flow = computed(() => {
         total,
         usage: { upload, download },
       } = target.data;
-
+      let progress = 0;
+      try {
+        progress = 1 - (upload + download) / total
+      } catch (e) {
+      }
+      if (!(progress > 0)) {
+        progress = 0
+      }
       let secondLine: string;
       if (isSimpleMode.value) {
         secondLine = !expires
@@ -312,6 +321,7 @@ const flow = computed(() => {
         return {
           firstLine: `${getString(upload + download, total, "B")}`,
           secondLine,
+          progress
         };
       } else {
         secondLine = !expires
@@ -326,6 +336,7 @@ const flow = computed(() => {
             "B"
           )}`,
           secondLine,
+          progress
         };
       }
     } else if (target?.status === "failed") {
@@ -550,6 +561,7 @@ const onClickRefresh = async () => {
   display: flex;
   background: var(--card-color);
   cursor: pointer;
+  position: relative;
 
   :deep(.nut-avatar) {
     flex-shrink: 0;
@@ -565,6 +577,7 @@ const onClickRefresh = async () => {
   }
 
   > .sub-item-content {
+    z-index: 1;
     flex: 1;
     line-height: 1.6;
 
@@ -640,6 +653,17 @@ const onClickRefresh = async () => {
       max-width: 80%;
       color: var(--comment-text-color);
     }
+  }
+  .progress {
+    opacity: 0.5;
+    z-index: 0;
+    border-radius: var(--item-card-radios);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: var(--primary-color);
   }
 }
 
