@@ -39,7 +39,7 @@
           <h3 v-if="!isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
           </h3>
-          <h3 v-else style="color: var(--primary-text-color); font-size: 16px">
+          <h3 v-else class="sub-item-title" style="color: var(--primary-text-color); font-size: 16px">
             {{ displayName || name }}
           </h3>
 
