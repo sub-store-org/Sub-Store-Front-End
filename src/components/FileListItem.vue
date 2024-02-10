@@ -439,7 +439,7 @@
           svg {
             width: 16px;
             height: 16px;
-            color: var(--lowest-text-color);
+            color: var(--comment-text-color);
           }
         }
 
