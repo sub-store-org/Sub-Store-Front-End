@@ -395,6 +395,7 @@ const fileChange = async (event) => {
           type: "success",
           title: t(`myPage.notify.restore.succeed`),
         });
+        window.location.reload()
       } else {
         throw new Error('restore failed')
       }
@@ -447,6 +448,9 @@ const sync = async (query: "download" | "upload") => {
       type: "success",
       title: t(`myPage.notify.${query}.succeed`),
     });
+    if (query === "download") {
+      window.location.reload()
+    }
   }
 
   downloadIsLoading.value = false;
