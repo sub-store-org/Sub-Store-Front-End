@@ -402,7 +402,7 @@
   .compare-table-head {
     position: sticky;
     z-index: 7;
-    top: 114px;
+    top: 118px;
     border-bottom: 1px solid var(--divider-color);
     font-weight: bold;
     background: var(--background-color);
@@ -455,7 +455,7 @@
       z-index: 8;
       display: flex;
       position: sticky;
-      top: 84px;
+      top: 88px;
       background: var(--background-color);
       color: var(--comment-text-color);
     }

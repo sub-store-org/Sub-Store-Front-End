@@ -77,7 +77,7 @@ watchEffect(() => {
   display: flex;
   flex-direction: column;
   position: absolute;
-  min-height: 100vh;
+  min-height: 100%;
   width: 100%;
   background: var(--background-color);
   overflow: hidden;
