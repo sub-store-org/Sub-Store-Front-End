@@ -299,8 +299,9 @@ export default {
           label: 'Flags Options',
           des: 'Mode',
           options: ['Add Flag', 'Remove Flag'],
+          twOptions: ['⇒ 🇨🇳', '⇒ 🇼🇸', 'Unchanged'],
           tipsTitle: 'flags Tips',
-          tipsDes: '国旗操作说明',
+          tipsDes: '旗帜操作说明',
         },
         'Sort Operator': {
           label: 'Node Sort',

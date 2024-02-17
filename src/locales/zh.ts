@@ -304,11 +304,12 @@ export default {
           tipsDes: '使用一段 JavaScript 脚本来修改节点信息',
         },
         'Flag Operator': {
-          label: '国旗操作',
+          label: '旗帜操作',
           des: '工作模式',
           options: ['添加', '移除'],
-          tipsTitle: '国旗操作提示',
-          tipsDes: '为节点添加或者移除国旗',
+          twOptions: ['替换为 🇨🇳', '替换为 🇼🇸', '保持不变'],
+          tipsTitle: '旗帜操作提示',
+          tipsDes: '为节点添加或者移除旗帜\n\n免责声明: 旗帜 指 Emoji 旗帜, 不包含任何政治意味',
         },
         'Sort Operator': {
           label: '节点排序',
@@ -333,7 +334,7 @@ export default {
           tipsDes: '按照国家和区域过滤节点',
         },
         'Type Filter': {
-          label: '类型过滤',
+          label: '协议过滤',
           options: [
             'Shadowsocks',
             'ShadowsocksR',
