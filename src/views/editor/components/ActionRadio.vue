@@ -37,8 +37,9 @@
     <template v-if="type === 'Flag Operator' && foNewVersion && value === 'add'">
       <div class="radio-wrapper options-radio">
         <p class="des-label flag-operator" @click="showTwTips">
+            <span>识别为</span>
             <img :src="tw" alt="">
-            <span>操作</span>
+            <span>时</span>
             <nut-icon name="tips" size="12px"></nut-icon>
         </p>
         <nut-radiogroup direction="horizontal" v-model="foTw">
