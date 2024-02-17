@@ -348,6 +348,7 @@ export default {
             'Hysteria',
             'Hysteria 2',
             'WireGuard',
+            'SSH',
             'External Proxy Program',
           ],
           tipsTitle: '节点类型过滤操作提示',

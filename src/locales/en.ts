@@ -340,6 +340,7 @@ export default {
             'Hysteria',
             'Hysteria 2',
             'WireGuard',
+            'SSH',
             'External Proxy Program',
           ],
           tipsTitle: 'Node Type Filter Tips',
