@@ -115,10 +115,10 @@
       switch (type) {
         case 'Flag Operator':
           value.value = item.args?.mode ?? 'add';
+          foTw.value = item.args?.tw ?? 'cn';
           break;
         case 'Sort Operator':
           value.value = item.args ?? 'asc';
-          foTw.value = item.args?.tw ?? 'cn';
           break;
         case 'Resolve Domain Operator':
           value.value = item.args?.provider ?? 'Google';
