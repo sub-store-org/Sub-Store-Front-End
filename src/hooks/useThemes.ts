@@ -64,6 +64,7 @@ const changeVariables = (newMode: CustomTheme) => {
     'content',
     modules[newMode].colors['status-bar-background-color']
   );
+  document.body.style.backgroundColor = modules[newMode].colors['background-color'] || '';
 };
 
 export const useThemes = () => {
