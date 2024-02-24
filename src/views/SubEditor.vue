@@ -123,11 +123,16 @@
             prop="ua"
             v-if="form.source === 'remote'"
           >
-            <input
+            
+            <nut-input
+              :border="false"
               class="nut-input-text"
               v-model.trim="form.ua"
               :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
               type="text"
+              input-align="right"
+              left-icon="tips"
+              @click-left-icon="uaTips"
             />
           </nut-form-item>
 
@@ -587,6 +592,17 @@
   // 失去焦点触发验证
   const customerBlurValidate = (prop: string) => {
     ruleForm.value.validate(prop);
+  };
+  const uaTips = () => {
+    Dialog({
+        title: '默认使用配置中的全局 UA',
+        content: '可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议',
+        popClass: 'auto-dialog',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
   };
 </script>
 

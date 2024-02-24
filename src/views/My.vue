@@ -176,6 +176,8 @@
             type="text"
             input-align="left"
             :left-icon="iconUA"
+            right-icon="tips"
+            @click-right-icon="uaTips"
           />
           <nut-input
             class="input"
@@ -455,6 +457,17 @@ const sync = async (query: "download" | "upload") => {
 
   downloadIsLoading.value = false;
   uploadIsLoading.value = false;
+};
+const uaTips = () => {
+  Dialog({
+      title: '默认为 clash.meta',
+      content: '可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
 };
 const timeoutTips = () => {
   Dialog({
