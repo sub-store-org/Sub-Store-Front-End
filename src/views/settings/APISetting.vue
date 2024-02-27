@@ -113,7 +113,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Dialog, Toast } from "@nutui/nutui";
+import { ref, onMounted } from 'vue';
 
 import { useBackend } from '@/hooks/useBackend';
 import { useHostAPI } from '@/hooks/useHostAPI';
@@ -139,6 +140,31 @@ const addApiHandler = async () => {
       });
   checkingAPI.value = false;
 };
+
+onMounted(() => {
+  if (apis.value.length) return;
+  try {
+    if (localStorage.getItem('api-desc-read')) return;
+  } catch (e) {
+    
+  }
+  Dialog({
+    title: '后端设置',
+    content: `请仔细阅读页面底部的说明\n\n该写的都写了`,
+    onCancel: () => {
+      localStorage.setItem('api-desc-read', '1') 
+    },
+    onOk: () => {
+      localStorage.setItem('api-desc-read', '1') 
+    },
+    popClass: "auto-dialog",
+    okText: '我马上看',
+    cancelText: '我立刻看',
+    closeOnClickOverlay: false,
+    lockScroll: false,
+  });
+});
+
 </script>
 
 <style lang="scss" scoped>
