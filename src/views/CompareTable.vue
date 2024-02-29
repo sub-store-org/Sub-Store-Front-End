@@ -19,7 +19,7 @@
         <div class="block-wrapper">
           <!--块标题-->
           <div class="sticky-title-wrapperse compare-title">
-            <p>{{ $t(`comparePage.remain.title`) }}</p>
+            <p>{{ $t(`comparePage.remain.title`) }}({{ remainDesc }}) <small v-if="originalData.length > 0" @click="goToFilterRef">{{ $t(`comparePage.filter.title`) }}({{ filterDesc }})</small></p>
           </div>
 
           <!--指示器说明-->
@@ -156,10 +156,10 @@
           >{{ $t(`comparePage.divider`) }}
         </nut-divider>
 
-        <div class="block-wrapper" v-if="originalData.length > 0">
+        <div ref="filterRef" class="block-wrapper" v-if="originalData.length > 0">
           <!--块标题-->
           <div class="sticky-title-wrapperse compare-title">
-            <p>{{ $t(`comparePage.filter.title`) }}</p>
+            <p>{{ $t(`comparePage.filter.title`) }}({{ filterDesc }})</p>
           </div>
 
           <!--表格标题-->
@@ -253,6 +253,7 @@
 
   const emit = defineEmits(['closeCompare']);
 
+  const filterRef = ref(null);
   const isOriginalVisible = ref(true);
   const isProcessedVisible = ref(true);
 
@@ -302,6 +303,25 @@
     }
     return result;
   });
+  const remainSize = processedData?.length || 0
+  const filterSize = originalData?.length || 0
+  const totalSize = remainSize + filterSize
+  const remainDesc = computed(() => {
+    if (!remainSize) {
+      return 0
+    }
+    return filterSize > 0 ? `${remainSize}/${totalSize}` : remainSize
+  });
+  const filterDesc = computed(() => {
+    if (!filterSize) {
+      return 0
+    }
+    return remainSize > 0 ? `${filterSize}/${totalSize}` : filterSize
+  });
+
+  const goToFilterRef = () => {
+    filterRef.value?.scrollIntoView()
+  }
 
   const clickClose = () => {
     emit('closeCompare');
@@ -448,6 +468,10 @@
       margin-top: 0;
       top: 56px;
       background: var(--background-color);
+      small {
+        cursor: pointer;
+        text-decoration: underline;
+      }
     }
 
     .compare-des {
