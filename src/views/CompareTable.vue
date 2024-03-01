@@ -303,16 +303,20 @@
     }
     return result;
   });
-  const remainSize = processedData?.length || 0
-  const filterSize = originalData?.length || 0
-  const totalSize = remainSize + filterSize
+
   const remainDesc = computed(() => {
+    const remainSize = processedData?.length || 0
+    const filterSize = originalData?.length || 0
+    const totalSize = remainSize + filterSize
     if (!remainSize) {
       return 0
     }
     return filterSize > 0 ? `${remainSize}/${totalSize}` : remainSize
   });
   const filterDesc = computed(() => {
+    const remainSize = processedData?.length || 0
+    const filterSize = originalData?.length || 0
+    const totalSize = remainSize + filterSize
     if (!filterSize) {
       return 0
     }
