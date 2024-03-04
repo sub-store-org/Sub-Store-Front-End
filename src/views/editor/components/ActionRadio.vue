@@ -20,6 +20,7 @@
             >{{
               $t(`editorPage.subConfig.nodeActions['${type}'].types[${index}]`)
             }}
+            <font-awesome-icon v-if="key === 'IP4P'" @click="rdoTypeInfo" icon="fa-solid fa-circle-question"/>
           </nut-radio>
         </nut-radiogroup>
       </div>
@@ -29,6 +30,16 @@
           <nut-radio v-for="(key, index) in rdoFilterOpt" :label="key" :key="index"
             >{{
               $t(`editorPage.subConfig.nodeActions['${type}'].filters[${index}]`)
+            }}
+          </nut-radio>
+        </nut-radiogroup>
+      </div>
+      <div class="radio-wrapper options-radio">
+        <p class="des-label">缓存</p>
+        <nut-radiogroup direction="horizontal" v-model="rdoCache">
+          <nut-radio v-for="(key, index) in rdoCacheOpt" :label="key" :key="index"
+            >{{
+              $t(`editorPage.subConfig.nodeActions['${type}'].cache[${index}]`)
             }}
           </nut-radio>
         </nut-radiogroup>
@@ -55,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Toast } from "@nutui/nutui";
+  import { Toast, Dialog } from "@nutui/nutui";
   import semverGt from 'semver/functions/gt';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { storeToRefs } from 'pinia';
@@ -85,8 +96,9 @@
   };
 
   const foTwOpt = ['cn', 'ws', 'tw'];
-  const rdoTypeOpt = ['IPv4', 'IPv6'];
+  const rdoTypeOpt = ['IPv4', 'IPv6', 'IP4P'];
   const rdoFilterOpt = ['disabled', 'removeFailed', 'IPOnly', 'IPv4Only', 'IPv6Only'];
+  const rdoCacheOpt = ['enabled' , 'disabled'];
 
   const value = ref();
   const rdoNewVersion = ref(false);
@@ -102,9 +114,29 @@
   const foTw = ref('cn');
   const rdoType = ref('IPv4');
   const rdoFilter = ref('disabled');
+  const rdoCache = ref('enabled');
 
   const showTwTips = () => {
     Toast.text('免责声明: 本操作仅将 Emoji 旗帜进行替换以便于显示, 不包含任何政治意味');
+  };
+  const rdoTypeInfo = () => {
+    Dialog({
+      title: 'IP4P 地址格式',
+      content: '来自 NATMap, 将 IPv4 地址和端口同时编码在 DNS AAAA 记录中\n\n使用场景: STUN 内网穿透, 无需公网服务器即可获得 IPv4 公网地址',
+      popClass: 'auto-dialog',
+      okText: '更多说明',
+      cancelText: '取消',
+      // @ts-ignore
+      closeOnClickOverlay: true,
+      onOk: async () => {
+        window.open('https://github.com/heiher/natmap/wiki/faq#%E5%9F%9F%E5%90%8D%E8%AE%BF%E9%97%AE%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84')
+      },
+      // onCancel: async () => {
+        
+      // },
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
   };
 
   // 挂载时读取当前数据，赋值初始状态
@@ -124,16 +156,17 @@
           value.value = item.args?.provider ?? 'Google';
           rdoType.value = item.args?.type ?? 'IPv4';
           rdoFilter.value = item.args?.filter ?? 'disabled';
+          rdoCache.value = item.args?.cache ?? 'enabled';
           break;
       }
     }
   });
 
   // 值变化时实时修改 form 的数据
-  watch([value, rdoFilter, rdoType, foTw], () => {
-    if (rdoType.value === 'IPv6' && ['IP-API'].includes(value.value)) {
+  watch([value, rdoFilter, rdoCache, rdoType, foTw], () => {
+    if (['IPv6', 'IP4P'].includes(rdoType.value) && ['IP-API'].includes(value.value)) {
       showNotify({
-        title: `${value.value} 不支持 IPv6`,
+        title: `${value.value} 不支持 ${rdoType.value}`,
         type: 'danger',
       });
     }
@@ -153,6 +186,7 @@
           provider: value.value,
           type: rdoType.value,
           filter: rdoFilter.value,
+          cache: rdoCache.value,
         };
         break;
     }

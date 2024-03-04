@@ -57,7 +57,7 @@
                       <nut-tag class="type-tag">{{ processed.type }}</nut-tag
                       >{{ processed.name }}
                     </div>
-                    <div>{{ processed.server }}</div>
+                    <div>{{ processed.server }}:{{ processed.port }}</div>
                   </div>
                 </td>
                 <td>
@@ -104,7 +104,7 @@
                     <div>
                       {{ original.name }}
                     </div>
-                    <div>{{ original.server }}</div>
+                    <div>{{ original.server }}:{{ original.port }}</div>
                   </div>
                 </td>
                 <td>
@@ -182,7 +182,7 @@
                       <nut-tag class="type-tag">{{ node.type }} </nut-tag
                       >{{ node.name }}
                     </div>
-                    <div>{{ node.server }}</div>
+                    <div>{{ node.server }}:{{ node.port }}</div>
                   </div>
                 </td>
                 <td>
