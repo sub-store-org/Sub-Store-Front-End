@@ -17,6 +17,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       githubUser: "",
       defaultUserAgent: "",
       defaultTimeout: "",
+      cacheThreshold: "",
       syncTime: 0,
       theme: {
         auto: true,
@@ -41,6 +42,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
+        this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.syncTime = res.data.data.syncTime || 0;
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
@@ -66,6 +68,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
+        this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
         this.artifactStoreStatus = res.data.data.artifactStoreStatus || "";

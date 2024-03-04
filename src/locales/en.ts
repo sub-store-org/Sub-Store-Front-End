@@ -422,10 +422,12 @@ export default {
       gistToken: 'Please input Gist Token',
       defaultUserAgent: 'Please input Default User-Agent',
       defaultTimeout: 'Please input Default Timeout (in milliseconds)',
+      cacheThreshold: 'Please input Cache Threshold (in KB)',
       noGithubUser: 'Not set GitHub username',
       noGistToken: 'Not set Gist Token',
       noDefaultUserAgent: 'Not set default user-agent',
-      noDefaultTimeout: 'Not set default timeout'
+      noDefaultTimeout: 'Not set default timeout',
+      noCacheThreshold: 'Not set cache threshold',
     },
     btn: {
       download: 'Download',

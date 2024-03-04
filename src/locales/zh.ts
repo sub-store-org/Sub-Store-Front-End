@@ -424,10 +424,12 @@ export default {
       gistToken: '请输入 GitHub 令牌',
       defaultUserAgent: '请输入默认 User-Agent',
       defaultTimeout: '请输入默认超时(单位: 毫秒)',
+      cacheThreshold: '请输入缓存阈值(单位: KB)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noDefaultUserAgent: '未配置默认 User-Agent',
-      noDefaultTimeout: '未配置默认超时'
+      noDefaultTimeout: '未配置默认超时',
+      noCacheThreshold: '未配置缓存阈值',
     },
     notify: {
       save: {
