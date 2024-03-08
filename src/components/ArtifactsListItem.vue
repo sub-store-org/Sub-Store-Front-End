@@ -62,14 +62,14 @@
                   <font-awesome-icon
                     icon="fa-solid fa-clone"
                   ></font-awesome-icon>
-                  <button
+                </button>
+                <button
                     class="copy-sub-link"
                     @click.stop="swipeController"
                     v-if="!isMobile()"
                     ref="moreAction"
                   >
-                    <font-awesome-icon icon="fa-solid fa-angles-right" />
-                  </button>
+                  <font-awesome-icon icon="fa-solid fa-angles-right" />
                 </button>
               </div>
               <span v-if="!isSimpleMode">
@@ -413,14 +413,14 @@ const swipeController = () => {
   if (swipeIsOpen.value) {
     swipe.value.close();
     swipeIsOpen.value = false;
-    moreAction.value.style.transform = "rotate(0deg)";
+    if(moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
   } else {
     if (isLeftRight.value) {
       swipe.value.open("right");
     } else {
       swipe.value.open("left");
       swipeIsOpen.value = true;
-      moreAction.value.style.transform = "rotate(180deg)";
+      if(moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
     }
   }
 };
@@ -435,10 +435,23 @@ const onClickCopyLink = async () => {
 };
 
 const onDeleteConfirm = async () => {
+  const shouldShowToast = artifact.value.updated
+  if (shouldShowToast) {
+    Toast.loading("正在删除...", {
+      cover: true,
+      id: "delete-toast",
+    });
+  }
+
   await artifactsStore.deleteArtifact(artifact.value.name);
+  
+  if (shouldShowToast) {
+    Toast.hide("delete-toast");
+  }
 };
 
 const onClickSync = async () => {
+  swipeController()
   swipe.value.close();
   Toast.loading("同步中...", {
     cover: true,
@@ -449,6 +462,7 @@ const onClickSync = async () => {
 };
 
 const onClickEdit = () => {
+  swipeController()
   swipe.value.close();
   emit("edit", artifact.value);
 };
@@ -458,6 +472,7 @@ const onclose = () => {
 };
 
 const onClickDelete = () => {
+  swipeController()
   Dialog({
     title: t("syncPage.deleteArt.title"),
     content: createVNode(
@@ -642,7 +657,7 @@ watch(isSyncOpen, async () => {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-left: 12px;
+  // margin-left: 12px;
 
   svg {
     width: 16px;
