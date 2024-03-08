@@ -35,6 +35,7 @@ interface Sub {
   source: 'remote' | 'local';
   icon?: string;
   ua?: string;
+  mergeSources?: string;
   process: Process[];
 }
 

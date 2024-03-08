@@ -3,7 +3,8 @@ export const getFlowsUrlList = (subs: Sub[]): string[][] => {
   const urlList = [];
 
   subs.forEach(sub => {
-    if (!urlList.includes(sub.url) && sub.source === 'remote' && sub.url) {
+    const localOnly = sub.source === 'local' && !['localFirst', 'remoteFirst'].includes(sub.mergeSources)
+    if (sub.url && !localOnly && !urlList.includes(sub.url)) {
       urlList.push(sub.url);
       nameList.push([sub.url, sub.name]);
     }
