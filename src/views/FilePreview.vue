@@ -11,6 +11,13 @@
             }}</span
           >
         </h1>
+        <button class="copy" @click.stop="copyContent">
+          <svg-icon
+            name="copy"
+            class="action-icon"
+            color="var(--comment-text-color)"
+          />
+        </button>
         <button @click="clickClose">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
@@ -30,11 +37,19 @@
 </template>
 
 <script lang="ts" setup>
+  
   import { useSubsApi } from '@/api/subs';
   import { useSubsStore } from '@/store/subs';
   import { Toast } from '@nutui/nutui';
   import { computed, ref, toRaw } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useClipboard } from '@vueuse/core';
+  import useV3Clipboard from 'vue-clipboard3';
+  import { useAppNotifyStore } from '@/store/appNotify';
+
+  const { copy, isSupported } = useClipboard();
+  const { toClipboard: copyFallback } = useV3Clipboard();
+  const { showNotify } = useAppNotifyStore();
 
   const { t } = useI18n();
   const subsStore = useSubsStore();
@@ -61,6 +76,14 @@
 
   const clickClose = () => {
     emit('closePreview');
+  };
+  const copyContent = async () => {
+    if (isSupported) {
+      await copy(processedData);
+    } else {
+      await copyFallback(processedData);
+    }
+    showNotify({ title: '已复制预览内容' });
   };
 </script>
 
@@ -247,6 +270,12 @@
       font-size: 20px;
       padding: 8px;
       color: var(--lowest-text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .copy {
+      margin-left: auto;
     }
   }
 
