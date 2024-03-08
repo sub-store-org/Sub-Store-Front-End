@@ -62,14 +62,14 @@
                   <font-awesome-icon
                     icon="fa-solid fa-clone"
                   ></font-awesome-icon>
-                  <button
+                </button>
+                <button
                     class="copy-sub-link"
                     @click.stop="swipeController"
                     v-if="!isMobile()"
                     ref="moreAction"
                   >
-                    <font-awesome-icon icon="fa-solid fa-angles-right" />
-                  </button>
+                  <font-awesome-icon icon="fa-solid fa-angles-right" />
                 </button>
               </div>
               <span v-if="!isSimpleMode">
@@ -439,6 +439,7 @@ const onDeleteConfirm = async () => {
 };
 
 const onClickSync = async () => {
+  swipeController()
   swipe.value.close();
   Toast.loading("同步中...", {
     cover: true,
@@ -449,6 +450,7 @@ const onClickSync = async () => {
 };
 
 const onClickEdit = () => {
+  swipeController()
   swipe.value.close();
   emit("edit", artifact.value);
 };
@@ -458,6 +460,7 @@ const onclose = () => {
 };
 
 const onClickDelete = () => {
+  swipeController()
   Dialog({
     title: t("syncPage.deleteArt.title"),
     content: createVNode(
