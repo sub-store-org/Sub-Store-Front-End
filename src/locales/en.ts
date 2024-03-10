@@ -219,7 +219,7 @@ export default {
         },
         url: {
           label: 'URL',
-          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, resetDay - the day when monthly data usage resets, noFlow - do not query for flow, noCache - do not use cache. For example: http://a.com?token=1#noFlow&noCache or http://a.com?token=1#resetDay=15',
+          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, noFlow - do not query for flow, noCache - do not use cache, resetDay - the day when monthly data usage resets, startDate - subscription start date, cycleDays - reset cycle (in days). For example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 or http://a.com?token=1#resetDay=15',
           isEmpty: 'URL cannot be empty',
           isIllegal: 'Invalid URL',
         },
