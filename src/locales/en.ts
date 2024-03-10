@@ -122,6 +122,8 @@ export default {
       loading: 'Loading...',
       flow: 'Usage / Total',
       expires: 'Expires',
+      remainingDays: 'Remaining Reset Days',
+      remainingDaysUnit: '',
       noRecord: 'Refresh to get usage',
       noFlow: 'No flow',
       noFlowInfo: 'No flow info',
@@ -217,7 +219,7 @@ export default {
         },
         url: {
           label: 'URL',
-          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, noFlow - do not query for flow, noCache - do not use cache. For example: http://a.com?token=1#noFlow&noCache',
+          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, resetDay - the day when monthly data usage resets, noFlow - do not query for flow, noCache - do not use cache. For example: http://a.com?token=1#noFlow&noCache or http://a.com?token=1#resetDay=15',
           isEmpty: 'URL cannot be empty',
           isIllegal: 'Invalid URL',
         },
