@@ -397,7 +397,7 @@
       flex-shrink: 0;
       width: 56px;
       height: 56px;
-      margin-right: 20px;
+      margin-right: 15px;
       border-radius: 12px;
 
       img {

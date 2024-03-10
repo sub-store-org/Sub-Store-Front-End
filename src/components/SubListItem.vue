@@ -117,9 +117,8 @@
             </template>
             <template v-else>
               <span style="font-weight: normal">
-                {{ flow.firstLine }} &nbsp;
+                {{ flow.firstLine + ' | ' + flow.secondLine }}&nbsp;
               </span>
-              <span style="font-weight: normal">{{ flow.secondLine }}</span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail-isSimple">
@@ -273,7 +272,7 @@ const collectionDetail = computed(() => {
       const sub = subsStore.getOneSub(name);
       return sub?.displayName || sub?.["display-name"] || sub.name;
     });
-    return `${t("subPage.collectionItem.contain")}：${displayNameList.join(
+    return `${t("subPage.collectionItem.contain")}: ${displayNameList.join(
       "、"
     )}`;
   }
@@ -302,6 +301,7 @@ const flow = computed(() => {
       };
     } else if (target.status === "success") {
       const {
+        remainingDays,
         expires,
         total,
         usage: { upload, download },
@@ -316,22 +316,30 @@ const flow = computed(() => {
       }
       let secondLine: string;
       if (isSimpleMode.value) {
-        secondLine = !expires
+        secondLine = remainingDays ? `${remainingDays}${t(
+          "subPage.subItem.remainingDaysUnit"
+        )}` : ''
+        const expiresInfo = !expires
           ? ""
           : `${dayjs.unix(expires).format("YYYY-MM-DD")}`;
+        secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
         return {
           firstLine: `${getString(upload + download, total, "B")}`,
           secondLine,
           progress
         };
       } else {
-        secondLine = !expires
+        secondLine = remainingDays ? `${t("subPage.subItem.remainingDays")}: ${remainingDays}${t(
+          "subPage.subItem.remainingDaysUnit"
+        )}` : ''
+        const expiresInfo = !expires
           ? t("subPage.subItem.noExpiresInfo")
-          : `${t("subPage.subItem.expires")}：${dayjs
+          : `${t("subPage.subItem.expires")}: ${dayjs
               .unix(expires)
               .format("YYYY-MM-DD")}`;
+        secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
         return {
-          firstLine: `${t("subPage.subItem.flow")}：${getString(
+          firstLine: `${t("subPage.subItem.flow")}: ${getString(
             upload + download,
             total,
             "B"
@@ -568,7 +576,7 @@ const onClickRefresh = async () => {
     flex-shrink: 0;
     width: 56px;
     height: 56px;
-    margin-right: 20px;
+    margin-right: 15px;
     border-radius: 12px;
 
     img {
