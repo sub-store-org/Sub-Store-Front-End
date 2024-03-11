@@ -137,6 +137,23 @@
           </nut-form-item>
 
           <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subUserinfo.label`)"
+            prop="subUserinfo"
+          >
+            
+            <nut-input
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form.subUserinfo"
+              :placeholder="$t(`editorPage.subConfig.basic.subUserinfo.placeholder`)"
+              type="text"
+              input-align="right"
+              left-icon="tips"
+              @click-left-icon="subUserinfoTips"
+            />
+          </nut-form-item>
+
+          <nut-form-item
             :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
             prop="mergeSources"
           >
@@ -352,6 +369,7 @@
     form.displayName = sourceData.displayName || sourceData['display-name'];
     form.icon = sourceData.icon;
     form.process = newProcess;
+    form.subUserinfo = sourceData.subUserinfo;
 
     switch (editType) {
       case 'collections':
@@ -597,6 +615,17 @@
     Dialog({
         title: '默认使用配置中的全局 UA',
         content: '可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议',
+        popClass: 'auto-dialog',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const subUserinfoTips = () => {
+    Dialog({
+        title: '手动设置订阅流量信息',
+        content: '格式:\n\nupload=1024; download=10240; total=102400; expire=4115721600',
         popClass: 'auto-dialog',
         okText: 'OK',
         noCancelBtn: true,

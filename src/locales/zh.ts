@@ -241,6 +241,10 @@ export default {
           label: 'User-Agent',
           placeholder: '下载时使用的 UA，不填使用默认',
         },
+        subUserinfo: {
+          label: '订阅流量信息',
+          placeholder: '手动设置订阅流量信息',
+        },
       },
       commonOptions: {
         label: '常用配置',

@@ -242,6 +242,10 @@ export default {
           placeholder:
             'The User-Agent for downloading resource(s)',
         },
+        subUserinfo: {
+          label: 'Subscription-Userinfo',
+          placeholder: 'Set subscription usage info manually',
+        },
       },
       commonOptions: {
         label: 'Common Settings',
