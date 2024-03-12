@@ -154,6 +154,23 @@
           </nut-form-item>
 
           <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.proxy.label`)"
+            prop="proxy"
+          >
+            
+            <nut-input
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form.proxy"
+              :placeholder="$t(`editorPage.subConfig.basic.proxy.placeholder`)"
+              type="text"
+              input-align="right"
+              left-icon="tips"
+              @click-left-icon="proxyTips"
+            />
+          </nut-form-item>
+
+          <nut-form-item
             :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
             prop="mergeSources"
           >
@@ -370,6 +387,7 @@
     form.icon = sourceData.icon;
     form.process = newProcess;
     form.subUserinfo = sourceData.subUserinfo;
+    form.proxy = sourceData.proxy;
 
     switch (editType) {
       case 'collections':
@@ -633,6 +651,18 @@
         lockScroll: false,
       });
   };
+  const proxyTips = () => {
+    Dialog({
+        title: '通过代理/节点/策略获取订阅',
+        content: '1. Surge(需使用 有 ability=http-client-policy 的模块, 参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n可设置策略 例: 国外加速\n\n2. Loon(参数 node)\n\n可设置节点代理 例: Test=Hysteria2,1.2.3.4,80,"abc",tls-name=www.bing.com\n\n可设置策略 例: 国外加速\n\n3. Stash(参数 X-Stash-Selected-Proxy)\n\n可设置策略 例: 国外加速\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888',
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -642,6 +672,9 @@
 
     :deep(.nut-cell-group__warp) {
       border-radius: var(--item-card-radios);
+    }
+    :deep(.nut-icon-tips:before) {
+      cursor: pointer;
     }
   }
 
