@@ -246,6 +246,10 @@ export default {
           label: 'Subscription-Userinfo',
           placeholder: 'Set subscription usage info manually',
         },
+        proxy: {
+          label: 'Proxy/Node',
+          placeholder: 'The prox/node for downloading resource(s)',
+        },
       },
       commonOptions: {
         label: 'Common Settings',

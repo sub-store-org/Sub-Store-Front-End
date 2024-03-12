@@ -245,6 +245,10 @@ export default {
           label: '订阅流量信息',
           placeholder: '手动设置订阅流量信息',
         },
+        proxy: {
+          label: '代理/节点',
+          placeholder: '通过代理/节点获取订阅',
+        },
       },
       commonOptions: {
         label: '常用配置',
