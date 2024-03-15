@@ -36,6 +36,7 @@ interface Sub {
   icon?: string;
   ua?: string;
   mergeSources?: string;
+  subUserinfo?: string;
   process: Process[];
 }
 

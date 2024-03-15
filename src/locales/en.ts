@@ -527,7 +527,7 @@ export default {
       btn: 'Add an artifact',
     },
     detail: {
-      firstLine: 'Type: {type}, Sub: {name}',
+      firstLine: 'Type: {type}, Source: {name}',
       secondLine: 'Last Time: {time}',
       notSync: 'Not sync yet',
     },

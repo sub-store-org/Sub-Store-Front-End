@@ -529,7 +529,7 @@ export default {
       btn: '立即添加',
     },
     detail: {
-      firstLine: '类型：{type}，订阅：{name}',
+      firstLine: '类型：{type}，来源：{name}',
       secondLine: '上次同步：{time}',
       notSync: '从未同步',
     },
