@@ -44,6 +44,20 @@
             type="text"
           />
         </nut-form-item>
+        <!-- tag -->
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.tag.label`)"
+          prop="tag"
+        >
+          <input
+            class="nut-input-text"
+            v-model.trim="form.tag"
+            :placeholder="
+              $t(`editorPage.subConfig.basic.tag.placeholder`)
+            "
+            type="text"
+          />
+        </nut-form-item>
         <!-- icon -->
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.icon.label`)"
@@ -215,7 +229,10 @@
                     :url="item[2]"
                     bg-color=""
                   ></nut-avatar>
-                  <span>&nbsp;{{ item[1] }}</span>
+                  <span class="sub-item">
+                    &nbsp;{{ item[1] }}
+                    <span class="tag" v-for="i in item[3]" :key="i"><nut-tag>{{ i }}</nut-tag></span>
+                  </span>
                 </div>
               </nut-checkbox>
             </nut-checkboxgroup>
@@ -327,6 +344,7 @@
         item.name,
         item.displayName || item['display-name'] || item.name,
         item.icon || (isDefaultIcon.value ? logoIcon : logoRedIcon),
+        item.tag
       ];
     });
   });
@@ -344,6 +362,7 @@
   const form = reactive<any>({
     name: '',
     displayName: '',
+    form: '',
     mergeSources: '',
     ignoreFailedRemoteSub: false,
     icon: '',
@@ -388,6 +407,7 @@
     form.process = newProcess;
     form.subUserinfo = sourceData.subUserinfo;
     form.proxy = sourceData.proxy;
+    form.tag = Array.isArray(sourceData.tag) ? sourceData.tag.join(', ') : sourceData.tag;
 
     switch (editType) {
       case 'collections':
@@ -554,6 +574,7 @@
       Toast.loading('拉取订阅中...', { id: 'submits', cover: true, duration: 1500 });
       // 如果验证成功，开始保存/修改
       const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+      data.tag = [...new Set((data.tag||'').split(',').map((item: string) => item.trim()).filter((item: string) => item.length))];
       data['display-name'] = data.displayName;
       data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
@@ -606,7 +627,7 @@
       if (/\//.test(val)) {
         resolve(false)
       }
-      const nameList = subsStore.subs.map(item => item.name);
+      const nameList = [...subsStore.subs.map(item => item.name), ...subsStore.collections.map(item => item.name)];
       nameList.includes(val) && configName !== val
         ? resolve(false)
         : resolve(true);
@@ -780,6 +801,13 @@
             word-wrap: break-word;
             word-break: break-all;
             overflow: hidden;
+          }
+
+          .sub-item {
+            display: flex;
+            .tag {
+              margin: 0 2px
+            }
           }
 
           .sub-item-customer-icon {

@@ -37,6 +37,7 @@ interface Sub {
   ua?: string;
   mergeSources?: string;
   subUserinfo?: string;
+  tag?: string[];
   process: Process[];
 }
 
@@ -46,6 +47,7 @@ interface Collection {
   process: Process[];
   subscriptions: string[];
   icon?: string;
+  tag?: string[];
 }
 
 interface Artifacts {
