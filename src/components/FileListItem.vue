@@ -303,14 +303,14 @@
     if (swipeIsOpen.value) {
       swipe.value.close();
       swipeIsOpen.value = false;
-      moreAction.value.style.transform = 'rotate(0deg)';
+      if(moreAction.value) moreAction.value.style.transform = 'rotate(0deg)';
     } else {
       if (isLeftRight.value) {
         swipe.value.open('right');
       } else {
         swipe.value.open('left');
         swipeIsOpen.value = true;
-        moreAction.value.style.transform = 'rotate(180deg)';
+        if(moreAction.value) moreAction.value.style.transform = 'rotate(180deg)';
       }
     }
   };
@@ -322,6 +322,7 @@
 
 
   const onClickCopyConfig = async () => {
+    swipeController()
     const data = JSON.parse(JSON.stringify(toRaw(props.file)));
     data.name += `-copy${~~(Math.random() * 10000)}`;
 
@@ -338,6 +339,7 @@
   };
 
   const onClickDelete = () => {
+    swipeController()
     Dialog({
       title: t('subPage.deleteSub.title'),
       content: createVNode(
