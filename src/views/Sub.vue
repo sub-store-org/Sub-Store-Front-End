@@ -572,13 +572,14 @@ const setTag = (current) => {
   .radio-wrapper {
     margin-top: 5px;
     display: flex;
+    flex-wrap: wrap;
     // justify-content: end;
 
-    :deep(.nut-radio__button.false) {
-      background: var(--divider-color);
-      border-color: transparent;
-      color: var(--second-text-color);
-    }
+    // :deep(.nut-radio__button.false) {
+    //   background: var(--divider-color);
+    //   border-color: transparent;
+    //   color: var(--second-text-color);
+    // }
     .tag {
       font-size: 12px;
       color: var(--second-text-color);
