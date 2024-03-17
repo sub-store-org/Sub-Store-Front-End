@@ -476,10 +476,12 @@ export default {
     config: 'Configuration',
     storage: {
       gist: {
-        label: 'Gist'
+        label: 'Gist',
+        info: 'Sync file/subscription(s) to Gist in "Sync Page"'
       },
       manual: {
         label: 'Manual',
+        info: '',
         desc: 'To prevent accidents, backup your data before restoring.',
         backup: 'Backup',
         restore: 'Restore',

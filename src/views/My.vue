@@ -2,11 +2,15 @@
   <div class="my-page-wrapper">
     <div class="profile-block">
       <div class="radio-wrapper" >
+        <span v-for="i in [{value: 'gist'}, {value:'manual'}]" :class="{ 'tag': true, 'current': i.value === storageType }" @click="setTag(i.value)">{{$t(`myPage.storage.${i.value}.label`) }}</span>
+        <p class="storage-info">{{ $t(`myPage.storage.${storageType}.info`) }}</p>
+      </div>
+      <!-- <div class="radio-wrapper" >
         <nut-radiogroup v-model="storageType" direction="horizontal">
           <nut-radio shape="button" label="gist">{{ $t(`myPage.storage.gist.label`) }}</nut-radio>
           <nut-radio shape="button" label="manual">{{ $t(`myPage.storage.manual.label`) }}</nut-radio>
         </nut-radiogroup>
-      </div>
+      </div> -->
     
       <div class="info">
         <div v-if="storageType === 'manual'" class="avatar-wrapper">
@@ -515,7 +519,9 @@ watchEffect(() => {
     isInit.value = true;
   }
 });
-    
+const setTag = (current) => {
+  storageType.value = current
+};
 </script>
 
 <style lang="scss" scoped>
@@ -532,13 +538,28 @@ watchEffect(() => {
 
     .radio-wrapper {
       display: flex;
-      justify-content: end;
+      align-items: center;
+      // justify-content: end;
 
-      :deep(.nut-radio__button.false) {
-        background: var(--divider-color);
-        border-color: transparent;
+      .tag {
+        font-size: 12px;
         color: var(--second-text-color);
+        margin: 0px 5px;
+        padding: 7.5px 2.5px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        user-select: none;
       }
+      .current {
+        border-bottom: 1px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+      .storage-info {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--lowest-text-color);
+      }
+
     }
 
     .config-card {

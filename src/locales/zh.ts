@@ -478,10 +478,12 @@ export default {
     config: '配置',
     storage: {
       gist: {
-        label: 'Gist 同步'
+        label: 'Gist 同步',
+        info: '可在同步配置中将文件/订阅同步到 Gist'
       },
       manual: {
         label: '手动管理',
+        info: '',
         desc: '为防止意外 请先备份数据 再进行恢复操作',
         backup: '备份',
         restore: '恢复',
