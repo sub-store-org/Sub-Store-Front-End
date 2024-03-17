@@ -86,9 +86,10 @@
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
       <div v-if="tags && tags.length > 0" class="radio-wrapper" >
-        <nut-radiogroup v-model="tag" direction="horizontal">
-          <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio>
-        </nut-radiogroup>
+        <!-- <nut-radiogroup v-model="tag" direction="horizontal"> -->
+          <!-- <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio> -->
+          <span v-for="i in tags" :class="{ 'tag': true, 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
+        <!-- </nut-radiogroup> -->
       </div>
       <div v-if="hasSubs">
         <div class="sticky-title-wrappers">
@@ -394,6 +395,9 @@ const toggleColFold = () => {
     localStorage.removeItem('col-fold')
   }
 };
+const setTag = (current) => {
+  tag.value = current
+};
 </script>
 
 <style lang="scss" scoped>
@@ -566,7 +570,7 @@ const toggleColFold = () => {
   margin-left: auto;
   margin-right: auto;
   .radio-wrapper {
-    margin: 15px 0 0 0;
+    margin-top: 5px;
     display: flex;
     // justify-content: end;
 
@@ -574,6 +578,19 @@ const toggleColFold = () => {
       background: var(--divider-color);
       border-color: transparent;
       color: var(--second-text-color);
+    }
+    .tag {
+      font-size: 12px;
+      color: var(--second-text-color);
+      margin: 0px 5px;
+      padding: 7.5px 2.5px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .current {
+      border-bottom: 1px solid var(--primary-color);
+      color: var(--primary-color);
     }
   }
 }
