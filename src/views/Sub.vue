@@ -87,10 +87,16 @@
     <div class="subs-list-wrapper">
       <div v-if="hasSubs">
         <div class="sticky-title-wrappers">
-          <p class="list-title">{{ $t(`specificWord.singleSub`) }}</p>
+          <p class="list-title" @click="toggleSubFold">
+            <p>{{ $t(`specificWord.singleSub`) }}</p>
+            <nut-icon v-if="!isSubFold" name="rect-down" size="12px"></nut-icon>
+            <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+          </p>
+
         </div>
 
         <draggable
+          v-if="!isSubFold"
           v-model="subs"
           item-key="name"
           :scroll-sensitivity="200"
@@ -122,10 +128,15 @@
 
       <div v-if="hasCollections">
         <div class="sticky-title-wrappers">
-          <p class="list-title">{{ $t(`specificWord.collectionSub`) }}</p>
+          <p class="list-title" @click="toggleColFold">
+            <p>{{ $t(`specificWord.collectionSub`) }}</p>
+            <nut-icon v-if="!isColFold" name="rect-down" size="12px"></nut-icon>
+            <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+          </p>
         </div>
 
         <draggable
+          v-if="!isColFold"
           v-model="collections"
           item-key="name"
           :scroll-sensitivity="200"
@@ -225,6 +236,8 @@ const { showNotify } = useAppNotifyStore();
 const subsApi = useSubsApi();
 const { t } = useI18n();
 const addSubBtnIsVisible = ref(false);
+const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
+const isColFold = ref(localStorage.getItem('col-fold') === '1');
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
@@ -330,6 +343,22 @@ const handleDragEnd = (dataValue: any) => {
     dragData = null;
   }
   swipeDisabled.value = false;
+};
+const toggleSubFold = () => {
+  isSubFold.value = !isSubFold.value;
+  if (isSubFold.value) {
+    localStorage.setItem('sub-fold', '1')  
+  } else {
+    localStorage.removeItem('sub-fold')
+  }
+};
+const toggleColFold = () => {
+  isColFold.value = !isColFold.value;
+  if (isColFold.value) {
+    localStorage.setItem('col-fold', '1')  
+  } else {
+    localStorage.removeItem('col-fold')
+  }
 };
 </script>
 
@@ -438,9 +467,23 @@ const handleDragEnd = (dataValue: any) => {
 }
 
 .list-title {
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
   padding-left: 8px;
   font-weight: bold;
   //padding-left: var(--safe-area-side);
+  p {
+    margin-right: 6px;
+  }
+  :deep(.nut-icon) {
+    // transform: rotate(270deg);
+    font-size: 12px;
+    height: 12px;
+  }
 }
 
 .sticky-title-wrappers {

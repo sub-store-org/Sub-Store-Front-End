@@ -5,8 +5,8 @@
         <p>
           {{ $t(`editorPage.subConfig.commonOptions.label`) }}
         </p>
-        <nut-icon v-if="!isFold" name="rect-left" size="12px"></nut-icon>
-        <nut-icon v-else name="rect-down" size="12px"></nut-icon>
+        <nut-icon v-if="!isFold" name="rect-down" size="12px"></nut-icon>
+        <nut-icon v-else name="rect-right" size="12px"></nut-icon>
       </div>
     </div>
     <nut-form v-if="!isFold" class="form">
@@ -217,7 +217,7 @@
           margin-right: 6px;
         }
         :deep(.nut-icon) {
-          transform: rotate(270deg);
+          // transform: rotate(270deg);
           font-size: 12px;
           height: 12px;
         }
