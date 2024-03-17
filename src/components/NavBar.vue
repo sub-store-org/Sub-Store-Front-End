@@ -211,7 +211,7 @@ const setSimpleMode = (isSimpleMode: boolean) => {
 };
 
 const refresh = () => {
-  if (["/subs", "/sync"].includes(route.path)) {
+  if (["/subs", "/sync", "/files"].includes(route.path)) {
     initStores(true, true, true);
   } else {
     window.location.reload();
