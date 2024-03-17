@@ -91,10 +91,10 @@
           <span v-for="i in tags" :class="{ 'tag': true, 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
         <!-- </nut-radiogroup> -->
       </div>
-      <div v-if="hasSubs">
+      <div v-if="filterdSubsCount > 0">
         <div class="sticky-title-wrappers">
           <p class="list-title" @click="toggleSubFold">
-            <p>{{ $t(`specificWord.singleSub`) + '('+subs.length+')' }}</p>
+            <p>{{ $t(`specificWord.singleSub`) + '('+filterdSubsCount+')' }}</p>
             <nut-icon v-if="!isSubFold" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
@@ -132,10 +132,10 @@
         </draggable>
       </div>
 
-      <div v-if="hasCollections">
+      <div v-if="filterdColsCount > 0">
         <div class="sticky-title-wrappers">
           <p class="list-title" @click="toggleColFold">
-            <p>{{ $t(`specificWord.collectionSub`) + '('+collections.length+')'}}</p>
+            <p>{{ $t(`specificWord.collectionSub`) + '('+filterdColsCount+')'}}</p>
             <nut-icon v-if="!isColFold" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
@@ -286,7 +286,12 @@ const tags = computed(() => {
   return [{ label: t("specificWord.all"), value: "all" }, ...tags]
 });
 const tag = ref('all');
-
+const filterdSubsCount = computed(() => {
+  return subs.value.filter(i => tag.value === 'all' || i.tag.includes(tag.value)).length
+});
+const filterdColsCount = computed(() => {
+  return collections.value.filter(i => tag.value === 'all' || i.tag.includes(tag.value)).length
+});
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
   touchStartX.value = Math.abs(event.touches[0].clientX);
