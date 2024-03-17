@@ -85,10 +85,15 @@
     <!-- 页面内容 -->
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
+      <div v-if="tags && tags.length > 0" class="radio-wrapper" >
+        <nut-radiogroup v-model="tag" direction="horizontal">
+          <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio>
+        </nut-radiogroup>
+      </div>
       <div v-if="hasSubs">
         <div class="sticky-title-wrappers">
           <p class="list-title" @click="toggleSubFold">
-            <p>{{ $t(`specificWord.singleSub`) }}</p>
+            <p>{{ $t(`specificWord.singleSub`) + '('+subs.length+')' }}</p>
             <nut-icon v-if="!isSubFold" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
@@ -115,7 +120,7 @@
           @end="handleDragEnd(subs)"
         >
           <template #item="{ element }">
-            <div :key="element.name" class="draggable-item">
+            <div :key="element.name" class="draggable-item" v-show="tag === 'all' || element.tag.includes(tag)">
               <SubListItem
                 :sub="element"
                 type="sub"
@@ -129,7 +134,7 @@
       <div v-if="hasCollections">
         <div class="sticky-title-wrappers">
           <p class="list-title" @click="toggleColFold">
-            <p>{{ $t(`specificWord.collectionSub`) }}</p>
+            <p>{{ $t(`specificWord.collectionSub`) + '('+collections.length+')'}}</p>
             <nut-icon v-if="!isColFold" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
@@ -155,7 +160,7 @@
           @end="handleDragEnd(collections)"
         >
           <template #item="{ element }">
-            <div :key="element.name" class="draggable-item">
+            <div :key="element.name" class="draggable-item" v-show="tag === 'all' || element.tag.includes(tag)">
               <SubListItem
                 :collection="element"
                 type="collection"
@@ -216,7 +221,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw } from "vue";
+import { ref, toRaw, computed } from "vue";
 import draggable from "vuedraggable";
 
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -235,6 +240,7 @@ const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subsApi = useSubsApi();
 const { t } = useI18n();
+
 const addSubBtnIsVisible = ref(false);
 const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
 const isColFold = ref(localStorage.getItem('col-fold') === '1');
@@ -252,6 +258,34 @@ const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
+
+const tags = computed(() => {
+  if(!hasSubs.value && !hasCollections.value) return []
+  // 从 subs 和 collections 中获取所有的 tag, 去重
+  const set = new Set()
+  subs.value.forEach(sub => {
+    if (Array.isArray(sub.tag) && sub.tag.length > 0) {
+      sub.tag.forEach(i => {
+        set.add(i)
+      });
+    }
+  })
+  collections.value.forEach(col => {
+    if (Array.isArray(col.tag) && col.tag.length > 0) {
+      col.tag.forEach(i => {
+        set.add(i)
+      });
+    }
+  })
+
+  let tags: any[] = Array.from(set)
+  if(tags.length === 0) return []
+  tags = tags.map(i => ({ label: i, value: i }));
+  
+  return [{ label: t("specificWord.all"), value: "all" }, ...tags]
+});
+const tag = ref('all');
+
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
   touchStartX.value = Math.abs(event.touches[0].clientX);
@@ -362,7 +396,7 @@ const toggleColFold = () => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .drag-btn-wrapper {
   position: relative;
   z-index: 999;
@@ -531,5 +565,16 @@ const toggleColFold = () => {
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
+  .radio-wrapper {
+    margin: 15px 0 0 0;
+    display: flex;
+    // justify-content: end;
+
+    :deep(.nut-radio__button.false) {
+      background: var(--divider-color);
+      border-color: transparent;
+      color: var(--second-text-color);
+    }
+  }
 }
 </style>

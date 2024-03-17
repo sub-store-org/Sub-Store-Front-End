@@ -7,6 +7,7 @@ export default {
     unknownType: '未知类型',
     unknownSource: '未知来源',
     unknown: '未知',
+    all: '全部',
   },
   globalNotify: {
     refresh: {
@@ -207,6 +208,10 @@ export default {
         displayName: {
           label: '显示名称',
           placeholder: '输入展示的名称',
+        },
+        tag: {
+          label: '标签',
+          placeholder: '标签(用 , 分隔) 将用于分组',
         },
         source: {
           label: '来源',

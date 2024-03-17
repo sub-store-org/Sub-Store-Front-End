@@ -7,6 +7,7 @@ export default {
     unknownType: 'Unknown Type',
     unknownSource: 'Unknown Source',
     unknown: 'Unknown',
+    all: 'All',
   },
   globalNotify: {
     refresh: {
@@ -207,6 +208,10 @@ export default {
         displayName: {
           label: 'Display Name',
           placeholder: 'The display name',
+        },
+        tag: {
+          label: 'Tag(s)',
+          placeholder: 'The tag(s) (separated by comma) will be used for grouping.',
         },
         source: {
           label: 'Source',
