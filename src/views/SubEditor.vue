@@ -210,12 +210,16 @@
             prop="subscriptions"
             class="include-subs-wrapper"
           >
+            <div v-if="tags && tags.length > 0" class="radio-wrapper" >
+              <span v-for="i in tags" :class="{ 'tag': true, 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
+            </div>
             <nut-checkboxgroup
               v-model="form.subscriptions"
               class="subs-checkbox-wrapper"
             >
               <nut-checkbox
                 v-for="item in subsSelectList"
+                v-show="tag === 'all' || item[3].includes(tag)"
                 :key="item[0]"
                 :label="item[0]"
                 text-position="left"
@@ -338,6 +342,7 @@
   const sub = computed(() => subsStore.getOneSub(configName));
   const collection = computed(() => subsStore.getOneCollection(configName));
 
+  
   const subsSelectList = computed(() => {
     return subsStore.subs.map(item => {
       return [
@@ -348,6 +353,24 @@
       ];
     });
   });
+  const tags = computed(() => {
+    if(!subsStore.subs || subsStore.subs.length === 0) return []
+    const set = new Set()
+    subsStore.subs.forEach(sub => {
+      if (Array.isArray(sub.tag) && sub.tag.length > 0) {
+        sub.tag.forEach(i => {
+          set.add(i)
+        });
+      }
+    })
+
+    let tags: any[] = Array.from(set)
+    if(tags.length === 0) return []
+    tags = tags.map(i => ({ label: i, value: i }));
+    
+    return [{ label: t("specificWord.all"), value: "all" }, ...tags]
+  });
+  const tag = ref('all');
 
   const compareTableIsVisible = ref(false);
   usePopupRoute(compareTableIsVisible);
@@ -684,6 +707,9 @@
         lockScroll: false,
       });
   };
+  const setTag = (current) => {
+    tag.value = current
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -701,7 +727,8 @@
 
   .radio-wrapper {
     display: flex;
-    justify-content: end;
+    // justify-content: start;
+    flex-wrap: wrap;
 
     :deep(.nut-radio__button.false) {
       background: var(--divider-color);
@@ -767,6 +794,31 @@
   .include-subs-wrapper {
     flex-direction: column;
 
+    .radio-wrapper {
+      margin-top: 5px;
+      display: flex;
+      // justify-content: end;
+
+      // :deep(.nut-radio__button.false) {
+      //   background: var(--divider-color);
+      //   border-color: transparent;
+      //   color: var(--second-text-color);
+      // }
+      .tag {
+        font-size: 12px;
+        color: var(--second-text-color);
+        margin: 0px 5px;
+        padding: 7.5px 2.5px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .current {
+        border-bottom: 1px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+    }
+
     :deep(.nut-form-item__label) {
       width: 100%;
       margin-bottom: 12px;
@@ -777,7 +829,7 @@
 
       .subs-checkbox {
         justify-content: space-between;
-        margin-left: 16px;
+        // margin-left: 16px;
         padding: 16px 0 0 0;
 
         &:not(:last-child) {
@@ -805,8 +857,10 @@
 
           .sub-item {
             display: flex;
+            flex-wrap: wrap;
             .tag {
-              margin: 0 2px
+              margin: 0px 2px 4px 2px;
+              // white-space: nowrap;
             }
           }
 
