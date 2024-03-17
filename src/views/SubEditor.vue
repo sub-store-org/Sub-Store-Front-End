@@ -795,7 +795,6 @@
     flex-direction: column;
 
     .radio-wrapper {
-      margin-top: 5px;
       display: flex;
       // justify-content: end;
 
@@ -807,7 +806,7 @@
       .tag {
         font-size: 12px;
         color: var(--second-text-color);
-        margin: 0px 5px;
+        margin: 0px 5px 0 0;
         padding: 7.5px 2.5px;
         cursor: pointer;
         -webkit-user-select: none;
@@ -821,7 +820,7 @@
 
     :deep(.nut-form-item__label) {
       width: 100%;
-      margin-bottom: 12px;
+      // margin-bottom: 12px;
     }
 
     .subs-checkbox-wrapper {
