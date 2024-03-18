@@ -13,6 +13,7 @@
     "lib": ["esnext", "dom", "WebWorker"],
     "types": ["vite/client", "vite-plugin-pwa/client"],
     "skipLibCheck": true,
+    "allowJs": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

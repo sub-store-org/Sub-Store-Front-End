@@ -22,7 +22,7 @@
         </button>
       </header>
       <cmView :isReadOnly="true"/>
-      <div class="compare-page-body">
+      <!-- <div class="compare-page-body">
         <div class="block-wrapper">
           <div class="input-wrapper">
             <nut-textarea
@@ -34,7 +34,7 @@
             /> 
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </Teleport>
 </template>
