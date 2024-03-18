@@ -27,4 +27,4 @@ interface StoragePostData {
   content: String;
 }
 
-type CustomTheme = 'light' | 'dark';
+type CustomTheme = "light" | "dark";

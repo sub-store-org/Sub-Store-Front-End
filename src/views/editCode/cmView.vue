@@ -1,0 +1,468 @@
+<template>
+  <div class="cmviewRef">
+    <div class="cm-img-button">
+      <!--mouseenter mouseover @mouseleave="openPanel = false"   -->
+      <div v-if="openPanel">
+        <button @click="hiCode"><img :src="jsimg" /></button>
+        <button @click="undoCode"><img :src="undoimg" /></button>
+        <button @click="redoCode"><img :src="redoimg" /></button>
+        <button @click="formatCode"><img :src="format" /></button>
+        <button @click="searchs"><img :src="searchimg" /></button>
+        <button @click="copyText"><img :src="copyimg" /></button>
+        <button @click="delAllCode"><img :src="del" /></button>
+        <button @click="pasteNav"><img :src="paste" /></button>
+      </div>
+      <span v-else style="opacity: 0.4; font-size: 12px; padding-left: 10px">
+        {{ Length }} &nbsp;
+      </span>
+
+      <button @click="setPanel"><img :src="more" /></button>
+    </div>
+
+    <div ref="viewRef" style="width: 100%; font-size: 11px" />
+    <div style="height: 10px" />
+  </div>
+</template>
+<script setup>
+import { darkCode } from "./dark.js";
+import { lightCode } from "./light.js";
+import { javascript } from "@codemirror/lang-javascript";
+
+import { ref, onMounted, watch, watchEffect, computed } from "vue";
+
+import {
+  highlightSelectionMatches,
+  searchKeymap,
+  openSearchPanel,
+  gotoLine,
+  closeSearchPanel,
+} from "@codemirror/search";
+
+import {
+  lineNumbers,
+  EditorView,
+  highlightActiveLine,
+  keymap,
+} from "@codemirror/view";
+import { foldGutter, bracketMatching } from "@codemirror/language";
+import {
+  undo,
+  redo,
+  history,
+  defaultKeymap,
+  historyKeymap,
+  indentWithTab,
+} from "@codemirror/commands";
+import { closeBrackets, autocompletion } from "@codemirror/autocomplete";
+import { Compartment, EditorState } from "@codemirror/state";
+import { hyperLink } from "@uiw/codemirror-extensions-hyper-link";
+import { indentationMarkers } from "@replit/codemirror-indentation-markers";
+
+// import { showToast } from "vant";
+import useV3Clipboard from "vue-clipboard3";
+import copyimg from "@/views/editCode/svg/copy.svg";
+import del from "@/views/editCode/svg/del.svg";
+import paste from "@/views/editCode/svg/zt.svg";
+import searchimg from "@/views/editCode/svg/search.svg";
+import format from "@/views/editCode/svg/format.svg";
+import more from "@/views/editCode/svg/more.svg";
+import redoimg from "@/views/editCode/svg/redo.svg";
+import undoimg from "@/views/editCode/svg/undo.svg";
+import jsimg from "@/views/editCode/svg/jsimg.svg";
+import { useSettingsStore } from "@/store/settings";
+import { useCodeStore } from "@/store/codeStore";
+import { storeToRefs } from "pinia";
+import beautify from "js-beautify";
+const { toClipboard } = useV3Clipboard();
+
+// const s = cmcodeStore()
+
+const settingsStore = useSettingsStore();
+const { theme } = storeToRefs(settingsStore);
+
+const isDarkModeEnabled = ref(true);
+
+const Length = ref("");
+const props = defineProps(["isReadOnly", "cmCode"]);
+// const cmStore = ref(props.cmCode);
+
+const cmStore = useCodeStore();
+
+const viewRef = ref(null);
+const editorTheme = new Compartment();
+const langs = new Compartment();
+let docUpdate = false;
+let view;
+const CreateView = () => {
+  view = new EditorView({
+    state: EditorState.create({
+      extensions: [
+        history(), //历史
+        keymap.of([
+          indentWithTab,
+          ...searchKeymap,
+          ...defaultKeymap, // 注释 缩进 等等
+          ...historyKeymap,
+        ]),
+        langs.of([]),
+        editorTheme.of(isDarkModeEnabled.value ? darkCode : lightCode), // 设置初始主题
+        EditorState.readOnly.of(props.isReadOnly ? true : false),
+        EditorView.lineWrapping, // 换行
+        lineNumbers(),
+        highlightActiveLine(),
+        bracketMatching(),
+        highlightSelectionMatches(),
+        indentationMarkers(),
+
+        closeBrackets(), // 括号闭合
+        autocompletion(), // 代码补全
+        EditorView.updateListener.of((update) => {
+          if (!update.docChanged) return;
+          const docContent = update.state.doc.toString();
+          docUpdate = true;
+          console.log("更新文档 - CodeValue");
+          cmStore.setCmCode(docContent);
+          Length.value = formatLength(docContent.length);
+          docUpdate = false;
+        }),
+        hyperLink,
+        foldGutter({
+          closedText: "▸",
+          openText: "▾",
+        }),
+      ],
+      doc: cmStore.CmCode,
+    }),
+    parent: viewRef.value,
+  });
+
+  watch(
+    () => cmStore.CmCode,
+    (newValue) => {
+      // console.log("cmStore.CmCode");
+      // console.log(newValue);
+      if (!docUpdate && newValue !== view.state.doc.toString()) {
+        console.log("Code更新到文档");
+        view.dispatch({
+          changes: {
+            from: 0,
+            to: view.state.doc.length,
+            insert: newValue,
+          },
+        });
+        console.log(getjsjson(newValue));
+      }
+    }
+  );
+
+  watch(isDarkModeEnabled, (isDark) => {
+    console.log(isDarkModeEnabled);
+    if (isDark) {
+      view.dispatch({
+        effects: editorTheme.reconfigure(darkCode),
+      });
+    } else {
+      view.dispatch({
+        effects: editorTheme.reconfigure(lightCode),
+      });
+    }
+  });
+};
+function formatLength(length) {
+  if (length < 1024) {
+    return length === 0 ? "" : length + " bytes";
+  } else if (length < 1024 * 1024) {
+    return (length / 1024).toFixed(2) + " KB";
+  } else {
+    return (length / (1024 * 1024)).toFixed(2) + " MB";
+  }
+}
+const getjsjson = (res) => {
+  console.log(res);
+  Length.value = formatLength(res.length);
+  try {
+    const jsRegex =
+      /(?:function|var|let|const|if|else|return|try|catch|finally|typeof|delete|async|await)\b/;
+    if (jsRegex.test(res.slice(0, 4000))) {
+      setHJ();
+
+      console.log("---setHJ");
+      return true;
+    } else {
+      if (/\{/.test(res.slice(0, 4000))) {
+        try {
+          // res = res.replace(/^\/\* CH[\s\S]+CH \*\//, "");
+          JSON.parse(res);
+          setHJ();
+          console.log("111");
+          return true;
+        } catch (error) {
+          noHJ();
+          console.log("1112");
+          return true;
+        }
+      } else {
+        noHJ();
+        return false;
+      }
+    }
+  } catch (error) {
+    noHJ();
+    return false;
+  }
+};
+
+const updateDarkModeStatus = () => {
+  isDarkModeEnabled.value = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+};
+
+updateDarkModeStatus();
+if (theme.value.auto === true) {
+  const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  darkModeMediaQuery.addEventListener("change", updateDarkModeStatus);
+}
+watchEffect(() => {
+  if (theme.value.auto === false) {
+    if (["mocha", "light"].includes(theme.value.name)) {
+      isDarkModeEnabled.value = false;
+    } else {
+      isDarkModeEnabled.value = true;
+    }
+  }
+});
+// // pnpm add @codemirror/lang-wast  @replit/codemirror-lang-nix
+// // import { nix } from "@/EditCode/nix";
+// setTimeout(() => {
+//   // view.dispatch({
+//   //   effects: langs.reconfigure(nix()),
+//   // });
+// }, 1000);
+onMounted(() => {
+  CreateView();
+  let lg = localStorage.getItem("highlightJS");
+  // console.log(getjsjson(newValue))
+  const x = getjsjson(cmStore.CmCode);
+  console.log(x);
+  if (!x) {
+    if (lg == 1 || lg == null) {
+      setHJ();
+    } else {
+      noHJ();
+    }
+    setHJ();
+  }
+});
+
+const openPanel = ref(localStorage.getItem("openCodePanel") != 1);
+const setPanel = () => {
+  if (openPanel.value) {
+    openPanel.value = false;
+    localStorage.setItem("openCodePanel", 1);
+  } else {
+    openPanel.value = true;
+    localStorage.setItem("openCodePanel", 0);
+  }
+};
+
+let ishiCode = localStorage.getItem("highlightJS") != 1;
+const hiCode = () => {
+  if (ishiCode) {
+    setHJ();
+    ishiCode = false;
+    localStorage.setItem("highlightJS", 1);
+  } else {
+    noHJ();
+    ishiCode = true;
+    localStorage.setItem("highlightJS", 0);
+  }
+};
+
+let sopen = true;
+const searchs = () => {
+  if (sopen) {
+    openSearchPanel(view);
+    sopen = false;
+  } else {
+    closeSearchPanel(view);
+    sopen = true;
+  }
+};
+
+const setHJ = () => {
+  view.dispatch({
+    effects: langs.reconfigure(javascript()),
+  });
+};
+const noHJ = () => {
+  view.dispatch({
+    effects: langs.reconfigure([]),
+  });
+};
+// const openLine = () => {
+//   gotoLine(view);
+// };
+
+const undoCode = () => undo(view);
+const redoCode = () => redo(view);
+
+async function formatCode() {
+  try {
+    cmStore.setCmCode(
+      beautify
+        .js_beautify(cmStore.CmCode, {
+          indent_size: 2,
+        })
+        .replace(/^\s*[\r\n]/gm, "\n")
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const copyText = async () => {
+  const x = await toClipboard(cmStore.CmCode);
+  if (x) {
+    // showToast("已复制字符串数: " + x?.text?.length);
+  }
+};
+
+const delAllCode = () => {
+  // showToast("已清空");
+  cmStore.setCmCode("");
+};
+
+const pasteNav = async () => {
+  try {
+    const clipboardText = await navigator.clipboard.readText();
+    if (clipboardText?.length > 0) {
+      cmStore.setCmCode(clipboardText);
+      // showToast("已粘贴字数: " + clipboardText.length);
+    }
+  } catch (e) {
+    // showToast("获取剪贴板失败: 非Https");
+  }
+};
+</script>
+
+<style lang="scss">
+.cm-panels.cm-panels-bottom {
+  padding: 10px;
+  border-top: none !important;
+  border-radius: 15px;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-top: 30px;
+  bottom: 24px !important;
+  line-height: 16px;
+}
+
+.cmviewRef {
+  //   background-color: #fff;
+  border-radius: 16px;
+}
+
+// @media (prefers-color-scheme: dark) {
+//   .cmviewRef {
+//     // background-color: #282c34;
+//   }
+// }
+
+.cm-img-button {
+  // padding: 10px 0 12px 0;
+  display: flex;
+  // position: fixed;
+  // height: 100px;
+  //   top: 50px;
+  // left: 13px;
+  padding-top: 10px;
+  // width: 90px;
+  // margin-right: 40px;
+  //   background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI0NTBweCIgaGVpZ2h0PSIxMzBweCI+CiAgICA8ZWxsaXBzZSBjeD0iNjUiIGN5PSI2NSIgcng9IjUwIiByeT0iNTIiIHN0cm9rZT0icmdiKDIyMCw2MCw1NCkiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDIzNywxMDgsOTYpIi8+CiAgICA8ZWxsaXBzZSBjeD0iMjI1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiBzdHJva2U9InJnYigyMTgsMTUxLDMzKSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJyZ2IoMjQ3LDE5Myw4MSkiLz4KICAgIDxlbGxpcHNlIGN4PSIzODUiIGN5PSI2NSIgcng9IjUwIiByeT0iNTIiIHN0cm9rZT0icmdiKDI3LDE2MSwzNykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDEwMCwyMDAsODYpIi8+Cjwvc3ZnPgo=");
+  //   background-size: 60px;
+  //   background-repeat: no-repeat;
+  //   background-position: 10px 10px;
+  //   margin-bottom: 10px;
+  //   position: absolute;
+  z-index: 10;
+  min-height: 24px;
+  width: 98%;
+  // display: flex;
+  justify-content: flex-end;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.cm-img-button button {
+  height: 16px;
+  background-repeat: no-repeat;
+  // background-color: #00000000;
+  // border: #00000000;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  width: 33px;
+  transition: transform 0.2s;
+}
+
+.cm-img-button button:hover {
+  transform: scale(0.9);
+}
+
+.cm-img-button button:active {
+  transform: scale(0.9);
+  filter: invert(0.5);
+}
+
+.cm-button {
+  background-image: none !important;
+  background-color: #88828217 !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.cm-textfield {
+  vertical-align: middle;
+  color: inherit;
+  font-size: 70%;
+  border: 1px solid #8b8b8b3b !important;
+  border-radius: 10px;
+  background-color: transparent !important;
+  min-width: 160px;
+  padding: 0.2em 0.5em;
+}
+
+.cm-panel.cm-search input[type="checkbox"] {
+  position: absolute;
+  width: 12px !important;
+  height: 14px !important;
+  margin-top: 5px !important;
+  background-color: #00000000 !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="checkbox"]:checked {
+  border: 6px solid #8b8b9256 !important;
+  border-radius: 2px;
+}
+.cm-button[name="replace"] {
+  margin-left: 10px !important;
+}
+.cm-button[name="prev"] {
+  margin-right: 13px !important;
+}
+
+.cm-panel.cm-search label {
+  margin: 0.2em 0.5em 0.5em 1.2em !important;
+}
+
+.cm-panel.cm-search label {
+  font-size: 90% !important;
+}
+</style>

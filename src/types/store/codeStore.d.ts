@@ -1,0 +1,3 @@
+interface cmCodeStore {
+  CmCode?: string;
+}
