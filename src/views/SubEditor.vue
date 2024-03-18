@@ -790,6 +790,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   display: flex;
   // justify-content: start;
   flex-wrap: wrap;
+  justify-content: flex-end;
 
   :deep(.nut-radio__button.false) {
     background: var(--divider-color);

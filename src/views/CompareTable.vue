@@ -4,12 +4,11 @@
       <header class="compare-page-header">
         <h1>
           <font-awesome-icon icon="fa-solid fa-eye" />
-          {{ $t(`comparePage.title`) }}
-          <span
-            ><font-awesome-icon icon="fa-solid fa-angles-right" />{{
-              displayName
-            }}</span
-          >
+          <span class="title">{{ $t(`comparePage.title`) }}</span>
+          <span class="displayName">
+            <font-awesome-icon icon="fa-solid fa-angles-right" />
+            {{ displayName }}
+          </span>
         </h1>
         <button @click="clickClose">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
@@ -508,7 +507,16 @@
     color: var(--primary-text-color);
     background: var(--background-color);
     border-color: var(--divider-color);
-
+    width: 100vw;
+    .title {
+      white-space: nowrap;
+    }
+    .displayName {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 40vw;
+    }
     h1 {
       display: flex;
       align-items: center;

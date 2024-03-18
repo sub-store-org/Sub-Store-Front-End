@@ -168,10 +168,24 @@ let clashMetaProxies = await produceArtifact({
     name: 'sub',
     platform: 'ClashMeta',
     produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( ProxyUtils.yaml.safeLoad('YAML String').proxies )
-}))
+})
 
 // YAML
-$content = ProxyUtils.yaml.safeDump({})
+// ProxyUtils.yaml.load('YAML String')
+// ProxyUtils.yaml.safeLoad('YAML String')
+// $content = ProxyUtils.yaml.safeDump({})
+// $content = ProxyUtils.yaml.dump({})
+
+// Example: insert proxies into YAML
+// const yaml = ProxyUtils.yaml.safeLoad($content ?? $files[0])
+// let clashMetaProxies = await produceArtifact({
+//     type: 'collection',
+//     name: '机场',
+//     platform: 'ClashMeta',
+//     produceType: 'internal'
+// })
+// yaml.proxies.unshift(...clashMetaProxies)
+// $content = ProxyUtils.yaml.dump(yaml)
 
 // JSON
 $content = JSON.stringify({}, null, 2)
