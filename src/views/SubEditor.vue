@@ -130,7 +130,7 @@
             /> -->
 
             <div style="margin-left: -10px; margin-right: -20px">
-              <cmView :isReadOnly="false"/>
+              <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
           </nut-form-item>
           <!-- ua -->
@@ -424,7 +424,7 @@ provide("form", form);
 const ignoreList = ["Quick Setting Operator"];
 
 watch(
-  () => cmStore.CmCode,
+  () => cmStore.EditCode['SubEditer'],
   (newCode) => {
     form.content = newCode;
   }
@@ -443,7 +443,7 @@ watchEffect(() => {
         form.url = "";
         form.content = "";
         form.ua = "";
-        cmStore.setCmCode("");
+        cmStore.setEditCode('SubEditer', "");
         break;
     }
     // 标记 加载完成
@@ -474,7 +474,7 @@ watchEffect(() => {
       form.source = sourceData.source;
       form.url = sourceData.url;
       form.content = sourceData.content;
-      cmStore.setCmCode(sourceData.content);
+      cmStore.setEditCode('SubEditer', sourceData.content);
       form.ua = sourceData.ua;
       break;
   }

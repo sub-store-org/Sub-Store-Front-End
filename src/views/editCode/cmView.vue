@@ -80,8 +80,8 @@ const { theme } = storeToRefs(settingsStore);
 const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
-const props = defineProps(["isReadOnly"]);
-
+const props = defineProps(["isReadOnly", "id"]);
+console.log(props.id);
 const cmStore = useCodeStore();
 
 const viewRef = ref(null);
@@ -116,7 +116,7 @@ const CreateView = () => {
           const docContent = update.state.doc.toString();
           docUpdate = true;
           console.log("更新文档 - CodeValue");
-          cmStore.setCmCode(docContent);
+          cmStore.setEditCode([props.id], docContent);
           Length.value = formatLength(docContent.length);
           docUpdate = false;
         }),
@@ -126,13 +126,13 @@ const CreateView = () => {
           openText: "▾",
         }),
       ],
-      doc: cmStore.CmCode,
+      doc: cmStore.EditCode[props.id],
     }),
     parent: viewRef.value,
   });
 
   watch(
-    () => cmStore.CmCode,
+    () => cmStore.EditCode[props.id],
     (newValue) => {
       if (!docUpdate && newValue !== view.state.doc.toString()) {
         console.log("Code更新到文档");
@@ -171,13 +171,12 @@ function formatLength(length) {
   }
 }
 const getjsjson = (res) => {
-  Length.value = formatLength(res.length);
+  Length.value = formatLength(res?.length);
   try {
     const jsRegex =
       /(?:function|var|let|const|if|else|return|try|catch|finally|typeof|delete|async|await)\b/;
     if (jsRegex.test(res.slice(0, 4000))) {
       setHJ();
-
       console.log("---setHJ");
       return true;
     } else {
@@ -227,7 +226,7 @@ watchEffect(() => {
 onMounted(() => {
   CreateView();
   let lg = localStorage.getItem("highlightJS");
-  const x = getjsjson(cmStore.CmCode);
+  const x = getjsjson(cmStore.EditCode[props.id]);
   if (!x) {
     if (lg == 1 || lg == null) {
       setHJ();
@@ -291,9 +290,10 @@ const redoCode = () => redo(view);
 
 async function formatCode() {
   try {
-    cmStore.setCmCode(
+    cmStore.setEditCode(
+      [props.id],
       beautify
-        .js_beautify(cmStore.CmCode, {
+        .js_beautify(cmStore.EditCode[props.id], {
           indent_size: 2,
         })
         .replace(/^\s*[\r\n]/gm, "\n")
@@ -304,7 +304,7 @@ async function formatCode() {
 }
 
 const copyText = async () => {
-  const x = await toClipboard(cmStore.CmCode);
+  const x = await toClipboard(cmStore.EditCode[props.id]);
   if (x) {
     showNotify({
       type: "success",
@@ -314,7 +314,7 @@ const copyText = async () => {
 };
 
 const delAllCode = () => {
-  cmStore.setCmCode("");
+  cmStore.setEditCode([props.id], "");
   showNotify({
     type: "success",
     title: "已清空",
@@ -325,7 +325,7 @@ const pasteNav = async () => {
   try {
     const clipboardText = await navigator.clipboard.readText();
     if (clipboardText?.length > 0) {
-      cmStore.setCmCode(clipboardText);
+      cmStore.setEditCode([props.id], clipboardText);
       showNotify({
         type: "success",
         title: "已粘贴字数: " + clipboardText.length,

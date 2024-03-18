@@ -21,7 +21,7 @@
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
       </header>
-      <cmView :isReadOnly="true" />
+      <cmView :isReadOnly="false" id="filePreview"/>
       <!-- <div class="compare-page-body">
         <div class="block-wrapper">
           <div class="input-wrapper">
@@ -74,7 +74,10 @@ const displayName = computed(() => {
 
 const originalData = previewData.original;
 const processedData = previewData.processed;
-cmStore.setCmCode(processedData)
+// cmStore.setCmCode(processedData)
+cmStore.setEditCode('filePreview',processedData)
+
+ 
 const clickClose = () => {
   emit("closePreview");
 };

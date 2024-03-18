@@ -108,7 +108,7 @@
             type="text"
           /> -->
           <div style="margin-left: -10px; margin-right: -20px">
-            <cmView :isReadOnly="false" />
+            <cmView :isReadOnly="false" id="FileEditer"/>
           </div>
         </nut-form-item>
         <!-- ua -->
@@ -255,7 +255,7 @@ provide("form", form);
 const ignoreList = ["Quick Setting Operator"];
 
 watch(
-  () => cmStore.CmCode,
+  () => cmStore.EditCode['FileEditer'],
   (newCode) => {
     form.content = newCode;
   }
@@ -265,7 +265,7 @@ watchEffect(() => {
   if (isInit.value) return;
   if (configName === "UNTITLED") {
     const fc = "// " + t(`filePage.content.placeholder`) + "\n"
-    cmStore.setCmCode(fc)
+    cmStore.setEditCode('FileEditer', fc)
     // 标记 加载完成
     isInit.value = true;
     return;
@@ -284,7 +284,7 @@ watchEffect(() => {
     form.ua = sourceData.ua;
     form.mergeSources = sourceData.mergeSources;
     form.content = sourceData.content;
-    cmStore.setCmCode(sourceData.content);
+    cmStore.setEditCode('FileEditer', sourceData.content);
     form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
     form.process = newProcess;

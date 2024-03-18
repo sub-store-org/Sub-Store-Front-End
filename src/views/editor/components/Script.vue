@@ -215,7 +215,7 @@ watch(value, () => {
 });
 
 const pushEditCode = () => {
-  cmStore.setCmCode(value.code ? value.code : placeholders);
+  cmStore.setEditCode(id,value.code ? value.code : placeholders);
   router.push(`/edit/Script/${id}`);
 };
 </script>

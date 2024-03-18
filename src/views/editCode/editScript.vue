@@ -1,5 +1,5 @@
 <template>
-  <cmView :isReadOnly="false" />
+  <cmView :isReadOnly="false" :id="id" />
   <div class="bottom-btn-wrapper">
     <nut-button
       @click="routerBack"
