@@ -21,7 +21,7 @@
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
       </header>
-      <cmView :isReadOnly="false" :cmCode="processedData" />
+      <cmView :isReadOnly="true"/>
       <div class="compare-page-body">
         <div class="block-wrapper">
           <div class="input-wrapper">

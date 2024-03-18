@@ -83,7 +83,7 @@ const { theme } = storeToRefs(settingsStore);
 const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
-const props = defineProps(["isReadOnly", "cmCode"]);
+const props = defineProps(["isReadOnly"]);
 // const cmStore = ref(props.cmCode);
 
 const cmStore = useCodeStore();
@@ -113,7 +113,6 @@ const CreateView = () => {
         bracketMatching(),
         highlightSelectionMatches(),
         indentationMarkers(),
-
         closeBrackets(), // 括号闭合
         autocompletion(), // 代码补全
         EditorView.updateListener.of((update) => {
@@ -323,9 +322,9 @@ async function formatCode() {
 
 const copyText = async () => {
   const x = await toClipboard(cmStore.CmCode);
-  if (x) {
-    // showToast("已复制字符串数: " + x?.text?.length);
-  }
+  // if (x) {
+  //   // showToast("已复制字符串数: " + x?.text?.length);
+  // }
 };
 
 const delAllCode = () => {

@@ -130,7 +130,7 @@
             /> -->
 
             <div style="margin-left: -16px; margin-right: -20px">
-              <cmView :isReadOnly="false" :cmCode="form.content" />
+              <cmView :isReadOnly="false"/>
             </div>
           </nut-form-item>
           <!-- ua -->
