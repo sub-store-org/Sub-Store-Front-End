@@ -70,8 +70,8 @@ import { useSettingsStore } from "@/store/settings";
 import { useCodeStore } from "@/store/codeStore";
 import { storeToRefs } from "pinia";
 import beautify from "js-beautify";
-const { toClipboard } = useV3Clipboard();
 import { useAppNotifyStore } from "@/store/appNotify";
+const { toClipboard } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
 const settingsStore = useSettingsStore();

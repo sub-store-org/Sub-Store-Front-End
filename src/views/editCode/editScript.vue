@@ -29,11 +29,12 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
+import { storeToRefs } from "pinia";
+import { useAppNotifyStore } from "@/store/appNotify";
+
 const cmStore = useCodeStore();
 const { t } = useI18n();
 const router = useRouter();
-import { storeToRefs } from "pinia";
-import { useAppNotifyStore } from "@/store/appNotify";
 const { showNotify } = useAppNotifyStore();
 const globalStore = useGlobalStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
