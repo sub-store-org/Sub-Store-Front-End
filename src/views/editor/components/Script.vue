@@ -49,7 +49,7 @@
     </button>
     </span> -->
 
-      <button
+      <!-- <button
         class="open-editor-btn"
         v-if="value.mode === 'script'"
         @click="pushEditCode"
@@ -58,7 +58,7 @@
           <font-awesome-icon icon="fa-solid fa-code" />
           前往脚本编辑器
         </span>
-      </button>
+      </button> -->
     </div>
     <!-- <nut-textarea
         v-model="value.content"
@@ -207,11 +207,12 @@ onMounted(() => {
     if (item.args.mode === "script") {
       value.code = item.args.content;
       console.log('item',item.id , id )
-      if (cmStore.EditCode[id] != "") {
-        item.args.content = cmStore.EditCode;
-        value.code = cmStore.EditCode[id];
-        cmStore.setEditCode(id,"");
-      }
+      // TODO: 不知道干啥的 刷新后首次打开订阅编辑时才会执行, 会导致脚本操作中的代码丢失
+      // if (cmStore.EditCode[id] != "") {
+      //   item.args.content = cmStore.EditCode;
+      //   value.code = cmStore.EditCode[id];
+      //   cmStore.setEditCode(id,"");
+      // }
     } else {
       value.content = item.args.content;
     }
