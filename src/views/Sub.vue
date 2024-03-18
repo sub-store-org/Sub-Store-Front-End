@@ -93,16 +93,16 @@
       </div>
       <div v-if="filterdSubsCount > 0">
         <div class="sticky-title-wrappers">
-          <p class="list-title" @click="toggleSubFold">
+          <p class="list-title" @click="toggleFold('sub')">
             <p>{{ $t(`specificWord.singleSub`) + '('+filterdSubsCount+')' }}</p>
-            <nut-icon v-if="!isSubFold" name="rect-down" size="12px"></nut-icon>
+            <nut-icon v-if="!isFold('sub')" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
 
         </div>
 
         <draggable
-          v-if="!isSubFold"
+          v-if="!isFold('sub')"
           v-model="subs"
           item-key="name"
           :scroll-sensitivity="200"
@@ -134,15 +134,15 @@
 
       <div v-if="filterdColsCount > 0">
         <div class="sticky-title-wrappers">
-          <p class="list-title" @click="toggleColFold">
+          <p class="list-title" @click="toggleFold('col')">
             <p>{{ $t(`specificWord.collectionSub`) + '('+filterdColsCount+')'}}</p>
-            <nut-icon v-if="!isColFold" name="rect-down" size="12px"></nut-icon>
+            <nut-icon v-if="!isFold('col')" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
         </div>
 
         <draggable
-          v-if="!isColFold"
+          v-if="!isFold('col')"
           v-model="collections"
           item-key="name"
           :scroll-sensitivity="200"
@@ -243,8 +243,8 @@ const subsApi = useSubsApi();
 const { t } = useI18n();
 
 const addSubBtnIsVisible = ref(false);
-const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
-const isColFold = ref(localStorage.getItem('col-fold') === '1');
+// const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
+// const isColFold = ref(localStorage.getItem('col-fold') === '1');
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
@@ -394,22 +394,45 @@ const handleDragEnd = (dataValue: any) => {
   }
   swipeDisabled.value = false;
 };
-const toggleSubFold = () => {
-  isSubFold.value = !isSubFold.value;
-  if (isSubFold.value) {
-    localStorage.setItem('sub-fold', '1')  
+function getFoldState() {
+  let states = {}
+  try {
+    let raw = localStorage.getItem('sub-fold')
+    states = raw ? JSON.parse(raw) : {}
+  } catch (e) {}
+  return states;
+}
+const fold = ref(getFoldState());
+const isFold = (type) => {
+  return fold.value?.[type]?.[tag.value];
+}
+const toggleFold = (type) => {
+  if (fold.value?.[type]?.[tag.value]) {
+    delete fold.value[type][tag.value]
   } else {
-    localStorage.removeItem('sub-fold')
+    if (!fold.value[type]) {
+      fold.value[type] = {}
+    }
+    fold.value[type][tag.value] = 1
   }
-};
-const toggleColFold = () => {
-  isColFold.value = !isColFold.value;
-  if (isColFold.value) {
-    localStorage.setItem('col-fold', '1')  
-  } else {
-    localStorage.removeItem('col-fold')
-  }
-};
+  localStorage.setItem('sub-fold', JSON.stringify(fold.value));
+}
+// const toggleSubFold = () => {
+//   isSubFold.value = !isSubFold.value;
+//   if (isSubFold.value) {
+//     localStorage.setItem('sub-fold', '1')  
+//   } else {
+//     localStorage.removeItem('sub-fold')
+//   }
+// };
+// const toggleColFold = () => {
+//   isColFold.value = !isColFold.value;
+//   if (isColFold.value) {
+//     localStorage.setItem('col-fold', '1')  
+//   } else {
+//     localStorage.removeItem('col-fold')
+//   }
+// };
 const setTag = (current) => {
   tag.value = current
 };
