@@ -306,12 +306,13 @@ const flow = computed(() => {
         secondLine: ``,
       };
     } else if (target.status === "success") {
-      const {
+      let {
         remainingDays,
         expires,
         total,
         usage: { upload, download },
       } = target.data;
+      if(target.hideExpire) expires = undefined;
       let progress = 0;
       try {
         progress = 1 - (upload + download) / total
@@ -328,7 +329,9 @@ const flow = computed(() => {
         const expiresInfo = !expires
           ? ""
           : `${dayjs.unix(expires).format("YYYY-MM-DD")}`;
-        secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
+        if (expiresInfo) {
+          secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
+        }
         return {
           firstLine: `${getString(upload + download, total, "B")}`,
           secondLine,
@@ -338,12 +341,17 @@ const flow = computed(() => {
         secondLine = remainingDays ? `${t("subPage.subItem.remainingDays")}: ${remainingDays}${t(
           "subPage.subItem.remainingDaysUnit"
         )}` : ''
-        const expiresInfo = !expires
+        let expiresInfo = !expires
           ? t("subPage.subItem.noExpiresInfo")
           : `${t("subPage.subItem.expires")}: ${dayjs
               .unix(expires)
               .format("YYYY-MM-DD")}`;
-        secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
+        if (target.hideExpire) {
+          expiresInfo = ''
+        }
+        if (expiresInfo) {
+          secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
+        }
         return {
           firstLine: `${t("subPage.subItem.flow")}: ${getString(
             upload + download,

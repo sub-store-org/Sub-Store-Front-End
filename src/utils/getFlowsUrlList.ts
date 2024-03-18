@@ -34,6 +34,6 @@ export const getFlowsUrlList = (subs: Sub[]): string[][] => {
           }
       }
     }
-    return [raw, name, $arguments?.noFlow];
+    return [raw, name, $arguments?.noFlow, $arguments?.hideExpire];
   });
 };

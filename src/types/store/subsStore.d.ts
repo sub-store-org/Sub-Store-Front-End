@@ -63,6 +63,7 @@ interface Artifacts {
 
 interface Flow {
   status: 'success' | 'noFlow';
+  hideExpire?: boolean;
   data: {
     remainingDays?: number;
     expires?: number;
