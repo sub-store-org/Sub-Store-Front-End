@@ -1,0 +1,45 @@
+{
+  "name": "@codemirror/lang-javascript",
+  "version": "6.2.1",
+  "description": "JavaScript language support for the CodeMirror code editor",
+  "scripts": {
+    "test": "cm-runtests",
+    "prepare": "cm-buildhelper src/index.ts"
+  },
+  "keywords": [
+    "editor",
+    "code"
+  ],
+  "author": {
+    "name": "Marijn Haverbeke",
+    "email": "marijn@haverbeke.berlin",
+    "url": "http://marijnhaverbeke.nl"
+  },
+  "type": "module",
+  "main": "dists/index.cjs",
+  "exports": {
+    "import": "./dists/index.js",
+    "require": "./dists/index.cjs"
+  },
+  "types": "dists/index.d.ts",
+  "module": "dists/index.js",
+  "sideEffects": false,
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.0.0",
+    "@codemirror/language": "^6.6.0",
+    "@codemirror/lint": "^6.0.0",
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.17.0",
+    "@lezer/common": "^1.0.0",
+    "@lezer/javascript": "^1.0.0"
+  },
+  "devDependencies": {
+    "@codemirror/buildhelper": "^1.0.0",
+    "@lezer/lr": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codemirror/lang-javascript.git"
+  }
+}

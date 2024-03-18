@@ -41,9 +41,15 @@ dependencies:
   '@fortawesome/vue-fontawesome':
     specifier: ^3.0.1
     version: 3.0.1(@fortawesome/fontawesome-svg-core@6.1.1)(vue@3.2.37)
+  '@lezer/common':
+    specifier: ^1.2.1
+    version: 1.2.1
   '@lezer/highlight':
     specifier: ^1.2.0
     version: 1.2.0
+  '@lezer/javascript':
+    specifier: ^1.4.13
+    version: 1.4.13
   '@nutui/nutui':
     specifier: ^3.3.8
     version: 3.3.8
@@ -65,6 +71,9 @@ dependencies:
   codemirror:
     specifier: ^6.0.1
     version: 6.0.1(@lezer/common@1.2.1)
+  crelt:
+    specifier: ^1.0.6
+    version: 1.0.6
   dayjs:
     specifier: ^1.11.3
     version: 1.11.3
@@ -7225,7 +7234,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       base: 0.11.2
-      debug: registry.npmmirror.com/debug@2.6.9
+      debug: 2.6.9
       define-property: 0.2.5
       extend-shallow: 2.0.1
       map-cache: 0.2.2
@@ -8542,19 +8551,6 @@ packages:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/concat-map/-/concat-map-0.0.1.tgz}
     name: concat-map
     version: 0.0.1
-    dev: true
-
-  registry.npmmirror.com/debug@2.6.9:
-    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/debug/-/debug-2.6.9.tgz}
-    name: debug
-    version: 2.6.9
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.0.0
     dev: true
 
   registry.npmmirror.com/debug@4.3.4:

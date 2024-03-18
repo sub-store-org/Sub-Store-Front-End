@@ -26,7 +26,7 @@
 <script setup>
 import { darkCode } from "./dark.js";
 import { lightCode } from "./light.js";
-import { javascript } from "@codemirror/lang-javascript";
+import { javascript } from "@/views/editCode/lang-js";
 
 import { ref, onMounted, watch, watchEffect, computed } from "vue";
 
@@ -36,7 +36,7 @@ import {
   openSearchPanel,
   gotoLine,
   closeSearchPanel,
-} from "@codemirror/search";
+} from "@/views/editCode/search";
 
 import {
   lineNumbers,
