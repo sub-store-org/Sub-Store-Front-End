@@ -14,7 +14,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isFlowFetching: true,
       fetchResult: false,
       bottomSafeArea: 0,
-      isDefaultIcon: false,
+      isDefaultIcon: localStorage.getItem('isDefaultIcon') === '1',
       isDarkMode: false,
       env: {},
       isSimpleMode: localStorage.getItem('isSimpleMode') === '1',
