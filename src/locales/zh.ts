@@ -8,6 +8,7 @@ export default {
     unknownSource: '未知来源',
     unknown: '未知',
     all: '全部',
+    untagged: '未分组',
   },
   globalNotify: {
     refresh: {

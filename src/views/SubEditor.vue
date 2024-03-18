@@ -210,7 +210,7 @@
 
         <template v-else-if="editType === 'collections'">
           <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.subscriptions.label`)"
+            :label="$t(`editorPage.subConfig.basic.subscriptions.label`)+ selectedSubs"
             prop="subscriptions"
             class="include-subs-wrapper"
           >
@@ -229,7 +229,7 @@
             >
               <nut-checkbox
                 v-for="item in subsSelectList"
-                v-show="tag === 'all' || item[3].includes(tag)"
+                v-show="shouldShowElement(item[3])"
                 :key="item[0]"
                 :label="item[0]"
                 text-position="left"
@@ -355,41 +355,49 @@ const { bottomSafeArea, isEditorCommon, isDefaultIcon, isIconColor } =
   storeToRefs(globalStore);
 const padding = bottomSafeArea.value + "px";
 
-const sub = computed(() => subsStore.getOneSub(configName));
-const collection = computed(() => subsStore.getOneCollection(configName));
+  const sub = computed(() => subsStore.getOneSub(configName));
+  const collection = computed(() => subsStore.getOneCollection(configName));
 
-const subsSelectList = computed(() => {
-  return subsStore.subs.map((item) => {
-    return [
-      item.name,
-      item.displayName || item["display-name"] || item.name,
-      item.icon || (isDefaultIcon.value ? logoIcon : logoRedIcon),
-      item.tag,
-    ];
+  
+  const subsSelectList = computed(() => {
+    return subsStore.subs.map(item => {
+      return [
+        item.name,
+        item.displayName || item['display-name'] || item.name,
+        item.icon || (isDefaultIcon.value ? logoIcon : logoRedIcon),
+        item.tag
+      ];
+    });
   });
-});
-const tags = computed(() => {
-  if (!subsStore.subs || subsStore.subs.length === 0) return [];
-  const set = new Set();
-  subsStore.subs.forEach((sub) => {
-    if (Array.isArray(sub.tag) && sub.tag.length > 0) {
-      sub.tag.forEach((i) => {
-        set.add(i);
-      });
-    }
+  const hasUntagged = ref(false);
+  const tags = computed(() => {
+    if(!subsStore.subs || subsStore.subs.length === 0) return []
+    const set = new Set()
+    subsStore.subs.forEach(sub => {
+      if (Array.isArray(sub.tag) && sub.tag.length > 0) {
+        sub.tag.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
+
+    let tags: any[] = Array.from(set)
+    if(tags.length === 0) return []
+    tags = tags.map(i => ({ label: i, value: i }));
+    const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
+    if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+    return result
   });
-
-  let tags: any[] = Array.from(set);
-  if (tags.length === 0) return [];
-  tags = tags.map((i) => ({ label: i, value: i }));
-
-  return [{ label: t("specificWord.all"), value: "all" }, ...tags];
-});
-const tag = ref("all");
-
-const compareTableIsVisible = ref(false);
-usePopupRoute(compareTableIsVisible);
-const compareData = ref();
+  const tag = ref('all');
+  const selectedSubs = computed(() => {
+    if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
+    return `: ${form.subscriptions.join(', ')}`
+  });
+  const compareTableIsVisible = ref(false);
+  usePopupRoute(compareTableIsVisible);
+  const compareData = ref();
 
 let scrollTop = 0;
 const isInit = ref(false);
@@ -717,50 +725,52 @@ const urlValidator = (val: string): Promise<boolean> => {
   });
 };
 
-// 失去焦点触发验证
-const customerBlurValidate = (prop: string) => {
-  ruleForm.value.validate(prop);
-};
-const uaTips = () => {
-  Dialog({
-    title: "默认使用配置中的全局 UA",
-    content:
-      "可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议",
-    popClass: "auto-dialog",
-    okText: "OK",
-    noCancelBtn: true,
-    closeOnPopstate: true,
-    lockScroll: false,
-  });
-};
-const subUserinfoTips = () => {
-  Dialog({
-    title: "手动设置订阅流量信息",
-    content:
-      "格式:\n\nupload=1024; download=10240; total=102400; expire=4115721600",
-    popClass: "auto-dialog",
-    okText: "OK",
-    noCancelBtn: true,
-    closeOnPopstate: true,
-    lockScroll: false,
-  });
-};
-const proxyTips = () => {
-  Dialog({
-    title: "通过代理/节点/策略获取订阅",
-    content:
-      '1. Surge(需使用 有 ability=http-client-policy 的模块, 参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888',
-    popClass: "auto-dialog",
-    textAlign: "left",
-    okText: "OK",
-    noCancelBtn: true,
-    closeOnPopstate: true,
-    lockScroll: false,
-  });
-};
-const setTag = (current) => {
-  tag.value = current;
-};
+  // 失去焦点触发验证
+  const customerBlurValidate = (prop: string) => {
+    ruleForm.value.validate(prop);
+  };
+  const uaTips = () => {
+    Dialog({
+        title: '默认使用配置中的全局 UA',
+        content: '可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议',
+        popClass: 'auto-dialog',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const subUserinfoTips = () => {
+    Dialog({
+        title: '手动设置订阅流量信息',
+        content: '格式:\n\nupload=1024; download=10240; total=102400; expire=4115721600',
+        popClass: 'auto-dialog',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const proxyTips = () => {
+    Dialog({
+        title: '通过代理/节点/策略获取订阅',
+        content: '1. Surge(需使用 有 ability=http-client-policy 的模块, 参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888',
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const setTag = (current) => {
+    tag.value = current;
+  };
+  const shouldShowElement = (element) => {
+    if(tag.value === 'all') return true
+    if(tag.value === 'untagged') return !Array.isArray(element) || element.length === 0
+    return element.includes(tag.value)
+  };
 </script>
 
 <style lang="scss" scoped>
