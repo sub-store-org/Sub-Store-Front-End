@@ -206,7 +206,7 @@
 
         <template v-else-if="editType === 'collections'">
           <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.subscriptions.label`)"
+            :label="$t(`editorPage.subConfig.basic.subscriptions.label`)+ selectedSubs"
             prop="subscriptions"
             class="include-subs-wrapper"
           >
@@ -219,7 +219,7 @@
             >
               <nut-checkbox
                 v-for="item in subsSelectList"
-                v-show="tag === 'all' || item[3].includes(tag)"
+                v-show="shouldShowElement(item[3])"
                 :key="item[0]"
                 :label="item[0]"
                 text-position="left"
@@ -353,6 +353,7 @@
       ];
     });
   });
+  const hasUntagged = ref(false);
   const tags = computed(() => {
     if(!subsStore.subs || subsStore.subs.length === 0) return []
     const set = new Set()
@@ -361,17 +362,23 @@
         sub.tag.forEach(i => {
           set.add(i)
         });
+      } else {
+        hasUntagged.value = true
       }
     })
 
     let tags: any[] = Array.from(set)
     if(tags.length === 0) return []
     tags = tags.map(i => ({ label: i, value: i }));
-    
-    return [{ label: t("specificWord.all"), value: "all" }, ...tags]
+    const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
+    if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+    return result
   });
   const tag = ref('all');
-
+  const selectedSubs = computed(() => {
+    if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
+    return `: ${form.subscriptions.join(', ')}`
+  });
   const compareTableIsVisible = ref(false);
   usePopupRoute(compareTableIsVisible);
   const compareData = ref();
@@ -709,6 +716,11 @@
   };
   const setTag = (current) => {
     tag.value = current
+  };
+  const shouldShowElement = (element) => {
+    if(tag.value === 'all') return true
+    if(tag.value === 'untagged') return !Array.isArray(element) || element.length === 0
+    return element.includes(tag.value)
   };
 </script>
 

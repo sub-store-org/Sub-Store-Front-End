@@ -8,6 +8,7 @@ export default {
     unknownSource: 'Unknown Source',
     unknown: 'Unknown',
     all: 'All',
+    untagged: 'Untagged',
   },
   globalNotify: {
     refresh: {

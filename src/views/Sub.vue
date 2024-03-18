@@ -121,7 +121,7 @@
           @end="handleDragEnd(subs)"
         >
           <template #item="{ element }">
-            <div :key="element.name" class="draggable-item" v-show="tag === 'all' || element.tag.includes(tag)">
+            <div :key="element.name" class="draggable-item" v-show="shouldShowElement(element)">
               <SubListItem
                 :sub="element"
                 type="sub"
@@ -161,7 +161,7 @@
           @end="handleDragEnd(collections)"
         >
           <template #item="{ element }">
-            <div :key="element.name" class="draggable-item" v-show="tag === 'all' || element.tag.includes(tag)">
+            <div :key="element.name" class="draggable-item" v-show="shouldShowElement(element)">
               <SubListItem
                 :collection="element"
                 type="collection"
@@ -259,7 +259,7 @@ const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
-
+const hasUntagged = ref(false);
 const tags = computed(() => {
   if(!hasSubs.value && !hasCollections.value) return []
   // 从 subs 和 collections 中获取所有的 tag, 去重
@@ -269,6 +269,8 @@ const tags = computed(() => {
       sub.tag.forEach(i => {
         set.add(i)
       });
+    } else {
+      hasUntagged.value = true
     }
   })
   collections.value.forEach(col => {
@@ -276,6 +278,8 @@ const tags = computed(() => {
       col.tag.forEach(i => {
         set.add(i)
       });
+    } else {
+      hasUntagged.value = true
     }
   })
 
@@ -283,14 +287,20 @@ const tags = computed(() => {
   if(tags.length === 0) return []
   tags = tags.map(i => ({ label: i, value: i }));
   
-  return [{ label: t("specificWord.all"), value: "all" }, ...tags]
+  const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
+  if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+  return result
 });
 const tag = ref('all');
 const filterdSubsCount = computed(() => {
-  return subs.value.filter(i => tag.value === 'all' || i.tag.includes(tag.value)).length
+  if(tag.value === 'all') return subs.value.length
+  if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
+  return subs.value.filter(i => i.tag.includes(tag.value)).length
 });
 const filterdColsCount = computed(() => {
-  return collections.value.filter(i => tag.value === 'all' || i.tag.includes(tag.value)).length
+  if(tag.value === 'all') return collections.value.length
+  if(tag.value === 'untagged') return collections.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
+  return collections.value.filter(i => i.tag.includes(tag.value)).length
 });
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
@@ -402,6 +412,11 @@ const toggleColFold = () => {
 };
 const setTag = (current) => {
   tag.value = current
+};
+const shouldShowElement = (element) => {
+  if(tag.value === 'all') return true
+  if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0
+  return element.tag.includes(tag.value)
 };
 </script>
 
