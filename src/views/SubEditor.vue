@@ -129,7 +129,7 @@
               type="text"
             /> -->
 
-            <div style="margin-left: -16px; margin-right: -20px">
+            <div style="margin-left: -10px; margin-right: -20px">
               <cmView :isReadOnly="false"/>
             </div>
           </nut-form-item>

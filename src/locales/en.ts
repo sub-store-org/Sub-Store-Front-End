@@ -30,6 +30,7 @@ export default {
       file: 'File',
       sync: 'Sync',
       my: 'My Profile',
+      editScript: 'Script Edit',
       subEditor: 'Subscription Editor',
       fileEditor: 'File Editor',
       themeSetting: 'Theme Setting',

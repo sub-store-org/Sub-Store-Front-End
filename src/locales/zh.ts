@@ -30,6 +30,7 @@ export default {
       file: '文件管理',
       sync: '同步',
       my: '我的',
+      editScript: '脚本编辑',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
       themeSetting: '主题设置',

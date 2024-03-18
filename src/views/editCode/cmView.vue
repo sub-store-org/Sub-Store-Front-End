@@ -23,12 +23,12 @@
     <div style="height: 10px" />
   </div>
 </template>
+
 <script setup>
 import { darkCode } from "./dark.js";
 import { lightCode } from "./light.js";
 import { javascript } from "@/views/editCode/lang-js";
-
-import { ref, onMounted, watch, watchEffect, computed } from "vue";
+import { ref, onMounted, watch, watchEffect } from "vue";
 
 import {
   highlightSelectionMatches,
@@ -37,7 +37,6 @@ import {
   gotoLine,
   closeSearchPanel,
 } from "@/views/editCode/search";
-
 import {
   lineNumbers,
   EditorView,
@@ -57,8 +56,6 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete";
 import { Compartment, EditorState } from "@codemirror/state";
 import { hyperLink } from "@uiw/codemirror-extensions-hyper-link";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
-
-// import { showToast } from "vant";
 import useV3Clipboard from "vue-clipboard3";
 import copyimg from "@/views/editCode/svg/copy.svg";
 import del from "@/views/editCode/svg/del.svg";
@@ -74,8 +71,8 @@ import { useCodeStore } from "@/store/codeStore";
 import { storeToRefs } from "pinia";
 import beautify from "js-beautify";
 const { toClipboard } = useV3Clipboard();
-
-// const s = cmcodeStore()
+import { useAppNotifyStore } from "@/store/appNotify";
+const { showNotify } = useAppNotifyStore();
 
 const settingsStore = useSettingsStore();
 const { theme } = storeToRefs(settingsStore);
@@ -84,7 +81,6 @@ const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
 const props = defineProps(["isReadOnly"]);
-// const cmStore = ref(props.cmCode);
 
 const cmStore = useCodeStore();
 
@@ -138,8 +134,6 @@ const CreateView = () => {
   watch(
     () => cmStore.CmCode,
     (newValue) => {
-      // console.log("cmStore.CmCode");
-      // console.log(newValue);
       if (!docUpdate && newValue !== view.state.doc.toString()) {
         console.log("Code更新到文档");
         view.dispatch({
@@ -149,7 +143,7 @@ const CreateView = () => {
             insert: newValue,
           },
         });
-        console.log(getjsjson(newValue));
+        getjsjson(newValue);
       }
     }
   );
@@ -177,7 +171,6 @@ function formatLength(length) {
   }
 }
 const getjsjson = (res) => {
-  console.log(res);
   Length.value = formatLength(res.length);
   try {
     const jsRegex =
@@ -190,7 +183,6 @@ const getjsjson = (res) => {
     } else {
       if (/\{/.test(res.slice(0, 4000))) {
         try {
-          // res = res.replace(/^\/\* CH[\s\S]+CH \*\//, "");
           JSON.parse(res);
           setHJ();
           console.log("111");
@@ -231,26 +223,17 @@ watchEffect(() => {
     }
   }
 });
-// // pnpm add @codemirror/lang-wast  @replit/codemirror-lang-nix
-// // import { nix } from "@/EditCode/nix";
-// setTimeout(() => {
-//   // view.dispatch({
-//   //   effects: langs.reconfigure(nix()),
-//   // });
-// }, 1000);
+
 onMounted(() => {
   CreateView();
   let lg = localStorage.getItem("highlightJS");
-  // console.log(getjsjson(newValue))
   const x = getjsjson(cmStore.CmCode);
-  console.log(x);
   if (!x) {
     if (lg == 1 || lg == null) {
       setHJ();
     } else {
       noHJ();
     }
-    setHJ();
   }
 });
 
@@ -322,14 +305,20 @@ async function formatCode() {
 
 const copyText = async () => {
   const x = await toClipboard(cmStore.CmCode);
-  // if (x) {
-  //   // showToast("已复制字符串数: " + x?.text?.length);
-  // }
+  if (x) {
+    showNotify({
+      type: "success",
+      title: "已复制字符串数: " + x?.text?.length,
+    });
+  }
 };
 
 const delAllCode = () => {
-  // showToast("已清空");
   cmStore.setCmCode("");
+  showNotify({
+    type: "success",
+    title: "已清空",
+  });
 };
 
 const pasteNav = async () => {
@@ -337,10 +326,16 @@ const pasteNav = async () => {
     const clipboardText = await navigator.clipboard.readText();
     if (clipboardText?.length > 0) {
       cmStore.setCmCode(clipboardText);
-      // showToast("已粘贴字数: " + clipboardText.length);
+      showNotify({
+        type: "success",
+        title: "已粘贴字数: " + clipboardText.length,
+      });
     }
   } catch (e) {
-    // showToast("获取剪贴板失败: 非Https");
+    showNotify({
+      type: "warning",
+      title: "获取剪贴板失败: 非Https",
+    });
   }
 };
 </script>
@@ -358,38 +353,16 @@ const pasteNav = async () => {
 }
 
 .cmviewRef {
-  //   background-color: #fff;
   border-radius: 16px;
 }
 
-// @media (prefers-color-scheme: dark) {
-//   .cmviewRef {
-//     // background-color: #282c34;
-//   }
-// }
-
 .cm-img-button {
-  // padding: 10px 0 12px 0;
   display: flex;
-  // position: fixed;
-  // height: 100px;
-  //   top: 50px;
-  // left: 13px;
   padding-top: 10px;
-  // width: 90px;
-  // margin-right: 40px;
-  //   background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI0NTBweCIgaGVpZ2h0PSIxMzBweCI+CiAgICA8ZWxsaXBzZSBjeD0iNjUiIGN5PSI2NSIgcng9IjUwIiByeT0iNTIiIHN0cm9rZT0icmdiKDIyMCw2MCw1NCkiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDIzNywxMDgsOTYpIi8+CiAgICA8ZWxsaXBzZSBjeD0iMjI1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiBzdHJva2U9InJnYigyMTgsMTUxLDMzKSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJyZ2IoMjQ3LDE5Myw4MSkiLz4KICAgIDxlbGxpcHNlIGN4PSIzODUiIGN5PSI2NSIgcng9IjUwIiByeT0iNTIiIHN0cm9rZT0icmdiKDI3LDE2MSwzNykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDEwMCwyMDAsODYpIi8+Cjwvc3ZnPgo=");
-  //   background-size: 60px;
-  //   background-repeat: no-repeat;
-  //   background-position: 10px 10px;
-  //   margin-bottom: 10px;
-  //   position: absolute;
   z-index: 10;
   min-height: 24px;
   width: 98%;
-  // display: flex;
   justify-content: flex-end;
-
   img {
     width: 16px;
     height: 16px;
@@ -399,8 +372,6 @@ const pasteNav = async () => {
 .cm-img-button button {
   height: 16px;
   background-repeat: no-repeat;
-  // background-color: #00000000;
-  // border: #00000000;
   border: none;
   background: none;
   padding: 0;

@@ -54,62 +54,63 @@
           />
         </nut-form-item>
         <nut-form-item
-            required
-            :label="$t(`editorPage.subConfig.basic.source.label`)"
-            prop="source"
-          >
+          required
+          :label="$t(`editorPage.subConfig.basic.source.label`)"
+          prop="source"
+        >
           <div class="radio-wrapper">
             <nut-radiogroup direction="horizontal" v-model="form.source">
-              <nut-radio shape="button" label="remote"
-                >{{ $t(`filePage.source.remote`) }}
+              <nut-radio shape="button" label="remote">
+                {{ $t(`filePage.source.remote`) }}
               </nut-radio>
-              <nut-radio shape="button" label="local"
-                >{{ $t(`filePage.source.local`) }}
+              <nut-radio shape="button" label="local">
+                {{ $t(`filePage.source.local`) }}
               </nut-radio>
             </nut-radiogroup>
           </div>
         </nut-form-item>
         <nut-form-item
-            required
-            v-if="form.source === 'remote'"
-            :label="$t(`editorPage.subConfig.basic.url.label`)"
-            prop="url"
-            :rules="[
-              {
-                required: true,
-                message: $t(`filePage.url.isEmpty`),
-              },
-              {
-                validator: urlValidator,
-                message: $t(`filePage.url.isIllegal`),
-              },
-            ]"
-          >
-            <nut-textarea
-              class="textarea-wrapper"
-              @blur="customerBlurValidate('url')"
-              v-model="form.url"
-              :autosize="{ maxHeight: 110, minHeight: 50 }"
-              :placeholder="$t(`filePage.url.placeholder`)"
-              type="text"
-            />
-          </nut-form-item>
-          <nut-form-item
-            v-else-if="form.source === 'local'"
-            :label="undefined"
-            prop="content"
-          >
-            <nut-textarea
-              class="textarea-wrapper"
-              v-model="form.content"
-              text-align="left"
-              :autosize="{ maxHeight: 410, minHeight: 50 }"
-              :placeholder="
-                $t(`filePage.content.placeholder`)
-              "
-              type="text"
-            />
-          </nut-form-item>
+          required
+          v-if="form.source === 'remote'"
+          :label="$t(`editorPage.subConfig.basic.url.label`)"
+          prop="url"
+          :rules="[
+            {
+              required: true,
+              message: $t(`filePage.url.isEmpty`),
+            },
+            {
+              validator: urlValidator,
+              message: $t(`filePage.url.isIllegal`),
+            },
+          ]"
+        >
+          <nut-textarea
+            class="textarea-wrapper"
+            @blur="customerBlurValidate('url')"
+            v-model="form.url"
+            :autosize="{ maxHeight: 110, minHeight: 50 }"
+            :placeholder="$t(`filePage.url.placeholder`)"
+            type="text"
+          />
+        </nut-form-item>
+        <nut-form-item
+          v-else-if="form.source === 'local'"
+          :label="undefined"
+          prop="content"
+        >
+          <!-- <nut-textarea
+            class="textarea-wrapper"
+            v-model="form.content"
+            text-align="left"
+            :autosize="{ maxHeight: 410, minHeight: 50 }"
+            :placeholder="$t(`filePage.content.placeholder`)"
+            type="text"
+          /> -->
+          <div style="margin-left: -10px; margin-right: -20px">
+            <cmView :isReadOnly="false" />
+          </div>
+        </nut-form-item>
         <!-- ua -->
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.ua.label`)"
@@ -130,14 +131,14 @@
         >
           <div class="radio-wrapper">
             <nut-radiogroup direction="horizontal" v-model="form.mergeSources">
-              <nut-radio shape="button" label=""
-                >{{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
+              <nut-radio shape="button" label="">
+                {{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
               </nut-radio>
-              <nut-radio shape="button" label="localFirst"
-                >{{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
+              <nut-radio shape="button" label="localFirst">
+                {{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
               </nut-radio>
-              <nut-radio shape="button" label="remoteFirst"
-                >{{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
+              <nut-radio shape="button" label="remoteFirst">
+                {{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
               </nut-radio>
             </nut-radiogroup>
           </div>
@@ -148,7 +149,7 @@
           class="ignore-failed-wrapper"
         >
           <div class="swtich-wrapper">
-            <nut-switch v-model="form.ignoreFailedRemoteFile"/>
+            <nut-switch v-model="form.ignoreFailedRemoteFile" />
           </div>
         </nut-form-item>
       </nut-form>
@@ -164,9 +165,8 @@
 
   <div class="bottom-btn-wrapper">
     <nut-button @click="compare" class="compare-btn btn" plain shape="square">
-      <font-awesome-icon icon="fa-solid fa-eye" />{{
-        $t('editorPage.subConfig.btn.compare')
-      }}
+      <font-awesome-icon icon="fa-solid fa-eye" />
+      {{ $t("editorPage.subConfig.btn.compare") }}
     </nut-button>
     <nut-button
       @click="submit"
@@ -175,7 +175,7 @@
       shape="square"
     >
       <font-awesome-icon icon="fa-solid fa-floppy-disk" />
-      {{ $t('editorPage.subConfig.btn.save') }}
+      {{ $t("editorPage.subConfig.btn.save") }}
     </nut-button>
   </div>
 
@@ -188,415 +188,432 @@
 </template>
 
 <script lang="ts" setup>
-  import { useSubsApi } from '@/api/subs';
-  import { useFilesApi } from '@/api/files';
-  import { usePopupRoute } from '@/hooks/usePopupRoute';
-  import { useAppNotifyStore } from '@/store/appNotify';
-  import { useGlobalStore } from '@/store/global';
-  import { useSubsStore } from '@/store/subs';
-  import ActionBlock from '@/views/editor/ActionBlock.vue';
-  import { addItem, deleteItem } from '@/utils/actionsOperate';
-  import { actionsToProcess } from '@/utils/actionsToPorcess';
-  import Script from '@/views/editor/components/Script.vue';
-  import FilePreview from '@/views/FilePreview.vue';
-  import { initStores } from '@/utils/initApp';
-  import { Dialog, Toast } from '@nutui/nutui';
-  import { storeToRefs } from 'pinia';
-  import {
-    computed,
-    provide,
-    reactive,
-    ref,
-    shallowRef,
-    toRaw,
-    watchEffect,
-  } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useRoute, useRouter } from 'vue-router';
+import { useSubsApi } from "@/api/subs";
+import { useFilesApi } from "@/api/files";
+import { usePopupRoute } from "@/hooks/usePopupRoute";
+import { useAppNotifyStore } from "@/store/appNotify";
+import { useGlobalStore } from "@/store/global";
+import { useSubsStore } from "@/store/subs";
+import ActionBlock from "@/views/editor/ActionBlock.vue";
+import { addItem, deleteItem } from "@/utils/actionsOperate";
+import { actionsToProcess } from "@/utils/actionsToPorcess";
+import Script from "@/views/editor/components/Script.vue";
+import FilePreview from "@/views/FilePreview.vue";
+import { initStores } from "@/utils/initApp";
+import { Dialog, Toast } from "@nutui/nutui";
+import { storeToRefs } from "pinia";
+import {
+  computed,
+  provide,
+  reactive,
+  ref,
+  shallowRef,
+  toRaw,
+  watchEffect,
+  watch,
+} from "vue";
+import { useI18n } from "vue-i18n";
+import { useRoute, useRouter } from "vue-router";
+import cmView from "@/views/editCode/cmView.vue";
+import { useCodeStore } from "@/store/codeStore";
+const cmStore = useCodeStore();
 
-  const { t } = useI18n();
-  const route = useRoute();
-  const router = useRouter();
-  const subsApi = useSubsApi();
-  const filesApi = useFilesApi();
-  const configName = route.params.id as string;
-  const subsStore = useSubsStore();
-  const { showNotify } = useAppNotifyStore();
+const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+const subsApi = useSubsApi();
+const filesApi = useFilesApi();
+const configName = route.params.id as string;
+const subsStore = useSubsStore();
+const { showNotify } = useAppNotifyStore();
 
-  const globalStore = useGlobalStore();
-  const { bottomSafeArea } = storeToRefs(globalStore);
-  const padding = bottomSafeArea.value + 'px';
+const globalStore = useGlobalStore();
+const { bottomSafeArea } = storeToRefs(globalStore);
+const padding = bottomSafeArea.value + "px";
 
-  let scrollTop = 0;
+let scrollTop = 0;
 
-  const file = computed(() => subsStore.getOneFile(configName));
-  const filePreviewIsVisible = ref(false);
-  usePopupRoute(filePreviewIsVisible);
-  const previewData = ref();
-  const isInit = ref(false);
-  const ruleForm = ref<any>(null);
-  const actionsChecked = reactive([]);
-  const actionsList = reactive([]);
-  const isget = ref(false);
-  const form = reactive<any>({
-    name: '',
-    displayName: '',
-    icon: '',
-    source: 'local',
-    process: [],
-  });
-  provide('form', form);
-  // 排除非动作卡片
-  const ignoreList = ['Quick Setting Operator'];
 
-  watchEffect(() => {
-    if (isInit.value) return;
-    if (configName === 'UNTITLED') {
-      // 标记 加载完成
-      isInit.value = true;
-      return;
-    }
+const file = computed(() => subsStore.getOneFile(configName));
+const filePreviewIsVisible = ref(false);
+usePopupRoute(filePreviewIsVisible);
+const previewData = ref();
+const isInit = ref(false);
+const ruleForm = ref<any>(null);
+const actionsChecked = reactive([]);
+const actionsList = reactive([]);
+const isget = ref(false);
+const form = reactive<any>({
+  name: "",
+  displayName: "",
+  icon: "",
+  source: "local",
+  process: [],
+});
+provide("form", form);
+// 排除非动作卡片
+const ignoreList = ["Quick Setting Operator"];
 
-    const sourceData: any = toRaw(file.value);
-    if (sourceData) {
-      if (!Array.isArray(sourceData.process)) {
-        sourceData.process = []
-      }
-      form.name = sourceData.name;
-      form.displayName = sourceData.displayName || sourceData['display-name'];
-      form.icon = sourceData.icon;
-      form.source = sourceData.source || 'local';
-      form.url = sourceData.url;
-      form.ua = sourceData.ua;
-      form.mergeSources = sourceData.mergeSources;
-      form.content = sourceData.content;
-      form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
-      const newProcess = JSON.parse(JSON.stringify(sourceData.process));
-      form.process = newProcess;
-      if (sourceData.process.length > 0) {
-        form.process.forEach(item => {
-          const { type, id } = item;
-          actionsChecked.push([id, true]);
-          const action = {
-            type,
-            id,
-            tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
-            component: null,
-          };
-          switch (type) {
-            case 'Script Operator':
-              action.component = shallowRef(Script);
-              break;
-            default:
-              break;
-          }
-          actionsList.push(action);
-          
-        });
-      }
-      // 标记 加载完成
-      isInit.value = true;
-      return;
-    }
-  
-  });
+watch(
+  () => cmStore.CmCode,
+  (newCode) => {
+    form.content = newCode;
+  }
+);
 
-  const addAction = val => {
-    addItem(form, actionsList, actionsChecked, val, t);
-  };
-
-  const deleteAction = id => {
-    deleteItem(form, actionsList, actionsChecked, id);
-  };
-  const closePreview = () => {
-    document.querySelector('html').style['overflow-y'] = '';
-    document.querySelector('html').style.height = '';
-    document.body.style.height = '';
-    document.body.style['overflow-y'] = '';
-    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
-    (document.querySelector('#app') as HTMLElement).style.height = '';
-    
-    filePreviewIsVisible.value = false;
-
-    window.scrollTo({
-        top: scrollTop,
-        behavior: "instant" as any
-    });
-
-    router.back();
-  };
-  const compare = () => {
-    ruleForm.value.validate().then(async ({ valid, errors }: any) => {
-      // 如果验证失败
-      if (!valid) {
-        Dialog({
-          title: t(`editorPage.subConfig.pop.errorTitle`),
-          content: errors[0].message,
-          popClass: 'auto-dialog',
-          noCancelBtn: true,
-          okText: t(`editorPage.subConfig.pop.errorBtn`),
-          // @ts-ignore
-          closeOnClickOverlay: true,
-        });
-        return;
-      }
-
-      Toast.loading('生成中...', { id: 'compare', cover: true, duration: 1500 });
-      const data: any = JSON.parse(JSON.stringify(toRaw(form)));
-      data.process = actionsToProcess(data.process, actionsList, ignoreList);
-
-      // 过滤掉预览开关关闭的操作
-      actionsChecked.forEach(item => {
-        if (!item[1]) {
-          const index = data.process.findIndex(i => i.id === item[0]);
-          if (index > -1) {
-            data.process.splice(index, 1);
-          }
-        }
-      });
-
-      const res = await subsApi.compareSub('file', data);
-      if (res?.data?.status === 'success') {
-        previewData.value = res.data.data;
-
-        scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-
-        globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop })
-
-        document.querySelector('html').style['overflow-y'] = 'hidden';
-        document.querySelector('html').style.height = '100%';
-        document.body.style.height = '100%';
-        document.body.style['overflow-y'] = 'hidden';
-        (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
-        (document.querySelector('#app') as HTMLElement).style.height = '100%';
-        
-        filePreviewIsVisible.value = true;
-        Toast.hide('compare');
-      }
-    });
-  };
-
-  const submit = () => {
-    if (isget.value){
-    showNotify({
-        type: 'success',
-        title: '请勿重复点击...',
-      });
+watchEffect(() => {
+  if (isInit.value) return;
+  if (configName === "UNTITLED") {
+    const fc = "// " + t(`filePage.content.placeholder`) + "\n"
+    cmStore.setCmCode(fc)
+    // 标记 加载完成
+    isInit.value = true;
     return;
+  }
+
+  const sourceData: any = toRaw(file.value);
+  if (sourceData) {
+    if (!Array.isArray(sourceData.process)) {
+      sourceData.process = [];
     }
-    ruleForm.value.validate().then(async ({ valid, errors }: any) => {
-      isget.value=true;
-      // 如果验证失败
-      if (!valid) {
-        isget.value=false;
-        Dialog({
-          title: t(`editorPage.subConfig.pop.errorTitle`),
-          content: errors[0].message,
-          popClass: 'auto-dialog',
-          noCancelBtn: true,
-          okText: t(`editorPage.subConfig.pop.errorBtn`),
-          // @ts-ignore
-          closeOnClickOverlay: true,
-        });
-        return;
-      }
-      Toast.loading('...', { id: 'submits', cover: true, duration: 1500 });
-      // 如果验证成功，开始保存/修改
-      const data: any = JSON.parse(JSON.stringify(toRaw(form)));
-      data['display-name'] = data.displayName;
-      data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    form.name = sourceData.name;
+    form.displayName = sourceData.displayName || sourceData["display-name"];
+    form.icon = sourceData.icon;
+    form.source = sourceData.source || "local";
+    form.url = sourceData.url;
+    form.ua = sourceData.ua;
+    form.mergeSources = sourceData.mergeSources;
+    form.content = sourceData.content;
+    cmStore.setCmCode(sourceData.content);
+    form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
+    const newProcess = JSON.parse(JSON.stringify(sourceData.process));
+    form.process = newProcess;
+    if (sourceData.process.length > 0) {
+      form.process.forEach((item) => {
+        const { type, id } = item;
+        actionsChecked.push([id, true]);
+        const action = {
+          type,
+          id,
+          tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
+          component: null,
+        };
+        switch (type) {
+          case "Script Operator":
+            action.component = shallowRef(Script);
+            break;
+          default:
+            break;
+        }
+        actionsList.push(action);
+      });
+    }
+    // 标记 加载完成
+    isInit.value = true;
+    return;
+  }
+});
 
-      let res = null;
+const addAction = (val) => {
+  addItem(form, actionsList, actionsChecked, val, t);
+};
 
-      if (configName === 'UNTITLED') {
-        res = await filesApi.createFile(data);
-        await subsStore.fetchSubsData();
-        if (data.source === 'remote') await initStores(false, true, false);
-      } else {
-        res = await filesApi.editFile(configName, data);
-    
-        if (configName === data.name) {
-          // @ts-ignore
-          await subsStore.updateOneData('files', configName);
-        } else {
-          await subsStore.fetchSubsData();
+const deleteAction = (id) => {
+  deleteItem(form, actionsList, actionsChecked, id);
+};
+const closePreview = () => {
+  document.querySelector("html").style["overflow-y"] = "";
+  document.querySelector("html").style.height = "";
+  document.body.style.height = "";
+  document.body.style["overflow-y"] = "";
+  (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "";
+  (document.querySelector("#app") as HTMLElement).style.height = "";
+
+  filePreviewIsVisible.value = false;
+
+  window.scrollTo({
+    top: scrollTop,
+    behavior: "instant" as any,
+  });
+
+  router.back();
+};
+const compare = () => {
+  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+    // 如果验证失败
+    if (!valid) {
+      Dialog({
+        title: t(`editorPage.subConfig.pop.errorTitle`),
+        content: errors[0].message,
+        popClass: "auto-dialog",
+        noCancelBtn: true,
+        okText: t(`editorPage.subConfig.pop.errorBtn`),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+      return;
+    }
+
+    Toast.loading("生成中...", { id: "compare", cover: true, duration: 1500 });
+    const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    data.process = actionsToProcess(data.process, actionsList, ignoreList);
+
+    // 过滤掉预览开关关闭的操作
+    actionsChecked.forEach((item) => {
+      if (!item[1]) {
+        const index = data.process.findIndex((i) => i.id === item[0]);
+        if (index > -1) {
+          data.process.splice(index, 1);
         }
       }
-
-      if (res?.data?.status === 'success') {
-        router.replace('/files').then(() => {
-          if (res)
-            showNotify({
-              type: 'success',
-              title: t(`editorPage.subConfig.pop.succeedMsg`),
-            });
-
-        });
-  
-      }
-      isget.value=false;
-      Toast.hide('submits');
     });
-  };
 
-  // 名称验证器
-  const nameValidator = (val: string): Promise<boolean> => {
-    return new Promise(resolve => {
-      if (val === 'UNTITLED') resolve(false);
-      if (/\//.test(val)) {
-        resolve(false)
-      }
-      const nameList = subsStore.files.map(item => item.name);
-      nameList.includes(val) && configName !== val
-        ? resolve(false)
-        : resolve(true);
+    const res = await subsApi.compareSub("file", data);
+    if (res?.data?.status === "success") {
+      previewData.value = res.data.data;
+
+      scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+      globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
+
+      document.querySelector("html").style["overflow-y"] = "hidden";
+      document.querySelector("html").style.height = "100%";
+      document.body.style.height = "100%";
+      document.body.style["overflow-y"] = "hidden";
+      (document.querySelector("#app") as HTMLElement).style["overflow-y"] =
+        "hidden";
+      (document.querySelector("#app") as HTMLElement).style.height = "100%";
+
+      filePreviewIsVisible.value = true;
+      Toast.hide("compare");
+    }
+  });
+};
+
+const submit = () => {
+  if (isget.value) {
+    showNotify({
+      type: "success",
+      title: "请勿重复点击...",
     });
-  };
+    return;
+  }
+  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+    isget.value = true;
+    // 如果验证失败
+    if (!valid) {
+      isget.value = false;
+      Dialog({
+        title: t(`editorPage.subConfig.pop.errorTitle`),
+        content: errors[0].message,
+        popClass: "auto-dialog",
+        noCancelBtn: true,
+        okText: t(`editorPage.subConfig.pop.errorBtn`),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+      return;
+    }
+    Toast.loading("...", { id: "submits", cover: true, duration: 1500 });
+    // 如果验证成功，开始保存/修改
+    const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    data["display-name"] = data.displayName;
+    data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
-  // url 格式验证器
-  const urlValidator = (val: string): Promise<boolean> => {
-    return new Promise(resolve => {
-      if (/\n/.test(val)) {
-        resolve(val.split(/[\r\n]+/).map(i => i.trim()).filter(i => i.length).every(i => /^(http|https):\/\/\S+$/.test(i)))
+    let res = null;
+
+    if (configName === "UNTITLED") {
+      res = await filesApi.createFile(data);
+      await subsStore.fetchSubsData();
+      if (data.source === "remote") await initStores(false, true, false);
+    } else {
+      res = await filesApi.editFile(configName, data);
+
+      if (configName === data.name) {
+        // @ts-ignore
+        await subsStore.updateOneData("files", configName);
       } else {
-        resolve(/^(http|https):\/\/\S+$/.test(val));  
+        await subsStore.fetchSubsData();
       }
-      
-    });
-  };
-  // 失去焦点触发验证
-  const customerBlurValidate = (prop: string) => {
-    ruleForm.value.validate(prop);
-  };
+    }
+
+    if (res?.data?.status === "success") {
+      router.replace("/files").then(() => {
+        if (res)
+          showNotify({
+            type: "success",
+            title: t(`editorPage.subConfig.pop.succeedMsg`),
+          });
+      });
+    }
+    isget.value = false;
+    Toast.hide("submits");
+  });
+};
+
+// 名称验证器
+const nameValidator = (val: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (val === "UNTITLED") resolve(false);
+    if (/\//.test(val)) {
+      resolve(false);
+    }
+    const nameList = subsStore.files.map((item) => item.name);
+    nameList.includes(val) && configName !== val
+      ? resolve(false)
+      : resolve(true);
+  });
+};
+
+// url 格式验证器
+const urlValidator = (val: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (/\n/.test(val)) {
+      resolve(
+        val
+          .split(/[\r\n]+/)
+          .map((i) => i.trim())
+          .filter((i) => i.length)
+          .every((i) => /^(http|https):\/\/\S+$/.test(i))
+      );
+    } else {
+      resolve(/^(http|https):\/\/\S+$/.test(val));
+    }
+  });
+};
+// 失去焦点触发验证
+const customerBlurValidate = (prop: string) => {
+  ruleForm.value.validate(prop);
+};
 </script>
 
 <style lang="scss" scoped>
-  .page-wrapper {
-    padding: 0 var(--safe-area-side) calc(v-bind('padding') + 63px)
-      var(--safe-area-side);
+.page-wrapper {
+  padding: 0 var(--safe-area-side) calc(v-bind("padding") + 63px)
+    var(--safe-area-side);
 
-    :deep(.nut-cell-group__warp) {
-      border-radius: var(--item-card-radios);
+  :deep(.nut-cell-group__warp) {
+    border-radius: var(--item-card-radios);
+  }
+}
+
+.radio-wrapper {
+  display: flex;
+  justify-content: end;
+
+  :deep(.nut-radio__button.false) {
+    background: var(--divider-color);
+    border-color: transparent;
+    color: var(--second-text-color);
+  }
+  :deep(.nut-radio__button) {
+    padding: 5px 10px;
+  }
+}
+
+.form-block-wrapper {
+  position: relative;
+}
+
+.bottom-btn-wrapper {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  bottom: 0;
+  width: 100%;
+  padding: 8px var(--safe-area-side) calc(v-bind("padding") + 8px)
+    var(--safe-area-side);
+  z-index: 20;
+  background: var(--background-color);
+  border-top: 1px solid var(--divider-color);
+
+  .btn {
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      margin-right: 4px;
     }
   }
 
-  .radio-wrapper {
+  // .compare-btn {
+  //   background: transparent;
+  //   width: 36%;
+  // }
+
+  .submit-btn {
+    width: 67%;
+  }
+}
+
+.ignore-failed-wrapper {
+  flex-direction: row;
+  justify-content: space-between;
+  :deep(.nut-form-item__label) {
+    width: auto;
+  }
+  .swtich-wrapper {
     display: flex;
     justify-content: end;
-
-    :deep(.nut-radio__button.false) {
-      background: var(--divider-color);
-      border-color: transparent;
-      color: var(--second-text-color);
-    }
-    :deep(.nut-radio__button) {
-      padding: 5px 10px;
-    }
   }
+}
 
-  .form-block-wrapper {
-    position: relative;
-  }
+.include-subs-wrapper {
+  flex-direction: column;
 
-  .bottom-btn-wrapper {
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    bottom: 0;
+  :deep(.nut-form-item__label) {
     width: 100%;
-    padding: 8px var(--safe-area-side) calc(v-bind('padding') + 8px)
-      var(--safe-area-side);
-    z-index: 20;
-    background: var(--background-color);
-    border-top: 1px solid var(--divider-color);
+    margin-bottom: 12px;
+  }
 
-    .btn {
-      border-radius: 8px;
-      padding: 4px 12px;
-      font-size: 14px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  .subs-checkbox-wrapper {
+    flex-direction: row-reverse;
 
-      svg {
-        margin-right: 4px;
+    .subs-checkbox {
+      justify-content: space-between;
+      margin-left: 16px;
+      padding: 16px 0 0 0;
+
+      &:not(:last-child) {
+        padding: 16px 0 16px 0;
+        border-bottom: 1px solid;
+        border-color: var(--divider-color);
       }
-    }
 
-    // .compare-btn {
-    //   background: transparent;
-    //   width: 36%;
-    // }
+      .sub-img-wrapper {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: var(--second-text-color);
 
-    .submit-btn {
-      width: 67%;
-    }
-  }
-
-  .ignore-failed-wrapper {
-    flex-direction: row;
-    justify-content: space-between;
-    :deep(.nut-form-item__label) {
-      width: auto;
-    }
-    .swtich-wrapper {
-      display: flex;
-      justify-content: end;
-    }
-  }
-
-  .include-subs-wrapper {
-    flex-direction: column;
-
-    :deep(.nut-form-item__label) {
-      width: 100%;
-      margin-bottom: 12px;
-    }
-
-    .subs-checkbox-wrapper {
-      flex-direction: row-reverse;
-
-      .subs-checkbox {
-        justify-content: space-between;
-        margin-left: 16px;
-        padding: 16px 0 0 0;
-
-        &:not(:last-child) {
-          padding: 16px 0 16px 0;
-          border-bottom: 1px solid;
-          border-color: var(--divider-color);
+        span {
+          max-width: 56vw;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow: hidden;
         }
 
-        .sub-img-wrapper {
-          max-width: 100%;
-          display: flex;
-          align-items: center;
-          font-size: 14px;
-          color: var(--second-text-color);
+        .sub-item-customer-icon {
+          margin-right: 12px;
 
-          span {
-            max-width: 56vw;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            word-wrap: break-word;
-            word-break: break-all;
-            overflow: hidden;
-          }
+          :deep(img) {
+            object-fit: contain;
 
-          .sub-item-customer-icon {
-            margin-right: 12px;
-
-            :deep(img) {
-              object-fit: contain;
-
-              &:not(.nut-icon__img) {
-                filter: brightness(var(--img-brightness));
-              }
+            &:not(.nut-icon__img) {
+              filter: brightness(var(--img-brightness));
             }
           }
         }
       }
     }
   }
+}
 </style>

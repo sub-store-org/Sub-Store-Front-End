@@ -2,12 +2,18 @@
   <div class="editor-action-card">
     <p class="des-label">
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
-      <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E8%84%9A%E6%9C%AC%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E" target="_blank">{{ $t('subPage.panel.tips.ok') }}</a>
+      <a
+        href="https://github.com/sub-store-org/Sub-Store/wiki/%E8%84%9A%E6%9C%AC%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"
+        target="_blank"
+      >
+        {{ $t("subPage.panel.tips.ok") }}
+      </a>
     </p>
     <nut-radiogroup direction="horizontal" v-model="value.mode">
-      <nut-radio v-for="(key, index) in modeList" :label="key" :key="index">{{
-        $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
-      }}
+      <nut-radio v-for="(key, index) in modeList" :label="key" :key="index">
+        {{
+          $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
+        }}
       </nut-radio>
     </nut-radiogroup>
 
@@ -15,15 +21,106 @@
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[1]`) }}
     </p> -->
     <div class="input-wrapper" v-if="value.mode === 'link'">
-      <nut-textarea v-model="value.content" :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
-        " :rows="5" />
+      <nut-textarea
+        v-model="value.content"
+        :placeholder="
+          $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
+        "
+        :rows="5"
+      />
     </div>
-
-
 
     <div v-if="value.mode === 'script'">
       <div class="input-wrapper">
-        <nut-textarea v-model="value.code" :placeholder="sourceType !== 'file' ? $t(`// Example:
+        <nut-textarea
+          v-model="value.code"
+          :placeholder="placeholders"
+          :rows="9"
+        />
+        <!-- <span>
+        <font-awesome-icon icon="fa-solid fa-code" />
+        {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}
+      </span> -->
+      </div>
+      <!-- <br> -->
+      <!-- <span class="editor-page-header">
+      <button  @click="pushEditCode">
+      <font-awesome-icon icon="fa-solid fa-eraser" />
+    </button>
+    </span> -->
+
+      <button
+        class="open-editor-btn"
+        v-if="value.mode === 'script'"
+        @click="pushEditCode"
+      >
+        <span>
+          <font-awesome-icon icon="fa-solid fa-code" />
+          前往脚本编辑器
+        </span>
+      </button>
+    </div>
+    <!-- <nut-textarea
+        v-model="value.content"
+        :placeholder="
+          $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
+        "
+        :rows="5"
+      /> -->
+
+    <!-- function operator(proxies, targetPlatform) {
+  return proxies.map( proxy => {
+    // Change proxy information here
+
+    return proxy;
+  });
+}
+
+function filter(proxies, targetPlatform) {
+  return proxies.map( proxy => {
+    // Return true if the current proxy is selected
+
+    return true;
+  });
+} -->
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { inject, reactive, onMounted, watch, ref, toRaw } from "vue";
+import { usePopupRoute } from "@/hooks/usePopupRoute";
+// import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
+import { useRouter } from "vue-router";
+import { Dialog } from "@nutui/nutui";
+import { useI18n } from "vue-i18n";
+import cmView from "@/views/editCode/cmView.vue";
+import { useCodeStore } from "@/store/codeStore";
+const cmStore = useCodeStore();
+
+const router = useRouter();
+const { type, id, sourceType } = defineProps<{
+  type: string;
+  id: string;
+  sourceType?: string;
+}>();
+
+const { t } = useI18n();
+
+const form = inject<Sub | Collection>("form");
+
+const modeList = ["link", "script"];
+
+const editorIsVisible = ref(false);
+usePopupRoute(editorIsVisible);
+const value = reactive({
+  mode: "",
+  content: "",
+  code: "",
+});
+
+const placeholders =
+  sourceType !== "file"
+    ? t(`// Example:
 // Script Operator
 // 1. backend version(>2.14.88):
 $server.name = 'prefix-' + $server.name
@@ -51,7 +148,8 @@ function filter(proxies, targetPlatform) {
     return true;
   });
 }
-`) : $t(`// Example:
+`)
+    : t(`// Example:
 // backend version(>2.14.148):
 // $files: ['0', '1']
 // $content: '0\\n1'
@@ -80,98 +178,26 @@ $content = JSON.stringify({}, null, 2)
 
 // { $content, $files } will be passed to the next operator 
 // $content is the final content of the file
-`) " :rows="23" />
-        <!-- <span>
-        <font-awesome-icon icon="fa-solid fa-code" />
-        {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}
-      </span> -->
-
-      </div>
-      <!-- <br> -->
-      <!-- <span class="editor-page-header">
-      <button  @click="onclearEditor">
-      <font-awesome-icon icon="fa-solid fa-eraser" />
-    </button>
-    </span> -->
-
-      <button class="open-editor-btn" v-if="value.mode === 'script'" @click="onclearEditor">
-        <span>
-          <font-awesome-icon icon="fa-solid fa-code" />
-          清空脚本
-        </span>
-      </button>
-    </div>
-    <!-- <nut-textarea
-        v-model="value.content"
-        :placeholder="
-          $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
-        "
-        :rows="5"
-      /> -->
-
-    <!-- function operator(proxies, targetPlatform) {
-  return proxies.map( proxy => {
-    // Change proxy information here
-
-    return proxy;
-  });
-}
-
-function filter(proxies, targetPlatform) {
-  return proxies.map( proxy => {
-    // Return true if the current proxy is selected
-
-    return true;
-  });
-} -->
-
-  </div>
-</template>
-
-<script lang="ts" setup>
-import { inject, reactive, onMounted, watch, ref, toRaw } from 'vue';
-import { usePopupRoute } from '@/hooks/usePopupRoute';
-// import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
-import { useRouter } from 'vue-router';
-import { Dialog } from '@nutui/nutui';
-import { useI18n } from 'vue-i18n';
-
-const router = useRouter();
-const { type, id, sourceType } = defineProps<{
-  type: string;
-  id: string;
-  sourceType?: string;
-}>();
-
-const { t } = useI18n();
-
-const form = inject<Sub | Collection>('form');
-
-const modeList = ['link', 'script'];
-
-const editorIsVisible = ref(false);
-usePopupRoute(editorIsVisible);
-const value = reactive({
-  mode: '',
-  content: '',
-  code: '',
-});
-
-
-
-const onCloseEditor = val => {
-  value.code = val;
+`);
+const onCloseEditor = (val) => {
+  // value.code = val;
   editorIsVisible.value = false;
   router.back();
 };
 
 // 挂载时将 value 值指针指向 form 对应的数据
 onMounted(() => {
-  const item = form.process.find(item => item.id === id);
+  const item = form.process.find((item) => item.id === id);
   if (item) {
     value.mode = item.args.mode;
-    if (item.args.mode === 'script') {
+    if (item.args.mode === "script") {
       value.code = item.args.content;
+      console.log('item',item.id , id )
+      if (cmStore.EditCode[id] != "") {
+        item.args.content = cmStore.EditCode;
+        value.code = cmStore.EditCode[id];
+        cmStore.setEditCode(id,"");
+      }
     } else {
       value.content = item.args.content;
     }
@@ -179,45 +205,19 @@ onMounted(() => {
 });
 
 watch(value, () => {
-  const item = form.process.find(item => item.id === id);
+  const item = form.process.find((item) => item.id === id);
   item.args.mode = value.mode;
-  if (item.args.mode === 'script') {
+  if (item.args.mode === "script") {
     item.args.content = value.code;
   } else {
     item.args.content = value.content;
   }
 });
 
-// 清空编辑器内容
-const onclearEditor = () => {
-  Dialog({
-    title: t('editorPage.subConfig.pop.clearTitle'),
-    content: t('editorPage.subConfig.pop.clearDes'),
-    popClass: 'auto-dialog',
-    okText: t(`editorPage.subConfig.pop.clearConfirm`),
-    cancelText: t(`editorPage.subConfig.pop.clearCancel`),
-    // onOk: () =>toRaw(value.code)?.setValue(''),
-    onOk: () => {
-      // Assuming value.code is the Monaco Editor instance
-      value.code = ''; // Clear the editor content
-    },
-    // onCancel: () => resolve(false),
-    // @ts-ignore
-    closeOnClickOverlay: true,
-  });
-
+const pushEditCode = () => {
+  cmStore.setCmCode(value.code ? value.code : placeholders);
+  router.push(`/edit/Script/${id}`);
 };
-
-  //   // 全选
-  //   const onSelectAll = () => {
-  //   const editor = toRaw(value.code);
-  //   if (editor) {
-  //     const range = editor.getFullModelRange();
-  //     editor.setSelection(range);
-  //   }
-  // };
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -244,7 +244,7 @@ const onclearEditor = () => {
   display: flex;
   align-items: center;
 
-  >view.nut-textarea {
+  > view.nut-textarea {
     background: transparent;
     padding: 8px 12px;
     border-bottom: 1px solid;
