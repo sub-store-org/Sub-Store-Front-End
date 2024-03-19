@@ -5,8 +5,8 @@
       :class="{ 'nodark-imgbutton': !isDarkModeEnabled }"
     >
       <div v-if="openPanel">
-        <button @click="undoCode"><img :src="undoimg" /></button>
         <button @click="hiCode"><img :src="jsimg" /></button>
+        <button @click="undoCode"><img :src="undoimg" /></button>
         <button @click="redoCode"><img :src="redoimg" /></button>
         <button @click="formatCode"><img :src="format" /></button>
         <button @click="searchs"><img :src="searchimg" /></button>
@@ -402,6 +402,8 @@ const pasteNav = async () => {
   margin: 0;
   margin-left: 10px;
   margin-top: 8px;
+  color: var(--comment-text-color);
+  // position: absolute;
 }
 .cm-img-button button:hover {
   transform: scale(0.9);

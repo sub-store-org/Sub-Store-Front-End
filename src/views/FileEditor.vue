@@ -198,7 +198,7 @@
   </div>
 
   <div v-else style="width: 100%">
-    <button class="cimg-button" style="opacity: 0.5" @click="isDis = true">
+    <button class="cimg-button" @click="isDis = true">
       <img src="" />
       取消全屏
     </button>
