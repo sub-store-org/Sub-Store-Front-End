@@ -11,7 +11,7 @@ import NotFound from '@/views/NotFound.vue';
 
 import File from '@/views/File.vue';
 import FileEditor from '@/views/FileEditor.vue';
-import editScript from '@/views/editCode/editScript.vue';
+// import editScript from '@/views/editCode/editScript.vue';
 
 import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
@@ -112,15 +112,15 @@ const router = createRouter({
             needNavBack: false,
           },
         },
-        {
-          path: '/edit/Script/:id',
-          component: editScript,
-          meta: {
-            title: 'editScript',
-            needTabBar: false,
-            needNavBack: true,
-          },
-        },
+        // {
+        //   path: '/edit/Script/:id',
+        //   component: editScript,
+        //   meta: {
+        //     title: 'editScript',
+        //     needTabBar: false,
+        //     needNavBack: true,
+        //   },
+        // },
         {
           path: '/edit/:editType(files)/:id',
           component: FileEditor,

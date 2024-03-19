@@ -1,10 +1,12 @@
 <template>
   <div class="cmviewRef">
-    <div class="cm-img-button">
-      <!--mouseenter mouseover @mouseleave="openPanel = false"   -->
+    <div
+      class="cm-img-button"
+      :class="{ 'nodark-imgbutton': !isDarkModeEnabled }"
+    >
       <div v-if="openPanel">
-        <button @click="hiCode"><img :src="jsimg" /></button>
         <button @click="undoCode"><img :src="undoimg" /></button>
+        <button @click="hiCode"><img :src="jsimg" /></button>
         <button @click="redoCode"><img :src="redoimg" /></button>
         <button @click="formatCode"><img :src="format" /></button>
         <button @click="searchs"><img :src="searchimg" /></button>
@@ -12,10 +14,19 @@
         <button @click="delAllCode"><img :src="del" /></button>
         <button @click="pasteNav"><img :src="paste" /></button>
       </div>
-      <span v-else style="opacity: 0.4; font-size: 12px; padding-left: 10px">
+      <span
+        v-else
+        style="
+          opacity: 0.4;
+          font-size: 12px;
+          padding-left: 10px;
+          line-height: 14px;
+          height: 22px;
+          color: var(--comment-text-color);
+        "
+      >
         {{ Length }} &nbsp;
       </span>
-
       <button @click="setPanel"><img :src="more" /></button>
     </div>
 
@@ -81,7 +92,7 @@ const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
 const props = defineProps(["isReadOnly", "id"]);
-console.log(props.id);
+// console.log(props.id);
 const cmStore = useCodeStore();
 
 const viewRef = ref(null);
@@ -315,6 +326,7 @@ const copyText = async () => {
 
 const delAllCode = () => {
   cmStore.setEditCode([props.id], "");
+  cmStore.CodeClear([props.id], true);
   showNotify({
     type: "success",
     title: "已清空",
@@ -405,6 +417,8 @@ const pasteNav = async () => {
   background-color: transparent !important;
   min-width: 160px;
   padding: 0.2em 0.5em;
+  border-color: none !important;
+  outline: none;
 }
 
 .cm-panel.cm-search input[type="checkbox"] {
@@ -434,5 +448,25 @@ input[type="checkbox"]:checked {
 
 .cm-panel.cm-search label {
   font-size: 90% !important;
+}
+
+.nodark-imgbutton {
+  filter: invert(1);
+}
+.ͼ1.cm-focused {
+  outline: none;
+}
+
+.ͼ1u .cm-panels.cm-panels-bottom {
+  border-top: none;
+}
+
+.cm-panels.cm-panels-bottom {
+  background: transparent;
+  box-shadow: 0 0 6px #919db687;
+}
+
+.cm-button:active {
+  background-color: #b6d9eba6 !important;
 }
 </style>

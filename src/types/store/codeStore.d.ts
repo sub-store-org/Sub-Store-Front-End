@@ -1,4 +1,4 @@
 interface cmCodeStore {
-  CmCode?: string;
   EditCode?: { [key: string]: string };
+  CodeClear?: { [key: string]: boolean };
 }

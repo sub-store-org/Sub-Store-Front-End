@@ -10,13 +10,13 @@
             {{ displayName }}
           </span>
         </h1>
-        <button class="copy" @click.stop="copyContent">
+        <!-- <button class="copy" @click.stop="copyContent">
           <svg-icon
             name="copy"
             class="action-icon"
             color="var(--comment-text-color)"
           />
-        </button>
+        </button> -->
         <button @click="clickClose">
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>

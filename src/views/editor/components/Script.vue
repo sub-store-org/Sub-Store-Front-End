@@ -30,25 +30,28 @@
       />
     </div>
 
-    <div v-if="value.mode === 'script'">
-      <div class="input-wrapper">
-        <nut-textarea
+    <div
+      v-if="value.mode === 'script'"
+      style="margin-left: -10px; margin-right: -16px"
+    >
+      <!-- <div class="input-wrapper"> -->
+      <!-- <nut-textarea
           v-model="value.code"
           :placeholder="placeholders"
           :rows="9"
-        />
-        <!-- <span>
+        /> -->
+      <!-- <span>
         <font-awesome-icon icon="fa-solid fa-code" />
         {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}
       </span> -->
-      </div>
+      <!-- </div> -->
       <!-- <br> -->
       <!-- <span class="editor-page-header">
       <button  @click="pushEditCode">
       <font-awesome-icon icon="fa-solid fa-eraser" />
     </button>
     </span> -->
-
+      <cmView :isReadOnly="false" :id="id" />
       <!-- <button
         class="open-editor-btn"
         v-if="value.mode === 'script'"
@@ -90,14 +93,14 @@ function filter(proxies, targetPlatform) {
 import { inject, reactive, onMounted, watch, ref, toRaw } from "vue";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 // import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
-import { useRouter } from "vue-router";
-import { Dialog } from "@nutui/nutui";
+// import { useRouter } from "vue-router";
+// import { Dialog } from "@nutui/nutui";
 import { useI18n } from "vue-i18n";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 const cmStore = useCodeStore();
 
-const router = useRouter();
+// const router = useRouter();
 const { type, id, sourceType } = defineProps<{
   type: string;
   id: string;
@@ -193,11 +196,11 @@ $content = JSON.stringify({}, null, 2)
 // { $content, $files } will be passed to the next operator 
 // $content is the final content of the file
 `);
-const onCloseEditor = (val) => {
-  // value.code = val;
-  editorIsVisible.value = false;
-  router.back();
-};
+// const onCloseEditor = (val) => {
+//   // value.code = val;
+//   editorIsVisible.value = false;
+//   router.back();
+// };
 
 // 挂载时将 value 值指针指向 form 对应的数据
 onMounted(() => {
@@ -206,13 +209,10 @@ onMounted(() => {
     value.mode = item.args.mode;
     if (item.args.mode === "script") {
       value.code = item.args.content;
-      console.log('item',item.id , id )
-      // TODO: 不知道干啥的 刷新后首次打开订阅编辑时才会执行, 会导致脚本操作中的代码丢失
-      // if (cmStore.EditCode[id] != "") {
-      //   item.args.content = cmStore.EditCode;
-      //   value.code = cmStore.EditCode[id];
-      //   cmStore.setEditCode(id,"");
-      // }
+      cmStore.setEditCode(
+        id,
+        item.args.content ? item.args.content : placeholders
+      );
     } else {
       value.content = item.args.content;
     }
@@ -224,15 +224,28 @@ watch(value, () => {
   item.args.mode = value.mode;
   if (item.args.mode === "script") {
     item.args.content = value.code;
+    !cmStore.CodeClear[id] && // 判断清除状态
+      cmStore.setEditCode(
+        id,
+        item.args.content ? item.args.content : placeholders
+      );
   } else {
     item.args.content = value.content;
   }
 });
 
-const pushEditCode = () => {
-  cmStore.setEditCode(id,value.code ? value.code : placeholders);
-  router.push(`/edit/Script/${id}`);
-};
+watch(
+  () => cmStore.EditCode[id],
+  (newCode) => {
+    value.code = newCode;
+  }
+);
+
+// const pushEditCode = () => {
+//   cmStore.setEditCode(id,value.code ? value.code : placeholders);
+//   router.push(`/edit/Script/${id}`);
+// };
+
 </script>
 
 <style lang="scss" scoped>

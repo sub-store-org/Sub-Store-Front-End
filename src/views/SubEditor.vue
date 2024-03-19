@@ -129,7 +129,7 @@
               type="text"
             /> -->
 
-            <div style="margin-left: -10px; margin-right: -20px">
+            <div style="margin-left: -10px; margin-right: -16px">
               <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
           </nut-form-item>
