@@ -1,105 +1,106 @@
 <template>
-  <div v-if="isDis" class="page-wrapper">
-    <!-- 基础表单 -->
-    <div class="form-block-wrapper">
-      <nut-form class="form" :model-value="form" ref="ruleForm">
-        <!-- name -->
-        <nut-form-item
-          required
-          :label="$t(`editorPage.subConfig.basic.name.label`)"
-          prop="name"
-          :rules="[
-            {
-              required: true,
-              message: $t(`editorPage.subConfig.basic.name.isEmpty`),
-            },
-            {
-              validator: nameValidator,
-              message: $t(`editorPage.subConfig.basic.name.isInvalid`),
-            },
-          ]"
-        >
-          <input
-            class="nut-input-text"
-            @blur="customerBlurValidate('name')"
-            v-model.trim="form.name"
-            :placeholder="$t(`editorPage.subConfig.basic.name.placeholder`)"
-            type="text"
-          />
-        </nut-form-item>
-        <!-- displayName -->
-        <nut-form-item
-          :label="$t(`editorPage.subConfig.basic.displayName.label`)"
-          prop="displayName"
-        >
-          <input
-            class="nut-input-text"
-            v-model.trim="form.displayName"
-            :placeholder="
-              $t(`editorPage.subConfig.basic.displayName.placeholder`)
-            "
-            type="text"
-          />
-        </nut-form-item>
-        <!-- icon -->
-        <nut-form-item
-          :label="$t(`editorPage.subConfig.basic.icon.label`)"
-          prop="icon"
-        >
-          <input
-            class="nut-input-text"
-            v-model.trim="form.icon"
-            :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
-            type="text"
-          />
-        </nut-form-item>
-        <nut-form-item
-          required
-          :label="$t(`editorPage.subConfig.basic.source.label`)"
-          prop="source"
-        >
-          <div class="radio-wrapper">
-            <nut-radiogroup direction="horizontal" v-model="form.source">
-              <nut-radio shape="button" label="remote">
-                {{ $t(`filePage.source.remote`) }}
-              </nut-radio>
-              <nut-radio shape="button" label="local">
-                {{ $t(`filePage.source.local`) }}
-              </nut-radio>
-            </nut-radiogroup>
-          </div>
-        </nut-form-item>
-        <nut-form-item
-          required
-          v-if="form.source === 'remote'"
-          :label="$t(`editorPage.subConfig.basic.url.label`)"
-          prop="url"
-          :rules="[
-            {
-              required: true,
-              message: $t(`filePage.url.isEmpty`),
-            },
-            {
-              validator: urlValidator,
-              message: $t(`filePage.url.isIllegal`),
-            },
-          ]"
-        >
-          <nut-textarea
-            class="textarea-wrapper"
-            @blur="customerBlurValidate('url')"
-            v-model="form.url"
-            :autosize="{ maxHeight: 110, minHeight: 50 }"
-            :placeholder="$t(`filePage.url.placeholder`)"
-            type="text"
-          />
-        </nut-form-item>
-        <nut-form-item
-          v-else-if="form.source === 'local'"
-          :label="undefined"
-          prop="content"
-        >
-          <!-- <nut-textarea
+  <div v-if="isDis">
+    <div class="page-wrapper">
+      <!-- 基础表单 -->
+      <div class="form-block-wrapper">
+        <nut-form class="form" :model-value="form" ref="ruleForm">
+          <!-- name -->
+          <nut-form-item
+            required
+            :label="$t(`editorPage.subConfig.basic.name.label`)"
+            prop="name"
+            :rules="[
+              {
+                required: true,
+                message: $t(`editorPage.subConfig.basic.name.isEmpty`),
+              },
+              {
+                validator: nameValidator,
+                message: $t(`editorPage.subConfig.basic.name.isInvalid`),
+              },
+            ]"
+          >
+            <input
+              class="nut-input-text"
+              @blur="customerBlurValidate('name')"
+              v-model.trim="form.name"
+              :placeholder="$t(`editorPage.subConfig.basic.name.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
+          <!-- displayName -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.displayName.label`)"
+            prop="displayName"
+          >
+            <input
+              class="nut-input-text"
+              v-model.trim="form.displayName"
+              :placeholder="
+                $t(`editorPage.subConfig.basic.displayName.placeholder`)
+              "
+              type="text"
+            />
+          </nut-form-item>
+          <!-- icon -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.icon.label`)"
+            prop="icon"
+          >
+            <input
+              class="nut-input-text"
+              v-model.trim="form.icon"
+              :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
+          <nut-form-item
+            required
+            :label="$t(`editorPage.subConfig.basic.source.label`)"
+            prop="source"
+          >
+            <div class="radio-wrapper">
+              <nut-radiogroup direction="horizontal" v-model="form.source">
+                <nut-radio shape="button" label="remote">
+                  {{ $t(`filePage.source.remote`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="local">
+                  {{ $t(`filePage.source.local`) }}
+                </nut-radio>
+              </nut-radiogroup>
+            </div>
+          </nut-form-item>
+          <nut-form-item
+            required
+            v-if="form.source === 'remote'"
+            :label="$t(`editorPage.subConfig.basic.url.label`)"
+            prop="url"
+            :rules="[
+              {
+                required: true,
+                message: $t(`filePage.url.isEmpty`),
+              },
+              {
+                validator: urlValidator,
+                message: $t(`filePage.url.isIllegal`),
+              },
+            ]"
+          >
+            <nut-textarea
+              class="textarea-wrapper"
+              @blur="customerBlurValidate('url')"
+              v-model="form.url"
+              :autosize="{ maxHeight: 110, minHeight: 50 }"
+              :placeholder="$t(`filePage.url.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
+          <nut-form-item
+            v-else-if="form.source === 'local'"
+            :label="undefined"
+            prop="content"
+          >
+            <!-- <nut-textarea
             class="textarea-wrapper"
             v-model="form.content"
             text-align="left"
@@ -108,90 +109,101 @@
             type="text"
           /> -->
 
-          <button class="cimg-button" @click="isDis = false">
-            <img src="" />
-            全屏编辑
-            <!-- 测试 后续再改效果 -->
-          </button>
-          <div style="margin-left: -10px; margin-right: -20px;max-height: 60vh;overflow: auto;">
-            <cmView :isReadOnly="false" id="FileEditer" />
-          </div>
-        </nut-form-item>
-        <!-- ua -->
-        <nut-form-item
-          :label="$t(`editorPage.subConfig.basic.ua.label`)"
-          prop="ua"
-          v-if="form.source === 'remote'"
-        >
-          <input
-            class="nut-input-text"
-            v-model.trim="form.ua"
-            :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
-            type="text"
-          />
-        </nut-form-item>
+            <button class="cimg-button" @click="isDis = false">
+              <img src="" />
+              全屏编辑
+              <!-- 测试 后续再改效果 -->
+            </button>
+            <div
+              style="
+                margin-left: -10px;
+                margin-right: -20px;
+                max-height: 60vh;
+                overflow: auto;
+              "
+            >
+              <cmView :isReadOnly="false" id="FileEditer" />
+            </div>
+          </nut-form-item>
+          <!-- ua -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.ua.label`)"
+            prop="ua"
+            v-if="form.source === 'remote'"
+          >
+            <input
+              class="nut-input-text"
+              v-model.trim="form.ua"
+              :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
 
-        <nut-form-item
-          :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
-          prop="mergeSources"
-        >
-          <div class="radio-wrapper">
-            <nut-radiogroup direction="horizontal" v-model="form.mergeSources">
-              <nut-radio shape="button" label="">
-                {{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
-              </nut-radio>
-              <nut-radio shape="button" label="localFirst">
-                {{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
-              </nut-radio>
-              <nut-radio shape="button" label="remoteFirst">
-                {{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
-              </nut-radio>
-            </nut-radiogroup>
-          </div>
-        </nut-form-item>
-        <nut-form-item
-          :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
-          prop="ignoreFailedRemoteFile"
-          class="ignore-failed-wrapper"
-        >
-          <div class="swtich-wrapper">
-            <nut-switch v-model="form.ignoreFailedRemoteFile" />
-          </div>
-        </nut-form-item>
-      </nut-form>
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
+            prop="mergeSources"
+          >
+            <div class="radio-wrapper">
+              <nut-radiogroup
+                direction="horizontal"
+                v-model="form.mergeSources"
+              >
+                <nut-radio shape="button" label="">
+                  {{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="localFirst">
+                  {{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="remoteFirst">
+                  {{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
+                </nut-radio>
+              </nut-radiogroup>
+            </div>
+          </nut-form-item>
+          <nut-form-item
+            :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
+            prop="ignoreFailedRemoteFile"
+            class="ignore-failed-wrapper"
+          >
+            <div class="swtich-wrapper">
+              <nut-switch v-model="form.ignoreFailedRemoteFile" />
+            </div>
+          </nut-form-item>
+        </nut-form>
+      </div>
+      <ActionBlock
+        :checked="actionsChecked"
+        :list="actionsList"
+        sourceType="file"
+        @addAction="addAction"
+        @deleteAction="deleteAction"
+      />
     </div>
-    <ActionBlock
-      :checked="actionsChecked"
-      :list="actionsList"
-      sourceType="file"
-      @addAction="addAction"
-      @deleteAction="deleteAction"
-    />
+
+    <div class="bottom-btn-wrapper">
+      <nut-button @click="compare" class="compare-btn btn" plain shape="square">
+        <font-awesome-icon icon="fa-solid fa-eye" />
+        {{ $t("editorPage.subConfig.btn.compare") }}
+      </nut-button>
+      <nut-button
+        @click="submit"
+        class="submit-btn btn"
+        type="primary"
+        shape="square"
+      >
+        <font-awesome-icon icon="fa-solid fa-floppy-disk" />
+        {{ $t("editorPage.subConfig.btn.save") }}
+      </nut-button>
+    </div>
   </div>
 
   <div v-else style="width: 100%">
-    <button class="cimg-button" style="opacity: .5;" @click="isDis = true">
+    <button class="cimg-button" style="opacity: 0.5" @click="isDis = true">
       <img src="" />
       取消全屏
     </button>
     <cmView :isReadOnly="false" id="FileEditer" />
   </div>
-  <div class="bottom-btn-wrapper">
-    <nut-button @click="compare" class="compare-btn btn" plain shape="square">
-      <font-awesome-icon icon="fa-solid fa-eye" />
-      {{ $t("editorPage.subConfig.btn.compare") }}
-    </nut-button>
-    <nut-button
-      @click="submit"
-      class="submit-btn btn"
-      type="primary"
-      shape="square"
-    >
-      <font-awesome-icon icon="fa-solid fa-floppy-disk" />
-      {{ $t("editorPage.subConfig.btn.save") }}
-    </nut-button>
-  </div>
-
   <FilePreview
     v-if="filePreviewIsVisible"
     :name="configName"
