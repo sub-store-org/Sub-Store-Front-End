@@ -78,8 +78,11 @@ export const useSubsStore = defineStore('subsStore', {
         if (noFlow) {
           this.flows[url] = { status:'noFlow' };
         } else {
-          const { data } = await subsApi.getFlow(name);
-          this.flows[url] = {...data, hideExpire };
+          try {
+            const { data } = await subsApi.getFlow(name);
+            this.flows[url] = {...data, hideExpire };
+          } catch (e) {
+          }
         }
       };
       // const subs = sub || this.subs;

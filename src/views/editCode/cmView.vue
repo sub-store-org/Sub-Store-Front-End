@@ -410,6 +410,7 @@ const pasteNav = async () => {
   margin-top: 8px;
   color: var(--comment-text-color);
   // position: absolute;
+  cursor: pointer;
 }
 .cm-img-button button:hover {
   transform: scale(0.9);

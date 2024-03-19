@@ -118,7 +118,7 @@
               </span>
             </template>
             <template v-else>
-              <span v-if="flow.secondLine" style="font-weight: normal">
+              <span v-if="flow && flow.secondLine" style="font-weight: normal">
                 {{ flow.firstLine + ' | ' + flow.secondLine }}
               </span>
               <span v-else style="font-weight: normal">
