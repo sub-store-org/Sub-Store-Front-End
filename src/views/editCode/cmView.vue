@@ -379,6 +379,9 @@ const pasteNav = async () => {
     width: 16px;
     height: 16px;
   }
+  button {
+    cursor: pointer;
+  }
 }
 
 .cm-img-button button {
