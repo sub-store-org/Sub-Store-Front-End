@@ -30,7 +30,7 @@
       <button @click="setPanel"><img :src="more" /></button>
     </div>
 
-    <div ref="viewRef" style="width: 100%; font-size: 11px" />
+    <div ref="viewRef" style="width: 100%; font-size: 12px" />
     <div style="height: 10px" />
   </div>
 </template>
@@ -92,7 +92,7 @@ const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
 const props = defineProps(["isReadOnly", "id"]);
-// console.log(props.id);
+console.log("cm-id: ", props.id);
 const cmStore = useCodeStore();
 
 const viewRef = ref(null);
