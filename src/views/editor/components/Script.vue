@@ -32,7 +32,7 @@
 
     <div
       v-if="value.mode === 'script'"
-      style="margin-left: -10px; margin-right: -16px"
+      style="margin-left: -16px; margin-right: -16px"
     >
       <!-- <div class="input-wrapper"> -->
       <!-- <nut-textarea

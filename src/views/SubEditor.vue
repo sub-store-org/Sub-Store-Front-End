@@ -134,7 +134,7 @@
               全屏编辑
               <!-- 测试 后续再改效果 -->
             </button>
-            <div style="margin-left: -10px; margin-right: -16px">
+            <div style="margin-left: -15px; margin-right: -15px">
               <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
           </nut-form-item>

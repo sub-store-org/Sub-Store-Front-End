@@ -116,8 +116,8 @@
             </button>
             <div
               style="
-                margin-left: -10px;
-                margin-right: -20px;
+                margin-left: -15px;
+                margin-right: -15px;
                 max-height: 60vh;
                 overflow: auto;
               "

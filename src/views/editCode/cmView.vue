@@ -434,7 +434,7 @@ const pasteNav = async () => {
   border: 1px solid #8b8b8b3b !important;
   border-radius: 10px;
   background-color: transparent !important;
-  min-width: 160px;
+  min-width: 100px;
   padding: 0.2em 0.5em;
   border-color: none !important;
   outline: none;
