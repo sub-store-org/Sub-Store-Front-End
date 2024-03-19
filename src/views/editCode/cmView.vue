@@ -82,7 +82,6 @@ import { useCodeStore } from "@/store/codeStore";
 import { storeToRefs } from "pinia";
 import beautify from "js-beautify";
 import { useAppNotifyStore } from "@/store/appNotify";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 const { toClipboard } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
