@@ -17,12 +17,12 @@
       <span
         v-else
         style="
-          opacity: 0.4;
+          opacity: 0.9;
           font-size: 12px;
           padding-left: 10px;
           line-height: 14px;
           height: 22px;
-          color: var(--comment-text-color);
+          color: var(--second-text-color);
         "
       >
         {{ Length }} &nbsp;
