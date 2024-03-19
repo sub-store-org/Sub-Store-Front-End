@@ -21,7 +21,7 @@
           <font-awesome-icon icon="fa-solid fa-circle-xmark" />
         </button>
       </header>
-      <cmView :isReadOnly="false" id="filePreview"/>
+      <cmView :isReadOnly="false" id="filePreview" />
       <!-- <div class="compare-page-body">
         <div class="block-wrapper">
           <div class="input-wrapper">

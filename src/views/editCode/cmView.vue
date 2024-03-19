@@ -8,7 +8,7 @@
         <button @click="hiCode"><img :src="jsimg" /></button>
         <button @click="undoCode"><img :src="undoimg" /></button>
         <button @click="redoCode"><img :src="redoimg" /></button>
-        <button @click="formatCode"><img :src="format" /></button>
+        <button v-if="isJS" @click="formatCode"><img :src="format" /></button>
         <button @click="searchs"><img :src="searchimg" /></button>
         <button @click="copyText"><img :src="copyimg" /></button>
         <button @click="delAllCode"><img :src="del" /></button>
@@ -82,6 +82,7 @@ import { useCodeStore } from "@/store/codeStore";
 import { storeToRefs } from "pinia";
 import beautify from "js-beautify";
 import { useAppNotifyStore } from "@/store/appNotify";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 const { toClipboard } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
@@ -94,7 +95,7 @@ const Length = ref("");
 const props = defineProps(["isReadOnly", "id"]);
 console.log("cm-id: ", props.id);
 const cmStore = useCodeStore();
-
+const isJS = ref(false);
 const viewRef = ref(null);
 const editorTheme = new Compartment();
 const langs = new Compartment();
@@ -183,6 +184,7 @@ function formatLength(length) {
 }
 const getjsjson = (res) => {
   Length.value = formatLength(res?.length);
+  // if (props.isJS) return false;
   try {
     const jsRegex =
       /(?:function|var|let|const|if|else|return|try|catch|finally|typeof|delete|async|await)\b/;
@@ -283,11 +285,13 @@ const searchs = () => {
 };
 
 const setHJ = () => {
+  isJS.value = true;
   view.dispatch({
     effects: langs.reconfigure(javascript()),
   });
 };
 const noHJ = () => {
+  isJS.value = false;
   view.dispatch({
     effects: langs.reconfigure([]),
   });
@@ -394,7 +398,7 @@ const pasteNav = async () => {
   width: 33px;
   transition: transform 0.2s;
 }
-.cimg-button  {
+.cimg-button {
   // width: 33px;
   height: 16px;
   font-size: 12px;
