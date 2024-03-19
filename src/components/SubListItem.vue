@@ -339,7 +339,7 @@ const flow = computed(() => {
           secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
         }
         return {
-          firstLine: `${getString(upload + download, total, "B")}`,
+          firstLine: `${getString(target.showRemaining ? (total - upload - download) : (upload + download), total, "B")}`,
           secondLine,
           progress
         };
@@ -359,8 +359,8 @@ const flow = computed(() => {
           secondLine = secondLine ? `${secondLine} | ${expiresInfo}` : expiresInfo;
         }
         return {
-          firstLine: `${t("subPage.subItem.flow")}: ${getString(
-            upload + download,
+          firstLine: `${t(target.showRemaining ? "subPage.subItem.showRemainingFlow" : "subPage.subItem.flow")}: ${getString(
+            target.showRemaining ? (total - upload - download) : (upload + download),
             total,
             "B"
           )}`,
