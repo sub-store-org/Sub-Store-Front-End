@@ -1,4 +1,5 @@
 <template>
+  <div v-if="isDis">
   <div class="page-wrapper">
     <!-- 基础表单 -->
     <div class="form-block-wrapper">
@@ -128,7 +129,11 @@
               "
               type="text"
             /> -->
-
+            <button class="cimg-button" @click="isDis = false">
+              <img src="" />
+              全屏编辑
+              <!-- 测试 后续再改效果 -->
+            </button>
             <div style="margin-left: -10px; margin-right: -16px">
               <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
@@ -294,7 +299,14 @@
       {{ $t("editorPage.subConfig.btn.save") }}
     </nut-button>
   </div>
-
+</div>
+<div v-else style="width: 100%">
+    <button class="cimg-button" @click="isDis = true">
+      <img src="" />
+      取消全屏
+    </button>
+    <cmView :isReadOnly="false" id="SubEditer" />
+  </div>
   <CompareTable
     v-if="compareTableIsVisible"
     :name="configName"
@@ -340,7 +352,7 @@ import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 const cmStore = useCodeStore();
-
+const isDis = ref(true)
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
