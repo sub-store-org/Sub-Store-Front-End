@@ -372,7 +372,7 @@ const pasteNav = async () => {
   display: flex;
   padding-top: 10px;
   z-index: 10;
-  min-height: 24px;
+  height: 32px;
   width: 98%;
   justify-content: flex-end;
   img {
@@ -391,7 +391,18 @@ const pasteNav = async () => {
   width: 33px;
   transition: transform 0.2s;
 }
-
+.cimg-button  {
+  // width: 33px;
+  height: 16px;
+  font-size: 12px;
+  background-repeat: no-repeat;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  margin-left: 10px;
+  margin-top: 8px;
+}
 .cm-img-button button:hover {
   transform: scale(0.9);
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper">
+  <div v-if="isDis" class="page-wrapper">
     <!-- 基础表单 -->
     <div class="form-block-wrapper">
       <nut-form class="form" :model-value="form" ref="ruleForm">
@@ -107,8 +107,14 @@
             :placeholder="$t(`filePage.content.placeholder`)"
             type="text"
           /> -->
-          <div style="margin-left: -10px; margin-right: -20px">
-            <cmView :isReadOnly="false" id="FileEditer"/>
+
+          <button class="cimg-button" @click="isDis = false">
+            <img src="" />
+            全屏编辑
+            <!-- 测试 后续再改效果 -->
+          </button>
+          <div style="margin-left: -10px; margin-right: -20px;max-height: 60vh;overflow: auto;">
+            <cmView :isReadOnly="false" id="FileEditer" />
           </div>
         </nut-form-item>
         <!-- ua -->
@@ -163,6 +169,13 @@
     />
   </div>
 
+  <div v-else style="width: 100%">
+    <button class="cimg-button" style="opacity: .5;" @click="isDis = true">
+      <img src="" />
+      取消全屏
+    </button>
+    <cmView :isReadOnly="false" id="FileEditer" />
+  </div>
   <div class="bottom-btn-wrapper">
     <nut-button @click="compare" class="compare-btn btn" plain shape="square">
       <font-awesome-icon icon="fa-solid fa-eye" />
@@ -217,7 +230,7 @@ import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 const cmStore = useCodeStore();
-
+const isDis = ref(true);
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -232,7 +245,6 @@ const { bottomSafeArea } = storeToRefs(globalStore);
 const padding = bottomSafeArea.value + "px";
 
 let scrollTop = 0;
-
 
 const file = computed(() => subsStore.getOneFile(configName));
 const filePreviewIsVisible = ref(false);
@@ -255,7 +267,7 @@ provide("form", form);
 const ignoreList = ["Quick Setting Operator"];
 
 watch(
-  () => cmStore.EditCode['FileEditer'],
+  () => cmStore.EditCode["FileEditer"],
   (newCode) => {
     form.content = newCode;
   }
@@ -264,8 +276,8 @@ watch(
 watchEffect(() => {
   if (isInit.value) return;
   if (configName === "UNTITLED") {
-    const fc = "// " + t(`filePage.content.placeholder`) + "\n"
-    cmStore.setEditCode('FileEditer', fc)
+    const fc = "// " + t(`filePage.content.placeholder`) + "\n";
+    cmStore.setEditCode("FileEditer", fc);
     // 标记 加载完成
     isInit.value = true;
     return;
@@ -284,7 +296,7 @@ watchEffect(() => {
     form.ua = sourceData.ua;
     form.mergeSources = sourceData.mergeSources;
     form.content = sourceData.content;
-    cmStore.setEditCode('FileEditer', sourceData.content);
+    cmStore.setEditCode("FileEditer", sourceData.content);
     form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
     form.process = newProcess;
