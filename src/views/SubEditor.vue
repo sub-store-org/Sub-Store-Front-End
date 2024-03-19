@@ -861,7 +861,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   }
   .swtich-wrapper {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end
   }
 }
 
@@ -870,7 +870,7 @@ const urlValidator = (val: string): Promise<boolean> => {
 
   .radio-wrapper {
     display: flex;
-    // justify-content: end;
+    justify-content: flex-start;
 
     // :deep(.nut-radio__button.false) {
     //   background: var(--divider-color);
@@ -885,6 +885,7 @@ const urlValidator = (val: string): Promise<boolean> => {
       cursor: pointer;
       -webkit-user-select: none;
       user-select: none;
+      border-bottom: 1px solid transparent;
     }
     .current {
       border-bottom: 1px solid var(--primary-color);

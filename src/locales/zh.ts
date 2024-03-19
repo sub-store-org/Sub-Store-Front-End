@@ -123,12 +123,14 @@ export default {
       local: '本地订阅',
       loading: '加载中...',
       flow: '已用/总流量',
+      showRemainingFlow: '剩余/总流量',
       expires: '到期',
       remainingDays: '重置',
       remainingDaysUnit: ' 天',
       noRecord: '刷新后可获取流量情况',
       noFlow: '不查询流量',
       noFlowInfo: '无流量信息',
+      flowError: '无法获取流量信息',
       noExpiresInfo: '无有效期信息',
     },
     deleteSub: {
@@ -226,7 +228,7 @@ export default {
         },
         url: {
           label: '链接',
-          placeholder: '订阅链接(多个订阅请换行) 支持参数: validCheck 过期或无剩余流量时报错, flowUserAgent 查询流量时使用的 User-Agent, noFlow 不查询流量, hideExpire 隐藏到期, noCache 不使用缓存, resetDay 每月流量重置日, startDate 订阅开始日期, cycleDays 订阅重置周期(单位: 天). 例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 或 http://a.com?token=1#resetDay=15',
+          placeholder: '订阅链接(多个订阅请换行) 支持参数: validCheck 过期或无剩余流量时报错, flowUserAgent 查询流量时使用的 User-Agent, noFlow 不查询流量, hideExpire 隐藏到期, showRemaining 显示剩余流量而不是已用流量, noCache 不使用缓存, resetDay 每月流量重置日, startDate 订阅开始日期, cycleDays 订阅重置周期(单位: 天). 例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 或 http://a.com?token=1#resetDay=15',
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },

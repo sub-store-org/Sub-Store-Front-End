@@ -124,12 +124,14 @@ export default {
       local: 'Local subscription',
       loading: 'Loading...',
       flow: 'Usage / Total',
+      showRemainingFlow: 'Remaining / Total',
       expires: 'Expires',
       remainingDays: 'Remaining Reset Days',
       remainingDaysUnit: '',
       noRecord: 'Refresh to get usage',
       noFlow: 'No flow',
       noFlowInfo: 'No flow info',
+      flowError: 'Failed to get usage',
       noExpiresInfo: 'No expires info',
     },
     deleteSub: {
@@ -226,7 +228,7 @@ export default {
         },
         url: {
           label: 'URL',
-          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, flowUserAgent - the User-Agent for fetching subscription usage info, noFlow - do not query for flow, hideExpire - hide expiration time, noCache - do not use cache, resetDay - the day when monthly data usage resets, startDate - subscription start date, cycleDays - reset cycle (in days). For example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 or http://a.com?token=1#resetDay=15',
+          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: validCheck - error will be reported when expired or there is no remaining traffic, flowUserAgent - the User-Agent for fetching subscription usage info, showRemaining - show remaining traffic instead of usage, noFlow - do not query for flow, hideExpire - hide expiration time, noCache - do not use cache, resetDay - the day when monthly data usage resets, startDate - subscription start date, cycleDays - reset cycle (in days). For example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 or http://a.com?token=1#resetDay=15',
           isEmpty: 'URL cannot be empty',
           isIllegal: 'Invalid URL',
         },

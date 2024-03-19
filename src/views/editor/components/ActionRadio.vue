@@ -204,8 +204,8 @@
       align-items: center;
       cursor: pointer;
       img {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
       }
       span {
         margin: 0 4px;

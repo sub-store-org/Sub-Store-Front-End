@@ -260,6 +260,10 @@ const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
 const hasUntagged = ref(false);
+const getTag = () => {
+    return localStorage.getItem('sub-tag') || 'all'
+  }
+const tag = ref(getTag());
 const tags = computed(() => {
   if(!hasSubs.value && !hasCollections.value) return []
   // 从 subs 和 collections 中获取所有的 tag, 去重
@@ -289,9 +293,13 @@ const tags = computed(() => {
   
   const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
   if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+
+  if (!result.find(i => i.value === tag.value)) {
+    tag.value = 'all'
+  }
   return result
 });
-const tag = ref('all');
+
 const filterdSubsCount = computed(() => {
   if(tag.value === 'all') return subs.value.length
   if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
@@ -435,6 +443,11 @@ const toggleFold = (type) => {
 // };
 const setTag = (current) => {
   tag.value = current
+  if (current === 'all') {
+    localStorage.removeItem('sub-tag')
+  } else {
+    localStorage.setItem('sub-tag', current)
+  }
 };
 const shouldShowElement = (element) => {
   if(tag.value === 'all') return true
@@ -616,7 +629,7 @@ const shouldShowElement = (element) => {
     margin-top: 5px;
     display: flex;
     flex-wrap: wrap;
-    // justify-content: end;
+    
 
     // :deep(.nut-radio__button.false) {
     //   background: var(--divider-color);
@@ -631,6 +644,7 @@ const shouldShowElement = (element) => {
       cursor: pointer;
       -webkit-user-select: none;
       user-select: none;
+      border-bottom: 1px solid transparent;
     }
     .current {
       border-bottom: 1px solid var(--primary-color);
