@@ -118,7 +118,7 @@
               </span>
             </template>
             <template v-else>
-              <span v-if="flow.secondLine" style="font-weight: normal">
+              <span v-if="flow && flow.secondLine" style="font-weight: normal">
                 {{ flow.firstLine + ' | ' + flow.secondLine }}
               </span>
               <span v-else style="font-weight: normal">
@@ -296,6 +296,12 @@ const flow = computed(() => {
     if (!target) {
       return {
         firstLine: t("subPage.subItem.noRecord"),
+        secondLine: ``,
+      };
+    }
+    if (!target?.status) {
+      return {
+        firstLine: t("subPage.subItem.flowError"),
         secondLine: ``,
       };
     }

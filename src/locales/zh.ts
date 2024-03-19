@@ -129,6 +129,7 @@ export default {
       noRecord: '刷新后可获取流量情况',
       noFlow: '不查询流量',
       noFlowInfo: '无流量信息',
+      flowError: '无法获取流量信息',
       noExpiresInfo: '无有效期信息',
     },
     deleteSub: {

@@ -130,6 +130,7 @@ export default {
       noRecord: 'Refresh to get usage',
       noFlow: 'No flow',
       noFlowInfo: 'No flow info',
+      flowError: 'Failed to get usage',
       noExpiresInfo: 'No expires info',
     },
     deleteSub: {
