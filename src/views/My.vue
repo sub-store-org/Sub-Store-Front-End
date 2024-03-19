@@ -539,7 +539,7 @@ const setTag = (current) => {
     .radio-wrapper {
       display: flex;
       align-items: center;
-      // justify-content: end;
+      
 
       .tag {
         font-size: 12px;

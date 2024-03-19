@@ -586,7 +586,7 @@ watch(isSyncOpen, async () => {
           flex: 1;
           display: flex;
           align-items: center;
-          // justify-content: end;
+          
           flex-direction: row;
           justify-content: flex-end; // ios 14
 

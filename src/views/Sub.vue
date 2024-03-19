@@ -629,7 +629,7 @@ const shouldShowElement = (element) => {
     margin-top: 5px;
     display: flex;
     flex-wrap: wrap;
-    // justify-content: end;
+    
 
     // :deep(.nut-radio__button.false) {
     //   background: var(--divider-color);
@@ -644,6 +644,7 @@ const shouldShowElement = (element) => {
       cursor: pointer;
       -webkit-user-select: none;
       user-select: none;
+      border-bottom: 1px solid transparent;
     }
     .current {
       border-bottom: 1px solid var(--primary-color);
