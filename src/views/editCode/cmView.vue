@@ -227,7 +227,7 @@ if (theme.value.auto === true) {
 }
 watchEffect(() => {
   if (theme.value.auto === false) {
-    if (["mocha", "light"].includes(theme.value.name)) {
+    if (/^mocha$|light/.test(theme.value.name)) {
       isDarkModeEnabled.value = false;
     } else {
       isDarkModeEnabled.value = true;
