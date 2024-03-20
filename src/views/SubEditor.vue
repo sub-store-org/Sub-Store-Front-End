@@ -249,7 +249,7 @@
                     bg-color=""
                   ></nut-avatar>
                   <span class="sub-item">
-                    &nbsp;{{ item[1] }}
+                    &nbsp;{{ item[1] }}&nbsp;
                     <span class="tag" v-for="i in item[3]" :key="i">
                       <nut-tag>{{ i }}</nut-tag>
                     </span>
