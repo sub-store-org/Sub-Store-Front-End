@@ -482,7 +482,7 @@ input[type="checkbox"]:checked {
 }
 
 .cm-panels.cm-panels-bottom {
-  background: transparent;
+  background: var(--card-color) !important;
   box-shadow: 0 0 6px #919db687;
 }
 

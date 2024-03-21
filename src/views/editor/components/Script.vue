@@ -32,7 +32,12 @@
 
     <div
       v-if="value.mode === 'script'"
-      style="margin-left: -16px; margin-right: -16px"
+      style="
+        margin-left: -16px;
+        margin-right: -16px;
+        height: 80vh;
+        overflow: auto;
+      "
     >
       <!-- <div class="input-wrapper"> -->
       <!-- <nut-textarea
@@ -245,7 +250,6 @@ watch(
 //   cmStore.setEditCode(id,value.code ? value.code : placeholders);
 //   router.push(`/edit/Script/${id}`);
 // };
-
 </script>
 
 <style lang="scss" scoped>
