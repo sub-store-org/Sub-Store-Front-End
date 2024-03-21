@@ -65,7 +65,7 @@ import {
 } from "@codemirror/commands";
 import { closeBrackets, autocompletion } from "@codemirror/autocomplete";
 import { Compartment, EditorState } from "@codemirror/state";
-import { hyperLink } from "@uiw/codemirror-extensions-hyper-link";
+import { hyperLink } from "@/views/editCode/link";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import useV3Clipboard from "vue-clipboard3";
 import copyimg from "@/views/editCode/svg/copy.svg";
