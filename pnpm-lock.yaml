@@ -50,9 +50,6 @@ dependencies:
   '@replit/codemirror-indentation-markers':
     specifier: ^6.5.0
     version: 6.5.1(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)
-  '@uiw/codemirror-extensions-hyper-link':
-    specifier: ^4.21.21
-    version: 4.21.24(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)
   '@vueuse/core':
     specifier: ^8.9.2
     version: 8.9.2(vue@3.2.37)
@@ -2537,16 +2534,6 @@ packages:
       '@typescript-eslint/types': 6.5.0
       eslint-visitor-keys: 3.4.3
     dev: true
-
-  /@uiw/codemirror-extensions-hyper-link@4.21.24(@codemirror/state@6.4.1)(@codemirror/view@6.26.0):
-    resolution: {integrity: sha512-eIWqy0mCPzg3OIU18DsKaGie3iJWQaRDRNqpuNWlzFmyVHCMFIzgEpMdZmlw8UPbrdPt1Cz/NPj0pHlxD+iPww==}
-    peerDependencies:
-      '@codemirror/state': '>=6.0.0'
-      '@codemirror/view': '>=6.0.0'
-    dependencies:
-      '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.0
-    dev: false
 
   /@vitejs/plugin-legacy@2.0.1(terser@5.19.3)(vite@3.2.7):
     resolution: {integrity: sha512-kKC56rfsXwebApzyuZqdQlGmqTyH1ugy0l0rY58gx5OXzq4/t5/DCqGUoz53Db51OqfjRqsHfqmvq9or6w9k/Q==}
