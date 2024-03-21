@@ -134,7 +134,7 @@
               全屏编辑
               <!-- 测试 后续再改效果 -->
             </button>
-            <div style="margin-left: -15px; margin-right: -15px;height: 60vh;overflow: auto;">
+            <div style="margin-left: -15px; margin-right: -15px;max-height: 60vh;overflow: auto;">
               <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
           </nut-form-item>
@@ -300,7 +300,7 @@
     </nut-button>
   </div>
 </div>
-<div v-else style="width: 100%;height: 95vh;">
+<div v-else style="width: 100%;max-height: 95vh;">
     <button class="cimg-button" @click="isDis = true">
       <img src="" />
       取消全屏

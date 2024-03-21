@@ -35,7 +35,7 @@
       style="
         margin-left: -16px;
         margin-right: -16px;
-        height: 80vh;
+        max-height: 80vh;
         overflow: auto;
       "
     >
