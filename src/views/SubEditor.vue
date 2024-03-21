@@ -219,14 +219,17 @@
             prop="subscriptions"
             class="include-subs-wrapper"
           >
-            <div v-if="tags && tags.length > 0" class="radio-wrapper">
-              <span
-                v-for="i in tags"
-                :class="{ tag: true, current: i.value === tag }"
-                @click="setTag(i.value)"
-              >
-                {{ i.label }}
-              </span>
+            <div v-if="tags && tags.length > 0" class="tag-check">
+              <div class="radio-wrapper">
+                <span
+                  v-for="i in tags"
+                  :class="{ tag: true, current: i.value === tag }"
+                  @click="setTag(i.value)"
+                >
+                  {{ i.label }}
+                </span>
+              </div>
+              <nut-checkbox v-model="subCheckbox" :indeterminate="subCheckboxIndeterminate" @click="subCheckboxClick"></nut-checkbox>
             </div>
             <nut-checkboxgroup
               v-model="form.subscriptions"
@@ -783,6 +786,70 @@ const urlValidator = (val: string): Promise<boolean> => {
     if(tag.value === 'untagged') return !Array.isArray(element) || element.length === 0
     return element.includes(tag.value)
   };
+  const subCheckboxIndeterminate = ref(true);
+  const subCheckbox = ref(true);
+  // const subCheckboxChange = (v) => {
+  //   console.log(`${!v} -> ${v}`)
+  // };
+  const subCheckboxClick = () => {
+    // const selected = toRaw(form.subscriptions) || []
+    const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
+    if (subCheckboxIndeterminate.value) {
+      console.log(`半选, 应变为全选`)  
+      for (let i = 0; i < group.length; i++) {
+        const index = form.subscriptions.indexOf(group[i])
+        if (index === -1) {
+          form.subscriptions.push(group[i])
+        }
+      }
+    } else if (!subCheckbox.value) {
+      console.log(`全选, 应变为不选`)
+      // 用遍历与 form.subscriptions.slice 的方式, 去掉 form.subscriptions 中所有被 group 包含的元素
+      for (let i = 0; i < group.length; i++) {
+        const index = form.subscriptions.indexOf(group[i])
+        if (index > -1) {
+          form.subscriptions.splice(index, 1)
+        }
+      }
+      // subCheckbox.value = !subCheckbox.value
+    } else {
+      console.log(`不选, 应变为全选`)
+      for (let i = 0; i < group.length; i++) {
+        const index = form.subscriptions.indexOf(group[i])
+        if (index === -1) {
+          form.subscriptions.push(group[i])
+        }
+      }
+      // subCheckbox.value = !subCheckbox.value
+    }
+    subCheckboxIndeterminate.value = false
+  };
+  watch([tag, form.subscriptions, subsSelectList], () => {
+    const selected = toRaw(form.subscriptions) || []
+    console.log(`form.subscriptions: ${selected}`)
+    const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
+    // 1. group 中不包含 selected 中的任何元素, subCheckbox 为 false, subCheckboxIndeterminate 为 false
+    // 2. group 中包含 selected 中的任何元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true
+    // 3. group 中包含 selected 中的所有元素, subCheckbox 为 true, subCheckboxIndeterminate 为 false
+    if (group.every(item => selected.includes(item))) {
+      console.log('group 中包含 selected 中的所有元素')
+      subCheckbox.value = true
+      subCheckboxIndeterminate.value = false
+    } else if (group.some(item => selected.includes(item))) {
+      console.log('group 中包含 selected 中的任意元素')
+      subCheckbox.value = true
+      subCheckboxIndeterminate.value = true
+    } else {
+      console.log('group 中不包含 selected 中的任意元素')
+      subCheckbox.value = false
+      subCheckboxIndeterminate.value = false
+    }
+  });
+  // const subCheckboxIndeterminate = computed(() => {
+  //   const selected = toRaw(form.subscriptions)
+  //   const currentGroup = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0])
+  //   return true
+  // });
 </script>
 
 <style lang="scss" scoped>
@@ -797,7 +864,14 @@ const urlValidator = (val: string): Promise<boolean> => {
     cursor: pointer;
   }
 }
-
+.tag-check {
+  display: flex;
+  justify-content: space-between;
+  :deep(.nut-checkbox__label) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
 .radio-wrapper {
   display: flex;
   // justify-content: start;
