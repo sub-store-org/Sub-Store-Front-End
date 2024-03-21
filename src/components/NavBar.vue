@@ -119,19 +119,19 @@ const isPWA = ref(
 // isSmall.value = true;
 
 const navBarHeight = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "78px" : "110px") : "56px";
+  return isPWA.value && !isLandscape.value ? (isSmall.value ? "78px" : "100px") : "56px";
 });
 
 const navBartop = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "38px" : "70px") : "0px";
+  return isPWA.value && !isLandscape.value ? (isSmall.value ? "38px" : "60px") : "0px";
 });
 
 const navBartopRight = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "52px" : "80px") : "15px";
+  return isPWA.value && !isLandscape.value ? (isSmall.value ? "52px" : "70px") : "15px";
 });
 
 const Pwa_top = computed(() => {
-  return isPWA.value ? (isSmall.value ? "20px" : "60px") : "60px";
+  return isPWA.value ? (isSmall.value ? "20px" : "50px") : "50px";
 });
 
 const isNeedBack = computed(() => {
