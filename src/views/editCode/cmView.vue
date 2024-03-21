@@ -373,11 +373,14 @@ const pasteNav = async () => {
 
 .cm-img-button {
   display: flex;
-  padding-top: 10px;
+  padding-top: 9px;
   z-index: 10;
-  height: 32px;
-  width: 98%;
+  height: 33px;
+  width: 100%;
   justify-content: flex-end;
+  // position: absolute;
+  // top: 42px;
+  // background-color: var(--card-color);
   img {
     width: 16px;
     height: 16px;
