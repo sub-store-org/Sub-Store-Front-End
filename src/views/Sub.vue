@@ -98,7 +98,6 @@
             <nut-icon v-if="!isFold('sub')" name="rect-down" size="12px"></nut-icon>
             <nut-icon v-else name="rect-right" size="12px"></nut-icon>
           </p>
-
         </div>
 
         <draggable
@@ -577,6 +576,8 @@ const shouldShowElement = (element) => {
     // transform: rotate(270deg);
     font-size: 12px;
     height: 12px;
+    opacity: .6;
+    margin-top: 3px;
   }
 }
 
