@@ -288,11 +288,11 @@ const flow = computed(() => {
   if (props.type === "sub") {
     const urlList = Object.keys(flows.value);
     const localOnly = props.sub.source === 'local' && !['localFirst', 'remoteFirst'].includes(props.sub.mergeSources)
-    if (localOnly) return t("subPage.subItem.local");
+    if (localOnly && !props.sub.subUserinfo) return t("subPage.subItem.local");
     if (isFlowFetching.value && !urlList.includes(props.sub.url))
       return t("subPage.subItem.loading");
 
-    const target = toRaw(flows.value[props.sub.url]);
+    const target = toRaw(flows.value[props.sub.url] || flows.value[props.sub.name]);
     if (!target) {
       return {
         firstLine: t("subPage.subItem.noRecord"),

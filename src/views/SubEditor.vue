@@ -826,21 +826,21 @@ const urlValidator = (val: string): Promise<boolean> => {
   };
   watch([tag, form.subscriptions, subsSelectList], () => {
     const selected = toRaw(form.subscriptions) || []
-    console.log(`form.subscriptions: ${selected}`)
+    // console.log(`form.subscriptions: ${selected}`)
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
     // 1. group 中不包含 selected 中的任何元素, subCheckbox 为 false, subCheckboxIndeterminate 为 false
     // 2. group 中包含 selected 中的任何元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true
     // 3. group 中包含 selected 中的所有元素, subCheckbox 为 true, subCheckboxIndeterminate 为 false
     if (group.every(item => selected.includes(item))) {
-      console.log('group 中包含 selected 中的所有元素')
+      // console.log('group 中包含 selected 中的所有元素')
       subCheckbox.value = true
       subCheckboxIndeterminate.value = false
     } else if (group.some(item => selected.includes(item))) {
-      console.log('group 中包含 selected 中的任意元素')
+      // console.log('group 中包含 selected 中的任意元素')
       subCheckbox.value = true
       subCheckboxIndeterminate.value = true
     } else {
-      console.log('group 中不包含 selected 中的任意元素')
+      // console.log('group 中不包含 selected 中的任意元素')
       subCheckbox.value = false
       subCheckboxIndeterminate.value = false
     }
