@@ -98,7 +98,7 @@
                 {{ flow }}
               </span>
             </template>
-            <template v-else>
+            <template v-else-if="typeof flow === 'object'">
               <span>
                 {{ flow.firstLine }}
               </span>
@@ -117,8 +117,8 @@
                 {{ flow }}
               </span>
             </template>
-            <template v-else>
-              <span v-if="flow && flow.secondLine" style="font-weight: normal">
+            <template v-else-if="typeof flow === 'object'">
+              <span v-if="flow.secondLine" style="font-weight: normal">
                 {{ flow.firstLine + ' | ' + flow.secondLine }}
               </span>
               <span v-else style="font-weight: normal">
