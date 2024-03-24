@@ -1,10 +1,9 @@
-type Unit = 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'EB';
+type Unit = 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'EB' | 'ZB' | 'YB';
 
 const flowTransfer = (flow: number, unit: Unit) => {
-  const unitList: Unit[] = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+  const unitList: Unit[] = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   let unitIndex = unitList.indexOf(unit);
-
-  return flow < 1024
+  return (flow < 1024 || unitIndex === unitList.length - 1)
     ? { value: flow.toFixed(1), unit: unit }
     : flowTransfer(flow / 1024, unitList[++unitIndex]);
 };
