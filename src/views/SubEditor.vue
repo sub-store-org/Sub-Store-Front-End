@@ -826,7 +826,6 @@ const urlValidator = (val: string): Promise<boolean> => {
   };
   watch([tag, form.subscriptions, subsSelectList], () => {
     const selected = toRaw(form.subscriptions) || []
-    // console.log(`form.subscriptions: ${selected}`)
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
     // 1. group 中不包含 selected 中的任何元素, subCheckbox 为 false, subCheckboxIndeterminate 为 false
     // 2. group 中包含 selected 中的任何元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true
@@ -844,7 +843,7 @@ const urlValidator = (val: string): Promise<boolean> => {
       subCheckbox.value = false
       subCheckboxIndeterminate.value = false
     }
-  });
+  }, { immediate: true });
   // const subCheckboxIndeterminate = computed(() => {
   //   const selected = toRaw(form.subscriptions)
   //   const currentGroup = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0])
