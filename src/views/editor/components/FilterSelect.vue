@@ -30,7 +30,7 @@
   // 此处 key 需要与 i18n 的 actions 中的 key 相同
   // 值的次序需要与该选项的 options 值 顺序相同
   const opt = {
-    'Region Filter': ['HK', 'TW', 'SG', 'JP', 'UK', 'US'],
+    'Region Filter': ['HK', 'TW', 'SG', 'JP', 'UK', 'US', 'DE', 'KR'],
     'Type Filter': [
       'ss',
       'ssr',

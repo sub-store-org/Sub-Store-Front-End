@@ -341,7 +341,7 @@ export default {
         },
         'Region Filter': {
           label: 'Region Filter',
-          options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US'],
+          options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US', '🇩🇪 DE', '🇰🇷 KR'],
           tipsTitle: 'Region Filter Tips',
           tipsDes: '区域过滤器操作说明',
         },
