@@ -12,6 +12,7 @@
           </div>
           <p>{{ platform.name }}</p>
           <nut-icon name="tips" v-if="platform.name === 'Surge'" @click="tips"></nut-icon>
+          <nut-icon name="tips" v-if="platform.name === general" @click="tips"></nut-icon>
         </div>
 
         <div class="actions">
