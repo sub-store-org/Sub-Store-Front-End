@@ -18,19 +18,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "20"
       - name: Install dependencies
         run: |
           npm install -g pnpm
-          pnpm i
+          pnpm i --no-frozen-lockfile
       - name: build
         run: |
           pnpm build
       - uses: amondnet/vercel-action@v20 #deploy
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
-          # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional 
-          vercel-args: '--prod' # Optional
-          vercel-org-id: ${{ secrets.ORG_ID}}  # Required
-          vercel-project-id: ${{ secrets.PROJECT_ID}} # Required 
+          # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
+          vercel-args: "--prod" # Optional
+          vercel-org-id: ${{ secrets.ORG_ID}} # Required
+          vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
           working-directory: dist
