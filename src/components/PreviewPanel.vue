@@ -225,6 +225,7 @@
           background-color: transparent;
           border: none;
           padding: 0;
+          cursor: pointer;
         }
       }
     }

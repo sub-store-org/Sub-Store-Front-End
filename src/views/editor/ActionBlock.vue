@@ -2,6 +2,18 @@
   <div class="form-block-wrapper">
     <div v-if="sourceType !== 'file'" class="sticky-title-wrapper actions-title-wrapper">
       <p>{{ $t(`editorPage.subConfig.actions.label`) }}</p>
+      <font-awesome-icon
+        v-if="isCollapsed"
+        @click.stop="setCollapsed(false)"
+        class="toggle fa-toggle"
+        icon="fa-solid fa-toggle-on "
+      />
+      <font-awesome-icon
+        v-else
+        @click.stop="setCollapsed(true)"
+        class="toggle fa-toggle"
+        icon="fa-solid fa-toggle-off"
+      />
       <button @click="popActionsHelp">
         <font-awesome-icon icon="fa-solid fa-circle-question" />
         {{ $t(`editorPage.subConfig.basic.nodeActionsHelp`) }}
@@ -21,7 +33,7 @@
 }" @end="drag = false" @start="drag = true" item-key="id">
       <template #item="{ element }">
         <nut-cell class="list-group-item" aria-hidden="true">
-          <div class="list-group-item-title">
+          <div :class="{ 'list-group-item-title': true, 'collapsed': isCollapsed }">
             <div class="title-text left">
               <span>{{
                 $t(`editorPage.subConfig.nodeActions['${element.type}'].label`)
@@ -47,7 +59,7 @@
               </div>
             </div>
           </div>
-          <Component :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
+          <Component v-show="!isCollapsed" :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
         </nut-cell>
       </template>
     </Draggable>
@@ -125,6 +137,7 @@ const { t } = useI18n();
 const pasteboard = ref("");
 const showPasteboard = ref(false);
 const drag = ref(true);
+const isCollapsed = ref(localStorage.getItem('actions-block-collapsed') === '1');
 const form = inject<Sub | Collection>('form');
 // 列表渲染的数据
 // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
@@ -152,6 +165,14 @@ const columns = ref(items);
 // useMousePicker();
 
 
+const setCollapsed = (v) => {
+  isCollapsed.value = v;
+  if (v) {
+    localStorage.setItem('actions-block-collapsed', '1')
+  } else {
+    localStorage.removeItem('actions-block-collapsed')
+  }
+};
 const onButtonClick = (item) => {
   emit('addAction', [item]);
 };
@@ -342,6 +363,12 @@ const pop = (type: string, tipsDes: string) => {
     color: var(--comment-text-color);
     border-bottom: 1px solid var(--divider-color);
 
+    &.collapsed {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
     .left {
       font-size: 12px;
       font-weight: bold;
@@ -435,6 +462,13 @@ const pop = (type: string, tipsDes: string) => {
 .actions-title-wrapper {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
+  .toggle {
+    cursor: pointer;
+    margin-left: 18px;
+    margin-right: auto;
+  }
 
   button {
     background: none;
