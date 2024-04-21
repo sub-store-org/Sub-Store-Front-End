@@ -245,14 +245,14 @@
               >
                 <div class="sub-img-wrapper">
                   <nut-avatar
-                    :class="{ 'sub-item-customer-icon': !isIconColor }"
+                    :class="{ 'sub-item-customer-icon': !isIconColor, 'icon': true  }"
                     v-if="item[2]"
                     size="32"
                     :url="item[2]"
                     bg-color=""
                   ></nut-avatar>
                   <span class="sub-item">
-                    &nbsp;{{ item[1] }}&nbsp;
+                    <span class="name">{{ item[1] }}</span>
                     <span class="tag" v-for="i in item[3]" :key="i">
                       <nut-tag>{{ i }}</nut-tag>
                     </span>
@@ -408,7 +408,10 @@ const padding = bottomSafeArea.value + "px";
   const tag = ref('all');
   const selectedSubs = computed(() => {
     if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
-    return `: ${form.subscriptions.join(', ')}`
+    return `: ${form.subscriptions.map((name) => {
+      const sub = subsStore.getOneSub(name);
+      return sub?.displayName || sub?.["display-name"] || sub.name;
+    }).join(', ')}`
   });
   const compareTableIsVisible = ref(false);
   usePopupRoute(compareTableIsVisible);
@@ -968,6 +971,7 @@ const urlValidator = (val: string): Promise<boolean> => {
 
   :deep(.nut-form-item__label) {
     width: 100%;
+    font-size: 12px;
     // margin-bottom: 12px;
   }
 
@@ -991,7 +995,9 @@ const urlValidator = (val: string): Promise<boolean> => {
         align-items: center;
         font-size: 14px;
         color: var(--second-text-color);
-
+        .icon {
+          margin-right: 8px;
+        }
         span {
           max-width: 56vw;
           display: -webkit-box;
@@ -1005,8 +1011,13 @@ const urlValidator = (val: string): Promise<boolean> => {
         .sub-item {
           display: flex;
           flex-wrap: wrap;
+          align-items: center;
+          margin: -4px 0 0 -4px;
+          .name {
+            margin: 4px 0 0 4px;
+          }
           .tag {
-            margin: 0px 2px 4px 2px;
+            margin: 4px 0 0 4px;
             // white-space: nowrap;
           }
         }
