@@ -31,11 +31,15 @@
   delay: 150,
   handle: '.drag-handler',
 }" @end="drag = false" @start="drag = true" item-key="id">
-      <template #item="{ element }">
+      <template #item="{ element, index }">
         <nut-cell class="list-group-item" aria-hidden="true">
-          <div :class="{ 'list-group-item-title': true, 'collapsed': isCollapsed }">
+          <div :class="{ 'list-group-item-title': true, 'collapsed': !expandedElements.includes(index) }">
             <div class="title-text left">
-              <span>{{
+              <span class="collapsed" @click="toggleElementCollapsed(index)">
+                <nut-icon v-if="expandedElements.includes(index)" name="rect-down" size="12px"></nut-icon>
+                <nut-icon v-if="!expandedElements.includes(index)" name="rect-right" size="12px"></nut-icon>
+              </span>
+              <span class="name" @click="toggleElementCollapsed(index)">{{
                 $t(`editorPage.subConfig.nodeActions['${element.type}'].label`)
               }}</span>
               <font-awesome-icon icon="fa-solid fa-circle-question" @click="pop(element.type, element.tipsDes)" />
@@ -59,7 +63,7 @@
               </div>
             </div>
           </div>
-          <Component v-show="!isCollapsed" :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
+          <Component v-show="expandedElements.includes(index)" :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
         </nut-cell>
       </template>
     </Draggable>
@@ -138,6 +142,7 @@ const pasteboard = ref("");
 const showPasteboard = ref(false);
 const drag = ref(true);
 const isCollapsed = ref(localStorage.getItem('actions-block-collapsed') === '1');
+const expandedElements = ref([]);
 const form = inject<Sub | Collection>('form');
 // 列表渲染的数据
 // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
@@ -164,13 +169,31 @@ if (sourceType === 'file') {
 const columns = ref(items);
 // useMousePicker();
 
-
+if(isCollapsed.value) {
+  expandedElements.value = [];
+} else {
+  expandedElements.value = [...Array(list.length).keys()];
+}
 const setCollapsed = (v) => {
   isCollapsed.value = v;
   if (v) {
     localStorage.setItem('actions-block-collapsed', '1')
+    expandedElements.value = [];
   } else {
     localStorage.removeItem('actions-block-collapsed')
+    expandedElements.value = [...Array(list.length).keys()];
+  }
+};
+const toggleElementCollapsed = (index) => {
+  if (expandedElements.value.includes(index)) {
+    expandedElements.value = expandedElements.value.filter(item => item !== index);
+  } else {
+    expandedElements.value.push(index);
+  }
+  if(expandedElements.value.length === list.length) {
+    setCollapsed(false)
+  } else if(expandedElements.value.length === 0){
+    setCollapsed(true)
   }
 };
 const onButtonClick = (item) => {
@@ -372,6 +395,12 @@ const pop = (type: string, tipsDes: string) => {
     .left {
       font-size: 12px;
       font-weight: bold;
+      display: flex;
+      align-items: center;
+
+      .collapsed, .name {
+        cursor: pointer;
+      }
 
       span {
         margin-right: 6px;
