@@ -28,8 +28,12 @@ import {
   faEraser,
   faT,
   faICursor,
+  faFileImport,
+  faFileExport,
 } from '@fortawesome/free-solid-svg-icons';
 
+library.add(faFileImport);
+library.add(faFileExport);
 library.add(faToggleOn);
 library.add(faToggleOff);
 library.add(faLanguage);

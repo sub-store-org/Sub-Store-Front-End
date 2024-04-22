@@ -175,11 +175,11 @@
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
-      <!-- <div class="sub-item-swipe-btn-wrapper">
-        <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
-          <font-awesome-icon icon="fa-solid fa-eye" />
-        </nut-button>
-      </div> -->
+      <div v-if="type === 'sub'" class="sub-item-swipe-btn-wrapper">
+        <a :href=" `${host}/api/${props.type}/${encodeURIComponent(name)}?raw=1` " target="_blank"><nut-button shape="square" type="success" class="sub-item-swipe-btn">
+          <font-awesome-icon icon="fa-solid fa-file-export" />
+        </nut-button></a>
+      </div>
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button
           shape="square"
@@ -523,6 +523,26 @@ const onClickCopyConfig = async () => {
   showNotify({ title: t("subPage.copyConfigNotify.succeed") });
   swipe.value.close();
 };
+// const onClickExport = async () => {
+//   swipeController()
+//   let data: Sub | Collection;
+//   switch (props.type) {
+//     case "sub":
+//       data = JSON.parse(JSON.stringify(toRaw(props.sub)));
+//       break;
+//     case "collection":
+//       data = JSON.parse(JSON.stringify(toRaw(props.collection)));
+//       break;
+//   }
+//   data.name += `-exportedAt${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
+
+//   Toast.loading(t("subPage.copyConfigNotify.loading"), { id: "exportConfig" });
+//   // await subsApi.createSub(props.type + "s", data);
+//   // await subsStore.fetchSubsData();
+//   Toast.hide("exportConfig");
+//   showNotify({ title: t("subPage.copyConfigNotify.succeed") });
+//   swipe.value.close();
+// };
 
 const onClickEdit = () => {
   router.push(`/edit/${props.type}s/${encodeURIComponent(name)}`);

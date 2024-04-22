@@ -9,6 +9,7 @@ export default {
     unknown: 'Unknown',
     all: 'All',
     untagged: 'Untagged',
+    or: 'or',
   },
   globalNotify: {
     refresh: {
@@ -99,6 +100,11 @@ export default {
   },
   // subscription management page
   subPage: {
+    import: {
+      label: 'Import',
+      succeed: 'Successfully imported!',
+      failed: 'Failed to import!\n{e}',
+    },
     addSubTitle: 'Which type you want to create?',
     previewTitle: 'Copy/Preview a subscription',
 
@@ -151,6 +157,11 @@ export default {
       loading: 'Cloning...',
       succeed: 'Successfully cloned config!',
       failed: 'Failed to clone config!\n{e}',
+    },
+    exportConfigNotify: {
+      loading: 'Exporting...',
+      succeed: 'Successfully exported config!',
+      failed: 'Failed to exporte config!\n{e}',
     },
     panel: {
       general: 'General',

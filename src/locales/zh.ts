@@ -9,6 +9,7 @@ export default {
     unknown: '未知',
     all: '全部',
     untagged: '未分组',
+    or: '或',
   },
   globalNotify: {
     refresh: {
@@ -99,6 +100,11 @@ export default {
   },
   // 订阅管理页
   subPage: {
+    import: {
+      label: '导入',
+      succeed: '导入成功',
+      failed: '导入失败\n{e}',
+    },
     addSubTitle: '选择要创建的订阅类型',
     previewTitle: '预览/拷贝订阅',
 
@@ -150,6 +156,11 @@ export default {
       loading: '克隆配置中...',
       succeed: '配置克隆成功！',
       failed: '配置克隆失败！\n{e}',
+    },
+    exportConfigNotify: {
+      loading: '导出配置中...',
+      succeed: '导出成功！',
+      failed: '导出失败！\n{e}',
     },
     panel: {
       general: '通用订阅',
