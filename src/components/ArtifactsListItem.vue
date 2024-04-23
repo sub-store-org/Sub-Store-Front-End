@@ -181,6 +181,7 @@ import surgeColorIcon from "@/assets/icons/surge_color.png";
 import v2rayColorIcon from "@/assets/icons/v2ray_color.png";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";
+import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { butifyDate } from "@/utils/butifyDate";
 import { isMobile } from "@/utils/isMobile";
@@ -210,6 +211,7 @@ const { name } = defineProps<{
 const { showNotify } = useAppNotifyStore();
 const subsStore = useSubsStore();
 const artifactsStore = useArtifactsStore();
+const settingsStore = useSettingsStore();
 const { artifacts } = storeToRefs(artifactsStore);
 const artifact = computed(() => {
   return artifacts.value.find((item) => item.name === name);
@@ -458,6 +460,7 @@ const onClickSync = async () => {
     id: "sync-toast",
   });
   await artifactsStore.syncOneArtifact(artifact.value.name);
+  await settingsStore.fetchSettings();
   Toast.hide("sync-toast");
 };
 

@@ -272,6 +272,7 @@ const uploadAllIsLoading = ref(false);
 const uploadAll = async () => {
   uploadAllIsLoading.value = true;
   await artifactsStore.syncAllArtifact();
+  await settingsStore.fetchSettings();
   uploadAllIsLoading.value = false;
 };
 const downloadAllIsLoading = ref(false);
