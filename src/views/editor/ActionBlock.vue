@@ -33,13 +33,13 @@
 }" @end="drag = false" @start="drag = true" item-key="id">
       <template #item="{ element, index }">
         <nut-cell class="list-group-item" aria-hidden="true">
-          <div :class="{ 'list-group-item-title': true, 'collapsed': collapsedElements.includes(index) }">
+          <div :class="{ 'list-group-item-title': true, 'collapsed': collapsedElements.includes(element.id) }">
             <div class="title-text left">
-              <span class="collapsed" @click="toggleElementCollapsed(index)">
-                <nut-icon v-if="!collapsedElements.includes(index)" name="rect-down" size="12px"></nut-icon>
-                <nut-icon v-if="collapsedElements.includes(index)" name="rect-right" size="12px"></nut-icon>
+              <span class="collapsed" @click="toggleElementCollapsed(element.id)">
+                <nut-icon v-if="!collapsedElements.includes(element.id)" name="rect-down" size="12px"></nut-icon>
+                <nut-icon v-if="collapsedElements.includes(element.id)" name="rect-right" size="12px"></nut-icon>
               </span>
-              <span class="name" @click="toggleElementCollapsed(index)">{{
+              <span class="name" @click="toggleElementCollapsed(element.id)">{{
                 $t(`editorPage.subConfig.nodeActions['${element.type}'].label`)
               }}</span>
               <font-awesome-icon icon="fa-solid fa-circle-question" @click="pop(element.type, element.tipsDes)" />
@@ -63,7 +63,7 @@
               </div>
             </div>
           </div>
-          <Component v-show="!collapsedElements.includes(index)" :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
+          <Component v-show="!collapsedElements.includes(element.id)" :is="element.component" :type="element.type" :id="element.id" :sourceType="sourceType"/>
         </nut-cell>
       </template>
     </Draggable>
@@ -170,7 +170,7 @@ const columns = ref(items);
 // useMousePicker();
 
 if(isCollapsed.value) {
-  collapsedElements.value = [...Array(list.length).keys()];
+  collapsedElements.value = list.map((item) => item.id);
 } else {
   collapsedElements.value = [];
 }
@@ -178,17 +178,17 @@ const setCollapsed = (v) => {
   isCollapsed.value = v;
   if (v) {
     localStorage.setItem('actions-block-collapsed', '1')
-    collapsedElements.value = [...Array(list.length).keys()];
+    collapsedElements.value = list.map((item) => item.id);
   } else {
     localStorage.removeItem('actions-block-collapsed')
     collapsedElements.value = [];
   }
 };
-const toggleElementCollapsed = (index) => {
-  if (collapsedElements.value.includes(index)) {
-    collapsedElements.value = collapsedElements.value.filter(item => item !== index);
+const toggleElementCollapsed = (id) => {
+  if (collapsedElements.value.includes(id)) {
+    collapsedElements.value = collapsedElements.value.filter(item => item !== id);
   } else {
-    collapsedElements.value.push(index);
+    collapsedElements.value.push(id);
   }
   if(collapsedElements.value.length === list.length) {
     setCollapsed(true)
