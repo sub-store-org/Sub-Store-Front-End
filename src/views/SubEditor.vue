@@ -89,10 +89,11 @@
             </div>
           </nut-form-item>
           <!-- url / content -->
+          <!-- :label="$t(`editorPage.subConfig.basic.url.label`)" -->
           <nut-form-item
             required
+            
             v-if="form.source === 'remote'"
-            :label="$t(`editorPage.subConfig.basic.url.label`)"
             prop="url"
             :rules="[
               {
@@ -105,6 +106,15 @@
               },
             ]"
           >
+            <template v-slot:label>
+              <span class="label-tips" @click="urlTips">
+                <p>{{$t(`editorPage.subConfig.basic.url.label`)}}</p>
+                <span class="tips">
+                  <span>{{$t(`editorPage.subConfig.basic.url.tips.label`)}}</span>
+                  <!-- <nut-icon name="tips"></nut-icon> -->
+                </span>
+              </span>
+            </template>
             <nut-textarea
               class="textarea-wrapper"
               @blur="customerBlurValidate('url')"
@@ -134,6 +144,12 @@
               全屏编辑
               <!-- 测试 后续再改效果 -->
             </button>
+            <span class="button-tips" @click="contentTips">
+                <span class="tips">
+                  <span>{{$t(`editorPage.subConfig.basic.url.tips.label`)}}</span>
+                  <!-- <nut-icon name="tips"></nut-icon> -->
+                </span>
+              </span>
             <div style="margin-left: -15px; margin-right: -15px;max-height: 60vh;overflow: auto;">
               <cmView :isReadOnly="false" id="SubEditer"/>
             </div>
@@ -781,6 +797,30 @@ const urlValidator = (val: string): Promise<boolean> => {
         lockScroll: false,
       });
   };
+  const urlTips = () => {
+    Dialog({
+        title: t('editorPage.subConfig.basic.url.tips.title'),
+        content: t('editorPage.subConfig.basic.url.tips.content'),
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const contentTips = () => {
+    Dialog({
+        title: t('editorPage.subConfig.basic.content.tips.title'),
+        content: t('editorPage.subConfig.basic.content.tips.content'),
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
   const setTag = (current) => {
     tag.value = current;
   };
@@ -892,6 +932,28 @@ const urlValidator = (val: string): Promise<boolean> => {
 
 .form-block-wrapper {
   position: relative;
+  .button-tips {
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: underline;
+    margin-left: 6px;
+  }
+  .label-tips {
+    display: inline-flex;
+    flex-direction: column;
+    cursor: pointer;
+    .tips {
+      display: inline-flex;
+      align-items: center;
+      span {
+        color: var(--primary-color);
+        text-decoration: underline;
+        font-size: 12px;
+        // color: #fa2c19;
+      }
+    }
+  }
 }
 
 .bottom-btn-wrapper {
