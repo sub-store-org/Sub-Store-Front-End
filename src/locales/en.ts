@@ -239,7 +239,12 @@ export default {
         },
         url: {
           label: 'URL',
-          placeholder: 'Subscription URL (please separate multiple subscriptions with a new line). Supported parameters: cacheKey - Read the last successful cache from here when the request fails,validCheck - error will be reported when expired or there is no remaining traffic, flowUserAgent - the User-Agent for fetching subscription usage info, showRemaining - show remaining traffic instead of usage, noFlow - do not query for flow, hideExpire - hide expiration time, noCache - do not use cache, resetDay - the day when monthly data usage resets, startDate - subscription start date, cycleDays - reset cycle (in days). For example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 or http://a.com?token=1#resetDay=15',
+          placeholder: 'Multiple lines and parameters are supported, please click the button on the left to see the usage.',
+          tips: {
+            label: 'Usage',
+            title: 'Subscription URL(s)',
+            content: 'Subscription URL (please separate multiple subscriptions with a new line). \n\nSupported parameters:\n\ncacheKey: Setting the name of the optimistic cache. Its value can be managed in the persistent store(suitable for subscriptions that often fail to fetch).\n\nvalidCheck: error will be reported when expired or there is no remaining traffic\n\nflowUserAgent: the User-Agent for fetching subscription usage info\n\nshowRemaining: show remaining traffic instead of usage\n\nnoFlow: do not query for flow\n\nhideExpire: hide expiration time\n\nnoCache: do not use cache\n\nresetDay: the day when monthly data usage resets\n\nstartDate: subscription start date\n\ncycleDays: reset cycle (in days).\n\nFor example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nor http://a.com?token=1#resetDay=15',
+          },
           isEmpty: 'URL cannot be empty',
           isIllegal: 'Invalid URL',
         },
@@ -248,7 +253,11 @@ export default {
         },
         content: {
           label: 'Content',
-          placeholder: 'The content of the subscription: 1. Multiple single-line proxy protocols/JSON/URI 2. Complete Base64/YAML',
+          placeholder: '',
+          tips: {
+            title: 'The content of the subscription',
+            content: 'Subscription content:\n\n1. Multiple single-line proxy protocols/JSON/URI\n\n2. Complete Base64/YAML',
+          },
         },
         icon: {
           label: 'Icon',
