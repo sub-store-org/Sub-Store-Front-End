@@ -1,6 +1,6 @@
 <template>
   <div v-if="isDis">
-  <div class="page-wrapper">
+  <div class="page-wrapper" @click="handleEditGlobalClick">
     <!-- 基础表单 -->
     <div class="form-block-wrapper">
       <div class="sticky-title-wrapper">
@@ -296,8 +296,10 @@
 
     <!-- 节点操作 -->
     <ActionBlock
+      ref="actionBlockRef"
       :checked="actionsChecked"
       :list="actionsList"
+      @updateCustomNameModeFlag="updateCustomNameModeFlag"
       @addAction="addAction"
       @deleteAction="deleteAction"
     />
@@ -515,13 +517,14 @@ watchEffect(() => {
 
   if (sourceData.process.length > 0) {
     form.process.forEach((item) => {
-      const { type, id } = item;
+      const { type, id, customName } = item;
 
       if (!ignoreList.includes(type)) {
         actionsChecked.push([id, true]);
         const action = {
           type,
           id,
+          customName,
           tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
           component: null,
         };
@@ -892,6 +895,19 @@ const urlValidator = (val: string): Promise<boolean> => {
   //   const currentGroup = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0])
   //   return true
   // });
+
+const actionBlockRef = ref(null)
+const customNameModeFlag = ref(false)
+const updateCustomNameModeFlag = (flag) => customNameModeFlag.value = flag
+const handleEditGlobalClick = () => {
+  if (actionBlockRef.value) {
+    if (customNameModeFlag.value) {
+      // exit
+      actionBlockRef.value.exitAllEditName();
+    }
+  }
+
+}
 </script>
 
 <style lang="scss" scoped>

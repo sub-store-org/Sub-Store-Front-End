@@ -24,6 +24,7 @@ type ProcessArg = any;
 interface Process {
   type: string;
   id?: string;
+  customName?: string;
   args?: ProcessArg;
 }
 
