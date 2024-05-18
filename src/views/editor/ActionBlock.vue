@@ -39,10 +39,32 @@
                 <nut-icon v-if="!collapsedElements.includes(element.id)" name="rect-down" size="12px"></nut-icon>
                 <nut-icon v-if="collapsedElements.includes(element.id)" name="rect-right" size="12px"></nut-icon>
               </span>
-              <span class="name" @click="toggleElementCollapsed(element.id)">{{
-                $t(`editorPage.subConfig.nodeActions['${element.type}'].label`)
-              }}</span>
-              <font-awesome-icon icon="fa-solid fa-circle-question" @click="pop(element.type, element.tipsDes)" />
+              <div class="input-wrapper">
+                <input
+                  ref="customNameInput"
+                  @click.stop
+                  v-model="findEditItemById(element).customName"
+                  class="custom-name-input"
+                  type="text"
+                  :disabled="!findEditItemById(element).isEditing"
+                  :placeholder="findEditItemById(element).defualtName"
+                />
+                <div
+                  v-if="!findEditItemById(element).isEditing"
+                  class="input-overlay"
+                  @click="toggleElementCollapsed(element.id)"
+                ></div>
+              </div>
+              <div class="list-group-item-icons">
+                <template v-if="!findEditItemById(element).isEditing">
+                  <font-awesome-icon icon="fa-solid fa-pen-to-square" @click.stop="toggleEditName(element)" />
+                </template>
+                <template v-else>
+                  <font-awesome-icon icon="fa-solid fa-floppy-disk" @click.stop="saveEditName(element)" />
+                  <font-awesome-icon icon="fa-solid fa-ban" @click.stop="exitEditName(element)" />
+                </template>
+                <font-awesome-icon icon="fa-solid fa-circle-question" @click.stop="pop(element.type, element.tipsDes)" />
+              </div>
             </div>
             <div class="right">
               <div class="preview-switch">
@@ -128,7 +150,7 @@
 // import { useMousePicker } from '@/hooks/useMousePicker';
 import i18nFile from '@/locales/zh';
 import { Dialog, Toast } from '@nutui/nutui';
-import { ref, inject, createVNode } from 'vue';
+import { ref, inject, reactive, watch, nextTick, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { useClipboard } from '@vueuse/core';
@@ -259,12 +281,7 @@ const paste = async () => {
     Toast.text(`导入失败 ${e.message ?? e}`);
   }
 };
-
-
-
-
-
-const emit = defineEmits(['addAction', 'deleteAction']);
+const emit = defineEmits(['addAction', 'deleteAction', 'updateCustomNameModeFlag']);
 // 示例数据
 // const checked = reactive([
 //   ['12839211', true],
@@ -332,6 +349,99 @@ const pop = (type: string, tipsDes: string) => {
     closeOnClickOverlay: true,
   });
 };
+
+// 操作名称自定义
+const customNameInput = ref(null);
+
+const findNameByType = (type) => items.find((item) => item.value === type).text;
+const generateEditNameItem = (element) => {
+  const { tipsDes, component, ...values } = element;
+  return {
+    defualtName: findNameByType(values.type),
+    oldCustomName: values.customName,
+    isEditing: false,
+    ...values,
+  };
+};
+const editNameList = reactive(list.map(generateEditNameItem));
+const inCustomNameEditMode = computed(() =>
+  editNameList.map((item) => item.isEditing).includes(true),
+);
+
+watch(list, (newV: ActionModuleProps[]) => {
+  if (editNameList.length > newV.length) {
+    // delete
+    const elementsToDelete = editNameList.filter(
+      (item) => !newV.some((newItem) => newItem.id === item.id),
+    );
+    elementsToDelete.forEach((element) => {
+      const index = editNameList.findIndex((item) => item.id === element.id);
+      if (index !== -1) {
+        editNameList.splice(index, 1);
+      }
+    });
+  } else {
+    // add
+    const elementsToAdd = newV.filter(
+      (newItem) => !editNameList.some((item) => item.id === newItem.id),
+    );
+    elementsToAdd.forEach((element) => {
+      editNameList.push(generateEditNameItem(element));
+    });
+  }
+});
+
+watch(inCustomNameEditMode, (newV) => {
+  emit('updateCustomNameModeFlag', newV);
+});
+
+const findEditItemById = (target) =>
+  editNameList.find((item) => item.id === target.id);
+
+const saveEditName = (element) => {
+  const editItem = editNameList.find((item) => item.id === element.id);
+  editItem.isEditing = false;
+  if (/^\s*$/.test(editItem.customName)) {
+    editItem.customName = "";
+  }
+  // stash
+  editItem.oldCustomName = editItem.customName;
+  form.process.find((item) => item.id === element.id).customName =
+    editItem.customName;
+};
+
+const exitEditName = (element) => {
+  const editItem = editNameList.find((item) => item.id === element.id);
+  editItem.isEditing = false;
+  if (editItem.oldCustomName !== editItem.customName) {
+    editItem.customName = editItem.oldCustomName;
+  }
+};
+
+const exitAllEditName = () => {
+  editNameList.forEach((item) => {
+    if (item.isEditing) {
+      exitEditName(item);
+    }
+  });
+};
+
+// 操作名称编辑
+const toggleEditName = (element) => {
+  const editItem = editNameList.find((item) => item.id === element.id);
+  editNameList.forEach((item) => {
+    if (item.isEditing && item.id !== editItem.id) {
+      // exit others
+      exitEditName(item);
+    }
+  });
+  editItem.isEditing = true;
+  nextTick(() => {
+    customNameInput.value.focus();
+  });
+};
+
+defineExpose({ exitAllEditName });
 </script>
 
 <style lang="scss" scoped>
@@ -388,6 +498,44 @@ const pop = (type: string, tipsDes: string) => {
     color: var(--comment-text-color);
     border-bottom: 1px solid var(--divider-color);
 
+    .input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      margin-right: 2px;
+
+      .custom-name-input {
+        width: 60px;
+        font-size: 12px;
+        font-weight: bold;
+        background: transparent;
+        // color: var(--second-text-color);
+        padding: 0;
+        border: none;
+        outline: none;
+        text-overflow: ellipsis;
+      }
+
+      .input-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        background: transparent;
+      }
+    }
+
+    .list-group-item-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      .svg-inline--fa {
+        cursor: pointer;
+      }
+    }
+
     &.collapsed {
       padding-bottom: 0;
       margin-bottom: 0;
@@ -415,7 +563,7 @@ const pop = (type: string, tipsDes: string) => {
 
     .right {
       display: flex;
-
+      align-items: center;
       .preview-switch {
         -webkit-user-select: none;
         user-select: none;
