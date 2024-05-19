@@ -145,6 +145,11 @@
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
+      <div v-if="type === 'sub'" class="sub-item-swipe-btn-wrapper">
+        <a :href=" `${host}/api/${props.type}/${encodeURIComponent(name)}?raw=1` " target="_blank"><nut-button shape="square" type="success" class="sub-item-swipe-btn">
+          <font-awesome-icon icon="fa-solid fa-file-export" />
+        </nut-button></a>
+      </div>
       <!-- preview -->
       <!-- <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
