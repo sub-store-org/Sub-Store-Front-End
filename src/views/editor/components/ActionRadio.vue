@@ -101,15 +101,18 @@
   const rdoCacheOpt = ['enabled' , 'disabled'];
 
   const value = ref();
-  const rdoNewVersion = ref(false);
-  const foNewVersion = ref(false);
+  const rdoNewVersion = ref(true);
+  const foNewVersion = ref(true);
+  
+  // const rdoNewVersion = ref(false);
+  // const foNewVersion = ref(false);
 
-  try {
-    rdoNewVersion.value = semverGt(env.value.version, '2.14.184')
-  } catch (e) {}
-  try {
-    foNewVersion.value = semverGt(env.value.version, '2.14.119')
-  } catch (e) {}
+  // try {
+  //   rdoNewVersion.value = semverGt(env.value.version, '2.14.184')
+  // } catch (e) {}
+  // try {
+  //   foNewVersion.value = semverGt(env.value.version, '2.14.119')
+  // } catch (e) {}
 
   const foTw = ref('cn');
   const rdoType = ref('IPv4');
