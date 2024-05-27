@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="448px" height="512px" viewBox="0 0 448 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>形状</title>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="user-solid" fill="#FFFFFF" fill-rule="nonzero">
-            <path d="M224,256 C294.7,256 352,198.69 352,128 C352,57.31 294.7,0 224,0 C153.3,0 96,57.31 96,128 C96,198.69 153.3,256 224,256 Z M274.7,304 L173.3,304 C77.61,304 0,381.6 0,477.3 C0,496.44 15.52,511.970043 34.66,511.970043 L413.36,511.970043 C432.5,512 448,496.5 448,477.3 C448,381.6 370.4,304 274.7,304 Z" id="形状"></path>
-        </g>
-    </g>
-</svg>
