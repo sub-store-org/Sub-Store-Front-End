@@ -359,7 +359,7 @@ export default {
         },
         'Resolve Domain Operator': {
           label: '域名解析',
-          des: '提供商(可由节点字段 "no-resolve" 控制)',
+          des: '提供商(可由节点字段 "_no-resolve" 控制)',
           options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
           types: ['IPv4', 'IPv6', 'IP4P'],
           filters: ['不过滤', '移除失败', '只保留 IP', '只保留 IPv4', '只保留 IPv6'],
