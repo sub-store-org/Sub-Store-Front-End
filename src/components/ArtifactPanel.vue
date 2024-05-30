@@ -311,17 +311,18 @@
   };
 
   const includeUnsupportedProxyTips = () => {
-    const includeUnsupportedProxyTipsTitle = t(`syncPage.addArtForm.includeUnsupportedProxy.tips.title`)
-    const includeUnsupportedProxyTipsContent = t(`syncPage.addArtForm.includeUnsupportedProxy.tips.content`)
-    Dialog({
-      title: includeUnsupportedProxyTipsTitle,
-      content: includeUnsupportedProxyTipsContent,
-      popClass: 'auto-dialog',
-      okText: 'OK',
-      noCancelBtn: true,
-      closeOnPopstate: true,
-      lockScroll: false,
-    });
+    window.open('https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E');
+    // const includeUnsupportedProxyTipsTitle = t(`syncPage.addArtForm.includeUnsupportedProxy.tips.title`)
+    // const includeUnsupportedProxyTipsContent = t(`syncPage.addArtForm.includeUnsupportedProxy.tips.content`)
+    // Dialog({
+    //   title: includeUnsupportedProxyTipsTitle,
+    //   content: includeUnsupportedProxyTipsContent,
+    //   popClass: 'auto-dialog',
+    //   okText: 'OK',
+    //   noCancelBtn: true,
+    //   closeOnPopstate: true,
+    //   lockScroll: false,
+    // });
   };
 
   watchEffect(() => {
