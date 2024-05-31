@@ -22,6 +22,7 @@
           >
             <input
               class="nut-input-text"
+              data-1p-ignore
               @blur="customerBlurValidate('name')"
               v-model.trim="form.name"
               :placeholder="$t(`editorPage.subConfig.basic.name.placeholder`)"
@@ -35,6 +36,7 @@
           >
             <input
               class="nut-input-text"
+              data-1p-ignore
               v-model.trim="form.displayName"
               :placeholder="
                 $t(`editorPage.subConfig.basic.displayName.placeholder`)
