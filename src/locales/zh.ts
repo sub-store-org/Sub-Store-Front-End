@@ -167,7 +167,7 @@ export default {
       tips: {
         ok: '查看文档',
         cancel: '取消',
-        desc: '订阅链接参数说明',
+        desc: '部分功能需使用参数 请查看文档',
         title: '订阅链接参数',
         content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true" 包含官方/商店版不支持的协议',
       }

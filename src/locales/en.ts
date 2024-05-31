@@ -168,7 +168,7 @@ export default {
       tips: {
         ok: 'View Document',
         cancel: 'Cancel',
-        desc: 'Subscription Link Parameters Description',
+        desc: 'Some functions require parameters. Please check the document.',
         title: 'Subscription Link Parameters',
         content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true"\nIncludes protocols not supported by the official/store version',
       }
