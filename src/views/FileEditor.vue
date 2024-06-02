@@ -167,7 +167,7 @@
             prop="ignoreFailedRemoteFile"
             class="ignore-failed-wrapper"
           >
-            <div class="swtich-wrapper">
+            <div class="switch-wrapper">
               <nut-switch v-model="form.ignoreFailedRemoteFile" />
             </div>
           </nut-form-item>
@@ -582,7 +582,7 @@ const customerBlurValidate = (prop: string) => {
   :deep(.nut-form-item__label) {
     width: auto;
   }
-  .swtich-wrapper {
+  .switch-wrapper {
     display: flex;
     justify-content: end;
   }

@@ -27,6 +27,16 @@
           </nut-form-item>
         </nut-form>
       </div>
+      <div class="switch-wrapper">
+        <nut-switch
+          class="my-switch"
+          v-model="isIconColor"
+          size="mini"
+          @change="setIconColor"
+        />
+        <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>
+      </div>
+
       <div class="icon-list">
         <div
           v-for="(icon, index) in iconList"
@@ -35,14 +45,22 @@
           @click="copyIconUrl(icon)"
         >
           <nut-image
+            :class="{ 'sub-item-customer-icon': !isIconColor }"
             :src="icon.url"
             fit="cover"
             lazy-load
             :show-loading="true"
           />
+          <!-- <nut-avatar
+            :class="{ 'sub-item-customer-icon': isIconColor }"
+            :size="isSimpleMode ? '36' : '48'"
+            :url="icon.url"
+            bg-color=""
+          /> -->
           <p>{{ icon.name }}</p>
         </div>
       </div>
+      
     </div>
   </div>
 </template>
@@ -54,12 +72,18 @@ import axios from "axios";
 import { onMounted, reactive, ref, watchEffect } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
+import { storeToRefs } from 'pinia';
+import { useGlobalStore } from '@/store/global';
 
+const globalStore = useGlobalStore();
+const { isSimpleMode, isIconColor } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
-
+const setIconColor = (isIconColor: boolean) => {
+    globalStore.setIconColor(isIconColor);
+  };
 const form = reactive({
   iconCollectionUrl:
     "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
@@ -72,7 +96,7 @@ const iconList = ref([]);
 const fetchIcons = async () => {
   try {
     const { data } = await axios.get(form.iconCollectionUrl);
-    const collectionKey = form.iconKey || "icons";
+    const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";
     iconList.value = data[collectionKey];
     if (iconList.value && iconList.value.length > 0) {
@@ -129,6 +153,32 @@ const copyIconUrl = async (icon) => {
         color: var(--second-text-color);
       }
     }
+    .switch-wrapper {
+      .my-switch {
+        height: 22px;
+        width: 45px;
+        min-width: 40px;
+
+        :deep(.switch-button) {
+          width: 18px;
+          height: 18px;
+        }
+      }
+      flex-direction: row;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 14px;
+      padding: 0 8px 0 8px;
+      .label {
+        margin-left: 10px;
+        color: var(--comment-text-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+    }
     .icon-list {
       display: flex;
       flex-wrap: wrap;
@@ -138,10 +188,19 @@ const copyIconUrl = async (icon) => {
         text-align: center;
         width: 70px;
         .nut-image {
+          cursor: pointer;
           width: 100%;
           height: auto;
           border-radius: 10px;
           overflow: hidden;
+        }
+        .sub-item-customer-icon {
+          :deep(img) {
+            & {
+              opacity: 0.8;
+              filter: brightness(var(--img-brightness));
+            }
+          }
         }
 
         p {
