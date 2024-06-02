@@ -34,6 +34,7 @@ export default {
       editScript: 'Script Edit',
       subEditor: 'Subscription Editor',
       fileEditor: 'File Editor',
+      iconCollection: 'Icon Collection',
       themeSetting: 'Theme Setting',
       moreSetting: 'More Setting',
       apiSetting: 'Backend Setting',
@@ -633,6 +634,17 @@ export default {
       content: '⚠️ This feature will only add files to the sync configuration that are not already in the sync configuration.\nYou need to manually set the source.',
       confirm: 'Restore From Gist',
     },
+  },
+  // 图标仓库页
+  iconCollectionPage: {
+    iconCollection: 'Icon Collection',
+    iconCollectionPlaceholder: 'Please input icon Collection url',
+    iconCollectionKey: 'Icon Collection Key',
+    iconCollectionKeyPlaceholder: 'Default Key: icons',
+    iconUrlKey: 'Icon url key',
+    iconUrlKeyPlaceholder: 'Default Key: url',
+    errorIconCollectionUrlTips: 'Please enter correct url',
+    copySuccessTips: 'The icon url has been copied',
   },
   themeSettingPage: {
     themeSettingTitle: 'Appearance',
