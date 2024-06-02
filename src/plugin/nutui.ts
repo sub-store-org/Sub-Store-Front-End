@@ -20,6 +20,7 @@ import {
   FormItem,
   Icon,
   Input,
+  Image,
   Menu,
   MenuItem,
   Navbar,
@@ -82,6 +83,7 @@ export default app => {
     .use(Divider)
     .use(Tag)
     .use(Input)
+    .use(Image)
     .use(Cascader)
     .use(Collapse)
     .use(CollapseItem)

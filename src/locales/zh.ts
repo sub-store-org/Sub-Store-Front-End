@@ -34,6 +34,7 @@ export default {
       editScript: '脚本编辑',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
+      iconCollection: '图标仓库',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
       apiSetting: '后端设置',
@@ -634,6 +635,17 @@ export default {
       content: '⚠️ 只会获取不在同步配置中的 gist 文件\n你需要手动设置来源',
       confirm: '从 gist 恢复',
     }
+  },
+  // 图标仓库页
+  iconCollectionPage: {
+    iconCollection: '图标仓库',
+    iconCollectionPlaceholder: '请输入图标仓库地址',
+    iconCollectionKey: '图标仓库字段',
+    iconCollectionKeyPlaceholder: '默认: icons',
+    iconUrlKey: '图标地址字段',
+    iconUrlKeyPlaceholder: '默认: url',
+    errorIconCollectionUrlTips: '请输入正确的图标仓库地址',
+    copySuccessTips: '已复制图标地址',
   },
   themeSettingPage: {
     themeSettingTitle: '外观设置',
