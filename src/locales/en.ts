@@ -638,13 +638,23 @@ export default {
   // 图标仓库页
   iconCollectionPage: {
     iconCollection: 'Icon Collection',
-    iconCollectionPlaceholder: 'Please input icon Collection url',
+    iconCollectionPlaceholder: 'Please input icon collection url',
     iconCollectionKey: 'Icon Collection Key',
     iconCollectionKeyPlaceholder: 'Default Key: icons',
     iconUrlKey: 'Icon url key',
     iconUrlKeyPlaceholder: 'Default Key: url',
     errorIconCollectionUrlTips: 'Please enter correct url',
     copySuccessTips: 'The icon url has been copied',
+    emptyCollectionTitle: 'No icon data yet',
+    emptyCollectionDesc:
+      'Please manually refresh or select a different icon collection',
+    refreshBtn: 'Manual refresh',
+    selectCollectionBtn: 'Select a icon collection',
+    collectionPicker: {
+      title: 'Select a icon collection',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+    },
   },
   themeSettingPage: {
     themeSettingTitle: 'Appearance',

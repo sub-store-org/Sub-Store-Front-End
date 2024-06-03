@@ -646,6 +646,15 @@ export default {
     iconUrlKeyPlaceholder: '默认: url',
     errorIconCollectionUrlTips: '请输入正确的图标仓库地址',
     copySuccessTips: '已复制图标地址',
+    emptyCollectionTitle: '暂无图标数据',
+    emptyCollectionDesc: '请手动刷新或选择其他图标仓库',
+    refreshBtn: '手动刷新',
+    selectCollectionBtn: '选择预置图标仓库',
+    collectionPicker: {
+      title: '选择一个图标仓库',
+      cancel: '取消',
+      confirm: '确定',
+    },
   },
   themeSettingPage: {
     themeSettingTitle: '外观设置',
