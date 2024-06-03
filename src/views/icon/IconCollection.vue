@@ -1,42 +1,46 @@
 <!-- 图标集合 -->
 <template>
-  <div class="icon-preview-wrap">
+  <div class="icon-preview-wrapper">
     <div class="icon-preview-container">
       <div class="icon-collection">
         <nut-form class="form" :model-value="form">
-          <nut-form-item :label="$t(`iconCollectionPage.iconCollection`)">
-            <nut-input
-              v-model.trim="form.iconCollectionUrl"
+          <nut-form-item
+            required
+            :label="$t(`iconCollectionPage.iconCollection`)"
+          >
+            <nut-textarea
+              v-model="form.iconCollectionUrl"
+              :border="false"
+              text-align="left"
+              :autosize="{ maxHeight: 110, minHeight: 50 }"
               :placeholder="$t(`iconCollectionPage.iconCollectionPlaceholder`)"
               type="text"
             />
           </nut-form-item>
-          <nut-form-item :label="$t(`iconCollectionPage.iconCollectionKey`)">
-            <nut-input
-              v-model.trim="form.iconListKey"
-              :placeholder="$t(`iconCollectionPage.iconCollectionKeyPlaceholder`)"
-              type="text"
-            />
-          </nut-form-item>
-          <nut-form-item :label="$t(`iconCollectionPage.iconUrlKey`)">
-            <nut-input
-              v-model.trim="form.iconItemUrlKey"
-              :placeholder="$t(`iconCollectionPage.iconUrlKeyPlaceholder`)"
-              type="text"
-            />
-          </nut-form-item>
+          <div class="form-button-wrapper">
+            <nut-button
+              type="primary"
+              :plain="true"
+              size="small"
+              @click="showPicker"
+            >
+              {{ $t(`iconCollectionPage.selectCollectionBtn`) }}
+            </nut-button>
+            <nut-button type="primary" size="small" @click="refreshIcons">
+              {{ $t(`iconCollectionPage.refreshBtn`) }}
+            </nut-button>
+          </div>
         </nut-form>
       </div>
       <div class="switch-wrapper">
         <nut-switch
-          class="my-switch"
           v-model="isIconColor"
+          class="my-switch"
           size="mini"
           @change="setIconColor"
         />
         <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>
       </div>
-
       <div class="icon-list">
         <div
           v-for="(icon, index) in iconList"
@@ -49,19 +53,27 @@
             :src="icon.url"
             fit="cover"
             lazy-load
-            :show-loading="true"
+            show-loading
           />
-          <!-- <nut-avatar
-            :class="{ 'sub-item-customer-icon': isIconColor }"
-            :size="isSimpleMode ? '36' : '48'"
-            :url="icon.url"
-            bg-color=""
-          /> -->
           <p>{{ icon.name }}</p>
         </div>
       </div>
-      
+      <nut-empty v-if="!isLoading && !iconList.length" image="empty">
+        <template #description>
+          <h3>{{ $t(`iconCollectionPage.emptyCollectionTitle`) }}</h3>
+          <p>{{ $t(`iconCollectionPage.emptyCollectionDesc`) }}</p>
+        </template>
+      </nut-empty>
     </div>
+    <nut-picker
+      v-model="defaultIconCollection"
+      v-model:visible="showIconCollectionPicker"
+      :columns="defaultIconCollectionColumns"
+      :title="$t(`iconCollectionPage.collectionPicker.title`)"
+      :cancel-text="$t(`iconCollectionPage.collectionPicker.cancel`)"
+      :ok-text="$t(`iconCollectionPage.collectionPicker.confirm`)"
+      @confirm="handleConfirm"
+    ></nut-picker>
   </div>
 </template>
 
@@ -69,33 +81,82 @@
 import { Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
 import axios from "axios";
-import { onMounted, reactive, ref, watchEffect } from "vue";
+import { storeToRefs } from "pinia";
+import { onMounted, reactive, ref } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
-import { storeToRefs } from 'pinia';
-import { useGlobalStore } from '@/store/global';
+
+import { useGlobalStore } from "@/store/global";
 
 const globalStore = useGlobalStore();
-const { isSimpleMode, isIconColor } = storeToRefs(globalStore);
+const { isIconColor } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const setIconColor = (isIconColor: boolean) => {
-    globalStore.setIconColor(isIconColor);
-  };
+  globalStore.setIconColor(isIconColor);
+};
+
+// 图标仓库列表
+const defaultIconCollectionColumns = ref([
+  {
+    text: "cc63/ICON",
+    value: "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
+  },
+  {
+    text: "Koolson/QureColor",
+    value:
+      "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
+  },
+  {
+    text: "Koolson/QureColor-All",
+    value:
+      "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor-All.json",
+  },
+  {
+    text: "Orz-3/mini",
+    value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini.json",
+  },
+  {
+    text: "Orz-3/mini+",
+    value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini%2B.json",
+  },
+  {
+    text: "Orz-3/miniColor",
+    value: "https://raw.githubusercontent.com/Orz-3/mini/master/miniColor.json",
+  },
+  {
+    text: "Orz-3/Color+",
+    value: "https://raw.githubusercontent.com/Orz-3/mini/master/Color%2B.json",
+  },
+]);
+
+// 默认图标仓库
+const defaultIconCollection = ref([
+  "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
+]);
+
+const showIconCollectionPicker = ref(false);
+
 const form = reactive({
-  iconCollectionUrl:
-    "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
+  iconCollectionUrl: defaultIconCollection.value[0],
   iconListKey: "",
   iconItemUrlKey: "",
 });
 
+const isLoading = ref(false);
 const iconList = ref([]);
 
 const fetchIcons = async () => {
   try {
+    Toast.loading(t(`globalNotify.refresh.loading`), {
+      cover: true,
+      id: "icon-collection",
+    });
+    isLoading.value = true;
     const { data } = await axios.get(form.iconCollectionUrl);
+    isLoading.value = false;
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";
     iconList.value = data[collectionKey];
@@ -108,14 +169,18 @@ const fetchIcons = async () => {
         return iconItem;
       });
     }
+    Toast.hide("icon-collection");
   } catch (error) {
+    Toast.hide("icon-collection");
+    iconList.value = [];
+    isLoading.value = false;
     console.error("Error fetching icons:", error);
   }
 };
 
-watchEffect(() => {
+const refreshIcons = () => {
   if (!form.iconCollectionUrl) {
-    return false;
+    return Toast.warn(t(`iconCollectionPage.errorIconCollectionUrlTips`));
   }
   if (form.iconCollectionUrl && !/^(http|https)/.test(form.iconCollectionUrl)) {
     return Toast.warn(t(`iconCollectionPage.errorIconCollectionUrlTips`));
@@ -123,7 +188,7 @@ watchEffect(() => {
   if (form.iconCollectionUrl) {
     fetchIcons();
   }
-});
+};
 
 const copyIconUrl = async (icon) => {
   const iconUrl = icon.url;
@@ -137,10 +202,24 @@ const copyIconUrl = async (icon) => {
   }
   Toast.text(t(`iconCollectionPage.copySuccessTips`));
 };
+
+const showPicker = () => {
+  showIconCollectionPicker.value = true;
+};
+
+const handleConfirm = ({ selectedValue, selectedOptions }) => {
+  // console.log(selectedValue[0], selectedOptions[0]);
+  form.iconCollectionUrl = selectedValue[0];
+  refreshIcons();
+};
+
+onMounted(() => {
+  refreshIcons();
+});
 </script>
 
 <style lang="scss" scoped>
-.icon-preview-wrap {
+.icon-preview-wrapper {
   min-height: 100%;
 
   .icon-preview-container {
@@ -152,8 +231,21 @@ const copyIconUrl = async (icon) => {
         padding: 0;
         color: var(--second-text-color);
       }
+      .form-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 10px;
+        .nut-button {
+          margin-right: 10px;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
     }
     .switch-wrapper {
+      padding-top: 20px;
       .my-switch {
         height: 22px;
         width: 45px;
@@ -177,20 +269,26 @@ const copyIconUrl = async (icon) => {
         justify-content: space-between;
         align-items: center;
       }
-    
     }
     .icon-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 25px;
       padding-top: 20px;
+
       .icon-item {
         text-align: center;
-        width: 70px;
+        width: 24%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        &:not(:nth-child(4n)) {
+          margin-right: calc(4% / 3);
+        }
         .nut-image {
           cursor: pointer;
-          width: 100%;
-          height: auto;
+          width: 70px;
+          height: 70px;
           border-radius: 10px;
           overflow: hidden;
         }
@@ -204,9 +302,9 @@ const copyIconUrl = async (icon) => {
         }
 
         p {
-          margin-top: 10px;
-          font-size: 14px;
+          font-size: 12px;
           color: var(--primary-text-color);
+          word-break: break-all;
         }
       }
     }
