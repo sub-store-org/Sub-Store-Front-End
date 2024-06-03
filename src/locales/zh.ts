@@ -262,7 +262,7 @@ export default {
         },
         icon: {
           label: '图标链接',
-          placeholder: '填入图标链接，不要使用 jpg',
+          placeholder: '可点击左侧图标, 从图标库复制. 填入图标链接，不要使用 jpg',
         },
         ignoreFailedRemoteSub: {
           label: '忽略失败的远程订阅'

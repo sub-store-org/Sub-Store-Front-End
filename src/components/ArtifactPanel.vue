@@ -13,6 +13,20 @@
   >
     <nut-form :model-value="editPanelData" ref="ruleForm">
       <nut-form-item
+        :label="$t(`editorPage.subConfig.basic.icon.label`)"
+        prop="icon"
+      >
+        <nut-input
+          input-align="left"
+          class="nut-input-text"
+          :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
+          v-model.trim="editPanelData.icon"
+          type="text"
+          left-icon="shop"
+          @click-left-icon="iconTips"
+        />
+      </nut-form-item>
+      <nut-form-item
         :label="$t(`syncPage.addArtForm.name.label`)"
         prop="name"
         :required="!isEditMode"
@@ -52,18 +66,6 @@
           class="nut-input-text"
           :placeholder="$t(`syncPage.addArtForm.displayName.label`)"
           v-model="editPanelData.displayName"
-          type="text"
-        />
-      </nut-form-item>
-      <nut-form-item
-        :label="$t(`editorPage.subConfig.basic.icon.label`)"
-        prop="icon"
-      >
-        <nut-input
-          input-align="left"
-          class="nut-input-text"
-          :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
-          v-model="editPanelData.icon"
           type="text"
         />
       </nut-form-item>
@@ -133,12 +135,13 @@
 </template>
 
 <script lang="ts" setup>
+  import { useRouter } from "vue-router";
   import { useArtifactsStore } from '@/store/artifacts';
   import { useSubsStore } from '@/store/subs';
   import { Dialog, Toast } from '@nutui/nutui';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
-
+  const router = useRouter();
   const { t } = useI18n();
   const artifactsStore = useArtifactsStore();
   const isInit = ref(false);
@@ -324,7 +327,9 @@
     //   lockScroll: false,
     // });
   };
-
+  const iconTips = () => {
+    router.push(`/icon/collection`);
+  };
   watchEffect(() => {
     if (!isInit.value && name) {
       const artifact = artifactsStore.artifacts.find(art => art.name === name);
@@ -341,7 +346,6 @@
 </script>
 
 <style lang="scss">
-
   .artifact-panel {
     .include-unsupported-proxy-wrapper {
       flex-direction: row;
@@ -359,7 +363,6 @@
     }
     .nut-dialog {
       width: 88vw;
-
       .nut-dialog__content {
         max-height: 72vh !important;
 

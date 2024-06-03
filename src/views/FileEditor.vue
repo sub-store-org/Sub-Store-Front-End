@@ -49,11 +49,15 @@
             :label="$t(`editorPage.subConfig.basic.icon.label`)"
             prop="icon"
           >
-            <input
+            <nut-input
+              :border="false"
               class="nut-input-text"
               v-model.trim="form.icon"
               :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
               type="text"
+              input-align="right"
+              left-icon="shop"
+              @click-left-icon="iconTips"
             />
           </nut-form-item>
           <nut-form-item
@@ -476,7 +480,9 @@ const submit = () => {
     Toast.hide("submits");
   });
 };
-
+const iconTips = () => {
+  router.push(`/icon/collection`);
+};
 // 名称验证器
 const nameValidator = (val: string): Promise<boolean> => {
   return new Promise((resolve) => {
@@ -520,6 +526,9 @@ const customerBlurValidate = (prop: string) => {
 
   :deep(.nut-cell-group__warp) {
     border-radius: var(--item-card-radios);
+  }
+  :deep(.nut-icon-tips:before), :deep(.nut-icon-shop:before) {
+    cursor: pointer;
   }
 }
 

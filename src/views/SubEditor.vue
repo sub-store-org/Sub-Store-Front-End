@@ -64,12 +64,16 @@
           :label="$t(`editorPage.subConfig.basic.icon.label`)"
           prop="icon"
         >
-          <input
-            class="nut-input-text"
-            v-model.trim="form.icon"
-            :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
-            type="text"
-          />
+          <nut-input
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form.icon"
+              :placeholder="$t(`editorPage.subConfig.basic.icon.placeholder`)"
+              type="text"
+              input-align="right"
+              left-icon="shop"
+              @click-left-icon="iconTips"
+            />
         </nut-form-item>
 
         <template v-if="editType === 'subs'">
@@ -768,6 +772,9 @@ const urlValidator = (val: string): Promise<boolean> => {
   const customerBlurValidate = (prop: string) => {
     ruleForm.value.validate(prop);
   };
+  const iconTips = () => {
+    router.push(`/icon/collection`);
+  };
   const uaTips = () => {
     Dialog({
         title: '默认使用配置中的全局 UA',
@@ -920,7 +927,7 @@ const handleEditGlobalClick = () => {
   :deep(.nut-cell-group__warp) {
     border-radius: var(--item-card-radios);
   }
-  :deep(.nut-icon-tips:before) {
+  :deep(.nut-icon-tips:before), :deep(.nut-icon-shop:before) {
     cursor: pointer;
   }
 }

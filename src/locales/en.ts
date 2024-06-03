@@ -262,7 +262,7 @@ export default {
         },
         icon: {
           label: 'Icon',
-          placeholder: 'The URL of the icon',
+          placeholder: 'Click on the icon on the left to copy from the icon library. Fill in the icon link and do not use JPG',
         },
         ignoreFailedRemoteSub: {
           label: 'Ignore failed remote subscription(s)'
