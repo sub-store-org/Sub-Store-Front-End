@@ -395,6 +395,7 @@
   .compare-table-row {
     padding: 0 var(--safe-area-side);
     width: 100vw;
+    cursor: pointer;
   }
 
   .compare-table-head {
