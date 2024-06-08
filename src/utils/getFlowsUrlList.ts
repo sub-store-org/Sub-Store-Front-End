@@ -16,7 +16,7 @@ export const getFlowsUrlList = (subs: Sub[]): string[][] => {
     let url = `${raw}`
       .split(/[\r\n]+/)
       .map((i) => i.trim())
-      .filter((i) => i.length)?.[0]
+      .filter((i) => i.length)?.[0] || ''
 
     let $arguments = {} as any;
     const rawArgs = url.split('#');
