@@ -43,6 +43,7 @@
       'tuic',
       'hysteria',
       'hysteria2',
+      'juicity',
       'wireguard',
       'ssh',
       'external'
