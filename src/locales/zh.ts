@@ -388,6 +388,7 @@ export default {
             'TUIC',
             'Hysteria',
             'Hysteria 2',
+            'Juicity',
             'WireGuard',
             'SSH',
             'External Proxy Program',
