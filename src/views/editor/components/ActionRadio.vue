@@ -6,9 +6,15 @@
     <div class="radio-wrapper options-radio">
       <nut-radiogroup direction="horizontal" v-model="value">
         <nut-radio v-for="(key, index) in opt[type]" :label="key" :key="index"
-          >{{
+          >
+          <div class="input-wrapper" v-if="type === 'Resolve Domain Operator' && value==='Custom' && key==='Custom'">
+            <nut-input placeholder="目前仅支持 DoH" v-model="rdoUrl" />
+          </div>
+          <div v-else>
+            {{
             $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
           }}
+          </div>
         </nut-radio>
       </nut-radiogroup>
     </div>
@@ -24,6 +30,7 @@
           </nut-radio>
         </nut-radiogroup>
       </div>
+      
       <div class="radio-wrapper options-radio">
         <p class="des-label">过滤结果</p>
         <nut-radiogroup direction="horizontal" v-model="rdoFilter">
@@ -92,7 +99,7 @@
   const opt = {
     'Flag Operator': ['add', 'remove'],
     'Sort Operator': ['asc', 'desc', 'random'],
-    'Resolve Domain Operator': ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent'],
+    'Resolve Domain Operator': ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent', 'Custom'],
   };
 
   const foTwOpt = ['cn', 'ws', 'tw'];
@@ -118,6 +125,7 @@
   const rdoType = ref('IPv4');
   const rdoFilter = ref('disabled');
   const rdoCache = ref('enabled');
+  const rdoUrl = ref('');
 
   const showTwTips = () => {
     Toast.text('免责声明: 本操作仅将 Emoji 旗帜进行替换以便于显示, 不包含任何政治意味');
@@ -160,13 +168,14 @@
           rdoType.value = item.args?.type ?? 'IPv4';
           rdoFilter.value = item.args?.filter ?? 'disabled';
           rdoCache.value = item.args?.cache ?? 'enabled';
+          rdoUrl.value = item.args?.url ?? '';
           break;
       }
     }
   });
 
   // 值变化时实时修改 form 的数据
-  watch([value, rdoFilter, rdoCache, rdoType, foTw], () => {
+  watch([value, rdoFilter, rdoCache, rdoUrl, rdoType, foTw], () => {
     if (['IPv6', 'IP4P'].includes(rdoType.value) && ['IP-API'].includes(value.value)) {
       showNotify({
         title: `${value.value} 不支持 ${rdoType.value}`,
@@ -190,6 +199,7 @@
           type: rdoType.value,
           filter: rdoFilter.value,
           cache: rdoCache.value,
+          url: rdoUrl.value,
         };
         break;
     }
@@ -220,5 +230,17 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+  }
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+
+    > view.nut-input {
+      background: transparent;
+      padding: 8px 12px;
+      margin-right: 16px;
+      border-bottom: 1px solid var(--lowest-text-color);
+      color: var(--second-text-color);
+    }
   }
 </style>
