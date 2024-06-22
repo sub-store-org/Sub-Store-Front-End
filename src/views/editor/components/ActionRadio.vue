@@ -20,6 +20,12 @@
     </div>
     <template v-if="type === 'Resolve Domain Operator' && rdoNewVersion">
       <div class="radio-wrapper options-radio">
+        <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DoH 会携带此参数, 可能会影响解析结果)</p>
+        <div class="input-wrapper">
+            <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
+          </div>
+      </div>
+      <div class="radio-wrapper options-radio">
         <p class="des-label">解析类型</p>
         <nut-radiogroup direction="horizontal" v-model="rdoType">
           <nut-radio v-for="(key, index) in rdoTypeOpt" :label="key" :key="index"
@@ -126,6 +132,7 @@
   const rdoFilter = ref('disabled');
   const rdoCache = ref('enabled');
   const rdoUrl = ref('');
+  const rdoEdns = ref('');
 
   const showTwTips = () => {
     Toast.text('免责声明: 本操作仅将 Emoji 旗帜进行替换以便于显示, 不包含任何政治意味');
@@ -169,13 +176,14 @@
           rdoFilter.value = item.args?.filter ?? 'disabled';
           rdoCache.value = item.args?.cache ?? 'enabled';
           rdoUrl.value = item.args?.url ?? '';
+          rdoEdns.value = item.args?.edns;
           break;
       }
     }
   });
 
   // 值变化时实时修改 form 的数据
-  watch([value, rdoFilter, rdoCache, rdoUrl, rdoType, foTw], () => {
+  watch([value, rdoFilter, rdoCache, rdoUrl, rdoEdns, rdoType, foTw], () => {
     if (['IPv6', 'IP4P'].includes(rdoType.value) && ['IP-API'].includes(value.value)) {
       showNotify({
         title: `${value.value} 不支持 ${rdoType.value}`,
@@ -200,6 +208,7 @@
           filter: rdoFilter.value,
           cache: rdoCache.value,
           url: rdoUrl.value,
+          edns: rdoEdns.value,
         };
         break;
     }
