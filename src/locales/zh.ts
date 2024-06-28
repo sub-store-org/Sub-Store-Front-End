@@ -225,6 +225,14 @@ export default {
           label: '显示名称',
           placeholder: '输入展示的名称',
         },
+        subInfoUrl: {
+          label: '查询流量信息订阅链接',
+          placeholder: '用于传递流量信息',
+        },
+        subInfoUserAgent: {
+          label: '查询流量信息 User-Agent',
+          placeholder: '不设置则使用默认 User-Agent',
+        },
         tag: {
           label: '标签',
           placeholder: '标签(用 , 分隔) 将用于分组',
