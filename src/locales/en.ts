@@ -225,6 +225,14 @@ export default {
           label: 'Display Name',
           placeholder: 'The display name',
         },
+        subInfoUrl: {
+          label: 'Sub Info URL',
+          placeholder: 'The URL for fetching subscription usage info',
+        },
+        subInfoUserAgent: {
+          label: 'Sub Info User-Agent',
+          placeholder: 'User-Agent for fetching subscription usage info',
+        },
         tag: {
           label: 'Tag(s)',
           placeholder: 'The tag(s) (separated by comma) will be used for grouping.',

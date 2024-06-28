@@ -146,6 +146,35 @@
           </nut-form-item>
 
           <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
+            prop="subInfoUrl"
+          >
+            <input
+              class="nut-input-text"
+              data-1p-ignore
+              v-model.trim="form.subInfoUrl"
+              :placeholder="
+                $t(`editorPage.subConfig.basic.subInfoUrl.placeholder`)
+              "
+              type="text"
+            />
+          </nut-form-item>
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subInfoUserAgent.label`)"
+            prop="subInfoUserAgent"
+          >
+            <input
+              class="nut-input-text"
+              data-1p-ignore
+              v-model.trim="form.subInfoUserAgent"
+              :placeholder="
+                $t(`editorPage.subConfig.basic.subInfoUserAgent.placeholder`)
+              "
+              type="text"
+            />
+          </nut-form-item>
+
+          <nut-form-item
             :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
             prop="mergeSources"
           >
@@ -311,6 +340,8 @@ watchEffect(() => {
     form.icon = sourceData.icon;
     form.source = sourceData.source || "local";
     form.url = sourceData.url;
+    form.subInfoUrl = sourceData.subInfoUrl;
+    form.subInfoUserAgent = sourceData.subInfoUserAgent;
     form.ua = sourceData.ua;
     form.mergeSources = sourceData.mergeSources;
     form.content = sourceData.content;
