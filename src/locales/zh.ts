@@ -649,6 +649,8 @@ export default {
   iconCollectionPage: {
     iconCollection: '图标仓库',
     iconCollectionPlaceholder: '请输入图标仓库地址',
+    iconName: '图标名称',
+    iconNamePlaceholder: '请输入图标名称',
     iconCollectionKey: '图标仓库字段',
     iconCollectionKeyPlaceholder: '默认: icons',
     iconUrlKey: '图标地址字段',
@@ -658,7 +660,7 @@ export default {
     emptyCollectionTitle: '暂无图标数据',
     emptyCollectionDesc: '请手动刷新或选择其他图标仓库',
     refreshBtn: '手动刷新',
-    selectCollectionBtn: '选择预置图标仓库',
+    selectCollectionBtn: '切换图标仓库',
     collectionPicker: {
       title: '选择一个图标仓库',
       cancel: '取消',

@@ -17,6 +17,7 @@ interface GlobalStoreState {
   ishostApi: string;
   savedPositions: any;
   subProgressStyle: any;
+  defaultIconCollection: string;
 }
 
 interface ENV {

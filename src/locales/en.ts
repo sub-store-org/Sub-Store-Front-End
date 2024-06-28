@@ -648,6 +648,8 @@ export default {
   iconCollectionPage: {
     iconCollection: 'Icon Collection',
     iconCollectionPlaceholder: 'Please input icon collection url',
+    iconName: 'Icon Name',
+    iconNamePlaceholder: 'Please input icon name',
     iconCollectionKey: 'Icon Collection Key',
     iconCollectionKeyPlaceholder: 'Default Key: icons',
     iconUrlKey: 'Icon url key',

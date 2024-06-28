@@ -17,6 +17,17 @@
               type="text"
             />
           </nut-form-item>
+          <nut-form-item :label="$t(`iconCollectionPage.iconName`)">
+            <nut-input
+              v-model="form.iconName"
+              :border="false"
+              text-align="left"
+              :placeholder="$t(`iconCollectionPage.iconNamePlaceholder`)"
+              type="text"
+              clearable
+              @clear="clearIconName"
+            ></nut-input>
+          </nut-form-item>
           <div class="form-button-wrapper">
             <nut-button
               type="primary"
@@ -43,7 +54,7 @@
       </div>
       <div class="icon-list">
         <div
-          v-for="(icon, index) in iconList"
+          v-for="(icon, index) in iconData"
           :key="index"
           class="icon-item"
           @click="copyIconUrl(icon)"
@@ -58,7 +69,7 @@
           <p>{{ icon.name }}</p>
         </div>
       </div>
-      <nut-empty v-if="!isLoading && !iconList.length" image="empty">
+      <nut-empty v-if="!isLoading && !iconData.length" image="empty">
         <template #description>
           <h3>{{ $t(`iconCollectionPage.emptyCollectionTitle`) }}</h3>
           <p>{{ $t(`iconCollectionPage.emptyCollectionDesc`) }}</p>
@@ -66,7 +77,7 @@
       </nut-empty>
     </div>
     <nut-picker
-      v-model="defaultIconCollection"
+      v-model="defaultIconCollectionValue"
       v-model:visible="showIconCollectionPicker"
       :columns="defaultIconCollectionColumns"
       :title="$t(`iconCollectionPage.collectionPicker.title`)"
@@ -82,20 +93,24 @@ import { Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
 import axios from "axios";
 import { storeToRefs } from "pinia";
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 
 import { useGlobalStore } from "@/store/global";
 
 const globalStore = useGlobalStore();
-const { isIconColor } = storeToRefs(globalStore);
+const { isIconColor, defaultIconCollection } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const setIconColor = (isIconColor: boolean) => {
   globalStore.setIconColor(isIconColor);
+};
+
+const setDefaultIconCollection = (url: string) => {
+  globalStore.setDefaultIconCollection(url);
 };
 
 // 图标仓库列表
@@ -130,24 +145,42 @@ const defaultIconCollectionColumns = ref([
     text: "Orz-3/Color+",
     value: "https://raw.githubusercontent.com/Orz-3/mini/master/Color%2B.json",
   },
+  {
+    text: "Twoandz9/TheMagic-Icons",
+    value:
+      "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
+  },
+  {
+    text: "fmz200/icons-all",
+    value:
+      "https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/icons-all.json",
+  },
 ]);
 
 // 默认图标仓库
-const defaultIconCollection = ref([
-  "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
-]);
+const defaultIconCollectionValue = ref([""]);
 
 const showIconCollectionPicker = ref(false);
 
 const form = reactive({
-  iconCollectionUrl: defaultIconCollection.value[0],
+  iconName: "",
+  iconCollectionUrl: "",
   iconListKey: "",
   iconItemUrlKey: "",
 });
 
 const isLoading = ref(false);
 const iconList = ref([]);
-
+const iconData = computed(() => {
+  return iconList.value.filter((item) => {
+    const iconName = item.name.toLowerCase() || "";
+    const keyWord = form.iconName.toLowerCase() || "";
+    return iconName.includes(keyWord);
+  });
+});
+const clearIconName = () => {
+  form.iconName = "";
+};
 const fetchIcons = async () => {
   try {
     Toast.loading(t(`globalNotify.refresh.loading`), {
@@ -168,6 +201,8 @@ const fetchIcons = async () => {
         };
         return iconItem;
       });
+    } else {
+      iconList.value = [];
     }
     Toast.hide("icon-collection");
   } catch (error) {
@@ -208,13 +243,25 @@ const showPicker = () => {
 };
 
 const handleConfirm = ({ selectedValue, selectedOptions }) => {
-  // console.log(selectedValue[0], selectedOptions[0]);
   form.iconCollectionUrl = selectedValue[0];
+  setDefaultIconCollection(form.iconCollectionUrl);
+  refreshIcons();
+};
+
+const init = () => {
+  if (defaultIconCollection.value) {
+    form.iconCollectionUrl = defaultIconCollection.value;
+    defaultIconCollectionValue.value[0] = defaultIconCollection.value;
+  } else {
+    form.iconCollectionUrl = defaultIconCollectionColumns.value[0].value;
+    defaultIconCollectionValue.value[0] =
+      defaultIconCollectionColumns.value[0].value;
+  }
   refreshIcons();
 };
 
 onMounted(() => {
-  refreshIcons();
+  init();
 });
 </script>
 
@@ -306,6 +353,12 @@ onMounted(() => {
           color: var(--primary-text-color);
           word-break: break-all;
         }
+      }
+    }
+    .nut-empty {
+      h3,
+      p {
+        color: var(--comment-text-color);
       }
     }
   }

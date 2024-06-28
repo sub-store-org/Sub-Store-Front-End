@@ -27,6 +27,7 @@ export const useGlobalStore = defineStore('globalStore', {
       istabBar2: localStorage.getItem('istabBar2') === '1',
       ishostApi: getHostAPIUrl(),
       savedPositions: {},
+      defaultIconCollection: localStorage.getItem('defaultIconCollection') || '',
     };
   },
   getters: {},
@@ -139,6 +140,14 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     setSavedPositions(key: string, value: any) {
       this.savedPositions[key] = value;
+    },
+    setDefaultIconCollection(defaultIconCollection: string) {
+      if (defaultIconCollection) {
+        localStorage.setItem('defaultIconCollection', defaultIconCollection);
+      } else {
+        localStorage.removeItem('defaultIconCollection');
+      }
+      this.defaultIconCollection = defaultIconCollection;
     },
   },
 });
