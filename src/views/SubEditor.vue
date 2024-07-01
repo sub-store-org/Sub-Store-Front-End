@@ -124,6 +124,7 @@
             <nut-textarea
               class="textarea-wrapper"
               @blur="customerBlurValidate('url')"
+              @change="strTrim('url')"
               v-model="form.url"
               :autosize="{ maxHeight: 110, minHeight: 50 }"
               :placeholder="$t(`editorPage.subConfig.basic.url.placeholder`)"
@@ -772,6 +773,13 @@ const urlValidator = (val: string): Promise<boolean> => {
   const customerBlurValidate = (prop: string) => {
     ruleForm.value.validate(prop);
   };
+  // 去除空格
+  const strTrim = (prop: string) => {
+    if (typeof form[prop] === "string") {
+      // 正则表达式去除首尾空格,
+      form[prop] = form[prop].replace(/\s+/g, '')
+    }
+  }
   const iconTips = () => {
     router.push(`/icon/collection`);
   };
