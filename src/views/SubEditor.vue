@@ -777,7 +777,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   const strTrim = (prop: string) => {
     if (typeof form[prop] === "string") {
       // 正则表达式去除首尾空格,
-      form[prop] = form[prop].replace(/\s+/g, '')
+      form[prop] = form[prop].replace(/[^\S\r\n]+/g, '')
     }
   }
   const iconTips = () => {
