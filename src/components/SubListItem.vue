@@ -327,6 +327,7 @@ const flow = computed(() => {
       let progress = 0;
       try {
         progress = 1 - (upload + download) / total
+        progress = parseFloat(progress.toFixed(2))
       } catch (e) {
       }
       if (!(progress > 0)) {
