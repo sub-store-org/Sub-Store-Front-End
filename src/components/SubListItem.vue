@@ -620,7 +620,7 @@ const onClickRefresh = async () => {
   background: var(--card-color);
   cursor: pointer;
   position: relative;
-
+  overflow: hidden;
   :deep(.nut-avatar) {
     flex-shrink: 0;
     width: 56px;
