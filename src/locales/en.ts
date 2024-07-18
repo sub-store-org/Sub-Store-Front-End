@@ -270,7 +270,7 @@ export default {
         },
         icon: {
           label: 'Icon',
-          placeholder: 'Click on the icon on the left to copy from the icon library. Fill in the icon link and do not use JPG',
+          placeholder: 'Click on the left or top icon, fill in the icon link from the icon library, do not use jpg.',
         },
         ignoreFailedRemoteSub: {
           label: 'Ignore failed remote subscription(s)'
@@ -661,6 +661,8 @@ export default {
       'Please manually refresh or select a different icon collection',
     refreshBtn: 'Manual refresh',
     selectCollectionBtn: 'Select a icon collection',
+    more: 'More',
+    useCustomIconCollection: 'Use Custom Icon Collection',
     collectionPicker: {
       title: 'Select a icon collection',
       cancel: 'Cancel',

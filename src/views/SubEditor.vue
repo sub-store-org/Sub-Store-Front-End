@@ -3,9 +3,18 @@
   <div class="page-wrapper" @click="handleEditGlobalClick">
     <!-- 基础表单 -->
     <div class="form-block-wrapper">
-      <div class="sticky-title-wrapper">
-        <p>{{ $t(`editorPage.subConfig.basic.label`) }}</p>
+      <div class="sticky-title-icon-container">
+        <nut-image
+          :class="{ 'sub-item-customer-icon': !isIconColor }"
+          :src="subIcon"
+          fit="cover"
+          show-loading
+          @click="showIconPopup"
+        />
       </div>
+      <!-- <div class="sticky-title-wrapper">
+        <p>{{ $t(`editorPage.subConfig.basic.label`) }}</p>
+      </div> -->
       <nut-form class="form" :model-value="form" ref="ruleForm">
         <!-- name -->
         <nut-form-item
@@ -72,7 +81,7 @@
               type="text"
               input-align="right"
               left-icon="shop"
-              @click-left-icon="iconTips"
+              @click-left-icon="showIconPopup"
             />
         </nut-form-item>
 
@@ -341,6 +350,11 @@
     :compareData="compareData"
     @closeCompare="closeCompare"
   />
+  <icon-popup
+    v-model:visible="iconPopupVisible"
+    ref="iconPopupRef"
+    @setIcon="setIcon">
+  </icon-popup>
 </template>
 
 <script lang="ts" setup>
@@ -363,6 +377,7 @@ import FilterSelect from "@/views/editor/components/FilterSelect.vue";
 import HandleDuplicate from "@/views/editor/components/HandleDuplicate.vue";
 import Regex from "@/views/editor/components/Regex.vue";
 import Script from "@/views/editor/components/Script.vue";
+import IconPopup from "@/views/icon/IconPopup.vue";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
 import {
@@ -465,7 +480,6 @@ provide("form", form);
 
 // 排除非动作卡片
 const ignoreList = ["Quick Setting Operator"];
-
 watch(
   () => cmStore.EditCode['SubEditer'],
   (newCode) => {
@@ -780,6 +794,22 @@ const urlValidator = (val: string): Promise<boolean> => {
       form[prop] = form[prop].replace(/[^\S\r\n]+/g, '')
     }
   }
+  // 图标
+  const subIcon = computed(() => {
+    if (form.icon) {
+      return form.icon
+    } else {
+      return isDefaultIcon.value ? logoIcon : logoRedIcon
+    }
+  })
+  const iconPopupVisible = ref(false)
+  const iconPopupRef = ref(null)
+  const showIconPopup = () => {
+    iconPopupVisible.value = true
+  }
+  const setIcon = (icon: any) => {
+    form.icon = icon.url
+  }
   const iconTips = () => {
     router.push(`/icon/collection`);
   };
@@ -965,6 +995,27 @@ const handleEditGlobalClick = () => {
 
 .form-block-wrapper {
   position: relative;
+  .sticky-title-icon-container {
+    display: flex;
+    justify-content: center;
+    .nut-image {
+      cursor: pointer;
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: transparent;
+      padding: 10px;
+    }
+    .sub-item-customer-icon {
+      :deep(img) {
+        & {
+          opacity: 0.8;
+          filter: brightness(var(--img-brightness));
+        }
+      }
+    }
+  }
   .button-tips {
     color: var(--primary-color);
     cursor: pointer;

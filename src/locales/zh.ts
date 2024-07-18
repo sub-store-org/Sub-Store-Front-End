@@ -270,7 +270,7 @@ export default {
         },
         icon: {
           label: '图标链接',
-          placeholder: '可点击左侧图标, 从图标库复制. 填入图标链接，不要使用 jpg',
+          placeholder: '可点击左侧或顶部图标, 从图标库填入图标链接，不要使用 jpg',
         },
         ignoreFailedRemoteSub: {
           label: '忽略失败的远程订阅'
@@ -661,6 +661,8 @@ export default {
     emptyCollectionDesc: '请手动刷新或选择其他图标仓库',
     refreshBtn: '手动刷新',
     selectCollectionBtn: '切换图标仓库',
+    more: '更多',
+    useCustomIconCollection: '使用自定义仓库',
     collectionPicker: {
       title: '选择一个图标仓库',
       cancel: '取消',
