@@ -362,7 +362,7 @@ export default {
           label: 'Resolve Domain',
           des: 'Providers(can be controlled by the node field "_no-resolve")',
           options: ['Google', 'IP-API', 'Cloudflare', 'Ali', 'Tencent', 'Custom'],
-          types: ['IPv4', 'IPv6', 'IP4P'],
+          types: ['IPv4', 'IPv6'],
           filters: ['Disabled', 'Remove Failed', 'IP Only', 'IPv4 Only', 'IPv6 Only'],
           cache: ['Enabled', 'Disabled'],
           tipsTitle: 'domain Tips',

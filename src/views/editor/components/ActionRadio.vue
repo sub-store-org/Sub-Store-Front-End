@@ -26,13 +26,13 @@
           </div>
       </div>
       <div class="radio-wrapper options-radio">
-        <p class="des-label">解析类型</p>
+        <p class="des-label" style="cursor: pointer" @click="rdoTypeInfo">解析类型(IPv6 兼容 IP4P <font-awesome-icon icon="fa-solid fa-circle-question"/>)</p>
         <nut-radiogroup direction="horizontal" v-model="rdoType">
           <nut-radio v-for="(key, index) in rdoTypeOpt" :label="key" :key="index"
             >{{
               $t(`editorPage.subConfig.nodeActions['${type}'].types[${index}]`)
             }}
-            <font-awesome-icon v-if="key === 'IP4P'" @click="rdoTypeInfo" icon="fa-solid fa-circle-question"/>
+            <!-- <font-awesome-icon v-if="key === 'IPv6'" @click="rdoTypeInfo" icon="fa-solid fa-circle-question"/> -->
           </nut-radio>
         </nut-radiogroup>
       </div>
@@ -109,7 +109,7 @@
   };
 
   const foTwOpt = ['cn', 'ws', 'tw'];
-  const rdoTypeOpt = ['IPv4', 'IPv6', 'IP4P'];
+  const rdoTypeOpt = ['IPv4', 'IPv6'];
   const rdoFilterOpt = ['disabled', 'removeFailed', 'IPOnly', 'IPv4Only', 'IPv6Only'];
   const rdoCacheOpt = ['enabled' , 'disabled'];
 
@@ -140,7 +140,7 @@
   const rdoTypeInfo = () => {
     Dialog({
       title: 'IP4P 地址格式',
-      content: '来自 NATMap, 将 IPv4 地址和端口同时编码在 DNS AAAA 记录中\n\n使用场景: STUN 内网穿透, 无需公网服务器即可获得 IPv4 公网地址',
+      content: '🆕 当选择解析类型为 IPv6 时\n将自动转换其中的 IP4P 地址\n\n来自 NATMap, 将 IPv4 地址和端口同时编码在 DNS AAAA 记录中\n\n使用场景: STUN 内网穿透, 无需公网服务器即可获得 IPv4 公网地址',
       popClass: 'auto-dialog',
       okText: '更多说明',
       cancelText: '取消',
@@ -173,6 +173,9 @@
         case 'Resolve Domain Operator':
           value.value = item.args?.provider ?? 'Google';
           rdoType.value = item.args?.type ?? 'IPv4';
+          if (rdoType.value === 'IP4P') {
+            rdoType.value = 'IPv6';
+          }
           rdoFilter.value = item.args?.filter ?? 'disabled';
           rdoCache.value = item.args?.cache ?? 'enabled';
           rdoUrl.value = item.args?.url ?? '';
