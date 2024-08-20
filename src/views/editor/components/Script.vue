@@ -126,7 +126,7 @@ const value = reactive({
   code: "",
 });
 
-const placeholders =
+let placeholders =
   sourceType !== "file"
     ? t(`// Example:
 // Script Operator
@@ -234,6 +234,7 @@ watch(value, () => {
         id,
         item.args.content ? item.args.content : placeholders
       );
+    placeholders = " ";
   } else {
     item.args.content = value.content;
   }
