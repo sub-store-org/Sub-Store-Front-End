@@ -249,6 +249,11 @@
   };
   const setSimpleMode = (isSimpleMode: boolean) => {
     globalStore.setSimpleMode(isSimpleMode);
+    const data = {
+      isSimpleMode: isSimpleMode
+    }
+    console.log('setSimpleMode data', data)
+    changeAppearanceSetting({ appearanceSetting: data });
   };
 
   const setLeftRight = (isLeftRight: boolean) => {
@@ -284,8 +289,8 @@
   
 
 
-  const { changeTheme } = settingsStore;
-  const { theme } = storeToRefs(settingsStore);
+  const { changeTheme, changeAppearanceSetting } = settingsStore;
+  const { theme, appearanceSetting } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
   useMousePicker();
   const selectedValue = ref(['dark']);
@@ -455,7 +460,8 @@
   // };
 
   watchEffect(() => {
-    SimpleSwitch.value = isSimpleMode.value;
+    SimpleSwitch.value = appearanceSetting.value.isSimpleMode;
+    // SimpleSwitch.value = isSimpleMode.value;
     LeftRight.value = isLeftRight.value;
     awIconColor.value = isIconColor.value;
     awIsDefaultIcon.value = isDefaultIcon.value;

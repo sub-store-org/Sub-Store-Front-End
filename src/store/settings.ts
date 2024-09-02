@@ -1,5 +1,6 @@
 import { useSettingsApi } from "@/api/settings";
 import i18n from "@/locales";
+import { useGlobalStore } from '@/store/global';
 import { useAppNotifyStore } from "@/store/appNotify";
 import { Toast } from "@nutui/nutui";
 import { defineStore } from "pinia";
@@ -24,6 +25,9 @@ export const useSettingsStore = defineStore("settingsStore", {
         name: "light",
         dark: "dark",
         light: "light",
+      },
+      appearanceSetting: {
+        isSimpleMode: false,
       },
       avatarUrl: "",
       artifactStore: "",
@@ -52,6 +56,8 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.theme.name = res.data.data.theme?.name ?? "light";
         this.theme.dark = res.data.data.theme?.dark ?? "dark";
         this.theme.light = res.data.data.theme?.light ?? "light";
+
+        this.appearanceSetting.isSimpleMode = res.data.data.appearanceSetting?.isSimpleMode ?? "";
       } else {
         showNotify({
           title: `获取配置失败`,
@@ -80,6 +86,40 @@ export const useSettingsStore = defineStore("settingsStore", {
         });
       }
     },
+    // 备份本地配置到后端（用于兼容外观设置）
+    async syncLocalAppearanceSetting() {
+      const globalStore = useGlobalStore();
+      const {
+        // env,
+        isSimpleMode,
+        isLeftRight,
+        ishostApi,
+        isIconColor,
+        isDefaultIcon,
+        isEditorCommon,
+        isSimpleReicon,
+        showFloatingRefreshButton,
+        istabBar,
+        istabBar2,
+        subProgressStyle,
+      } = globalStore;
+      console.log('globalStore', globalStore);
+      console.log('isSimpleMode', isSimpleMode);
+      console.log('isLeftRight', isLeftRight);
+      console.log('ishostApi', ishostApi);
+      console.log('isIconColor', isIconColor);
+      console.log('isDefaultIcon', isDefaultIcon);
+      console.log('isEditorCommon', isEditorCommon);
+      console.log('isSimpleReicon', isSimpleReicon);
+      console.log('showFloatingRefreshButton', showFloatingRefreshButton);
+      console.log('istabBar', istabBar);
+      console.log('istabBar2', istabBar2);
+      console.log('subProgressStyle', subProgressStyle);
+      const data = {
+        isSimpleMode,
+      };
+      await this.changeAppearanceSetting({ appearanceSetting: data });
+    },
     async changeTheme(data: SettingsPostData) {
       Toast.loading("切换主题中...", { cover: true, id: "theme__loading" });
       const { showNotify } = useAppNotifyStore();
@@ -89,6 +129,21 @@ export const useSettingsStore = defineStore("settingsStore", {
       } else {
         showNotify({
           title: `切换主题失败`,
+          type: "danger",
+        });
+      }
+      Toast.hide("theme__loading");
+    },
+    async changeAppearanceSetting(data: SettingsPostData) {
+      Toast.loading("保存外观设置中...", { cover: true, id: "theme__loading" });
+      const { showNotify } = useAppNotifyStore();
+      const res = await settingsApi.setSettings(data);
+      if (res?.data?.status === "success" && res?.data?.data) {
+        this.appearanceSetting = res.data.data.appearanceSetting;
+        console.log('appearanceSetting', this.appearanceSetting);
+      } else {
+        showNotify({
+          title: `保存外观设置失败`,
           type: "danger",
         });
       }

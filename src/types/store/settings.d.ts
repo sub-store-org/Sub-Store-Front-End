@@ -21,6 +21,9 @@ interface SettingsPostData {
     dark: CustomTheme;
     light: CustomTheme;
   };
+  appearanceSetting?: {
+    isSimpleMode?: boolean;
+  }
 }
 
 interface StoragePostData {
