@@ -4,6 +4,7 @@ interface ArtifactsStoreState {
 
 type ArtifactsPlatform =
   | 'Surge'
+  | 'SurgeMac'
   | 'QX'
   | 'Loon'
   | 'Clash'

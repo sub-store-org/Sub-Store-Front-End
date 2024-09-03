@@ -105,7 +105,7 @@
       icon: clashmeta,
     },
     {
-      name: 'Clash',
+      name: 'Clash(Deprecated)',
       path: 'Clash',
       icon: clash,
     },
@@ -117,6 +117,11 @@
     {
       name: 'Surge',
       path: 'Surge',
+      icon: surge,
+    },
+    {
+      name: 'Surge(macOS)',
+      path: 'SurgeMac',
       icon: surge,
     },
 

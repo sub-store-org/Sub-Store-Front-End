@@ -262,6 +262,8 @@ const icon = computed(() => {
   switch (platform) {
     case "Surge":
       return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
+    case "SurgeMac":
+      return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
     case "QX":
       return appearanceSetting.value.isIconColor ? quanxColorIcon : quanxIcon;
     case "Loon":
