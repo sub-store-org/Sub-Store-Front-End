@@ -22,7 +22,7 @@
               bottomSafeArea +
               48 +
               36 +
-              (!isMobile() ? (isSimpleMode ? 44 : 48) : 0)
+              (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
             }px`,
           }"
         >
@@ -222,14 +222,15 @@ const globalStore = useGlobalStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
 const {
-  isSimpleMode,
+  // isSimpleMode,
   isLoading,
   fetchResult,
   bottomSafeArea,
-  showFloatingRefreshButton,
+  // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const {
+  appearanceSetting,
   artifactStore: artifactStoreUrl,
   artifactStoreStatus,
   syncPlatform,

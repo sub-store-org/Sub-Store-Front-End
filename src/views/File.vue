@@ -23,13 +23,13 @@
               bottomSafeArea +
               48 +
               36 +
-              (!isMobile() ? (isSimpleMode ? 44 : 48) : 0)
+              (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
             }px`,
           }"
         >
           <!-- 刷新 -->
           <div
-            v-if="showFloatingRefreshButton"
+            v-if="appearanceSetting.showFloatingRefreshButton"
             class="drag-btn refresh"
             @click="refresh"
           >
@@ -144,6 +144,7 @@ import { useSubsApi } from "@/api/subs";
 import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
+import { useSettingsStore } from '@/store/settings';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
@@ -175,13 +176,16 @@ const subApi = useSubsApi();
 const { t } = useI18n();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
+
 const { hasFiles, files } = storeToRefs(subsStore);
 const {
-  isSimpleMode,
+  // isSimpleMode,
   isLoading,
   fetchResult,
   bottomSafeArea,
-  showFloatingRefreshButton,
+  // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);

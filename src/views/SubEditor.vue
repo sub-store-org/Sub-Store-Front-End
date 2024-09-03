@@ -5,7 +5,7 @@
     <div class="form-block-wrapper">
       <div class="sticky-title-icon-container">
         <nut-image
-          :class="{ 'sub-item-customer-icon': !isIconColor }"
+          :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
           :src="subIcon"
           fit="cover"
           show-loading
@@ -277,7 +277,7 @@
               >
                 <div class="sub-img-wrapper">
                   <nut-avatar
-                    :class="{ 'sub-item-customer-icon': !isIconColor, 'icon': true  }"
+                    :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor, 'icon': true  }"
                     v-if="item[2]"
                     size="32"
                     :url="item[2]"
@@ -308,7 +308,7 @@
     </div>
 
     <!-- 常用配置 -->
-    <CommonBlock v-if="isEditorCommon" />
+    <CommonBlock v-if="appearanceSetting.isEditorCommon" />
 
     <!-- 节点操作 -->
     <ActionBlock
@@ -365,6 +365,7 @@ import logoRedIcon from "@/assets/icons/logo-red.png";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
 import { addItem, deleteItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
@@ -406,8 +407,15 @@ const subsStore = useSubsStore();
 const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
-const { bottomSafeArea, isEditorCommon, isDefaultIcon, isIconColor } =
-  storeToRefs(globalStore);
+const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
+
+const {
+    bottomSafeArea,
+    // isEditorCommon,
+    // isDefaultIcon, 
+    // isIconColor 
+  } = storeToRefs(globalStore);
 const padding = bottomSafeArea.value + "px";
 
   const sub = computed(() => subsStore.getOneSub(configName));
@@ -419,7 +427,7 @@ const padding = bottomSafeArea.value + "px";
       return [
         item.name,
         item.displayName || item['display-name'] || item.name,
-        item.icon || (isDefaultIcon.value ? logoIcon : logoRedIcon),
+        item.icon || (appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon),
         item.tag
       ];
     });
@@ -799,7 +807,7 @@ const urlValidator = (val: string): Promise<boolean> => {
     if (form.icon) {
       return form.icon
     } else {
-      return isDefaultIcon.value ? logoIcon : logoRedIcon
+      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon
     }
   })
   const iconPopupVisible = ref(false)

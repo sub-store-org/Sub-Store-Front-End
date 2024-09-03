@@ -28,6 +28,15 @@ export const useSettingsStore = defineStore("settingsStore", {
       },
       appearanceSetting: {
         isSimpleMode: false,
+        isLeftRight: false,
+        isDefaultIcon: false,
+        isIconColor: false,
+        isEditorCommon: true,
+        isSimpleReicon: false,
+        showFloatingRefreshButton: false,
+        istabBar: false,
+        istabBar2: false,
+        subProgressStyle: "hidden",
       },
       avatarUrl: "",
       artifactStore: "",
@@ -58,6 +67,15 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.theme.light = res.data.data.theme?.light ?? "light";
 
         this.appearanceSetting.isSimpleMode = res.data.data.appearanceSetting?.isSimpleMode ?? "";
+        this.appearanceSetting.isLeftRight = res.data.data.appearanceSetting?.isLeftRight ?? "";
+        this.appearanceSetting.isDefaultIcon = res.data.data.appearanceSetting?.isDefaultIcon ?? "";
+        this.appearanceSetting.isIconColor = res.data.data.appearanceSetting?.isIconColor ?? "";
+        this.appearanceSetting.isEditorCommon = res.data.data.appearanceSetting?.isEditorCommon ?? true;
+        this.appearanceSetting.isSimpleReicon = res.data.data.appearanceSetting?.isSimpleReicon ?? "";
+        this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
+        this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
+        this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
+        this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
       } else {
         showNotify({
           title: `获取配置失败`,
@@ -65,7 +83,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         });
       }
     },
-    async editSettings(data: SettingsPostData) {
+    async editGistSettings(data: SettingsPostData) {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.setSettings(data);
       if (res?.data?.status === "success" && res?.data?.data) {
@@ -90,10 +108,8 @@ export const useSettingsStore = defineStore("settingsStore", {
     async syncLocalAppearanceSetting() {
       const globalStore = useGlobalStore();
       const {
-        // env,
         isSimpleMode,
         isLeftRight,
-        ishostApi,
         isIconColor,
         isDefaultIcon,
         isEditorCommon,
@@ -103,22 +119,42 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar2,
         subProgressStyle,
       } = globalStore;
-      console.log('globalStore', globalStore);
-      console.log('isSimpleMode', isSimpleMode);
-      console.log('isLeftRight', isLeftRight);
-      console.log('ishostApi', ishostApi);
-      console.log('isIconColor', isIconColor);
-      console.log('isDefaultIcon', isDefaultIcon);
-      console.log('isEditorCommon', isEditorCommon);
-      console.log('isSimpleReicon', isSimpleReicon);
-      console.log('showFloatingRefreshButton', showFloatingRefreshButton);
-      console.log('istabBar', istabBar);
-      console.log('istabBar2', istabBar2);
-      console.log('subProgressStyle', subProgressStyle);
       const data = {
-        isSimpleMode,
+        isSimpleMode: isSimpleMode ?? false,
+        isLeftRight: isLeftRight ?? false,
+        isIconColor: isIconColor ?? false,
+        isDefaultIcon: isDefaultIcon ?? false,
+        isEditorCommon: isEditorCommon ?? true,
+        isSimpleReicon: isSimpleReicon ?? false,
+        showFloatingRefreshButton: showFloatingRefreshButton ?? false,
+        istabBar: istabBar ?? false,
+        istabBar2: istabBar2 ?? false,
+        subProgressStyle: subProgressStyle ?? "hidden",
       };
-      await this.changeAppearanceSetting({ appearanceSetting: data });
+      const list = Object.keys(data) as (keyof SettingsPostData)[];
+      // 判断是否有本地持久化的外观设置
+      const hasLocalAppearanceSetting = list.some((key) => {
+        return localStorage.getItem(key) !== null
+      })
+      // 如果有本地持久化的外观设置，则将其同步到后端
+      if (hasLocalAppearanceSetting) {
+        await this.changeAppearanceSetting({ appearanceSetting: data });
+        this.removeLocalAppearanceSetting(); 
+      }
+    },
+    // 清除本地持久化的外观设置
+    removeLocalAppearanceSetting() {
+      const globalStore = useGlobalStore();
+      globalStore.setSimpleMode(false);
+      globalStore.setLeftRight(false);
+      globalStore.setIconColor(false);
+      globalStore.setIsDefaultIcon(false);
+      globalStore.setEditorCommon(false);
+      globalStore.setSimpleReicon(false);
+      globalStore.setShowFloatingRefreshButton(false);
+      globalStore.settabBar(false);
+      globalStore.settabBar2(false);
+      globalStore.setSubProgressStyle('hidden');
     },
     async changeTheme(data: SettingsPostData) {
       Toast.loading("切换主题中...", { cover: true, id: "theme__loading" });
@@ -140,7 +176,6 @@ export const useSettingsStore = defineStore("settingsStore", {
       const res = await settingsApi.setSettings(data);
       if (res?.data?.status === "success" && res?.data?.data) {
         this.appearanceSetting = res.data.data.appearanceSetting;
-        console.log('appearanceSetting', this.appearanceSetting);
       } else {
         showNotify({
           title: `保存外观设置失败`,
