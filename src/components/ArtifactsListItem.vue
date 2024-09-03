@@ -9,12 +9,12 @@
   >
     <div
       class="sub-item-wrapper"
-      :style="{ padding: isSimpleMode ? '9px' : '16px' }"
+      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
     >
       <div class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar
-          :class="{ 'sub-item-customer-icon': !isIconColor }"
-          :size="isSimpleMode ? '36' : '48'"
+          :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
+          :size="appearanceSetting.isSimpleMode ? '36' : '48'"
           :url="icon"
           bg-color=""
         ></nut-avatar>
@@ -24,7 +24,7 @@
           <h3 class="sub-item-title">
             {{ displayName }}
           </h3>
-          <div class="title-right-wrapper" v-if="!isSimpleMode">
+          <div class="title-right-wrapper" v-if="!appearanceSetting.isSimpleMode">
             <button
               class="copy-sub-link"
               style="padding: 0 12px"
@@ -52,7 +52,7 @@
           <div class="second-line-wrapper">
             <p>{{ detail.secondLine }}</p>
             <div class="task-switch">
-              <div v-if="isSimpleMode">
+              <div v-if="appearanceSetting.isSimpleMode">
                 <button
                   v-if="artifact.url"
                   class="copy-sub-link"
@@ -72,7 +72,7 @@
                   <font-awesome-icon icon="fa-solid fa-angles-right" />
                 </button>
               </div>
-              <span v-if="!isSimpleMode">
+              <span v-if="!appearanceSetting.isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
               <span @click.stop>
@@ -88,7 +88,7 @@
       </div>
     </div>
 
-    <template v-if="isLeftRight" #left>
+    <template v-if="appearanceSetting.isLeftRight" #left>
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button
           shape="square"
@@ -195,8 +195,8 @@ import { useGlobalStore } from "@/store/global";
 import { useHostAPI } from "@/hooks/useHostAPI";
 const globalStore = useGlobalStore();
 
-const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } =
-  storeToRefs(globalStore);
+// const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } =
+//   storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -212,6 +212,7 @@ const { showNotify } = useAppNotifyStore();
 const subsStore = useSubsStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const artifact = computed(() => {
   return artifacts.value.find((item) => item.name === name);
@@ -260,29 +261,29 @@ const icon = computed(() => {
   }
   switch (platform) {
     case "Surge":
-      return isIconColor.value ? surgeColorIcon : surgeIcon;
+      return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
     case "SurgeMac":
-      return isIconColor.value ? surgeColorIcon : surgeIcon;
+      return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
     case "QX":
-      return isIconColor.value ? quanxColorIcon : quanxIcon;
+      return appearanceSetting.value.isIconColor ? quanxColorIcon : quanxIcon;
     case "Loon":
-      return isIconColor.value ? loonColorIcon : loonIcon;
+      return appearanceSetting.value.isIconColor ? loonColorIcon : loonIcon;
     case "Clash":
-      return isIconColor.value ? clashColorIcon : clashIcon;
+      return appearanceSetting.value.isIconColor ? clashColorIcon : clashIcon;
     case "ClashMeta":
-      return isIconColor.value ? clashMetaColorIcon : clashMetaIcon;
+      return appearanceSetting.value.isIconColor ? clashMetaColorIcon : clashMetaIcon;
     case "Stash":
-      return isIconColor.value ? stashColorIcon : stashIcon;
+      return appearanceSetting.value.isIconColor ? stashColorIcon : stashIcon;
     case "ShadowRocket":
-      return isIconColor.value ? shadowRocketColorIcon : shadowRocketIcon;
+      return appearanceSetting.value.isIconColor ? shadowRocketColorIcon : shadowRocketIcon;
     case "V2Ray":
-      return isIconColor.value ? v2rayColorIcon : v2rayIcon;
+      return appearanceSetting.value.isIconColor ? v2rayColorIcon : v2rayIcon;
     case "sing-box":
-      return isIconColor.value ? singboxColorIcon : singboxIcon;
+      return appearanceSetting.value.isIconColor ? singboxColorIcon : singboxIcon;
     case "Surfboard":
-      return isIconColor.value ? surfboardColorIcon : surfboardIcon;
+      return appearanceSetting.value.isIconColor ? surfboardColorIcon : surfboardIcon;
     default:
-      return isDefaultIcon.value ? logoIcon : logoRedIcon;
+      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   }
 });
 
@@ -371,7 +372,7 @@ const transferText = (type: string) => {
   };
 
   const transTime = () => {
-    if (isSimpleMode.value) {
+    if (appearanceSetting.value.isSimpleMode) {
       return artifact.value.updated ? butifyDate(artifact.value.updated) : "";
     } else {
       return artifact.value.updated
@@ -397,7 +398,7 @@ const detail = computed(() => {
       sourceSub.value?.name
     : t("specificWord.unknownSource");
   const type = transferText("type") || "";
-  if (isSimpleMode.value) {
+  if (appearanceSetting.value.isSimpleMode) {
     return {
       firstLine: "",
       secondLine: type + " " + name + " " + transferText("time"),
@@ -419,7 +420,7 @@ const swipeController = () => {
     swipeIsOpen.value = false;
     if(moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
   } else {
-    if (isLeftRight.value) {
+    if (appearanceSetting.value.isLeftRight) {
       swipe.value.open("right");
     } else {
       swipe.value.open("left");

@@ -45,7 +45,7 @@
       </div>
       <div class="switch-wrapper">
         <nut-switch
-          v-model="isIconColor"
+          v-model="appearanceSetting.isIconColor"
           class="my-switch"
           size="mini"
           @change="setIconColor"
@@ -60,7 +60,7 @@
           @click="copyIconUrl(icon)"
         >
           <nut-image
-            :class="{ 'sub-item-customer-icon': !isIconColor }"
+            :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
             :src="icon.url"
             fit="cover"
             lazy-load
@@ -98,15 +98,25 @@ import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from '@/store/settings';
 
 const globalStore = useGlobalStore();
-const { isIconColor, defaultIconCollection } = storeToRefs(globalStore);
+const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
+const { changeAppearanceSetting } = settingsStore;
+
+const { defaultIconCollection } = storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const setIconColor = (isIconColor: boolean) => {
-  globalStore.setIconColor(isIconColor);
+  // globalStore.setIconColor(isIconColor);
+  const data = {
+    ...appearanceSetting.value,
+    isIconColor: isIconColor
+  }
+  changeAppearanceSetting({ appearanceSetting: data });
 };
 
 const setDefaultIconCollection = (url: string) => {

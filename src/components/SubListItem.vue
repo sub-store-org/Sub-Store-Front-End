@@ -10,25 +10,25 @@
   >
     <div
       class="sub-item-wrapper"
-      :style="{ padding: isSimpleMode ? '9px' : '16px' }"
+      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
     >
-      <div v-if="subProgressStyle === 'background' && typeof flow === 'object' && flow.progress" class="progress" :style="{width: flow.progress*100+'%'}"></div>
+      <div v-if="appearanceSetting.subProgressStyle === 'background' && typeof flow === 'object' && flow.progress" class="progress" :style="{width: flow.progress*100+'%'}"></div>
       <!-- compareSub -->
       <div
         @click.stop="compareSub"
         class="sub-img-wrappers"
-        :style="{ 'margin-top': isSimpleMode ? '5px' : '0' }"
+        :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
       >
-        <div v-if="isIconColor">
+        <div v-if="appearanceSetting.isIconColor">
           <nut-avatar
             v-if="props[props.type].icon"
-            :size="isSimpleMode ? '36' : '48'"
+            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
             :url="props[props.type].icon"
             bg-color=""
           />
           <nut-avatar
             v-else
-            :size="isSimpleMode ? '36' : '48'"
+            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
             :url="icon"
             bg-color=""
           />
@@ -36,7 +36,7 @@
         <div v-else>
           <nut-avatar
             class="sub-item-customer-icon"
-            :size="isSimpleMode ? '36' : '48'"
+            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
             :url="props[props.type].icon || icon"
             bg-color=""
           />
@@ -44,7 +44,7 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 v-if="!isSimpleMode" class="sub-item-title">
+          <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
             <span class="tag" v-for="i in tag" :key="i"><nut-tag>{{ i }}</nut-tag></span>
           </h3>
@@ -56,7 +56,7 @@
           <!-- onClickCopyLink 拷贝 -->
           <div
             style="position: relative"
-            :style="{ top: isSimpleMode ? '8px' : '0' }"
+            :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
           >
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone" />
@@ -64,14 +64,14 @@
             <button
               class="refresh-sub-flow"
               @click.stop="onClickRefresh"
-              v-if="props.type === 'sub' && (!isSimpleMode || isSimpleReicon)"
+              v-if="props.type === 'sub' && (!appearanceSetting.isSimpleMode || appearanceSetting.isSimpleReicon)"
             >
               <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
             </button>
 
             <!-- 编辑 -->
             <button
-              v-if="!isSimpleMode"
+              v-if="!appearanceSetting.isSimpleMode"
               class="copy-sub-link"
               @click.stop="onClickEdit"
             >
@@ -91,7 +91,7 @@
             </button>
           </div>
         </div>
-        <template v-if="!isSimpleMode">
+        <template v-if="!appearanceSetting.isSimpleMode">
           <p v-if="type === 'sub'" class="sub-item-detail">
             <template v-if="typeof flow === 'string'">
               <span>
@@ -133,7 +133,7 @@
       </div>
     </div>
     <!-- 加入判断 开启拖动不显示 -->
-    <template v-if="isLeftRight" #left>
+    <template v-if="appearanceSetting.isLeftRight" #left>
       <!-- Copy -->
       <div class="sub-item-swipe-btn-wrapper">
         <nut-button
@@ -215,6 +215,7 @@ import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
+import { useSettingsStore } from '@/store/settings';
 import { getString } from "@/utils/flowTransfer";
 import { isMobile } from "@/utils/isMobile";
 import CompareTable from "@/views/CompareTable.vue";
@@ -255,14 +256,17 @@ const route = useRoute();
 const globalStore = useGlobalStore();
 const subsStore = useSubsStore();
 const subsApi = useSubsApi();
+const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
+
 const {
   isFlowFetching,
-  isSimpleMode,
-  isLeftRight,
-  isIconColor,
-  isSimpleReicon,
-  isDefaultIcon,
-  subProgressStyle,
+  // isSimpleMode,
+  // isLeftRight,
+  // isIconColor,
+  // isSimpleReicon,
+  // isDefaultIcon,
+  // subProgressStyle,
 } = storeToRefs(globalStore);
 
 const displayName =
@@ -272,7 +276,7 @@ const name = props[props.type].name;
 const tag = props[props.type].tag;
 const { flows } = storeToRefs(subsStore);
 const icon = computed(() => {
-  return isDefaultIcon.value ? logoIcon : logoRedIcon;
+  return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
 });
 const collectionDetail = computed(() => {
   const nameList = props?.collection.subscriptions || [];
@@ -334,7 +338,7 @@ const flow = computed(() => {
         progress = 0
       }
       let secondLine: string;
-      if (isSimpleMode.value) {
+      if (appearanceSetting.value.isSimpleMode) {
         secondLine = remainingDays ? `${remainingDays}${t(
           "subPage.subItem.remainingDaysUnit"
         )}` : ''
@@ -446,7 +450,7 @@ const swipeController = () => {
     swipeIsOpen.value = false;
     if(moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
   } else {
-    if (isLeftRight.value) {
+    if (appearanceSetting.value.isLeftRight) {
       swipe.value.open("right");
     } else {
       swipe.value.open("left");

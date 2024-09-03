@@ -21,6 +21,18 @@ interface SettingsPostData {
     dark: CustomTheme;
     light: CustomTheme;
   };
+  appearanceSetting?: {
+    isSimpleMode?: boolean; // 简洁模式
+    isLeftRight?: boolean; // 卡片右滑呼出
+    isDefaultIcon?: boolean; // 恢复默认图标
+    isIconColor?: boolean; // 自定义图标使用原始颜色
+    isEditorCommon?: boolean; // 展示编辑页常用配置
+    isSimpleReicon?: boolean; // 展示订阅刷新按钮
+    showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
+    istabBar?: boolean; // 隐藏 "Gist 同步" 页
+    istabBar2?: boolean; // 隐藏 "文件" 页
+    subProgressStyle?: string; // 订阅进度样式
+  }
 }
 
 interface StoragePostData {

@@ -317,7 +317,7 @@ const fileInput = ref(null);
 const toggleEditMode = async () => {
   isEditLoading.value = true;
   if (isEditing.value) {
-    await settingsStore.editSettings({
+    await settingsStore.editGistSettings({
       syncPlatform: syncPlatformInput.value,
       githubUser: userInput.value,
       gistToken: tokenInput.value,

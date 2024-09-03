@@ -8,10 +8,10 @@
       size="22px"
     >
       <nut-tabbar-item class="tabbar-item" to="/subs" icon="link" />
-      <nut-tabbar-item v-show="!istabBar2" class="tabbar-item" to="/files" icon="category" />
+      <nut-tabbar-item v-show="!appearanceSetting.istabBar2" class="tabbar-item" to="/files" icon="category" />
 
       <nut-tabbar-item
-        v-show="!istabBar"
+        v-show="!appearanceSetting.istabBar"
         class="tabbar-item"
         to="/sync"
         icon="refresh2"
@@ -24,6 +24,7 @@
 
 <script lang="ts" setup>
   import { useGlobalStore } from '@/store/global';
+  import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
   import { ref } from 'vue';
   import { onBeforeRouteUpdate, useRoute } from 'vue-router';
@@ -35,7 +36,15 @@
 
 
   const globalStore = useGlobalStore();
-  const { bottomSafeArea, istabBar, istabBar2, env } = storeToRefs(globalStore);
+  const settingsStore = useSettingsStore();
+  const { appearanceSetting } = storeToRefs(settingsStore);
+
+  const {
+    bottomSafeArea,
+    // istabBar,
+    // istabBar2,
+    env
+  } = storeToRefs(globalStore);
   const style = {
     height: `${bottomSafeArea.value + 12 + 44}px`,
     paddingBottom: bottomSafeArea.value + 'px',

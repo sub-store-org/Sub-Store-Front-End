@@ -15,7 +15,7 @@
         <template #left>
           <div :class="isNeedBack ? 'icon-back' : 'icon-null'"></div>
           <font-awesome-icon
-            v-if="!isNeedBack && !showFloatingRefreshButton"
+            v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
             @click.stop="refresh"
             class="fa-arrow-rotate-right"
             icon="fa-solid fa-arrow-rotate-right"
@@ -25,7 +25,7 @@
 
         <template #right>
           <font-awesome-icon
-            v-if="isSimpleMode"
+            v-if="appearanceSetting.isSimpleMode"
             @click.stop="setSimpleMode(false)"
             class="navBar-right-icon fa-toggle"
             icon="fa-solid fa-toggle-on "
@@ -85,6 +85,7 @@ import { computed, ref, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
 import { Toast } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
@@ -95,7 +96,10 @@ const route = useRoute();
 const globalStore = useGlobalStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
-const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
+const settingsStore = useSettingsStore();
+const { changeAppearanceSetting } = settingsStore;
+const { appearanceSetting  } = storeToRefs(settingsStore);
+// const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
 const isLandscape = ref(false);
 const isSmall = ref(false);
 const screenWidth = ref(window.innerWidth);
@@ -183,7 +187,12 @@ const back = () => {
   }
 };
 const setSimpleMode = (isSimpleMode: boolean) => {
-  globalStore.setSimpleMode(isSimpleMode);
+  // globalStore.setSimpleMode(isSimpleMode);
+  const data = {
+    ...appearanceSetting.value,
+    isSimpleMode: isSimpleMode
+  }
+  changeAppearanceSetting({ appearanceSetting: data })
 };
 
 const refresh = () => {
