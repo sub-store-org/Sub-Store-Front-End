@@ -32,6 +32,39 @@ img {
   pointer-events: none;
 }
 
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  *::-webkit-scrollbar-thumb {
+    background: #c0c1c58f;
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #c0c1c550;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  *::-webkit-scrollbar-thumb {
+    background: #c0c1c550;
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #c0c1c58f;
+  }
+}
+
 //collapse
 .nut-collapse-item {
   .collapse-item.collapse-item {
