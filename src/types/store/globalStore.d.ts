@@ -21,6 +21,7 @@ interface GlobalStoreState {
 }
 
 interface ENV {
+  meta?: any; 
   hasNewVersion?: boolean;
   latestVersion?: string;
   version?: string;

@@ -168,6 +168,7 @@ import shadowRocketIcon from "@/assets/icons/shadowrocket.png";
 import surfboardIcon from "@/assets/icons/surfboard.png";
 import stashIcon from "@/assets/icons/stash.png";
 import surgeIcon from "@/assets/icons/surge.png";
+import surgeMacIcon from "@/assets/icons/surgeformac_text.png";
 import v2rayIcon from "@/assets/icons/v2ray.png";
 import singboxColorIcon from "@/assets/icons/sing-box_color.png";
 import clashColorIcon from "@/assets/icons/clash_color.png";
@@ -178,6 +179,7 @@ import shadowRocketColorIcon from "@/assets/icons/shadowrocket_color.png";
 import surfboardColorIcon from "@/assets/icons/surfboard_color.png";
 import stashColorIcon from "@/assets/icons/stash_color.png";
 import surgeColorIcon from "@/assets/icons/surge_color.png";
+import surgeMacColorIcon from "@/assets/icons/surgeformac_text_color.png";
 import v2rayColorIcon from "@/assets/icons/v2ray_color.png";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";
@@ -263,7 +265,7 @@ const icon = computed(() => {
     case "Surge":
       return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
     case "SurgeMac":
-      return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
+      return appearanceSetting.value.isIconColor ? surgeMacColorIcon : surgeMacIcon;
     case "QX":
       return appearanceSetting.value.isIconColor ? quanxColorIcon : quanxIcon;
     case "Loon":
