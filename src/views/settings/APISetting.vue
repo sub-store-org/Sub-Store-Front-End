@@ -4,7 +4,7 @@
       <nut-cell-group :title="$t(`apiSettingPage.currentApi.title`)">
         <nut-cell class="cell" center>
           <template #icon>
-            <img :src="icon" alt="" class="auto-reverse backend-icon">
+            <img :src="env.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_ICON || icon" alt="" class="auto-reverse backend-icon">
           </template>
           <template #title>
             <span class="backend-title">{{
@@ -15,7 +15,7 @@
           </template>
           <template #link>
             <span class="backend-version">{{
-              `${env.backend} - ${env.version}`
+              `${env.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_NAME || env.backend} - ${env.version}`
             }}</span>
           </template>
         </nut-cell>
