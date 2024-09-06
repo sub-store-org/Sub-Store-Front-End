@@ -56,7 +56,7 @@
           type="text"
         />
       </nut-form-item>
-      
+
       <nut-form-item
         :label="$t(`syncPage.addArtForm.displayName.label`)"
         prop="displayName"
@@ -91,8 +91,8 @@
           type="text"
         />
         <!-- readonly 只读 -->
-          
-        <Teleport to="body">
+
+        <Teleport to="#ztop">
           <nut-cascader
             :title="$t('syncPage.selectSource.title')"
             v-model:visible="sourceSelectorIsVisible"
@@ -150,7 +150,7 @@
   const ruleForm = ref();
 
   const emit = defineEmits(['close']);
-  
+
   const { name } = defineProps<{
     name: string;
   }>();
