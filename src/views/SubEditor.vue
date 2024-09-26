@@ -651,7 +651,10 @@ const compare = () => {
         }
       }
     });
-
+    // 当前如果已经存在改订阅配置，则更新订阅信息
+    if (configName !== "UNTITLED") {
+      await subsStore.fetchFlows(ref([data]).value);
+    }
     const type = editType === "collections" ? "collection" : "sub";
     const res = await subsApi.compareSub(type, data);
     if (res?.data?.status === "success") {
