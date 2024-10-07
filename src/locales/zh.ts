@@ -288,7 +288,7 @@ export default {
         },
         proxy: {
           label: '代理/策略',
-          placeholder: '通过代理/节点/策略获取订阅',
+          placeholder: '通过代理/节点/策略获取订阅，不填使用默认',
         },
       },
       commonOptions: {
@@ -475,11 +475,13 @@ export default {
       githubUser: '请输入 GitHub 用户名',
       gistToken: '请输入 GitHub 令牌',
       defaultUserAgent: '请输入默认 User-Agent',
+      defaultProxy: '请输入默认代理/策略',
       defaultTimeout: '请输入默认超时(单位: 毫秒)',
       cacheThreshold: '请输入缓存阈值(单位: KB)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noDefaultUserAgent: '未配置默认 User-Agent',
+      noDefaultProxy: '未配置默认代理/策略',
       noDefaultTimeout: '未配置默认超时',
       noCacheThreshold: '未配置缓存阈值',
     },

@@ -12,6 +12,7 @@ interface SettingsPostData {
   syncPlatform?: string;
   gistToken?: string;
   githubUser?: string;
+  defaultProxy?: string;
   defaultUserAgent?: string;
   defaultTimeout?: string;
   cacheThreshold?: string;
