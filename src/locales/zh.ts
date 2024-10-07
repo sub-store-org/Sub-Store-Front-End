@@ -288,7 +288,7 @@ export default {
         },
         proxy: {
           label: '代理/策略',
-          placeholder: '通过代理/节点/策略获取订阅，不填使用默认',
+          placeholder: '通过代理/节点/策略获取远程资源，不填使用默认',
         },
       },
       commonOptions: {
