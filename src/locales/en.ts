@@ -98,6 +98,9 @@ export default {
     ignoreFailedRemoteFile: {
       label: 'Ignore failed remote file(s)'
     },
+    download: {
+      label: 'Enable download (filename: display name)',
+    },
   },
   // subscription management page
   subPage: {

@@ -44,6 +44,15 @@
               type="text"
             />
           </nut-form-item>
+          <nut-form-item
+            :label="$t(`filePage.download.label`)"
+            prop="download"
+            class="ignore-failed-wrapper"
+          >
+            <div class="switch-wrapper">
+              <nut-switch v-model="form.download" />
+            </div>
+          </nut-form-item>
           <!-- icon -->
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.icon.label`)"
@@ -347,6 +356,7 @@ watchEffect(() => {
     form.content = sourceData.content;
     cmStore.setEditCode("FileEditer", sourceData.content);
     form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
+    form.download = sourceData.download;
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
     form.process = newProcess;
     if (sourceData.process.length > 0) {

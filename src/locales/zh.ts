@@ -98,6 +98,9 @@ export default {
     ignoreFailedRemoteFile: {
       label: '忽略失败的远程文件'
     },
+    download: {
+      label: '启用下载(文件名为显示名称)'
+    },
   },
   // 订阅管理页
   subPage: {
