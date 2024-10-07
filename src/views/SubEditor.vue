@@ -979,7 +979,6 @@ const handleEditGlobalClick = () => {
       actionBlockRef.value.exitAllEditName();
     }
   }
-
 }
 </script>
 

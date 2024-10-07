@@ -1,8 +1,17 @@
 <template>
   <div v-if="isDis">
-    <div class="page-wrapper">
+    <div class="page-wrapper" @click="handleEditGlobalClick">
       <!-- 基础表单 -->
       <div class="form-block-wrapper">
+        <div class="sticky-title-icon-container">
+          <nut-image
+            :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
+            :src="fileIcon"
+            fit="cover"
+            show-loading
+            @click="showIconPopup"
+          />
+        </div>
         <nut-form class="form" :model-value="form" ref="ruleForm">
           <!-- name -->
           <nut-form-item
@@ -66,7 +75,7 @@
               type="text"
               input-align="right"
               left-icon="shop"
-              @click-left-icon="iconTips"
+              @click-left-icon="showIconPopup"
             />
           </nut-form-item>
           <nut-form-item
@@ -230,9 +239,11 @@
         </nut-form>
       </div>
       <ActionBlock
+        ref="actionBlockRef"
         :checked="actionsChecked"
         :list="actionsList"
         sourceType="file"
+        @updateCustomNameModeFlag="updateCustomNameModeFlag"
         @addAction="addAction"
         @deleteAction="deleteAction"
       />
@@ -268,19 +279,28 @@
     :previewData="previewData"
     @closePreview="closePreview"
   />
+  <icon-popup
+    v-model:visible="iconPopupVisible"
+    ref="iconPopupRef"
+    @setIcon="setIcon">
+  </icon-popup>
 </template>
 
 <script lang="ts" setup>
+import logoIcon from "@/assets/icons/logo.png";
+import logoRedIcon from "@/assets/icons/logo-red.png";
 import { useSubsApi } from "@/api/subs";
 import { useFilesApi } from "@/api/files";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
 import ActionBlock from "@/views/editor/ActionBlock.vue";
 import { addItem, deleteItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
+import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
 import { initStores } from "@/utils/initApp";
 import { Dialog, Toast } from "@nutui/nutui";
@@ -311,7 +331,9 @@ const subsStore = useSubsStore();
 const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
+const settingsStore = useSettingsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { appearanceSetting } = storeToRefs(settingsStore);
 const padding = bottomSafeArea.value + "px";
 
 let scrollTop = 0;
@@ -376,11 +398,12 @@ watchEffect(() => {
     form.process = newProcess;
     if (sourceData.process.length > 0) {
       form.process.forEach((item) => {
-        const { type, id } = item;
+        const { type, id, customName } = item;
         actionsChecked.push([id, true]);
         const action = {
           type,
           id,
+          customName,
           tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
           component: null,
         };
@@ -548,9 +571,25 @@ const proxyTips = () => {
         lockScroll: false,
       });
   };
-const iconTips = () => {
-  router.push(`/icon/collection`);
-};
+// 图标
+const fileIcon = computed(() => {
+    if (form.icon) {
+      return form.icon
+    } else {
+      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon
+    }
+  })
+  const iconPopupVisible = ref(false)
+  const iconPopupRef = ref(null)
+  const showIconPopup = () => {
+    iconPopupVisible.value = true
+  }
+  const setIcon = (icon: any) => {
+    form.icon = icon.url
+  }
+  const iconTips = () => {
+    router.push(`/icon/collection`);
+  };
 // 名称验证器
 const nameValidator = (val: string): Promise<boolean> => {
   return new Promise((resolve) => {
@@ -585,6 +624,17 @@ const urlValidator = (val: string): Promise<boolean> => {
 const customerBlurValidate = (prop: string) => {
   ruleForm.value.validate(prop);
 };
+const actionBlockRef = ref(null)
+const customNameModeFlag = ref(false)
+const updateCustomNameModeFlag = (flag) => customNameModeFlag.value = flag
+const handleEditGlobalClick = () => {
+  if (actionBlockRef.value) {
+    if (customNameModeFlag.value) {
+      // exit
+      actionBlockRef.value.exitAllEditName();
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -616,6 +666,27 @@ const customerBlurValidate = (prop: string) => {
 
 .form-block-wrapper {
   position: relative;
+  .sticky-title-icon-container {
+    display: flex;
+    justify-content: center;
+    .nut-image {
+      cursor: pointer;
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: transparent;
+      padding: 10px;
+    }
+    .sub-item-customer-icon {
+      :deep(img) {
+        & {
+          opacity: 0.8;
+          filter: brightness(var(--img-brightness));
+        }
+      }
+    }
+  }
 }
 
 .bottom-btn-wrapper {
