@@ -127,7 +127,8 @@ export default {
     },
     collectionItem: {
       noSub: '没有包含子订阅',
-      contain: '包含的订阅',
+      contain: '手动选择的订阅',
+      containTag: '关联的订阅标签',
     },
     subItem: {
       local: '本地订阅',
@@ -240,6 +241,10 @@ export default {
           label: '标签',
           placeholder: '标签(用 , 分隔) 将用于分组',
         },
+        subscriptionTags: {
+          label: '关联订阅标签',
+          placeholder: '使用标签关联单条订阅(用 , 分隔)',
+        },
         source: {
           label: '来源',
           remote: '远程订阅',
@@ -261,7 +266,7 @@ export default {
           isIllegal: '订阅链接格式非法',
         },
         subscriptions: {
-          label: '包含的订阅',
+          label: '手动选择的订阅',
         },
         content: {
           label: '内容',

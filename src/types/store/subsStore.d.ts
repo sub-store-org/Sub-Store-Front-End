@@ -47,6 +47,7 @@ interface Collection {
   displayName?: string;
   process: Process[];
   subscriptions: string[];
+  subscriptionTags?: string[];
   icon?: string;
   tag?: string[];
 }

@@ -127,8 +127,9 @@ export default {
       officialChannel: 'Official channel:',
     },
     collectionItem: {
-      noSub: 'Not contains subscription',
-      contain: 'Contains subs',
+      noSub: 'No subscription included',
+      contain: 'Included subs',
+      containTag: 'Included subscription tags',
     },
     subItem: {
       local: 'Local subscription',
@@ -239,6 +240,10 @@ export default {
         tag: {
           label: 'Tag(s)',
           placeholder: 'The tag(s) (separated by comma) will be used for grouping.',
+        },
+        subscriptionTags: {
+          label: 'Subscription Tag(s)',
+          placeholder: 'Include all subscriptions that contain one of these tag(s) (separated by comma)',
         },
         source: {
           label: 'Source',

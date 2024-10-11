@@ -246,6 +246,22 @@
         </template>
 
         <template v-else-if="editType === 'collections'">
+          <!-- subscriptionTags -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subscriptionTags.label`)"
+            prop="subscriptionTags"
+          >
+            <nut-input
+                :border="false"
+                class="nut-input-text"
+                v-model.trim="form.subscriptionTags"
+                :placeholder="$t(`editorPage.subConfig.basic.subscriptionTags.placeholder`)"
+                type="text"
+                input-align="right"
+                left-icon="tips"
+                @click-left-icon="subscriptionTagsTips"
+            />
+          </nut-form-item>
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.subscriptions.label`)+ selectedSubs"
             prop="subscriptions"
@@ -544,6 +560,9 @@ watchEffect(() => {
   form.tag = Array.isArray(sourceData.tag)
     ? sourceData.tag.join(", ")
     : sourceData.tag;
+  form.subscriptionTags = Array.isArray(sourceData.subscriptionTags)
+    ? sourceData.subscriptionTags.join(", ")
+    : sourceData.subscriptionTags;
 
   switch (editType) {
     case "collections":
@@ -732,6 +751,14 @@ const submit = () => {
           .filter((item: string) => item.length)
       ),
     ];
+    data.subscriptionTags = [
+      ...new Set(
+        (data.subscriptionTags || "")
+          .split(",")
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length)
+      ),
+    ];
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
@@ -865,6 +892,18 @@ const urlValidator = (val: string): Promise<boolean> => {
     Dialog({
         title: '通过代理/节点/策略获取订阅',
         content: '1. Surge(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888\n\n※ 优先级由高到低: 单条订阅, 组合订阅, 默认配置',
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const subscriptionTagsTips = () => {
+    Dialog({
+        title: '组合订阅与单条订阅',
+        content: '组合订阅中将包含\n\n1. 含有关联订阅标签的单条订阅\n\n2. 手动选择的单条订阅\n\n举例: 设置了关联订阅标签为 "A, B" 后\n包含标签 "A" 或 "B" 的单条订阅将自动关联到此组合订阅',
         popClass: 'auto-dialog',
         textAlign: 'left',
         okText: 'OK',

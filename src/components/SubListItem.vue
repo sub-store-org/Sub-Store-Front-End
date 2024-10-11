@@ -280,15 +280,28 @@ const icon = computed(() => {
 });
 const collectionDetail = computed(() => {
   const nameList = props?.collection.subscriptions || [];
-  if (nameList.length === 0) {
+  const subTags = props?.collection.subscriptionTags || [];
+  if (nameList.length === 0 && subTags.length === 0) {
     return t("subPage.collectionItem.noSub");
   } else {
     const displayNameList = nameList.map((name) => {
       const sub = subsStore.getOneSub(name);
       return sub?.displayName || sub?.["display-name"] || sub.name;
     });
-    return `${t("subPage.collectionItem.contain")}: ${displayNameList.join(
-      "、"
+    if(nameList.length === 0) {
+      return `${t("subPage.collectionItem.containTag")}: ${subTags.join(
+        ", "
+      )}`;
+    }
+    if(subTags.length === 0) {
+      return `${t("subPage.collectionItem.contain")}: ${displayNameList.join(
+        ", "
+      )}`;
+    }
+    return `${t("subPage.collectionItem.containTag")}: ${subTags.join(
+        ", "
+      )} | ${t("subPage.collectionItem.contain")}: ${displayNameList.join(
+      ", "
     )}`;
   }
 });
