@@ -15,7 +15,7 @@
     z-index="11000"
     closeable
     round
-    @close="hide"
+    @close="close"
   >
     <div class="icon-popup-title">
       {{ $t(`iconCollectionPage.iconCollection`) }}
@@ -348,13 +348,16 @@ const show = () => {
   isVisible.value = true
   emit('update:visible', true)
 }
-
+const close = () => {
+  clearIconName()
+  hide()
+}
 const hide = () => {
   isVisible.value = false
   emit('update:visible', false)
 }
 // 暴露方法给父组件
-defineExpose({ show, hide })
+defineExpose({ show, hide, close })
 </script>
 
 <style lang="scss" scoped>

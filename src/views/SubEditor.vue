@@ -61,12 +61,17 @@
           :label="$t(`editorPage.subConfig.basic.tag.label`)"
           prop="tag"
         >
-          <input
+          <nut-input
             class="nut-input-text"
             v-model.trim="form.tag"
+            :border="false"
             :placeholder="$t(`editorPage.subConfig.basic.tag.placeholder`)"
             type="text"
-          />
+            input-align="right"
+            left-icon="shop"
+            @click-left-icon="showTagPopup"
+          >
+          </nut-input>
         </nut-form-item>
         <!-- icon -->
         <nut-form-item
@@ -386,6 +391,12 @@
     ref="iconPopupRef"
     @setIcon="setIcon">
   </icon-popup>
+  <tag-popup
+    v-model:visible="tagPopupVisible"
+    ref="tagPopupRef"
+    :currentTag="form.tag"
+    @setTag="setTagValue">
+  </tag-popup>
 </template>
 
 <script lang="ts" setup>
@@ -410,6 +421,7 @@ import HandleDuplicate from "@/views/editor/components/HandleDuplicate.vue";
 import Regex from "@/views/editor/components/Regex.vue";
 import Script from "@/views/editor/components/Script.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
+import TagPopup from "@/components/TagPopup.vue";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
 import {
@@ -485,6 +497,14 @@ const padding = bottomSafeArea.value + "px";
     return result
   });
   const tag = ref('all');
+  const tagPopupVisible = ref(false);
+  const tagPopupRef = ref(null);
+  const showTagPopup = () => {
+    tagPopupVisible.value = true
+  };
+  const setTagValue = (tag: any) => {
+    form.tag = tag;
+  };
   const selectedSubs = computed(() => {
     if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
     return `: ${form.subscriptions.map((name) => {

@@ -111,7 +111,11 @@ export default {
     },
     addSubTitle: 'Which type you want to create?',
     previewTitle: 'Copy/Preview a subscription',
-
+    tag: {
+      addTagTitle: 'Add Tag',
+      tagPlaceholder: 'Please enter tag name',
+      addTagBtn: '+ New Tag',
+    },
     emptySub: {
       title: 'You have no Subscription yet',
       desc: 'After adding you can enjoy the love of YM Peng',
@@ -208,11 +212,11 @@ export default {
         leaveContent:
           'Unsave changes will be lost without saving.\n\nDo you want to leave editing?',
         clickTag: {
-          title: '编辑确认',
+          title: 'Click Tag To Edit',
           content:
-            '输入框存在未保存的内容，现在编辑其他标签当前未保存的内容将丢失\n\n请确认？',
-          confirm: '确认',
-          cancel: '取消',
+            'There is unsaved content in the input box. Now editing other tags will lose the unsaved content\n\nPlease confirm?',
+          confirm: 'confirm',
+          cancel: 'cancel',
         },
       },
       basic: {
@@ -239,7 +243,7 @@ export default {
         },
         tag: {
           label: 'Tag(s)',
-          placeholder: 'The tag(s) (separated by comma) will be used for grouping.',
+          placeholder: 'Click on the left icon, The tag(s) (separated by comma) will be used for grouping.',
         },
         subscriptionTags: {
           label: 'Subscription Tag(s)',
@@ -357,14 +361,14 @@ export default {
           options: ['Add Flag', 'Remove Flag'],
           twOptions: ['⇒ 🇨🇳', '⇒ 🇼🇸', 'Unchanged'],
           tipsTitle: 'flags Tips',
-          tipsDes: '旗帜操作说明',
+          tipsDes: 'Flag operation instructions',
         },
         'Sort Operator': {
           label: 'Node Sort',
           des: 'Order',
           options: ['Ascending', 'Descending', 'Random'],
           tipsTitle: 'sort Tips',
-          tipsDes: '节点排序操作说明',
+          tipsDes: 'Description of node sorting operation',
         },
         'Resolve Domain Operator': {
           label: 'Resolve Domain',
@@ -374,13 +378,13 @@ export default {
           filters: ['Disabled', 'Remove Failed', 'IP Only', 'IPv4 Only', 'IPv6 Only'],
           cache: ['Enabled', 'Disabled'],
           tipsTitle: 'domain Tips',
-          tipsDes: '节点域名解析操作说明',
+          tipsDes: 'Operation instructions for node domain name resolution',
         },
         'Region Filter': {
           label: 'Region Filter',
           options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US', '🇩🇪 DE', '🇰🇷 KR'],
           tipsTitle: 'Region Filter Tips',
-          tipsDes: '区域过滤器操作说明',
+          tipsDes: 'Region filter operating instructions',
         },
         'Type Filter': {
           label: 'Node Type Filter',
@@ -402,7 +406,7 @@ export default {
             'External Proxy Program',
           ],
           tipsTitle: 'Node Type Filter Tips',
-          tipsDes: '节点类型过滤器操作说明',
+          tipsDes: 'Node type filter Operation Description',
         },
         'Regex Filter': {
           label: 'Regex Filter',
@@ -410,28 +414,28 @@ export default {
           options: ['Retain', 'Remove'],
           placeholder: ['Regular Expressions'],
           tipsTitle: 'Regex Filter Tips',
-          tipsDes: '正则过滤操作说明',
+          tipsDes: 'Regular filtering operation instructions',
         },
         'Regex Sort Operator': {
           label: 'Regex Sort',
           des: ['Regular Expressions'],
           placeholder: ['Regular Expressions'],
           tipsTitle: 'Regex Sort Tips',
-          tipsDes: '正则排序操作说明',
+          tipsDes: 'Regular sorting operation instructions',
         },
         'Regex Delete Operator': {
           label: 'Regex Delete',
           des: ['Regular Expressions'],
           placeholder: ['Regular Expressions'],
           tipsTitle: 'Regex Delete Tips',
-          tipsDes: '正则删除操作说明',
+          tipsDes: 'Regular deletion operation instructions',
         },
         'Regex Rename Operator': {
           label: 'Regex Rename',
           des: ['Regular Expressions'],
           placeholder: ['Regular Expressions', 'Replace with'],
           tipsTitle: 'Regex Rename Tips',
-          tipsDes: '正则重命名操作说明',
+          tipsDes: 'Regular renaming operation instructions',
         },
         'Handle Duplicate Operator': {
           label: 'Handle Duplicate',
@@ -439,14 +443,14 @@ export default {
           position: { options: ['Prefix', 'Suffix'], des: 'Number Position' },
           template: {
             des: 'Number Format',
-            placeholder: '序号显示格式，用空格分隔',
+            placeholder: 'Serial number display format, separated by spaces',
           },
           link: {
             des: 'Separator',
-            placeholder: '节点名和序号之间的连接符',
+            placeholder: 'The connector between the node name and the sequence number',
           },
           tipsTitle: 'Handle Duplicate Tips',
-          tipsDes: '节点去重操作说明',
+          tipsDes: 'Node deduplication operation instructions',
         },
         'Script Filter': {
           label: 'Script Filter',
