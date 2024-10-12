@@ -111,7 +111,11 @@ export default {
     },
     addSubTitle: '选择要创建的订阅类型',
     previewTitle: '预览/拷贝订阅',
-
+    tag: {
+      addTagTitle: '添加标签',
+      tagPlaceholder: '请输入标签名称',
+      addTagBtn: '+ 新建标签',
+    },
     emptySub: {
       title: '你还没有添加订阅',
       desc: '添加后开始使用 Sub-Store',
@@ -239,7 +243,7 @@ export default {
         },
         tag: {
           label: '标签',
-          placeholder: '标签(用 , 分隔) 将用于分组',
+          placeholder: '点击左侧图标选择，标签(用 , 分隔) 将用于分组',
         },
         subscriptionTags: {
           label: '关联订阅标签',
