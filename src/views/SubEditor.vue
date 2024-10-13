@@ -68,8 +68,8 @@
             :placeholder="$t(`editorPage.subConfig.basic.tag.placeholder`)"
             type="text"
             input-align="right"
-            left-icon="shop"
-            @click-left-icon="showTagPopup"
+            right-icon="rect-right"
+            @click-right-icon="showTagPopup('tag')"
           >
           </nut-input>
         </nut-form-item>
@@ -257,14 +257,16 @@
             prop="subscriptionTags"
           >
             <nut-input
-                :border="false"
-                class="nut-input-text"
-                v-model.trim="form.subscriptionTags"
-                :placeholder="$t(`editorPage.subConfig.basic.subscriptionTags.placeholder`)"
-                type="text"
-                input-align="right"
-                left-icon="tips"
-                @click-left-icon="subscriptionTagsTips"
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form.subscriptionTags"
+              :placeholder="$t(`editorPage.subConfig.basic.subscriptionTags.placeholder`)"
+              type="text"
+              input-align="right"
+              left-icon="tips"
+              right-icon="rect-right"
+              @click-left-icon="subscriptionTagsTips"
+              @click-right-icon="showTagPopup('linkTag')"
             />
           </nut-form-item>
           <nut-form-item
@@ -394,7 +396,7 @@
   <tag-popup
     v-model:visible="tagPopupVisible"
     ref="tagPopupRef"
-    :currentTag="form.tag"
+    :currentTag="currentTag"
     @setTag="setTagValue">
   </tag-popup>
 </template>
@@ -498,12 +500,25 @@ const padding = bottomSafeArea.value + "px";
   });
   const tag = ref('all');
   const tagPopupVisible = ref(false);
+  const tagType = ref('tag'); // 标签tag | 关联订阅标签linkTag
   const tagPopupRef = ref(null);
-  const showTagPopup = () => {
+  const currentTag = computed(() => {
+    if (tagType.value === 'linkTag') {
+      return form.subscriptionTags
+    } else {
+      return form.tag
+    }
+  })
+  const showTagPopup = (type:string) => {
+    tagType.value = type || 'tag'
     tagPopupVisible.value = true
   };
   const setTagValue = (tag: any) => {
-    form.tag = tag;
+    if (tagType.value === 'linkTag') {
+      form.subscriptionTags = tag;
+    } else {
+      form.tag = tag;      
+    }
   };
   const selectedSubs = computed(() => {
     if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
@@ -1119,6 +1134,13 @@ const handleEditGlobalClick = () => {
         text-decoration: underline;
         font-size: 12px;
         // color: #fa2c19;
+      }
+    }
+  }
+  :deep(.nut-input-text){
+    .nut-input-inner {
+      .nut-input-right-icon {
+        margin-left: 8px;
       }
     }
   }
