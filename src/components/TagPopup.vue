@@ -33,30 +33,43 @@
     </div>
     <div class="popup-main">
       <div class="tag-list">
-        <nut-tag
-          v-for="(item, index) in allTagsList"
-          :key="index"
-          :class="{ 'active': item.isActive }"
-          @click="handleTagItem(item)"
-          >{{ item.label }}</nut-tag>
-          <!-- 新建标签 -->
-           <div class="add-tag-box">
-            <nut-input
-              v-if="isAddTag"
-              class="add-tag-input"
-              v-model.trim="addTagValue"
-              :placeholder="t('subPage.tag.tagPlaceholder')"
-              :autofocus="true"
-              max-length="30"
-              type="text"
-              input-align="left"
-              :border="false"
-              @blur="saveTag"
-              closeable
-            />
-            <nut-tag v-else class="add-tag" @click="addTag">{{ t('subPage.tag.addTagBtn') }}</nut-tag>
-           </div>
-
+        <draggable
+          :list="allTagsList"
+          :sort="true"
+          item-key="label"
+          animation="300"
+          :scroll-sensitivity="200"
+          :force-fallback="true"
+          :scroll-speed="8"
+          :scroll="true"
+          @start="onStartDrag"
+          @end="onEndDrag"
+        >
+          <template #item="{ element }">
+            <nut-tag
+              :key="element.label"
+              :class="{ 'active': element.isActive }"
+              @click="handleTagItem(element)"
+            >{{ element.label }}</nut-tag>
+          </template>
+        </draggable>
+        <!-- 新建标签 -->
+        <div class="add-tag-box">
+        <nut-input
+          v-if="isAddTag"
+          class="add-tag-input"
+          v-model.trim="addTagValue"
+          :placeholder="t('subPage.tag.tagPlaceholder')"
+          :autofocus="true"
+          max-length="30"
+          type="text"
+          input-align="left"
+          :border="false"
+          @blur="saveTag"
+          closeable
+        />
+        <nut-tag v-else class="add-tag" @click="addTag">{{ t('subPage.tag.addTagBtn') }}</nut-tag>
+        </div>
       </div>
     </div>
   </nut-popup>
@@ -66,6 +79,8 @@
 import { ref, watch, computed, onMounted, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 import { useSubsStore } from "@/store/subs";
+import draggable from "vuedraggable";
+
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -86,6 +101,15 @@ const isVisible = ref(props.visible);
 const keyword = ref("");
 const isAddTag = ref(false);
 const addTagValue = ref('');
+//拖拽开始的事件
+const onStartDrag = () => {
+  console.log("开始拖拽");
+};
+
+//拖拽结束的事件
+const onEndDrag = () => {
+  console.log("结束拖拽");
+};
 watch(
   () => props.visible,
   (newValue) => {
@@ -230,6 +254,12 @@ defineExpose({ show, close });
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      >div {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
       .nut-tag {
         padding: 4px 10px;
         text-align: center;
