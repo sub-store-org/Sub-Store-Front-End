@@ -243,11 +243,11 @@ export default {
         },
         tag: {
           label: 'Tag(s)',
-          placeholder: 'Click on the left icon, The tag(s) (separated by comma) will be used for grouping.',
+          placeholder: 'Click on the right icon, The tag(s) (separated by comma) will be used for grouping.',
         },
         subscriptionTags: {
           label: 'Subscription Tag(s)',
-          placeholder: 'Include all subscriptions that contain one of these tag(s) (separated by comma)',
+          placeholder: 'Click on the right icon, Include all subscriptions that contain one of these tag(s) (separated by comma)',
         },
         source: {
           label: 'Source',

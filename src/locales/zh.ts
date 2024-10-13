@@ -243,11 +243,11 @@ export default {
         },
         tag: {
           label: '标签',
-          placeholder: '点击左侧图标选择，标签(用 , 分隔) 将用于分组',
+          placeholder: '点击右侧图标选择，标签(用 , 分隔) 将用于分组',
         },
         subscriptionTags: {
           label: '关联订阅标签',
-          placeholder: '使用标签关联单条订阅(用 , 分隔)',
+          placeholder: '点击右侧图标选择，使用标签关联单条订阅(用 , 分隔)',
         },
         source: {
           label: '来源',
