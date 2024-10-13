@@ -135,7 +135,7 @@
 
             <button class="cimg-button" @click="isDis = false">
               <img src="" />
-              全屏编辑
+              {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
               <!-- 测试 后续再改效果 -->
             </button>
             <div
@@ -269,7 +269,7 @@
   <div v-else style="width: 100%;height: 95vh;">
     <button class="cimg-button" @click="isDis = true">
       <img src="" />
-      取消全屏
+      {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEditCancel`) }}
     </button>
     <cmView :isReadOnly="false" id="FileEditer" />
   </div>
