@@ -710,6 +710,22 @@ const compare = () => {
     });
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    data.tag = [
+      ...new Set(
+        (data.tag || "")
+          .split(",")
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length)
+      ),
+    ];
+    data.subscriptionTags = [
+      ...new Set(
+        (data.subscriptionTags || "")
+          .split(",")
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length)
+      ),
+    ];
 
     // 过滤掉预览开关关闭的操作
     actionsChecked.forEach((item) => {
