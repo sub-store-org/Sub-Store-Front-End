@@ -83,6 +83,9 @@
               </span>
             </template>
           </p>
+          <p v-if="remark" class="sub-item-remark">
+            <span>{{ remarkText }}</span>
+          </p>
         </template>
 
         <template v-else>
@@ -231,6 +234,14 @@
     props[props.type].displayName || props[props.type]['display-name'];
 
   const name = props[props.type].name;
+  const remark = props[props.type].remark;
+  const remarkText = computed(() => {
+    if (remark) {
+      return remark;
+    } else {
+      return "";
+    }
+  })
   const { flows } = storeToRefs(subsStore);
   const icon = computed(() => {
     return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
@@ -472,6 +483,22 @@
         span {
           display: block;
           line-height: 1.8;
+        }
+      }
+      .sub-item-remark {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow: hidden;
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--comment-text-color);
+
+        span {
+          display: block;
+          line-height: 1.5;
         }
       }
 

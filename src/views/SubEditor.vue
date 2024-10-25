@@ -56,6 +56,25 @@
             type="text"
           />
         </nut-form-item>
+        <!-- remark -->
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.remark.label`)"
+          prop="remark"
+        >
+          <nut-textarea
+            class="nut-input-text"
+            :border="false"
+            v-model="form.remark"
+            :placeholder="
+              $t(`editorPage.subConfig.basic.remark.placeholder`)
+            "
+            type="text"
+            input-align="right"
+            rows="1"
+            :autosize="{ maxHeight: 140 }"
+            max-length="100"
+          />
+        </nut-form-item>
         <!-- tag -->
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.tag.label`)"
@@ -541,6 +560,7 @@ const form = reactive<any>({
   name: "",
   displayName: "",
   form: "",
+  remark: "",
   mergeSources: "",
   ignoreFailedRemoteSub: false,
   icon: "",
@@ -588,6 +608,7 @@ watchEffect(() => {
   form.ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
   form.name = sourceData.name;
   form.displayName = sourceData.displayName || sourceData["display-name"];
+  form.remark = sourceData.remark;
   form.icon = sourceData.icon;
   form.process = newProcess;
   form.subUserinfo = sourceData.subUserinfo;
@@ -813,7 +834,7 @@ const submit = () => {
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
 
-    // console.log('submit.....\n', data);
+    console.log('submit.....\n', data);
 
     let res = null;
 

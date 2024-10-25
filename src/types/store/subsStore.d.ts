@@ -32,6 +32,7 @@ interface Sub {
   name: string;
   content?: string;
   displayName?: string;
+  remark?: string;
   url?: string;
   source: 'remote' | 'local';
   icon?: string;
@@ -45,6 +46,7 @@ interface Sub {
 interface Collection {
   name: string;
   displayName?: string;
+  remark?: string;
   process: Process[];
   subscriptions: string[];
   subscriptionTags?: string[];
