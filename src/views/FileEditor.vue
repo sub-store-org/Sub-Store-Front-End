@@ -698,6 +698,11 @@ const handleEditGlobalClick = () => {
       overflow: hidden;
       background: transparent;
       padding: 10px;
+      :deep(img) {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+      }
     }
     .sub-item-customer-icon {
       :deep(img) {
