@@ -229,6 +229,10 @@ export default {
           isEmpty: '名称不能为空',
           isInvalid: '名称已存在或不合法'
         },
+        remark: {
+          label: '备注',
+          placeholder: '请输入备注信息',
+        },
         displayName: {
           label: '显示名称',
           placeholder: '输入展示的名称',

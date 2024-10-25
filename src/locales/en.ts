@@ -229,6 +229,10 @@ export default {
           isEmpty: 'Name cannot be empty',
           isInvalid: 'The name has been used or is invalid',
         },
+        remark: {
+          label: 'Remarks',
+          placeholder: 'The remarks',
+        },
         displayName: {
           label: 'Display Name',
           placeholder: 'The display name',

@@ -53,6 +53,25 @@
               type="text"
             />
           </nut-form-item>
+          <!-- remark -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.remark.label`)"
+            prop="remark"
+          >
+            <nut-textarea
+              class="nut-input-text"
+              :border="false"
+              v-model="form.remark"
+              :placeholder="
+                $t(`editorPage.subConfig.basic.remark.placeholder`)
+              "
+              type="text"
+              input-align="right"
+              rows="1"
+              :autosize="{ maxHeight: 140 }"
+              max-length="100"
+            />
+          </nut-form-item>
           <nut-form-item
             :label="$t(`filePage.download.label`)"
             prop="download"
@@ -350,6 +369,7 @@ const isget = ref(false);
 const form = reactive<any>({
   name: "",
   displayName: "",
+  remark: "",
   icon: "",
   source: "local",
   process: [],
@@ -382,6 +402,7 @@ watchEffect(() => {
     }
     form.name = sourceData.name;
     form.displayName = sourceData.displayName || sourceData["display-name"];
+    form.remark = sourceData.remark;
     form.icon = sourceData.icon;
     form.source = sourceData.source || "local";
     form.url = sourceData.url;
@@ -677,6 +698,11 @@ const handleEditGlobalClick = () => {
       overflow: hidden;
       background: transparent;
       padding: 10px;
+      :deep(img) {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+      }
     }
     .sub-item-customer-icon {
       :deep(img) {
