@@ -71,3 +71,13 @@ interface NodeInfo {
     | 'vmess'
     | 'custom';
 }
+
+interface ShareJWT {
+  payload: {
+    type?: 'sub' | 'col'| 'file',
+    name: string;
+  };
+  options?: {
+    expiresIn: number | string | undefined;
+  }
+}

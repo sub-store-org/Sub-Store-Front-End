@@ -58,6 +58,9 @@
             style="position: relative"
             :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
           >
+            <button v-if="shareBtnVisible" class="share-sub-link" @click.stop="onClickShareLink">
+              <font-awesome-icon icon="fa-solid fa-share-nodes" />
+            </button>
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone" />
             </button>
@@ -231,11 +234,14 @@ import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { useBackend } from "@/hooks/useBackend";
 
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
+
+const { env } = useBackend()
 
 const props = defineProps<{
   type: "sub" | "collection";
@@ -271,6 +277,8 @@ const {
   // isDefaultIcon,
   // subProgressStyle,
 } = storeToRefs(globalStore);
+const { showNotify } = useAppNotifyStore();
+const { currentUrl: host } = useHostAPI();
 
 const displayName =
   props[props.type].displayName || props[props.type]["display-name"];
@@ -536,7 +544,36 @@ const onClickPreviews = () => {
     lockScroll: false,
   });
 };
-
+const shareBtnVisible = computed(() => {
+  return env.value?.feature?.share
+})
+const onClickShareLink = async () => {
+  console.log('env', env.value)
+  console.log('props.type', props.type)
+  const typeMap = {
+    'sub': 'sub',
+    'collection': 'col',
+    'file': 'file'
+  }
+  const params = {
+    payload: {
+      type: typeMap[props.type] as 'sub' | 'col' | 'file',
+      name,
+    },
+    options: {
+      expiresIn: 1000 * 60 * 5,
+    }
+  }
+  console.log('params', params)
+  const res = await subsApi.shareSub(params)
+  console.log('res', res)
+  if (res?.data?.status === "success") {
+    const { secret, token } = res.data.data
+    console.log('host.value', host.value)
+    const share_url = `${host.value.replace(new RegExp(`${secret}$`),'')}/share/${typeMap[props.type]}/${encodeURIComponent(name)}?token=${token}`
+    console.log('share_url', share_url)
+  }
+}
 const onClickCopyConfig = async () => {
   swipeController()
   let data: Sub | Collection;
@@ -601,9 +638,6 @@ const onClickDelete = () => {
     lockScroll: false,
   });
 };
-
-const { showNotify } = useAppNotifyStore();
-const { currentUrl: host } = useHostAPI();
 
 const onClickCopyLink = async () => {
   const url = `${host.value}/download/${
@@ -686,7 +720,7 @@ const onClickRefresh = async () => {
       .tag {
         margin: 0 2px;
       }
-
+      .share-sub-link,
       .copy-sub-link,
       .refresh-sub-flow {
         background-color: transparent;
