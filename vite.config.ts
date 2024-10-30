@@ -106,7 +106,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           ],
         },
         workbox: {
-          navigateFallbackDenylist: [/(^|\/.+)\/(api|download)\/.+/],
+          navigateFallbackDenylist: [/(^|\/.+)\/(api|download|share)\/.+/],
           // globPatterns: ['**/*.{css,js,gz,eot,html,svg,png,ico,ttf,woff2}'],
           runtimeCaching: [
             {

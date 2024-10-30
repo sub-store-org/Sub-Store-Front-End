@@ -13,7 +13,7 @@
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const isBackend = /\/(api|download)\/.+/.test(route.fullPath)
+const isBackend = /\/(api|download|share)\/.+/.test(route.fullPath)
 </script>
 
 <style lang="scss" scoped>
