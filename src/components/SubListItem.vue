@@ -544,36 +544,14 @@ const onClickPreviews = () => {
     lockScroll: false,
   });
 };
+const emit = defineEmits(["update:visible", "share"]);
+
 const shareBtnVisible = computed(() => {
-  return env.value?.feature?.share
-})
+  return env.value?.feature?.share;
+});
 const onClickShareLink = async () => {
-  console.log('env', env.value)
-  console.log('props.type', props.type)
-  const typeMap = {
-    'sub': 'sub',
-    'collection': 'col',
-    'file': 'file'
-  }
-  const params = {
-    payload: {
-      type: typeMap[props.type] as 'sub' | 'col' | 'file',
-      name,
-    },
-    options: {
-      expiresIn: 1000 * 60 * 5,
-    }
-  }
-  console.log('params', params)
-  const res = await subsApi.shareSub(params)
-  console.log('res', res)
-  if (res?.data?.status === "success") {
-    const { secret, token } = res.data.data
-    console.log('host.value', host.value)
-    const share_url = `${host.value.replace(new RegExp(`${secret}$`),'')}/share/${typeMap[props.type]}/${encodeURIComponent(name)}?token=${token}`
-    console.log('share_url', share_url)
-  }
-}
+  emit("share", props.sub, props.type);
+};
 const onClickCopyConfig = async () => {
   swipeController()
   let data: Sub | Collection;
