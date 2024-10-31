@@ -91,9 +91,9 @@ export function useSubsApi() {
         data,
       });
     },
-    shareSub: (data: ShareJWT): AxiosPromise<MyAxiosRes> => {
+    shareSub: (data: ShareToken): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: `/api/jwt`,
+        url: `/api/token`,
         method: 'post',
         data,
       });

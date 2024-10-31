@@ -18,6 +18,25 @@ export default {
       failed: 'Refresh Failed\n',
       loading: 'Refreshing Data...',
     },
+    share: {
+      title: 'Share',
+      expiresValue: 'Valid for',
+      expiresValueEmpty: 'Valid for cannot be empty',
+      expiresValuePlaceholder: 'Enter valid for',
+      expiresUnit: 'Validity unit',
+      token: 'Custom Token',
+      tokenPlaceholder: 'Enter custom token',
+      remark: 'Remark',
+      remarkPlaceholder: 'Enter remark',
+      createShare: 'Create Share Link',
+      createShareSuccessTips: 'Create share link success!',
+      unit: {
+        day: 'Day',
+        month: 'Month',
+        season: 'Season',
+        year: 'Year',
+      }
+    }
   },
   // Title Bar
   navBar: {

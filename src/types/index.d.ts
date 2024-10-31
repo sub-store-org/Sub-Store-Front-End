@@ -72,10 +72,12 @@ interface NodeInfo {
     | 'custom';
 }
 
-interface ShareJWT {
+interface ShareToken {
   payload: {
     type?: 'sub' | 'col'| 'file',
-    name: string;
+    name?: string;
+    remark?: string | null;
+    token?: string | null;
   };
   options?: {
     expiresIn: number | string | undefined;
