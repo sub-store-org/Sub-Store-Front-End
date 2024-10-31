@@ -284,6 +284,8 @@ const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
 const hasUntagged = ref(false);
+const hasLocal = ref(false);
+const hasRemote = ref(false);
 const getTag = () => {
     return localStorage.getItem('sub-tag') || 'all'
   }
@@ -293,6 +295,11 @@ const tags = computed(() => {
   // 从 subs 和 collections 中获取所有的 tag, 去重
   const set = new Set()
   subs.value.forEach(sub => {
+    if(sub.source === 'remote') {
+      hasRemote.value = true
+    } else {
+      hasLocal.value = true
+    }
     if (Array.isArray(sub.tag) && sub.tag.length > 0) {
       sub.tag.forEach(i => {
         set.add(i)
@@ -312,11 +319,13 @@ const tags = computed(() => {
   })
 
   let tags: any[] = Array.from(set)
-  if(tags.length === 0) return []
+  if(tags.length === 0 && !hasRemote.value && !hasLocal.value) return []
   tags = tags.map(i => ({ label: i, value: i }));
   
   const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
-  if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+  if(hasRemote.value) result.push({ label: t("editorPage.subConfig.basic.source.remote"), value: "remote" })
+  if(hasLocal.value) result.push({ label: t("editorPage.subConfig.basic.source.local"), value: "local" })
+  if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
 
   if (!result.find(i => i.value === tag.value)) {
     tag.value = 'all'
@@ -327,6 +336,8 @@ const tags = computed(() => {
 const filterdSubsCount = computed(() => {
   if(tag.value === 'all') return subs.value.length
   if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
+  if(tag.value === 'remote') return subs.value.filter(i => i.source === "remote").length
+  if(tag.value === 'local') return subs.value.filter(i => i.source === "local").length
   return subs.value.filter(i => i.tag.includes(tag.value)).length
 });
 const filterdColsCount = computed(() => {
@@ -476,6 +487,8 @@ const setTag = (current) => {
 const shouldShowElement = (element) => {
   if(tag.value === 'all') return true
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0
+  if(tag.value === 'remote') return element.source === 'remote'
+  if(tag.value === 'local') return element.source === 'local'
   return element.tag.includes(tag.value)
 };
 const upload = async() => {
