@@ -186,6 +186,7 @@
                 :collection="element"
                 type="collection"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>

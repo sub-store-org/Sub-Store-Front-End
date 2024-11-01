@@ -79,6 +79,7 @@
                 :file="element"
                 type="file"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -129,6 +130,11 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
+    <SharePopup
+      v-model:visible="sharePopupVisible"
+      :data="shareData"
+      :type="shareDataType"
+    />
   </div>
 </template>
 
@@ -136,6 +142,7 @@
 import { storeToRefs } from "pinia";
 import { ref, toRaw } from "vue";
 import draggable from "vuedraggable";
+import SharePopup from "./share/SharePopup.vue";
 
 import { useAppNotifyStore } from "@/store/appNotify";
 // import { Dialog, Toast } from '@nutui/nutui';
@@ -254,6 +261,16 @@ const handleDragEnd = (dataValue: any) => {
     dragData = null;
   }
   swipeDisabled.value = false;
+};
+
+const shareData = ref(null);
+const shareDataType = ref(null);
+const sharePopupVisible = ref(false);
+const handleShare = (element, type) => {
+  console.log("share", element);
+  shareData.value = element;
+  shareDataType.value = type;
+  sharePopupVisible.value = true;
 };
 </script>
 
