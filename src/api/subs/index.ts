@@ -91,5 +91,12 @@ export function useSubsApi() {
         data,
       });
     },
+    shareSub: (data: ShareToken): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/token`,
+        method: 'post',
+        data,
+      });
+    },
   };
 }

@@ -145,6 +145,7 @@
                 :sub="element"
                 type="sub"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -185,6 +186,7 @@
                 :collection="element"
                 type="collection"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -236,6 +238,12 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
+
+    <SharePopup
+      v-model:visible="sharePopupVisible"
+      :data="shareData"
+      :type="shareDataType"
+    />
   </div>
 </template>
 
@@ -243,7 +251,7 @@
 import { storeToRefs } from "pinia";
 import { ref, toRaw, computed } from "vue";
 import draggable from "vuedraggable";
-
+import SharePopup from "./share/SharePopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { Dialog, Toast } from '@nutui/nutui';
 
@@ -332,7 +340,15 @@ const tags = computed(() => {
   }
   return result
 });
-
+const shareData = ref(null);
+const shareDataType = ref(null);
+const sharePopupVisible = ref(false);
+const handleShare = (element, type) => {
+  console.log("share", element);
+  shareData.value = element;
+  shareDataType.value = type;
+  sharePopupVisible.value = true;
+};
 const filterdSubsCount = computed(() => {
   if(tag.value === 'all') return subs.value.length
   if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length

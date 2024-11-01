@@ -18,6 +18,34 @@ export default {
       failed: '数据刷新失败\n',
       loading: '刷新数据中...',
     },
+    share: {
+      title: '分享',
+      expiresValue: '有效期时长',
+      expiresValueEmpty: '有效期时长不可为空',
+      expiresValuePlaceholder: '请输入有效期时长',
+      expiresValueRegex: '请输入0.01-99999.99范围内的数字',
+      expiresUnit: '有效期单位',
+      token: '自定义Token',
+      tokenPlaceholder: '默认后端随机Token',
+      remark: '备注',
+      remarkPlaceholder: '请输入备注',
+      shareUrl: '分享链接',
+      shareUrlPlaceholder: '请点击按钮创建分享链接',
+      tipsTitle: '温馨提示',
+      userKnow: '我知道了',
+      confirm: '确定',
+      cancel: '返回',
+      createShare: '创建分享',
+      copyShare: '复制链接',
+      copyShareSuccessTips: '复制分享链接成功！',
+      createShareSuccessTips: '创建分享成功！',
+      unit: {
+        day: '天',
+        month: '月',
+        season: '季',
+        year: '年',
+      }
+    }
   },
   // 顶部标题栏
   navBar: {

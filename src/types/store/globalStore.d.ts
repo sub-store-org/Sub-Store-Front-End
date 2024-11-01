@@ -25,6 +25,7 @@ interface ENV {
   hasNewVersion?: boolean;
   latestVersion?: string;
   version?: string;
+  feature?: any;
   backend?:
     | 'sing-box'
     | 'Stash'

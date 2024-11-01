@@ -48,6 +48,13 @@
             style="position: relative"
             :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
           >
+            <button
+              v-if="shareBtnVisible"
+              class="share-sub-link"
+              @click.stop="onClickShareLink"
+            >
+              <font-awesome-icon icon="fa-solid fa-share-nodes" />
+            </button>
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone" />
             </button>
@@ -190,11 +197,13 @@
   import { useI18n } from 'vue-i18n';
   import { useRouter, useRoute } from 'vue-router';
   import { useHostAPI } from '@/hooks/useHostAPI';
+  import { useBackend } from "@/hooks/useBackend";
 
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
 
   const { t } = useI18n();
+  const { env } = useBackend();
 
   const props = defineProps<{
     type: 'sub' | 'collection' | 'file';
@@ -374,7 +383,17 @@
 
   const { showNotify } = useAppNotifyStore();
   const { currentUrl: host } = useHostAPI();
+  const emit = defineEmits(["share"]);
 
+  const shareBtnVisible = computed(() => {
+    return env.value?.feature?.share;
+  });
+  const onClickShareLink = async () => {
+    console.log('props', props)
+    const type = props.type;
+    const data = props.file;
+    emit("share", data, type);
+  };
   const onClickCopyLink = async () => {
     const path = `/api/file/${encodeURIComponent(name)}`;
     const url = `${host.value}${path}`;
@@ -441,7 +460,7 @@
           font-size: 16px;
           color: var(--primary-text-color);
         }
-
+        .share-sub-link,
         .copy-sub-link,
         .refresh-sub-flow {
           background-color: transparent;
