@@ -589,7 +589,7 @@ const onClickPreviews = () => {
     }),
     onOpened: () => swipe.value.close(),
     popClass: "auto-dialog",
-    // @ts-expect-error-next-line  组件库bug，类型错误但功能正常
+    // @ts-ignore
     closeOnClickOverlay: true,
     noOkBtn: true,
     noCancelBtn: true,
