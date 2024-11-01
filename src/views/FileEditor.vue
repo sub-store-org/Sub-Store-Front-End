@@ -157,6 +157,10 @@
               {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
               <!-- 测试 后续再改效果 -->
             </button>
+            <input type="file" ref="fileInput" @change="fileChange" style="display: none">
+            <button class="cimg-button" @click="upload">
+              {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
+            </button>
             <div
               style="
                 margin-left: -15px;
@@ -366,6 +370,7 @@ const ruleForm = ref<any>(null);
 const actionsChecked = reactive([]);
 const actionsList = reactive([]);
 const isget = ref(false);
+const fileInput = ref(null);
 const form = reactive<any>({
   name: "",
   displayName: "",
@@ -467,6 +472,35 @@ const closePreview = () => {
   });
 
   router.back();
+};
+const upload = async() => {
+  try {
+    fileInput.value.click()
+  } catch (e) {
+    console.error(e);
+  }
+}
+const fileChange = async (event) => {
+  const file = event.target.files[0];
+  if(!file) return
+  try {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = () => {
+      cmStore.setEditCode("FileEditer", String(reader.result));
+    }
+
+    reader.onerror = e => {
+      throw e
+    }
+    
+  } catch (e) {
+    showNotify({
+      type: "danger",
+      title: '文件导入失败',
+    });
+    console.error(e);
+  }
 };
 const compare = () => {
   ruleForm.value.validate().then(async ({ valid, errors }: any) => {

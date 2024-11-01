@@ -294,6 +294,7 @@ export default {
           label: '链接',
           placeholder: '支持多行和参数, 请点击左侧的使用说明查看用法',
           tips: {
+            importFromFile: '从文件导入',
             fullScreenEdit: '全屏编辑',
             fullScreenEditCancel: '取消全屏',
             label: '使用说明',
