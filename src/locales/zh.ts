@@ -32,7 +32,6 @@ export default {
       shareUrl: '分享链接',
       shareUrlPlaceholder: '请点击按钮创建分享链接',
       tipsTitle: '温馨提示',
-      shareUrlSaveTips: '请注意保存当前生成的分享链接',
       userKnow: '我知道了',
       confirm: '确定',
       cancel: '返回',

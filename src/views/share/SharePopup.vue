@@ -22,7 +22,7 @@
     <div class="share-popup-title">{{ $t(`globalNotify.share.title`) }}</div>
     <div class="share-info-wrapper">
       <div class="share-info-form">
-        <nut-form :model-value="form" ref="ruleForm">
+        <nut-form ref="ruleForm" :model-value="form">
           <nut-form-item
             :label="$t(`globalNotify.share.expiresValue`)"
             prop="expiresValue"
@@ -87,7 +87,7 @@
             />
           </nut-form-item>
           <nut-form-item
-            v-if="form.shareUrl"
+            v-if="shareUrlVisible"
             :label="$t(`globalNotify.share.shareUrl`)"
             prop="shareUrl"
           >
@@ -138,17 +138,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch, computed } from "vue";
+import { Toast } from "@nutui/nutui";
+import { useClipboard } from "@vueuse/core";
+import { computed, reactive, ref, watch } from "vue";
+import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
-import { useAppNotifyStore } from "@/store/appNotify";
+
 import { useSubsApi } from "@/api/subs";
 import { useHostAPI } from "@/hooks/useHostAPI";
-import { useGlobalStore } from "@/store/global";
-import { useClipboard } from "@vueuse/core";
-import useV3Clipboard from "vue-clipboard3";
-import { Dialog, Toast } from "@nutui/nutui";
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
+import { useAppNotifyStore } from "@/store/appNotify";
 
 const props = defineProps({
   data: {
@@ -165,6 +163,9 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["update:visible"]);
+const { copy, isSupported } = useClipboard();
+const { toClipboard: copyFallback } = useV3Clipboard();
+
 const subsApi = useSubsApi();
 const { currentUrl: host } = useHostAPI();
 const { showNotify } = useAppNotifyStore();
@@ -181,7 +182,7 @@ const form = reactive({
 });
 const isCreateShareLinkSuccess = ref(false);
 const isVisible = ref(props.visible);
-const expiresUnitList = ref([
+const expiresUnitList = computed(() => [
   {
     label: t("globalNotify.share.unit.day"),
     value: "day",
@@ -207,6 +208,9 @@ const hide = () => {
   isVisible.value = false;
   emit("update:visible", false);
 };
+const shareUrlVisible = computed(() => {
+  return form.shareUrl || isCreateShareLinkSuccess.value;
+});
 const resetFormData = () => {
   form.expiresValue = "";
   form.expiresUnit = "day";
@@ -222,23 +226,6 @@ const clearToken = () => {
 const close = () => {
   resetFormData();
   hide();
-};
-const changeExpiresUnitOrValue = () => {
-  if (form.shareUrl && isCreateShareLinkSuccess.value) {
-    Dialog({
-      title: t("globalNotify.share.tipsTitle"),
-      content: t("globalNotify.share.shareUrlSaveTips"),
-      popClass: "auto-dialog",
-      okText: t("globalNotify.share.userKnow"),
-      noCancelBtn: true,
-      closeOnPopstate: true,
-      lockScroll: false,
-      onOk: () => {
-        // 标记用户准备重新生成
-        isCreateShareLinkSuccess.value = false;
-      },
-    });
-  }
 };
 const validateExpiresValue = (value: string) => {
   return /^(?:0\.0[1-9]\d*|[1-9]\d{0,4}(?:\.\d*)?|0\.[1-9]\d*)$/.test(value);
@@ -260,7 +247,6 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
   return `${Number(value) * unitValue}${unit}`;
 };
 const handleCreateShare = async () => {
-  console.log('props.data', props.data)
   if (!form.expiresValue) {
     return Toast.warn(t("globalNotify.share.expiresValueEmpty"));
   }
@@ -316,7 +302,6 @@ watch(
   () => props.visible,
   (newValue) => {
     isVisible.value = newValue;
-    console.log("newValue", newValue);
   },
 );
 // 暴露方法给父组件
