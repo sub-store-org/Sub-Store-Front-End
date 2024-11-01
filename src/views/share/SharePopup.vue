@@ -115,7 +115,7 @@
             </nut-button> -->
             <nut-button
               class="btn"
-              type="default"
+              plain
               shape="round"
               :disabled="form.shareUrl ? false : true"
               @click="handleCopyShare"
@@ -246,6 +246,17 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
   const unitValue = unitMap[expireUnit];
   return `${Number(value) * unitValue}${unit}`;
 };
+const handleCopyShare = async () => {
+  if (!form.shareUrl) {
+    return;
+  }
+  if (isSupported) {
+    await copy(form.shareUrl);
+  } else {
+    await copyFallback(form.shareUrl);
+  }
+  showNotify({ title: t("globalNotify.share.copyShareSuccessTips") });
+};
 const handleCreateShare = async () => {
   if (!form.expiresValue) {
     return Toast.warn(t("globalNotify.share.expiresValueEmpty"));
@@ -283,20 +294,10 @@ const handleCreateShare = async () => {
     )}?token=${encodeURIComponent(token)}`;
     form.shareUrl = shareUrl;
     showNotify({ title: t("globalNotify.share.createShareSuccessTips") });
+    handleCopyShare();
   } else {
     isCreateShareLinkSuccess.value = false;
   }
-};
-const handleCopyShare = async () => {
-  if (!form.shareUrl) {
-    return;
-  }
-  if (isSupported) {
-    await copy(form.shareUrl);
-  } else {
-    await copyFallback(form.shareUrl);
-  }
-  showNotify({ title: t("globalNotify.share.copyShareSuccessTips") });
 };
 watch(
   () => props.visible,
