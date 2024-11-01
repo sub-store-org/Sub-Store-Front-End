@@ -77,30 +77,41 @@ export const useSubsStore = defineStore('subsStore', {
       const asyncGetFlow = async ([url, name, noFlow, hideExpire, showRemaining]) => {
         if (noFlow) {
           this.flows[url] = { status:'noFlow' };
-        } else {
-          try {
-            const { data } = await subsApi.getFlow(name);
-            this.flows[url] = {...data, hideExpire, showRemaining };
-          } catch (e) {
-          }
+          return false;
+        }
+        try {
+          const { data } = await subsApi.getFlow(name);
+          this.flows[url] = {...data, hideExpire, showRemaining };
+        } catch (e) {
+          this.flows[url] = { status: 'error' };
         }
       };
-      // const subs = sub || this.subs;
-      // getFlowsUrlList(subs).forEach(asyncGetFlow);
-      // 多次反复开启 容易爆内存 尝试分批请求 3/100ms
+      // 并发执行所有请求，每4个请求错开150ms发起
       const flowsUrlList = getFlowsUrlList(sub || this.subs);
-      const batches = [];
+      const requests = flowsUrlList.map((item, index) => {
+        const delay = Math.floor(index / 4) * 150;
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            asyncGetFlow(item).finally(resolve);
+          }, delay);
+        });
+      });
 
-      for (let i = 0; i < flowsUrlList.length; i += 4) {
-        const batch = flowsUrlList.slice(i, i + 4);
-        batches.push(batch);
-      }
+      await Promise.all(requests);
+      // 多次反复开启 容易爆内存 尝试分批请求 3/100ms
+      // const flowsUrlList = getFlowsUrlList(sub || this.subs);
+      // const batches = [];
 
-      for (const batch of batches) {
-        const promises = batch.map(asyncGetFlow);
-        await Promise.all(promises);
-        // await new Promise((resolve) => setTimeout(resolve, 150));
-      }
+      // for (let i = 0; i < flowsUrlList.length; i += 4) {
+      //   const batch = flowsUrlList.slice(i, i + 4);
+      //   batches.push(batch);
+      // }
+
+      // for (const batch of batches) {
+      //   const promises = batch.map(asyncGetFlow);
+      //   await Promise.all(promises);
+      //   // await new Promise((resolve) => setTimeout(resolve, 150));
+      // }
     },
     async deleteSub(type: SubsType, name: string) {
       const { showNotify } = useAppNotifyStore();
