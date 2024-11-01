@@ -6,7 +6,6 @@
     position="center"
     :style="{
       width: `90%`,
-      minHeight: `50%`,
       padding: '20px 12px 0 12px',
       backgroundColor: 'var(--background-color)',
     }"

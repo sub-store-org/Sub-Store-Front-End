@@ -74,7 +74,9 @@ export const useSubsStore = defineStore('subsStore', {
       }
     },
     async fetchFlows(sub?: Sub[]) {
-      const asyncGetFlow = async ([url, name, noFlow, hideExpire, showRemaining]) => {
+      type FlowUrlItem = [string, string, boolean, boolean, boolean];
+      const asyncGetFlow = async (item: FlowUrlItem) => {
+        const [url, name, noFlow, hideExpire, showRemaining] = item;
         if (noFlow) {
           this.flows[url] = { status:'noFlow' };
           return false;
@@ -87,12 +89,12 @@ export const useSubsStore = defineStore('subsStore', {
         }
       };
       // 并发执行所有请求，每4个请求错开150ms发起
-      const flowsUrlList = getFlowsUrlList(sub || this.subs);
-      const requests = flowsUrlList.map((item, index) => {
+      const flowsUrlList = getFlowsUrlList(sub || this.subs) as FlowUrlItem[];
+      const requests: Promise<void>[] = flowsUrlList.map((item, index) => {
         const delay = Math.floor(index / 4) * 150;
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
           setTimeout(() => {
-            asyncGetFlow(item).finally(resolve);
+            void asyncGetFlow(item).finally(() => resolve());
           }, delay);
         });
       });
