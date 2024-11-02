@@ -661,9 +661,9 @@ export default {
         isRequired: '目标平台不能为空',
       },
       includeUnsupportedProxy: {
-        label: '包含官方/商店版不支持的协议',
+        label: '包含官方/商店版/未续费订阅不支持的协议',
         tips: {
-          title: '包含官方/商店版不支持的协议',
+          title: '包含官方/商店版未续费订阅不支持的协议',
           content: 'sing-box: +ShadowsocksR\nQuantumult X: +VLESS'
         }
       },
