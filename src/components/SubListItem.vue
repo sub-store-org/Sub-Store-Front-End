@@ -27,27 +27,30 @@
         :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
         @click.stop="compareSub"
       >
-        <div v-if="appearanceSetting.isIconColor">
-          <nut-avatar
-            v-if="props[props.type].icon"
-            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-            :url="props[props.type].icon"
-            bg-color=""
-          />
-          <nut-avatar
-            v-else
-            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-            :url="icon"
-            bg-color=""
-          />
-        </div>
-        <div v-else>
-          <nut-avatar
-            class="sub-item-customer-icon"
-            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-            :url="props[props.type].icon || icon"
-            bg-color=""
-          />
+        <!-- icon visible -->
+        <div v-if="appearanceSetting.isShowIcon">
+          <div v-if="appearanceSetting.isIconColor">
+            <nut-avatar
+              v-if="props[props.type].icon"
+              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :url="props[props.type].icon"
+              bg-color=""
+            />
+            <nut-avatar
+              v-else
+              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :url="icon"
+              bg-color=""
+            />
+          </div>
+          <div v-else>
+            <nut-avatar
+              class="sub-item-customer-icon"
+              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :url="props[props.type].icon || icon"
+              bg-color=""
+            />
+          </div>
         </div>
       </div>
       <div class="sub-item-content">

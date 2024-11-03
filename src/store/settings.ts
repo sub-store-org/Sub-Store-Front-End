@@ -32,6 +32,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isLeftRight: false,
         isDefaultIcon: false,
         isIconColor: false,
+        isShowIcon: true,
         isEditorCommon: true,
         isSimpleReicon: false,
         showFloatingRefreshButton: false,
@@ -72,6 +73,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.isLeftRight = res.data.data.appearanceSetting?.isLeftRight ?? "";
         this.appearanceSetting.isDefaultIcon = res.data.data.appearanceSetting?.isDefaultIcon ?? "";
         this.appearanceSetting.isIconColor = res.data.data.appearanceSetting?.isIconColor ?? "";
+        this.appearanceSetting.isShowIcon = res.data.data.appearanceSetting?.isShowIcon ?? true;
         this.appearanceSetting.isEditorCommon = res.data.data.appearanceSetting?.isEditorCommon ?? true;
         this.appearanceSetting.isSimpleReicon = res.data.data.appearanceSetting?.isSimpleReicon ?? "";
         this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
