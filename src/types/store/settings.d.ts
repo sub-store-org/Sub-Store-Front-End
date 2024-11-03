@@ -26,6 +26,7 @@ interface SettingsPostData {
     isSimpleMode?: boolean; // 简洁模式
     isLeftRight?: boolean; // 卡片右滑呼出
     isDefaultIcon?: boolean; // 恢复默认图标
+    isShowIcon?: boolean; // 展示图标
     isIconColor?: boolean; // 自定义图标使用原始颜色
     isEditorCommon?: boolean; // 展示编辑页常用配置
     isSimpleReicon?: boolean; // 展示订阅刷新按钮
