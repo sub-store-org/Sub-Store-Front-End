@@ -302,7 +302,9 @@ export default {
           placeholder:
             "Multiple lines and parameters are supported, please click the button on the left to see the usage.",
           tips: {
+            importFromFile: 'Import From File',
             fullScreenEdit: "Full Screen Editing",
+            fullScreenEditCancel: "Exit Full Screen Editing",
             label: "Usage",
             title: "Subscription URL(s)",
             content:
@@ -690,10 +692,10 @@ export default {
         placeholder: "Please select a source",
       },
       includeUnsupportedProxy: {
-        label: "Includes protocols not supported by the official/store version",
+        label: "Includes protocols not supported by the official/store/unrenewed subscription version",
         tips: {
           title:
-            "Includes protocols not supported by the official/store version",
+            "Includes protocols not supported by the official/store/unrenewed subscription version",
           content: "sing-box: +ShadowsocksR\nQuantumult X: +VLESS",
         },
       },
