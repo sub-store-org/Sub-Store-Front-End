@@ -74,46 +74,33 @@ export const useSubsStore = defineStore('subsStore', {
       }
     },
     async fetchFlows(sub?: Sub[]) {
-      type FlowUrlItem = [string, string, boolean, boolean, boolean];
-      const asyncGetFlow = async (item: FlowUrlItem) => {
-        const [url, name, noFlow, hideExpire, showRemaining] = item;
+      const asyncGetFlow = async ([url, name, noFlow, hideExpire, showRemaining]) => {
         if (noFlow) {
           this.flows[url] = { status:'noFlow' };
-          return false;
-        }
-        try {
-          const { data } = await subsApi.getFlow(name);
-          this.flows[url] = {...data, hideExpire, showRemaining };
-        } catch (e) {
-          this.flows[url] = { status: 'error' };
+        } else {
+          try {
+            const { data } = await subsApi.getFlow(name);
+            this.flows[url] = {...data, hideExpire, showRemaining };
+          } catch (e) {
+          }
         }
       };
-      // 并发执行所有请求，每4个请求错开150ms发起
-      const flowsUrlList = getFlowsUrlList(sub || this.subs) as FlowUrlItem[];
-      const requests: Promise<void>[] = flowsUrlList.map((item, index) => {
-        const delay = Math.floor(index / 4) * 150;
-        return new Promise<void>((resolve) => {
-          setTimeout(() => {
-            void asyncGetFlow(item).finally(() => resolve());
-          }, delay);
-        });
-      });
-
-      await Promise.all(requests);
+      // const subs = sub || this.subs;
+      // getFlowsUrlList(subs).forEach(asyncGetFlow);
       // 多次反复开启 容易爆内存 尝试分批请求 3/100ms
-      // const flowsUrlList = getFlowsUrlList(sub || this.subs);
-      // const batches = [];
+      const flowsUrlList = getFlowsUrlList(sub || this.subs);
+      const batches = [];
 
-      // for (let i = 0; i < flowsUrlList.length; i += 4) {
-      //   const batch = flowsUrlList.slice(i, i + 4);
-      //   batches.push(batch);
-      // }
+      for (let i = 0; i < flowsUrlList.length; i += 4) {
+        const batch = flowsUrlList.slice(i, i + 4);
+        batches.push(batch);
+      }
 
-      // for (const batch of batches) {
-      //   const promises = batch.map(asyncGetFlow);
-      //   await Promise.all(promises);
-      //   // await new Promise((resolve) => setTimeout(resolve, 150));
-      // }
+      for (const batch of batches) {
+        const promises = batch.map(asyncGetFlow);
+        await Promise.all(promises);
+        // await new Promise((resolve) => setTimeout(resolve, 150));
+      }
     },
     async deleteSub(type: SubsType, name: string) {
       const { showNotify } = useAppNotifyStore();
