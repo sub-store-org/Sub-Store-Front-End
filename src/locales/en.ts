@@ -825,6 +825,7 @@ export default {
     isShowIcon: 'Show icon',
     isEditorCommon: "Show editor common settings",
     isSimpleReicon: "Show items refresh button",
+    isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
     tabBar: 'Hide "Sync" Page',
     tabBar2: 'Hide "File" Page',

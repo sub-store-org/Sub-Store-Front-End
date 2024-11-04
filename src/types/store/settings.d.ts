@@ -30,6 +30,7 @@ interface SettingsPostData {
     isIconColor?: boolean; // 自定义图标使用原始颜色
     isEditorCommon?: boolean; // 展示编辑页常用配置
     isSimpleReicon?: boolean; // 展示订阅刷新按钮
+    isSimpleShowRemark?: boolean; // 展示简洁模式下的备注
     showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
     istabBar?: boolean; // 隐藏 "Gist 同步" 页
     istabBar2?: boolean; // 隐藏 "文件" 页

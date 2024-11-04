@@ -786,6 +786,7 @@ export default {
     isShowIcon: '展示图标',
     isEditorCommon: '展示编辑页常用配置',
     isSimpleReicon: '简洁模式展示订阅刷新按钮',
+    isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
     tabBar: '隐藏 "Gist 同步" 页',
     tabBar2: '隐藏 "文件" 页',

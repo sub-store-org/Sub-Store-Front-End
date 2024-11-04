@@ -162,6 +162,12 @@
           <p v-else-if="type === 'collection'" class="sub-item-detail-isSimple">
             {{ collectionDetail }}
           </p>
+          <p
+            v-if="remark && appearanceSetting.isSimpleShowRemark"
+            class="sub-item-remark"
+          >
+            <span>{{ remarkText }}</span>
+          </p>
         </template>
       </div>
     </div>

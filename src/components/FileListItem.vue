@@ -106,6 +106,12 @@
               </span>
             </template>
           </p>
+          <p
+            v-if="remark && appearanceSetting.isSimpleShowRemark"
+            class="sub-item-remark"
+          >
+            <span>{{ remarkText }}</span>
+          </p>
         </template>
       </div>
     </div>

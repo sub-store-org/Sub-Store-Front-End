@@ -79,6 +79,19 @@
           />
         </template>
       </nut-cell>
+      <nut-cell
+        :title="$t(`moreSettingPage.isSimpleShowRemarks`)"
+        class="cell-item"
+      >
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleShowRemark"
+            size="mini"
+            @change="setSimpleShowRemark"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -244,6 +257,7 @@
   const awIsShowIcon = ref(true);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
+  const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
@@ -326,6 +340,15 @@
     const data = {
       ...appearanceSetting.value,
       isSimpleReicon: isSimpleReicon
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setSimpleShowRemark = (isSimpleShowRemark: boolean) => {
+    // globalStore.setSimpleReicon(isSimpleReicon);
+    const data = {
+      ...appearanceSetting.value,
+      isSimpleShowRemark: isSimpleShowRemark
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -537,6 +560,7 @@
     awIsShowIcon.value = appearanceSetting.value.isShowIcon;
     awEditorCommon.value = appearanceSetting.value.isEditorCommon;
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
+    awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;

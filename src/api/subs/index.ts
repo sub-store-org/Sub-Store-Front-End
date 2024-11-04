@@ -91,11 +91,24 @@ export function useSubsApi() {
         data,
       });
     },
-    shareSub: (data: ShareToken): AxiosPromise<MyAxiosRes> => {
+    shareCreate: (data: ShareToken): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/token`,
         method: 'post',
         data,
+      });
+    },
+    shareDelete: (token: string): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/token/${encodeURIComponent(token)}`,
+        method: 'delete',
+      });
+    },
+    shareQuery: (type: string, name: string): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/tokens`,
+        method: 'get',
+        params: { type, name },
       });
     },
   };

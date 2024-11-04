@@ -290,7 +290,7 @@ const handleCreateShare = async () => {
   if (form.token) {
     params.payload.token = form.token;
   }
-  const res = await subsApi.shareSub(params);
+  const res = await subsApi.shareCreate(params);
   if (res?.data?.status === "success") {
     isCreateShareLinkSuccess.value = true;
     const { secret, token } = res.data.data;
