@@ -11,7 +11,7 @@
       class="sub-item-wrapper"
       :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
     >
-      <div class="sub-img-wrappers" @click.stop="openUrl">
+      <div v-if="appearanceSetting.isShowIcon" class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar
           :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
           :size="appearanceSetting.isSimpleMode ? '36' : '48'"

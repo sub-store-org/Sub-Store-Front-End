@@ -822,6 +822,7 @@ export default {
     islr: "Card right swipe to call out",
     isIC: "Use original color for custom icons",
     isDefaultIcon: "Restore default icon",
+    isShowIcon: 'Show icon',
     isEditorCommon: "Show editor common settings",
     isSimpleReicon: "Show items refresh button",
     showFloatingRefreshButton: "Show floating refresh button",

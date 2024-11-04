@@ -37,6 +37,16 @@
           />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.isShowIcon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awIsShowIcon"
+            size="mini"
+            @change="setIsShowIcon"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isIC`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -231,6 +241,7 @@
   const LeftRight = ref(false);
   const awIconColor = ref(false);
   const awIsDefaultIcon = ref(false);
+  const awIsShowIcon = ref(true);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awShowFloatingRefreshButton = ref(false);
@@ -288,6 +299,15 @@
     const data = {
       ...appearanceSetting.value,
       isDefaultIcon: isDefaultIcon
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setIsShowIcon = (isShowIcon: boolean) => {
+    // globalStore.setIsDefaultIcon(isDefaultIcon);
+    const data = {
+      ...appearanceSetting.value,
+      isShowIcon: isShowIcon
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -514,6 +534,7 @@
     LeftRight.value = appearanceSetting.value.isLeftRight;
     awIconColor.value = appearanceSetting.value.isIconColor;
     awIsDefaultIcon.value = appearanceSetting.value.isDefaultIcon;
+    awIsShowIcon.value = appearanceSetting.value.isShowIcon;
     awEditorCommon.value = appearanceSetting.value.isEditorCommon;
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;

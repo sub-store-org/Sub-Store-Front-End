@@ -3,7 +3,7 @@
   <div class="page-wrapper" @click="handleEditGlobalClick">
     <!-- 基础表单 -->
     <div class="form-block-wrapper">
-      <div class="sticky-title-icon-container">
+      <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
         <nut-image
           :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
           :src="subIcon"

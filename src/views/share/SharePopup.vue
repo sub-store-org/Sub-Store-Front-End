@@ -102,6 +102,14 @@
               max-length="100"
             />
           </nut-form-item>
+          <div v-if="shareUrlVisible" class="qrcode-wrapper">
+            <nut-image
+              :src="shareUrlQrCode"
+              class="qrcode"
+              fit="cover"
+              alt="QR Code"
+            />
+          </div>
           <div class="btn-wrapper">
             <!-- <nut-button
               class="btn"
@@ -142,7 +150,7 @@ import { useClipboard } from "@vueuse/core";
 import { computed, reactive, ref, watch } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
-
+import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { useSubsApi } from "@/api/subs";
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -199,6 +207,7 @@ const expiresUnitList = computed(() => [
     value: "year",
   },
 ]);
+const shareUrlQrCode = useQRCode(computed(() => form.shareUrl));
 const show = () => {
   isVisible.value = true;
   emit("update:visible", true);
@@ -337,6 +346,16 @@ defineExpose({ show, hide, close });
         :deep(.nut-textarea__textarea) {
           text-align: left;
         }
+      }
+    }
+    .qrcode-wrapper {
+      display: flex;
+      justify-content: center;
+      padding-top: 20px;
+      .qrcode {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
       }
     }
     .btn-wrapper {
