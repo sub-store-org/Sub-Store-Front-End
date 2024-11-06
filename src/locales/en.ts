@@ -63,6 +63,7 @@ export default {
       editScript: "Script Edit",
       subEditor: "Subscription Editor",
       fileEditor: "File Editor",
+      shareManage: "Share Manage",
       iconCollection: "Icon Collection",
       themeSetting: "Theme Setting",
       moreSetting: "More Setting",
@@ -731,6 +732,11 @@ export default {
       content:
         "⚠️ This feature will only add files to the sync configuration that are not already in the sync configuration.\nYou need to manually set the source.",
       confirm: "Restore From Gist",
+    },
+  },
+  sharePage: {
+    deleteShare: {
+      succeedNotify: "Successfully deleted!",
     },
   },
   // 图标仓库页

@@ -18,6 +18,9 @@ import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
 
 import Sync from '@/views/Sync.vue';
+
+import ShareManage from '@/views/share/Share.vue';
+
 // import themeSetting from '@/views/themeSetting.vue';
 import moreSetting from '@/views/settings/moreSetting.vue';
 import { Toast } from '@nutui/nutui';
@@ -109,6 +112,15 @@ const router = createRouter({
           component: File,
           meta: {
             title: 'file',
+            needTabBar: true,
+            needNavBack: false,
+          },
+        },
+        {
+          path: '/share/manage',
+          component: ShareManage,
+          meta: {
+            title: 'shareManage',
             needTabBar: true,
             needNavBack: false,
           },

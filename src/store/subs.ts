@@ -1,5 +1,6 @@
 import { useSubsApi } from '@/api/subs';
 import { useFilesApi } from '@/api/files';
+import { useShareApi } from '@/api/share';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
@@ -8,6 +9,7 @@ import { defineStore } from 'pinia';
 const { t } = i18n.global;
 const subsApi = useSubsApi();
 const filesApi = useFilesApi();
+const shareApi = useShareApi();
 // class TaskProcessor {
 //   #fulfilledIndexes; // 已完成任务的索引集合
 //   #results; // 所有任务的执行结果
@@ -203,6 +205,7 @@ export const useSubsStore = defineStore('subsStore', {
       collections: [],
       flows: {},
       files: [],
+      shares: [],
     };
   },
   getters: {
@@ -221,10 +224,15 @@ export const useSubsStore = defineStore('subsStore', {
       ({ files }): GetOne<any> =>
       (name: string) =>
         files.find(file => file.name === name),
+    hasShares: ({ shares }): boolean => shares.length > 0,
+    getOneShare:
+      ({ shares }): GetOne<Share> =>
+      (token: string) =>
+        shares.find(share => share.token === token),
   },
   actions: {
     async fetchSubsData() {
-      await Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles()]).then(res => {
+      await Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles(), shareApi.getShares()]).then(res => {
         if ('data' in res[0].data) {
           this.subs = res[0].data.data.map(i => {
             if (!Array.isArray(i.tag)) {
@@ -243,6 +251,9 @@ export const useSubsStore = defineStore('subsStore', {
         }
         if ('data' in res[2].data) {
           this.files = res[2].data.data;
+        }
+        if ('data' in res[3].data) {
+          this.shares = res[3].data.data;
         }
       });
     },
@@ -327,7 +338,6 @@ export const useSubsStore = defineStore('subsStore', {
         }
       });
     },
-
     async deleteFile(name: string) {
       const { showNotify } = useAppNotifyStore();
 
@@ -337,6 +347,25 @@ export const useSubsStore = defineStore('subsStore', {
         showNotify({
           type: 'danger',
           title: t('filePage.deleteFile.succeedNotify'),
+        });
+      }
+    },
+    async fetchShareData() {
+      Promise.all([shareApi.getShares()]).then((res) => {
+        if ("data" in res[0].data) {
+          this.shares = res[0].data.data;
+        }
+      });
+    },
+    async deleteShare(token: string) {
+      const { showNotify } = useAppNotifyStore();
+
+      const { data } = await shareApi.deleteShare(token);
+      if (data.status === "success") {
+        await this.fetchShareData();
+        showNotify({
+          type: "danger",
+          title: t("sharePage.deleteShare.succeedNotify"),
         });
       }
     },

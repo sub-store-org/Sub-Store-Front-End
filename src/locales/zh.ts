@@ -45,7 +45,7 @@ export default {
         season: '季',
         year: '年',
       }
-    }
+    },
   },
   // 顶部标题栏
   navBar: {
@@ -62,6 +62,7 @@ export default {
       editScript: '脚本编辑',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
+      shareManage: '分享管理',
       iconCollection: '图标仓库',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
@@ -694,6 +695,17 @@ export default {
       confirm: '从 gist 恢复',
     }
   },
+  sharePage: {
+    deleteShare: {
+      title: "温馨提示",
+      desc: "是否确认删除 {displayName}？删除后不可恢复！",
+      succeedNotify: "删除分享成功！",
+      btn: {
+        confirm: "确认删除",
+        cancel: "取消",
+      },
+    },
+  },
   // 图标仓库页
   iconCollectionPage: {
     iconCollection: '图标仓库',
@@ -760,6 +772,7 @@ export default {
       background: '显示为背景',
     },
     moreSettingTitle: '更多设置',
+    shareManageTitle: '分享管理',
     clearData: {
       label: '清除后端数据',
       title: '清除后端数据',

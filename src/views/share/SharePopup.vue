@@ -152,6 +152,7 @@ import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { useSubsApi } from "@/api/subs";
+import { useShareApi } from "@/api/share"
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { useAppNotifyStore } from "@/store/appNotify";
 
@@ -174,6 +175,7 @@ const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const subsApi = useSubsApi();
+const shareApi = useShareApi();
 const { currentUrl: host } = useHostAPI();
 const { showNotify } = useAppNotifyStore();
 
@@ -290,7 +292,7 @@ const handleCreateShare = async () => {
   if (form.token) {
     params.payload.token = form.token;
   }
-  const res = await subsApi.shareCreate(params);
+  const res = await shareApi.createShare(params);
   if (res?.data?.status === "success") {
     isCreateShareLinkSuccess.value = true;
     const { secret, token } = res.data.data;

@@ -226,8 +226,12 @@
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
-        
-
+        <nut-cell
+          :title="$t(`moreSettingPage.shareManageTitle`)"
+          class="change-themes"
+          @click.stop="onClickShareManage"
+          is-link
+        ></nut-cell>
         <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="change-themes"
@@ -305,6 +309,9 @@ const onClickAPISetting = () => {
   router.push(`/settings/api`);
 };
 
+const onClickShareManage = () => {
+  router.push(`/share/manage`);
+};
 const onClickMore = () => {
   router.push(`/settings/more`);
 };
