@@ -221,15 +221,15 @@
 
       <nut-cell-group>
         <nut-cell
-          :title="$t(`apiSettingPage.apiSettingTitle`)"
-          class="change-themes"
-          @click.stop="onClickAPISetting"
-          is-link
-        ></nut-cell>
-        <nut-cell
           :title="$t(`moreSettingPage.shareManageTitle`)"
           class="change-themes"
           @click.stop="onClickShareManage"
+          is-link
+        ></nut-cell>
+        <nut-cell
+          :title="$t(`apiSettingPage.apiSettingTitle`)"
+          class="change-themes"
+          @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
         <nut-cell

@@ -121,8 +121,8 @@ const router = createRouter({
           component: ShareManage,
           meta: {
             title: 'shareManage',
-            needTabBar: true,
-            needNavBack: false,
+            needTabBar: false,
+            needNavBack: true,
           },
         },
         // {

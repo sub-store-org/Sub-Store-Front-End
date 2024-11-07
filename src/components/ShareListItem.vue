@@ -174,7 +174,7 @@ const props = defineProps<{
   data: Share;
   disabled?: boolean;
 }>();
-const emit = defineEmits(["share"]);
+const emit = defineEmits(["detail"]);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -245,6 +245,7 @@ const onClickEdit = () => {
   // router.push(`/edit/${props.type}s/${encodeURIComponent(name)}`);
   console.log("props", props);
   console.log('${host.value}', host.value);
+  emit("detail", props.data);
 };
 
 const onClickDelete = () => {

@@ -78,7 +78,7 @@
               <ShareListItem
                 :data="element"
                 :disabled="swipeDisabled"
-                @share="handleShare"
+                @detail="handleShareDetail"
               />
             </div>
           </template>
@@ -154,11 +154,13 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useHostAPI } from "@/hooks/useHostAPI";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 
 
 const router = useRouter();
+const { currentUrl: host } = useHostAPI();
 
 const as = ref(false);
 
@@ -279,11 +281,14 @@ const handleDragEnd = (dataValue: any) => {
 const shareData = ref(null);
 const shareDataType = ref(null);
 const sharePopupVisible = ref(false);
-const handleShare = (element, type) => {
+const handleShareDetail = (element) => {
   console.log("share", element);
-  shareData.value = element;
-  shareDataType.value = type;
-  sharePopupVisible.value = true;
+  const { type, name, token } = element;
+  const shareUrl = `${host.value}/share/${type}/${encodeURIComponent(name)}?token=${token}`;
+  console.log('shareUrl', shareUrl);
+  // shareData.value = element;
+  // shareDataType.value = type;
+  // sharePopupVisible.value = true;
 };
 </script>
 
