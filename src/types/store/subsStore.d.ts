@@ -84,6 +84,7 @@ interface Flow {
 interface Share {
   type?: 'sub' | 'col'| 'file',
   name?: string;
+  displayName?: string | null;
   remark?: string | null;
   token?: string | null;
   expiresIn?: string | null;

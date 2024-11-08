@@ -268,6 +268,7 @@ const sharePopupVisible = ref(false);
 const handleShare = (element, type) => {
   console.log("share", element);
   shareData.value = {
+    displayName: element.displayName || "",
     name: element.name,
     type: type as "file",
   };

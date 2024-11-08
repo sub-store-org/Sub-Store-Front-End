@@ -697,6 +697,9 @@ export default {
   },
   sharePage: {
     title: "分享编辑",
+    noOriginalTips: "跳转失败, 检查源数据是否已删除",
+    leftTime: "剩余",
+    expired: "已过期",
     createShare: {
       expiresValue: {
         label: "有效期时长",
@@ -714,6 +717,10 @@ export default {
       remark: {
         label: "备注",
         placeholder: "请输入备注",
+      },
+      displayName: {
+        label: "显示名称",
+        placeholder: "输入展示的名称",
       },
       shareUrl: {
         label: "分享链接",

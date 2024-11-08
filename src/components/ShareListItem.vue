@@ -32,7 +32,7 @@
         <div class="sub-item-title-wrapper">
           <!-- 分享订阅、文件名 -->
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ name }}
+            {{ displayName || name }}
             <span class="tag">
               <nut-tag>{{ leftTime }}</nut-tag>
             </span>
@@ -42,7 +42,7 @@
             class="sub-item-title"
             style="color: var(--primary-text-color); font-size: 16px"
           >
-            {{ name }}
+            {{ displayName || name }}
             <span class="tag">
               <nut-tag>{{ leftTime }}</nut-tag>
             </span>
@@ -54,9 +54,9 @@
             :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
           >
             <!-- 查看 -->
-            <!-- <button class="copy-sub-link" @click.stop="onClickPreview">
-              <font-awesome-icon icon="fa-solid fa-eye" />
-            </button> -->
+            <button class="copy-sub-link" @click.stop="onClickShareLink">
+              <font-awesome-icon icon="fa-solid fa-link" />
+            </button>
             <!-- 编辑 -->
             <button class="refresh-sub-flow" @click.stop="onClickEdit">
               <font-awesome-icon icon="fa-solid fa-pen-nib" />
@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Dialog } from "@nutui/nutui";
+import { Dialog, Toast } from "@nutui/nutui";
 import dayjs from "dayjs";
 import { storeToRefs } from "pinia";
 import { computed, createVNode, ref } from "vue";
@@ -129,7 +129,9 @@ import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { isMobile } from "@/utils/isMobile";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const props = defineProps<{
   data: Share;
   disabled?: boolean;
@@ -152,6 +154,10 @@ const { currentUrl: host } = useHostAPI();
 const name = computed(() => {
   return props?.data?.name;
 });
+
+const displayName = computed(() => {
+  return props?.data?.displayName;
+})
 const remark = computed(() => {
   return props?.data?.remark;
 });
@@ -173,8 +179,8 @@ const createTime = computed(() =>{
 const leftTime = computed(() => {
   return props?.data?.exp
     ? dayjs(props?.data?.exp).diff(dayjs(), "second") > 0
-      ? `剩余 ${dayjs(props?.data?.exp).diff(dayjs(), "day", true).toFixed(0)} 天`
-      : "已过期"
+      ? `${t("sharePage.leftTime")} ${dayjs(props?.data?.exp).diff(dayjs(), "day", true).toFixed(0)} ${t("sharePage.createShare.unit.day")}`
+      : t("sharePage.expired")
     : 0;
 });
 
@@ -219,6 +225,35 @@ const onClickEdit = () => {
   console.log("props", props);
   console.log('${host.value}', host.value);
   emit("detail", props.data);
+};
+
+const getOneShareOrigin = async (keyName: string) => {
+  switch (type.value) {
+    case "col":
+      return subsStore.getOneCollection(keyName);
+    case "sub":
+      return subsStore.getOneSub(keyName);
+    case "file":
+      return subsStore.getOneFile(keyName);
+  }
+}
+const onClickShareLink = async () => {
+  console.log("props", props);
+  const keyName = encodeURIComponent(name.value);
+  const item = await getOneShareOrigin(keyName);
+  console.log('item', item)
+  if (!item) {
+    return Toast.text(t("sharePage.noOriginalTips"));
+  }
+  if (type.value === 'file') {
+    router.push(`/edit/files/${keyName}`);
+  }
+  if (type.value === 'sub') {
+    router.push(`/edit/subs/${keyName}`);
+  }
+  if (type.value === 'col') {
+    router.push(`/edit/collections/${keyName}`);
+  }
 };
 
 const onClickDelete = () => {
