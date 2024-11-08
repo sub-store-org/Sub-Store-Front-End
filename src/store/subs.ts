@@ -255,20 +255,26 @@ export const useSubsStore = defineStore('subsStore', {
         if ('data' in res[3].data) {
           this.shares = res[3].data.data;
         }
+      }).catch((err) => {
+        console.log('fetchSubsData err', err);
       });
     },
     async updateOneData(type: string, name: string) {
-      let res;
-      if (type === 'subs') {
-        res = await subsApi.getOne('sub', name);
-      } else if (type === 'collections') {
-        res = await subsApi.getOne('collection', name);
-      } else if (type === 'files') {
-        res = await filesApi.getWholeFile(name);
-      }
-      if (res?.data?.status === 'success') {
-        const index = this[type].findIndex(item => item.name === name);
-        this[type][index] = res.data.data;
+      try {
+        let res;
+        if (type === 'subs') {
+          res = await subsApi.getOne('sub', name);
+        } else if (type === 'collections') {
+          res = await subsApi.getOne('collection', name);
+        } else if (type === 'files') {
+          res = await filesApi.getWholeFile(name);
+        }
+        if (res?.data?.status === 'success') {
+          const index = this[type].findIndex(item => item.name === name);
+          this[type][index] = res.data.data;
+        } 
+      } catch (error) {
+        console.log('updateOneData error', error);
       }
     },
     async fetchFlows(sub?: Sub[]) {
@@ -320,15 +326,19 @@ export const useSubsStore = defineStore('subsStore', {
       // }
     },
     async deleteSub(type: SubsType, name: string) {
-      const { showNotify } = useAppNotifyStore();
+      try {
+        const { showNotify } = useAppNotifyStore();
 
-      const { data } = await subsApi.deleteSub(type, name);
-      if (data.status === 'success') {
-        await this.fetchSubsData();
-        showNotify({
-          type: 'danger',
-          title: t('subPage.deleteSub.succeedNotify'),
-        });
+        const { data } = await subsApi.deleteSub(type, name);
+        if (data.status === 'success') {
+          await this.fetchSubsData();
+          showNotify({
+            type: 'danger',
+            title: t('subPage.deleteSub.succeedNotify'),
+          });
+        } 
+      } catch (error) {
+        console.log('deleteSub error', error);
       }
     },
     async fetchFiles() {
@@ -336,18 +346,24 @@ export const useSubsStore = defineStore('subsStore', {
         if ('data' in res[0].data) {
           this.files = res[0].data.data;
         }
+      }).catch((err) => {
+        console.log('fetchFiles err', err);
       });
     },
     async deleteFile(name: string) {
-      const { showNotify } = useAppNotifyStore();
+      try {
+        const { showNotify } = useAppNotifyStore();
 
-      const { data } = await filesApi.deleteFile(name);
-      if (data.status === 'success') {
-        await this.fetchFiles();
-        showNotify({
-          type: 'danger',
-          title: t('filePage.deleteFile.succeedNotify'),
-        });
+        const { data } = await filesApi.deleteFile(name);
+        if (data.status === 'success') {
+          await this.fetchFiles();
+          showNotify({
+            type: 'danger',
+            title: t('filePage.deleteFile.succeedNotify'),
+          });
+        } 
+      } catch (error) {
+        console.log('deleteFile error', error);
       }
     },
     async fetchShareData() {
@@ -356,18 +372,24 @@ export const useSubsStore = defineStore('subsStore', {
           console.log('res[0].data.data', res[0].data.data);
           this.shares = res[0].data.data;
         }
+      }).catch((err) => {
+        console.log('fetchShareData err', err);
       });
     },
     async deleteShare(token: string, isShowNotify: boolean = true) {
-      const { showNotify } = useAppNotifyStore();
+      try {
+        const { showNotify } = useAppNotifyStore();
 
-      const { data } = await shareApi.deleteShare(token);
-      if (data.status === "success") {
-        await this.fetchShareData();
-        isShowNotify && showNotify({
-          type: "danger",
-          title: t("sharePage.deleteShare.succeedNotify"),
-        });
+        const { data } = await shareApi.deleteShare(token);
+        if (data.status === "success") {
+          await this.fetchShareData();
+          isShowNotify && showNotify({
+            type: "danger",
+            title: t("sharePage.deleteShare.succeedNotify"),
+          });
+        }
+      } catch (error) {
+        console.log('deleteShare error', error);
       }
     },
     async updateShare(token: string, data: ShareToken) {
@@ -377,6 +399,7 @@ export const useSubsStore = defineStore('subsStore', {
         await shareApi.createShare(data); 
         await this.fetchShareData();
       } catch (error) {
+        console.log('updateShare error', error);
         showNotify({
           type: "danger",
           title: t("sharePage.deleteShare.failNotify"),
