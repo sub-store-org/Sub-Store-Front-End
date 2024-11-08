@@ -1,9 +1,6 @@
 <template>
   <div
     style="overflow: hidden; -webkit-user-select: none; user-select: none"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
   >
     <!-- 浮动按钮 -->
     <Teleport to="body">
@@ -55,47 +52,113 @@
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
       <div v-if="hasShares">
-        <draggable
-          v-model="shares"
-          item-key="token"
-          :scroll-sensitivity="200"
-          :force-fallback="true"
-          :scroll-speed="8"
-          :scroll="true"
-          v-bind="{
-            animation: 200,
-            disabled: false,
-            delay: 200,
-            chosenClass: 'chosensub',
-            handle: 'div',
-          }"
-          @change="changeSort('files', files)"
-          @start="handleDragStart(files)"
-          @end="handleDragEnd(files)"
-        >
-          <template #item="{ element }">
-            <div :key="element.token" class="draggable-item">
+        <!-- 单条订阅 -->
+        <div v-if="subShareDataCount > 0" class="share-data">
+          <div class="sticky-title-wrappers">
+            <div class="list-title" @click="toggleFold('sub')">
+              <p>
+                {{ `${$t(`specificWord.singleSub`)}(${subShareDataCount})` }}
+              </p>
+              <nut-icon
+                v-if="!isFold('sub')"
+                name="rect-down"
+                size="12px"
+              ></nut-icon>
+              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+            </div>
+          </div>
+          <div v-if="!isFold('sub')" class="draggable-list">
+            <div
+              v-for="(item, index) in subShareData"
+              :key="index"
+              class="draggable-item"
+            >
               <ShareListItem
-                :data="element"
+                :data="item"
+                :key="index"
                 :disabled="swipeDisabled"
                 @detail="handleShareDetail"
               />
             </div>
-          </template>
-        </draggable>
+          </div>
+        </div>
+        <!-- 组合订阅 -->
+        <div v-if="collectionShareDataCount > 0" class="share-data">
+          <div class="sticky-title-wrappers">
+            <div class="list-title" @click="toggleFold('col')">
+              <p>
+                {{
+                  `${$t(
+                    `specificWord.collectionSub`,
+                  )}(${collectionShareDataCount})`
+                }}
+              </p>
+              <nut-icon
+                v-if="!isFold('col')"
+                name="rect-down"
+                size="12px"
+              ></nut-icon>
+              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+            </div>
+          </div>
+          <div v-if="!isFold('col')" class="draggable-list">
+            <div
+              v-for="(item, index) in collectionShareData"
+              :key="index"
+              class="draggable-item"
+            >
+              <ShareListItem
+                :data="item"
+                :key="index"
+                :disabled="swipeDisabled"
+                @detail="handleShareDetail"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- 文件 -->
+        <div v-if="fileShareDataCount > 0" class="share-data">
+          <div class="sticky-title-wrappers">
+            <div class="list-title" @click="toggleFold('file')">
+              <p>
+                {{ `${$t(`specificWord.file`)}(${fileShareDataCount})` }}
+              </p>
+              <nut-icon
+                v-if="!isFold('file')"
+                name="rect-down"
+                size="12px"
+              ></nut-icon>
+              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+            </div>
+          </div>
+          <div v-if="!isFold('file')" class="draggable-list">
+            <div
+              v-for="(item, index) in fileShareData"
+              :key="index"
+              class="draggable-item"
+            >
+              <ShareListItem
+                :data="item"
+                :key="index"
+                :disabled="swipeDisabled"
+                @detail="handleShareDetail"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- 没有数据 -->
     <div v-if="!isLoading && fetchResult && !hasShares" class="no-data-wrapper">
       <nut-empty image="empty">
         <template #description>
-          <h3>{{ $t(`filePage.emptySub.title`) }}</h3>
-          <p>{{ $t(`filePage.emptySub.desc`) }}</p>
+          <h3>{{ $t(`sharePage.emptyShare.title`) }}</h3>
+          <p>{{ $t(`sharePage.emptyShare.desc`) }}</p>
         </template>
       </nut-empty>
-      <router-link to="/edit/files/UNTITLED" class="router-link">
+      <router-link to="/subs" class="router-link">
         <nut-button type="primary">
-          {{ $t(`filePage.emptySub.btn`) }}
+          {{ $t(`sharePage.emptyShare.btn`) }}
         </nut-button>
       </router-link>
     </div>
@@ -133,34 +196,49 @@
       v-model:visible="sharePopupVisible"
       :data="shareData"
       :type="shareDataType"
+      action="edit"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Dialog } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
-import { ref, toRaw } from "vue";
+import { computed, onMounted, ref, toRaw } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import draggable from "vuedraggable";
-
-import SharePopup from "./SharePopup.vue";
-import { useShareApi } from "@/api/share";
-import { useSubsApi } from "@/api/subs";
 import ShareListItem from "@/components/ShareListItem.vue";
 import { useBackend } from "@/hooks/useBackend";
-import { useAppNotifyStore } from "@/store/appNotify";
+import { useHostAPI } from "@/hooks/useHostAPI";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
-import { useHostAPI } from "@/hooks/useHostAPI";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 
+import SharePopup from "./SharePopup.vue";
+import { Dialog } from "@nutui/nutui";
 
 const router = useRouter();
 const { currentUrl: host } = useHostAPI();
+
+const { env } = useBackend();
+const { t } = useI18n();
+const subsStore = useSubsStore();
+const globalStore = useGlobalStore();
+const settingsStore = useSettingsStore();
+const { appearanceSetting } = storeToRefs(settingsStore);
+
+const { shares, hasShares } = storeToRefs(subsStore);
+const {
+  isLoading,
+  fetchResult,
+  bottomSafeArea,
+} = storeToRefs(globalStore);
+const swipeDisabled = ref(false);
+
+const refresh = () => {
+  initStores(true, true, true);
+};
 
 const as = ref(false);
 
@@ -174,121 +252,92 @@ const enTa = () => {
   }, 100);
 };
 
-// const addShare = () => {
-//   if (as.value) return;
-//   Dialog({
-//     title: "温馨提示",
-//     content: "请到订阅、文件管理页面添加对应分享",
-//     popClass: "auto-dialog",
-//     okText: "OK",
-//     noCancelBtn: true,
-//     closeOnPopstate: true,
-//     lockScroll: false,
-//     onOk: () => {
-//       router.push("/subs");
-//     },
-//     onCancel: () => {},
-//   });
-// };
+const fold = ref({
+  sub: false,
+  col: false,
+  file: false,
+});
 
-const { env } = useBackend();
-const { showNotify } = useAppNotifyStore();
-const subApi = useSubsApi();
-const shareApi = useShareApi();
-const { t } = useI18n();
-const subsStore = useSubsStore();
-const globalStore = useGlobalStore();
-const settingsStore = useSettingsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
-
-const { hasFiles, files, shares, hasShares } = storeToRefs(subsStore);
-const {
-  // isSimpleMode,
-  isLoading,
-  fetchResult,
-  bottomSafeArea,
-  // showFloatingRefreshButton,
-} = storeToRefs(globalStore);
-const swipeDisabled = ref(false);
-const touchStartY = ref(null);
-const touchStartX = ref(null);
-const sortFailed = ref(false);
-const onTouchStart = (event: TouchEvent) => {
-  touchStartY.value = Math.abs(event.touches[0].clientY);
-  touchStartX.value = Math.abs(event.touches[0].clientX);
+const isFold = (key) => {
+  return fold.value?.[key];
 };
 
-const onTouchMove = (event: TouchEvent) => {
-  const deltaY = Math.abs(event.changedTouches[0].clientY - touchStartY.value);
-  const deltaX = Math.abs(event.changedTouches[0].clientX - touchStartX.value);
-
-  const isScrollingUp = deltaX > 2;
-  const isScrollingUps = deltaY < 10;
-
-  if (isScrollingUp && isScrollingUps) {
-    event.preventDefault();
-  }
+const toggleFold = (key) => {
+  fold.value[key] = !fold.value[key];
 };
 
-const onTouchEnd = () => {
-  touchStartY.value = null;
-  touchStartX.value = null;
+const addShare = () => {
+  if (as.value) return;
+  Dialog({
+    title: t("sharePage.emptyShare.title"),
+    content: t("sharePage.emptyShare.emptyTips"),
+    popClass: "auto-dialog",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+    onOk: () => {
+      router.push("/subs");
+    },
+    onCancel: () => {},
+  });
 };
 
-const refresh = () => {
-  initStores(true, true, true);
-};
+const subShareData = computed(() => {
+  return shares.value.filter((item) => item.type === "sub");
+});
 
-let dragData = null;
-const changeSort = async (subColl: "files", dataValue: any[]) => {
-  try {
-    let sortDataRes: any;
+const subShareDataCount = computed(() => {
+  return subShareData.value.length;
+});
 
-    const nameSortArray = dataValue.map((k: { name: string }) => k.name);
-    // console.log(nameSortArray);
-    sortDataRes = await subApi.newSortSub(
-      subColl,
-      JSON.parse(JSON.stringify(toRaw(nameSortArray))),
-    );
-    // console.log(JSON.stringify(sortDataRes))
-    if (sortDataRes?.data?.status !== "success") {
-      sortFailed.value = true;
-      showNotify({
-        title: t("notify.sortsub.failed"),
-        type: "danger",
-        content: JSON.stringify(sortDataRes),
-      });
-    }
-  } catch (error) {
-    sortFailed.value = true;
-  }
-};
+const fileShareData = computed(() => {
+  return shares.value.filter((item) => item.type === "file");
+});
 
-const handleDragStart = (dataValue: any) => {
-  swipeDisabled.value = true;
-  dragData = dataValue.value;
-};
+const fileShareDataCount = computed(() => {
+  return fileShareData.value.length;
+});
 
-const handleDragEnd = (dataValue: any) => {
-  if (sortFailed.value) {
-    dataValue.value = dragData;
-  } else {
-    dragData = null;
-  }
-  swipeDisabled.value = false;
-};
+const collectionShareData = computed(() => {
+  return shares.value.filter((item) => item.type === "col");
+});
+
+const collectionShareDataCount = computed(() => {
+  return collectionShareData.value.length;
+});
+
+const init = async () => {
+  await subsStore.fetchShareData();
+}
+
+onMounted(() => {
+  init();
+});
 
 const shareData = ref(null);
 const shareDataType = ref(null);
 const sharePopupVisible = ref(false);
-const handleShareDetail = (element) => {
-  console.log("share", element);
-  const { type, name, token } = element;
-  const shareUrl = `${host.value}/share/${type}/${encodeURIComponent(name)}?token=${token}`;
-  console.log('shareUrl', shareUrl);
-  // shareData.value = element;
-  // shareDataType.value = type;
-  // sharePopupVisible.value = true;
+
+const secretPath = computed(() => {
+  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
+});
+
+const handleShareDetail = (detail: Share) => {
+  console.log('detail', detail)
+  const { type, name, token } = detail;
+  const shareUrl = `${host.value.replace(
+    new RegExp(`${secretPath.value}`),
+    "/share",
+  )}/${type}/${encodeURIComponent(name)}?token=${token}`;
+  shareData.value = { ...detail, shareUrl };
+  shareDataType.value = type;
+  sharePopupVisible.value = true;
+  console.log("share", detail);
+  console.log("env", env.value);
+  console.log('shareDataType', shareDataType.value)
+  console.log("secretPath", secretPath.value);
+  console.log("shareUrl", shareUrl);
 };
 </script>
 
@@ -397,9 +446,25 @@ const handleShareDetail = (element) => {
 }
 
 .list-title {
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
   padding-left: 8px;
   font-weight: bold;
   //padding-left: var(--safe-area-side);
+  p {
+    margin-right: 6px;
+  }
+  :deep(.nut-icon) {
+    // transform: rotate(270deg);
+    font-size: 12px;
+    height: 12px;
+    opacity: 0.6;
+    margin-top: 3px;
+  }
 }
 
 .sticky-title-wrappers {

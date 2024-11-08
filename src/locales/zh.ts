@@ -696,6 +696,55 @@ export default {
     }
   },
   sharePage: {
+    title: "分享编辑",
+    createShare: {
+      expiresValue: {
+        label: "有效期时长",
+        placeholder: "请输入有效期时长",
+        regex: "请输入0.01-99999.99范围内的数字",
+        empty: "有效期时长不可为空",
+      },
+      expiresUnit: {
+        label: "有效期单位",
+      },
+      token: {
+        label: "自定义Token",
+        placeholder: "默认后端随机Token"
+      },
+      remark: {
+        label: "备注",
+        placeholder: "请输入备注",
+      },
+      shareUrl: {
+        label: "分享链接",
+        placeholder: "请点击按钮创建分享链接"
+      },
+      unit: {
+        day: "天",
+        month: "月",
+        season: "季",
+        year: "年",
+      },
+      copyBtn: "复制链接",
+      updateBtn: "更新分享",
+      createBtn: "创建分享",
+      succeedNotify: "创建分享成功！",
+    },
+    copyShare: {
+      succeedNotify: "复制分享链接成功",
+    },
+    emptyShare: {
+      title: '你还没有创建分享',
+      desc: '创建分享后开始使用',
+      btn: '立即创建',
+    },
+    updateShare: {
+      failNotify: "更新分享失败",
+      title: "温馨提示",
+      tips: "更新分享后，原分享链接将失效，是否继续?",
+      confirm: "确认",
+      cancel: "取消",
+    },
     deleteShare: {
       title: "温馨提示",
       desc: "是否确认删除 {displayName}？删除后不可恢复！",

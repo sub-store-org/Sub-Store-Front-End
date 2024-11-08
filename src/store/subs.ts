@@ -353,19 +353,33 @@ export const useSubsStore = defineStore('subsStore', {
     async fetchShareData() {
       Promise.all([shareApi.getShares()]).then((res) => {
         if ("data" in res[0].data) {
+          console.log('res[0].data.data', res[0].data.data);
           this.shares = res[0].data.data;
         }
       });
     },
-    async deleteShare(token: string) {
+    async deleteShare(token: string, isShowNotify: boolean = true) {
       const { showNotify } = useAppNotifyStore();
 
       const { data } = await shareApi.deleteShare(token);
       if (data.status === "success") {
         await this.fetchShareData();
-        showNotify({
+        isShowNotify && showNotify({
           type: "danger",
           title: t("sharePage.deleteShare.succeedNotify"),
+        });
+      }
+    },
+    async updateShare(token: string, data: ShareToken) {
+      const { showNotify } = useAppNotifyStore();
+      try {
+        await shareApi.deleteShare(token);
+        await shareApi.createShare(data); 
+        await this.fetchShareData();
+      } catch (error) {
+        showNotify({
+          type: "danger",
+          title: t("sharePage.deleteShare.failNotify"),
         });
       }
     },

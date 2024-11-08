@@ -133,7 +133,7 @@
     <SharePopup
       v-model:visible="sharePopupVisible"
       :data="shareData"
-      :type="shareDataType"
+      action="add"
     />
   </div>
 </template>
@@ -264,12 +264,13 @@ const handleDragEnd = (dataValue: any) => {
 };
 
 const shareData = ref(null);
-const shareDataType = ref(null);
 const sharePopupVisible = ref(false);
 const handleShare = (element, type) => {
   console.log("share", element);
-  shareData.value = element;
-  shareDataType.value = type;
+  shareData.value = {
+    name: element.name,
+    type: type as "file",
+  };
   sharePopupVisible.value = true;
 };
 </script>
