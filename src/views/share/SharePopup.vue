@@ -74,6 +74,15 @@
                 @clear="clearToken"
               ></nut-input>
             </nut-form-item>
+            <nut-form-item :label="$t(`sharePage.createShare.displayName.label`)" prop="displayName">
+              <nut-input
+                v-model="form.displayName"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.displayName.placeholder`)"
+                type="text"
+                max-length="100"
+              ></nut-input>
+            </nut-form-item>
             <nut-form-item
               :label="$t(`sharePage.createShare.remark.label`)"
               prop="remark"
@@ -199,6 +208,15 @@
                   @clear="clearToken"
                 ></nut-input>
               </nut-form-item>
+              <nut-form-item :label="$t(`sharePage.createShare.displayName.label`)" prop="displayName">
+                <nut-input
+                  v-model="form.displayName"
+                  :border="false"
+                  :placeholder="$t(`sharePage.createShare.displayName.placeholder`)"
+                  type="text"
+                  max-length="100"
+                ></nut-input>
+              </nut-form-item>
             </template>
             <nut-form-item
               :label="$t(`sharePage.createShare.shareUrl.label`)"
@@ -322,6 +340,7 @@ const form = reactive({
   remark: "",
   token: "",
   name: "",
+  displayName: "",
   type: "",
   shareUrl: "",
 });
@@ -373,6 +392,7 @@ watchEffect(() => {
     form.remark = props.data?.remark;
     form.shareUrl = props.data?.shareUrl;
     form.name = props.data?.name;
+    form.displayName = props.data?.displayName;
     form.type = props.data?.type;
   } else {
     form.expiresValue = "";
@@ -382,17 +402,13 @@ watchEffect(() => {
     form.token = "";
     form.shareUrl = "";
     form.name = props.data?.name;
+    form.displayName = props.data?.displayName;
     form.type = props.data?.type;
   }
 });
 const isCreateShareLinkSuccess = ref(false);
 const isVisible = ref(props.visible);
 const sharePopupTitle = computed(() => {
-  if (props.action === "edit") {
-    return form.name
-      ? `${t("sharePage.title")}-${form.name}`
-      : `${t("sharePage.title")}`;
-  }
   return `${t("sharePage.title")}`;
 });
 const expiresUnitList = computed(() => [
@@ -523,6 +539,7 @@ const handleCreateShare = async () => {
     payload: {
       type: typeMap[form.type] as "sub" | "col" | "file",
       name: form.name,
+      displayName: form.displayName || "",
       remark: form.remark || "",
     },
     options: {

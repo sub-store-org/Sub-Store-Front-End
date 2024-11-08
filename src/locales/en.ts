@@ -707,6 +707,9 @@ export default {
   },
   sharePage: {
     title: "Share",
+    noOriginalTips: "Failed to jump, check if the source data has been deleted.",
+    leftTime: "Remaining time",
+    expired: "Expired",
     createShare: {
       expiresValue: {
         label: "Valid for",
@@ -724,6 +727,10 @@ export default {
       remark: {
         label: "Remarks",
         placeholder: "The remarks",
+      },
+      displayName: {
+        label: "显示名称",
+        placeholder: "输入展示的名称",
       },
       shareUrl: {
         label: "Share Link",
