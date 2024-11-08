@@ -18,151 +18,286 @@
     round
     @close="close"
   >
-    <div class="share-popup-title">{{ $t(`globalNotify.share.title`) }}</div>
+    <div class="share-popup-title">{{ sharePopupTitle }}</div>
     <div class="share-info-wrapper">
       <div class="share-info-form">
-        <nut-form ref="ruleForm" :model-value="form">
-          <nut-form-item
-            :label="$t(`globalNotify.share.expiresValue`)"
-            prop="expiresValue"
-            required
-            :rules="[
-              {
-                required: true,
-                message: $t(`globalNotify.share.expiresValueEmpty`),
-              },
-              {
-                validator: validateExpiresValue,
-                message: $t(`globalNotify.share.expiresValueRegex`),
-              },
-            ]"
-          >
-            <nut-input
-              v-model="form.expiresValue"
-              :border="false"
-              :placeholder="$t(`globalNotify.share.expiresValuePlaceholder`)"
-              type="number"
-              max-length="8"
-              format-trigger="onBlur"
-              @blur="customerBlurValidate('expiresValue')"
-            ></nut-input>
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`globalNotify.share.expiresUnit`)"
-            prop="expiresUnit"
-          >
-            <nut-radiogroup v-model="form.expiresUnit" direction="horizontal">
-              <nut-radio
-                v-for="(item, index) in expiresUnitList"
-                :key="index"
-                :label="item.value"
+        <!-- 新增分享 -->
+        <template v-if="action === 'add'">
+          <nut-form ref="ruleForm" :model-value="form">
+            <nut-form-item
+              :label="$t(`sharePage.createShare.expiresValue.label`)"
+              prop="expiresValue"
+              required
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`sharePage.createShare.expiresValue.empty`),
+                },
+                {
+                  validator: validateExpiresValue,
+                  message: $t(`sharePage.createShare.expiresValue.regex`),
+                },
+              ]"
+            >
+              <nut-input
+                v-model="form.expiresValue"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.expiresValue.placeholder`)"
+                type="number"
+                max-length="8"
+                format-trigger="onBlur"
+                @blur="customerBlurValidate('expiresValue')"
+              ></nut-input>
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.expiresUnit.label`)"
+              prop="expiresUnit"
+            >
+              <nut-radiogroup v-model="form.expiresUnit" direction="horizontal">
+                <nut-radio
+                  v-for="(item, index) in expiresUnitList"
+                  :key="index"
+                  :label="item.value"
+                >
+                  {{ item.label }}
+                </nut-radio>
+              </nut-radiogroup>
+            </nut-form-item>
+            <nut-form-item :label="$t(`sharePage.createShare.token.label`)" prop="token">
+              <nut-input
+                v-model="form.token"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.token.placeholder`)"
+                type="text"
+                max-length="100"
+                clearable
+                @clear="clearToken"
+              ></nut-input>
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.remark.label`)"
+              prop="remark"
+            >
+              <nut-textarea
+                v-model="form.remark"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.remark.placeholder`)"
+                type="text"
+                input-align="left"
+                rows="1"
+                :autosize="{ maxHeight: 140 }"
+                max-length="100"
+              />
+            </nut-form-item>
+            <nut-form-item
+              v-if="shareUrlVisible"
+              :label="$t(`sharePage.createShare.shareUrl.label`)"
+              prop="shareUrl"
+            >
+              <nut-textarea
+                v-model="form.shareUrl"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.shareUrl.placeholder`)"
+                type="text"
+                input-align="left"
+                rows="3"
+                :autosize="{ maxHeight: 140 }"
+                max-length="100"
+              />
+            </nut-form-item>
+            <div v-if="shareUrlVisible" class="qrcode-wrapper">
+              <nut-image
+                :src="shareUrlQrCode"
+                class="qrcode"
+                fit="cover"
+                alt="QR Code"
+              />
+            </div>
+            <div class="btn-wrapper">
+              <nut-button
+                class="btn"
+                plain
+                shape="round"
+                :disabled="form.shareUrl ? false : true"
+                @click="handleCopyShare"
               >
-                {{ item.label }}
-              </nut-radio>
-            </nut-radiogroup>
-          </nut-form-item>
-          <nut-form-item :label="$t(`globalNotify.share.token`)" prop="token">
-            <nut-input
-              v-model="form.token"
-              :border="false"
-              :placeholder="$t(`globalNotify.share.tokenPlaceholder`)"
-              type="text"
-              max-length="100"
-              clearable
-              @clear="clearToken"
-            ></nut-input>
-          </nut-form-item>
-          <nut-form-item :label="$t(`globalNotify.share.remark`)" prop="remark">
-            <nut-textarea
-              v-model="form.remark"
-              class="nut-input-text"
-              :border="false"
-              :placeholder="$t(`globalNotify.share.remarkPlaceholder`)"
-              type="text"
-              input-align="left"
-              rows="1"
-              :autosize="{ maxHeight: 140 }"
-              max-length="100"
-            />
-          </nut-form-item>
-          <nut-form-item
-            v-if="shareUrlVisible"
-            :label="$t(`globalNotify.share.shareUrl`)"
-            prop="shareUrl"
-          >
-            <nut-textarea
-              v-model="form.shareUrl"
-              class="nut-input-text"
-              :border="false"
-              :placeholder="$t(`globalNotify.share.shareUrlPlaceholder`)"
-              type="text"
-              input-align="left"
-              rows="3"
-              :autosize="{ maxHeight: 140 }"
-              max-length="100"
-            />
-          </nut-form-item>
-          <div v-if="shareUrlVisible" class="qrcode-wrapper">
-            <nut-image
-              :src="shareUrlQrCode"
-              class="qrcode"
-              fit="cover"
-              alt="QR Code"
-            />
-          </div>
-          <div class="btn-wrapper">
-            <!-- <nut-button
-              class="btn"
-              type="default"
-              plain
-              shape="round"
-              @click="handleCancel"
+                {{ $t("sharePage.createShare.copyBtn") }}
+              </nut-button>
+              <nut-button
+                class="btn"
+                type="primary"
+                shape="round"
+                @click="handleCreateShare"
+              >
+                {{ $t("sharePage.createShare.createBtn") }}
+              </nut-button>
+            </div>
+          </nut-form>
+        </template>
+        <!-- 编辑分享 -->
+        <template v-if="action === 'edit'">
+          <nut-form ref="ruleForm" :model-value="form">
+            <!-- 更新分享 -->
+            <template v-if="isUpdateShare">
+              <nut-form-item
+                :label="$t(`sharePage.createShare.expiresValue.label`)"
+                prop="expiresValue"
+                required
+                :rules="[
+                  {
+                    required: true,
+                    message: $t(`sharePage.createShare.expiresValue.empty`),
+                  },
+                  {
+                    validator: validateExpiresValue,
+                    message: $t(`sharePage.createShare.expiresValue.regex`),
+                  },
+                ]"
+              >
+                <nut-input
+                  v-model="form.expiresValue"
+                  :border="false"
+                  :placeholder="
+                    $t(`sharePage.createShare.expiresValue.placeholder`)
+                  "
+                  type="number"
+                  max-length="8"
+                  format-trigger="onBlur"
+                  @blur="customerBlurValidate('expiresValue')"
+                ></nut-input>
+              </nut-form-item>
+              <nut-form-item
+                :label="$t(`sharePage.createShare.expiresUnit.label`)"
+                prop="expiresUnit"
+              >
+                <nut-radiogroup
+                  v-model="form.expiresUnit"
+                  direction="horizontal"
+                >
+                  <nut-radio
+                    v-for="(item, index) in expiresUnitList"
+                    :key="index"
+                    :label="item.value"
+                  >
+                    {{ item.label }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </nut-form-item>
+              <nut-form-item
+                :label="$t(`sharePage.createShare.token.label`)"
+                prop="token"
+              >
+                <nut-input
+                  v-model="form.token"
+                  :border="false"
+                  :placeholder="$t(`sharePage.createShare.token.placeholder`)"
+                  type="text"
+                  max-length="100"
+                  clearable
+                  @clear="clearToken"
+                ></nut-input>
+              </nut-form-item>
+            </template>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.shareUrl.label`)"
+              prop="shareUrl"
             >
-              {{ $t("globalNotify.share.cancel") }}
-            </nut-button> -->
-            <nut-button
-              class="btn"
-              plain
-              shape="round"
-              :disabled="form.shareUrl ? false : true"
-              @click="handleCopyShare"
+              <nut-textarea
+                v-model="form.shareUrl"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.shareUrl.placeholder`)"
+                type="text"
+                input-align="left"
+                rows="3"
+                :autosize="{ maxHeight: 140 }"
+                max-length="100"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.remark.label`)"
+              prop="remark"
             >
-              {{ $t("globalNotify.share.copyShare") }}
-            </nut-button>
-            <nut-button
-              class="btn"
-              type="primary"
-              shape="round"
-              @click="handleCreateShare"
-            >
-              {{ $t("globalNotify.share.createShare") }}
-            </nut-button>
-          </div>
-        </nut-form>
+              <nut-textarea
+                v-model="form.remark"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.remark.placeholder`)"
+                type="text"
+                input-align="left"
+                rows="1"
+                :autosize="{ maxHeight: 140 }"
+                max-length="100"
+              />
+            </nut-form-item>
+            <div v-if="shareUrlVisible" class="qrcode-wrapper">
+              <nut-image
+                :src="shareUrlQrCode"
+                class="qrcode"
+                fit="cover"
+                alt="QR Code"
+              />
+            </div>
+            <div class="btn-wrapper">
+              <nut-button
+                class="btn"
+                plain
+                shape="round"
+                :disabled="form.shareUrl ? false : true"
+                @click="handleCopyShare"
+              >
+                {{ $t("sharePage.createShare.copyBtn") }}
+              </nut-button>
+              <nut-button
+                v-if="!isUpdateShare"
+                class="btn"
+                type="primary"
+                shape="round"
+                @click="handleUpdateShare"
+              >
+                {{ $t("sharePage.createShare.updateBtn") }}
+              </nut-button>
+              <nut-button
+                v-else
+                class="btn"
+                type="primary"
+                shape="round"
+                @click="confirmUpdateShare"
+              >
+                {{ $t("sharePage.createShare.createBtn") }}
+              </nut-button>
+            </div>
+          </nut-form>
+        </template>
       </div>
     </div>
   </nut-popup>
 </template>
 
 <script setup lang="ts">
-import { Toast } from "@nutui/nutui";
+import { Dialog, Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
-import { computed, reactive, ref, watch } from "vue";
+import { useQRCode } from "@vueuse/integrations/useQRCode";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
-import { useQRCode } from '@vueuse/integrations/useQRCode';
-import { useSubsApi } from "@/api/subs";
+
+import { useShareApi } from "@/api/share";
+import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { useAppNotifyStore } from "@/store/appNotify";
+import { useSubsStore } from "@/store/subs";
 
 const props = defineProps({
   data: {
     type: Object,
     default: () => {},
   },
-  type: {
+  action: {
     type: String,
-    default: "sub",
+    default: "add",
   },
   visible: {
     type: Boolean,
@@ -172,10 +307,11 @@ const props = defineProps({
 const emit = defineEmits(["update:visible"]);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
-
-const subsApi = useSubsApi();
+const shareApi = useShareApi();
 const { currentUrl: host } = useHostAPI();
+const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
+const subsStore = useSubsStore();
 
 const { t } = useI18n();
 const ruleForm = ref<any>(null);
@@ -185,25 +321,95 @@ const form = reactive({
   expiresIn: "",
   remark: "",
   token: "",
+  name: "",
+  type: "",
   shareUrl: "",
+});
+
+const parseDuration = (input: string): { value: number; unit: string } | null => {
+  if (!input) {
+    return null;
+  }
+  // 使用正则表达式提取数字和单位
+  const regex = /^([\d.]+)([d])$/; // 匹配形如 "60d" 或 "0.15d" 的格式
+  const match = input.match(regex);
+
+  if (!match) {
+      // 如果输入格式不正确，返回 null
+      return null;
+  }
+
+  const days: number = parseFloat(match[1]); // 获取输入的天数
+  const unitMap: { [key: string]: number } = {
+      'day': 1,
+      'month': 30,
+      'season': 90,
+      'year': 365,
+  };
+
+  // 根据输入天数计算相应的单位和数值
+  if (days < 30) {
+    return { value: parseFloat((days / unitMap['day']).toFixed(2)), unit: 'day' };
+  } else if (days < 90) {
+    return { value: parseFloat((days / unitMap['month']).toFixed(2)), unit: 'month' };
+  } else if (days < 365) {
+    return { value: parseFloat((days / unitMap['season']).toFixed(2)), unit: 'season' };
+  } else {
+    return { value: parseFloat((days / unitMap['year']).toFixed(2)), unit: 'year' };
+  }
+};
+
+watchEffect(() => {
+  if (props.action === "edit") {
+    if (props.data?.expiresIn) {
+      const { value, unit } = parseDuration(props.data?.expiresIn);
+      form.expiresValue = String(value);
+      form.expiresUnit = unit; 
+    } else {
+      form.expiresValue = "";
+      form.expiresUnit = "day";
+    }
+    // form.token = props.data?.token;
+    form.remark = props.data?.remark;
+    form.shareUrl = props.data?.shareUrl;
+    form.name = props.data?.name;
+    form.type = props.data?.type;
+  } else {
+    form.expiresValue = "";
+    form.expiresUnit = "day";
+    form.expiresIn = "";
+    form.remark = "";
+    form.token = "";
+    form.shareUrl = "";
+    form.name = props.data?.name;
+    form.type = props.data?.type;
+  }
 });
 const isCreateShareLinkSuccess = ref(false);
 const isVisible = ref(props.visible);
+const sharePopupTitle = computed(() => {
+  if (props.action === "edit") {
+    return form.name
+      ? `${t("sharePage.title")}-${form.name}`
+      : `${t("sharePage.title")}`;
+  }
+  return `${t("sharePage.title")}`;
+});
 const expiresUnitList = computed(() => [
   {
-    label: t("globalNotify.share.unit.day"),
+    label: t("sharePage.createShare.unit.day"),
     value: "day",
   },
   {
-    label: t("globalNotify.share.unit.month"),
+    label: t("sharePage.createShare.unit.month"),
     value: "month",
   },
   {
-    label: t("globalNotify.share.unit.season"),
+    label: t("sharePage.createShare.unit.season"),
     value: "season",
   },
   {
-    label: t("globalNotify.share.unit.year"),
+    label: t("sharePage.createShare.unit.year"),
     value: "year",
   },
 ]);
@@ -219,6 +425,9 @@ const hide = () => {
 const shareUrlVisible = computed(() => {
   return form.shareUrl || isCreateShareLinkSuccess.value;
 });
+
+const isUpdateShare = ref(false);
+
 const resetFormData = () => {
   form.expiresValue = "";
   form.expiresUnit = "day";
@@ -226,13 +435,18 @@ const resetFormData = () => {
   form.remark = "";
   form.token = "";
   form.shareUrl = "";
+  form.name = "";
+  form.type = "";
   isCreateShareLinkSuccess.value = false;
+  isUpdateShare.value = false;
 };
 const clearToken = () => {
   form.token = "";
 };
 const close = () => {
-  resetFormData();
+  setTimeout(() => {
+    resetFormData();
+  }, 300);
   hide();
 };
 const validateExpiresValue = (value: string) => {
@@ -254,7 +468,7 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
   const unitValue = unitMap[expireUnit];
   return `${Number(value) * unitValue}${unit}`;
 };
-const handleCopyShare = async () => {
+const handleCopyShare = async (isNotify: boolean = true) => {
   if (!form.shareUrl) {
     return;
   }
@@ -263,24 +477,52 @@ const handleCopyShare = async () => {
   } else {
     await copyFallback(form.shareUrl);
   }
-  showNotify({ title: t("globalNotify.share.copyShareSuccessTips") });
+  isNotify && showNotify({ title: t("sharePage.copyShare.succeedNotify") });
 };
+
+const secretPath = computed(() => {
+  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
+});
+
+const handleUpdateShare = async () => {
+  Dialog({
+    title: t("sharePage.updateShare.title"),
+    content: t("sharePage.updateShare.tips"),
+    popClass: "auto-dialog",
+    okText: t("sharePage.updateShare.confirm"),
+    cancelText: t("sharePage.updateShare.cancel"),
+    noCancelBtn: false,
+    closeOnPopstate: true,
+    lockScroll: false,
+    onOk: async () => {
+      console.log("form", form);
+      console.log("props.data", props.data);
+      isUpdateShare.value = true;
+    },
+    onCancel: () => {
+      console.log("取消");
+      isUpdateShare.value = false;
+    },
+  });
+};
+
 const handleCreateShare = async () => {
   if (!form.expiresValue) {
-    return Toast.warn(t("globalNotify.share.expiresValueEmpty"));
+    return Toast.warn(t("sharePage.createShare.expiresValue.empty"));
   }
   if (!validateExpiresValue(form.expiresValue)) {
-    return Toast.warn(t("globalNotify.share.expiresValueRegex"));
+    return Toast.warn(t("sharePage.createShare.expiresValue.regex"));
   }
   const typeMap = {
     sub: "sub",
     collection: "col",
+    col: "col",
     file: "file",
   };
   const params: ShareToken = {
     payload: {
-      type: typeMap[props.type] as "sub" | "col" | "file",
-      name: props.data.name,
+      type: typeMap[form.type] as "sub" | "col" | "file",
+      name: form.name,
       remark: form.remark || "",
     },
     options: {
@@ -290,23 +532,32 @@ const handleCreateShare = async () => {
   if (form.token) {
     params.payload.token = form.token;
   }
-  const res = await subsApi.shareCreate(params);
+  const res = await shareApi.createShare(params);
   if (res?.data?.status === "success") {
     isCreateShareLinkSuccess.value = true;
-    const { secret, token } = res.data.data;
+    const { token } = res.data.data;
     const shareUrl = `${host.value.replace(
-      new RegExp(`${secret}$`),
-      "",
-    )}/share/${typeMap[props.type]}/${encodeURIComponent(
+      new RegExp(`${secretPath.value}$`),
+      "/share",
+    )}/${typeMap[form.type]}/${encodeURIComponent(
       props.data.name,
     )}?token=${encodeURIComponent(token)}`;
     form.shareUrl = shareUrl;
-    showNotify({ title: t("globalNotify.share.createShareSuccessTips") });
-    handleCopyShare();
+    showNotify({ title: t("sharePage.createShare.succeedNotify") });
+    handleCopyShare(false);
+    if (props.action === "edit") {
+      subsStore.fetchShareData();
+    }
   } else {
     isCreateShareLinkSuccess.value = false;
   }
 };
+
+const confirmUpdateShare = async () => {
+  await subsStore.deleteShare(props.data?.token, false);
+  await handleCreateShare();
+};
+
 watch(
   () => props.visible,
   (newValue) => {

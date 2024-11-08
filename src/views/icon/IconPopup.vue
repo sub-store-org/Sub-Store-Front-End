@@ -121,22 +121,26 @@
 <script setup lang="ts">
 import { Toast } from "@nutui/nutui";
 import axios from "axios";
-import { ref, watch, computed, reactive, onMounted } from 'vue'
+import { ref, watch, watchEffect, computed, reactive, onMounted } from 'vue'
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from '@/store/settings';
 import { useI18n } from "vue-i18n";
 import { useDebounceFn } from '@vueuse/core'
 
 const { t } = useI18n();
 const globalStore = useGlobalStore();
-const {
-  bottomSafeArea,
-  isIconColor,
-  defaultIconCollection
-} = storeToRefs(globalStore);
+const settingsStore = useSettingsStore();
+const { changeAppearanceSetting } = settingsStore;
+const { appearanceSetting } = storeToRefs(settingsStore);
+const { bottomSafeArea, defaultIconCollection } = storeToRefs(globalStore);
 
 const setIconColor = (isIconColor: boolean) => {
-  globalStore.setIconColor(isIconColor);
+  const data = {
+    ...appearanceSetting.value,
+    isIconColor,
+  };
+  changeAppearanceSetting({ appearanceSetting: data });
 };
 const form = reactive({
   iconName: "",
@@ -213,6 +217,12 @@ const defaultIconCollectionColumns = ref([
       "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
   },
 ]);
+
+const isIconColor = ref(false);
+
+watchEffect(() => {
+  isIconColor.value = appearanceSetting.value.isIconColor;
+});
 
 // 默认图标仓库
 const defaultIconCollectionValue = ref([""]);

@@ -3,6 +3,7 @@ interface SubsStoreState {
   collections: Collection[];
   flows: FlowsDict;
   files: any[];
+  shares: Share[];
 }
 
 interface FlowsDict {
@@ -80,4 +81,21 @@ interface Flow {
   };
 }
 
-type GetOne<T extends Sub | Collection> = (name: string) => T;
+interface Share {
+  type?: 'sub' | 'col'| 'file',
+  name?: string;
+  remark?: string | null;
+  token?: string | null;
+  expiresIn?: string | null;
+  exp?: number | null;
+  createdAt?: number | null;
+}
+
+interface ShareToken {
+  payload: Share;
+  options?: {
+    expiresIn: number | string | undefined;
+  }
+}
+
+type GetOne<T extends Sub | Collection | Share> = (name: string) => T;

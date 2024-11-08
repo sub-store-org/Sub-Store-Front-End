@@ -221,13 +221,18 @@
 
       <nut-cell-group>
         <nut-cell
+          v-if="shareBtnVisible"
+          :title="$t(`moreSettingPage.shareManageTitle`)"
+          class="change-themes"
+          @click.stop="onClickShareManage"
+          is-link
+        ></nut-cell>
+        <nut-cell
           :title="$t(`apiSettingPage.apiSettingTitle`)"
           class="change-themes"
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
-        
-
         <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="change-themes"
@@ -301,10 +306,17 @@ const displayAvatar = computed(() => {
 
 const { icon, env } = useBackend();
 
+const shareBtnVisible = computed(() => {
+  return env.value?.feature?.share;
+});
+
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
 };
 
+const onClickShareManage = () => {
+  router.push(`/share/manage`);
+};
 const onClickMore = () => {
   router.push(`/settings/more`);
 };
