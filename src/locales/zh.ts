@@ -13,8 +13,8 @@ export default {
   },
   globalNotify: {
     refresh: {
-      succeed: '数据刷新成功！',
-      flowFailed: '刷新 {name} 流量失败！',
+      succeed: '数据刷新完成',
+      flowFailed: '刷新 {name} 失败！',
       failed: '数据刷新失败\n',
       loading: '刷新数据中...',
     },
@@ -854,7 +854,7 @@ export default {
     isDefaultIcon: '恢复默认图标',
     isShowIcon: '展示图标',
     isEditorCommon: '展示编辑页常用配置',
-    isSimpleReicon: '简洁模式展示订阅刷新按钮',
+    isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
     tabBar: '隐藏 "Gist 同步" 页',

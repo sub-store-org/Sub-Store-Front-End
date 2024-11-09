@@ -13,8 +13,8 @@ export default {
   },
   globalNotify: {
     refresh: {
-      succeed: "Refresh Successful!\nEnjoy the feeling",
-      flowFailed: "Refresh flow of {name} failed!",
+      succeed: "Refresh Completed",
+      flowFailed: "Refresh of {name} failed!",
       failed: "Refresh Failed\n",
       loading: "Refreshing Data...",
     },

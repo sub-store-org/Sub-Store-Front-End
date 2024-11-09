@@ -706,7 +706,16 @@ const onClickRefresh = async () => {
     cover: true,
     id: "refresh",
   });
-  await subsStore.fetchFlows(ref([props.sub]).value);
+  try {
+    await subsApi.downloadOne(name, { noCache: true });
+  } catch (e) {
+    console.error(e)
+  }
+  try {
+    await subsStore.fetchFlows(ref([props.sub]).value);
+  } catch (e) {
+    console.error(e)
+  }
   Toast.hide("refresh");
   showNotify({ title: t("globalNotify.refresh.succeed") });
 };
