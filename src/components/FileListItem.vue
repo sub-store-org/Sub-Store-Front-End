@@ -38,7 +38,6 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
           </h3>
@@ -51,6 +50,14 @@
             style="position: relative"
             :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
           >
+            <!-- 预览 -->
+            <button
+              v-if="!appearanceSetting.isShowIcon"
+              class="compare-sub-link"
+              @click.stop="previewFile"
+            >
+              <font-awesome-icon icon="fa-solid fa-eye" />
+            </button>
             <button
               v-if="shareBtnVisible"
               class="share-sub-link"
@@ -61,8 +68,6 @@
             <button class="copy-sub-link" @click.stop="onClickCopyLink">
               <font-awesome-icon icon="fa-solid fa-clone" />
             </button>
-  
-
             <!-- 编辑 -->
             <button
               v-if="!appearanceSetting.isSimpleMode"
@@ -469,6 +474,7 @@
           font-size: 16px;
           color: var(--primary-text-color);
         }
+        .compare-sub-link,
         .share-sub-link,
         .copy-sub-link,
         .refresh-sub-flow {

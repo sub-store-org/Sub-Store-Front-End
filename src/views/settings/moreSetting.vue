@@ -15,7 +15,29 @@
           />
         </template>
       </nut-cell>
-
+      <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleReicon"
+            size="mini"
+            @change="setSimpleReicon"
+          />
+        </template>
+      </nut-cell>
+      <nut-cell
+        :title="$t(`moreSettingPage.isSimpleShowRemarks`)"
+        class="cell-item"
+      >
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleShowRemark"
+            size="mini"
+            @change="setSimpleShowRemark"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.islr`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -69,29 +91,6 @@
         </template>
       </nut-cell>
 
-      <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awSimpleReicon"
-            size="mini"
-            @change="setSimpleReicon"
-          />
-        </template>
-      </nut-cell>
-      <nut-cell
-        :title="$t(`moreSettingPage.isSimpleShowRemarks`)"
-        class="cell-item"
-      >
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awSimpleShowRemark"
-            size="mini"
-            @change="setSimpleShowRemark"
-          />
-        </template>
-      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
