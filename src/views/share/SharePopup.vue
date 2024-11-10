@@ -113,7 +113,6 @@
                 input-align="left"
                 rows="3"
                 :autosize="{ maxHeight: 140 }"
-                max-length="100"
               />
             </nut-form-item>
             <div v-if="shareUrlVisible" class="qrcode-wrapper">
@@ -231,7 +230,6 @@
                 input-align="left"
                 rows="3"
                 :autosize="{ maxHeight: 140 }"
-                max-length="100"
               />
             </nut-form-item>
             <nut-form-item
