@@ -138,10 +138,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span :title="flow.appUrl" @click.stop="openAppUrl">
+              <span :title="flow.planName" @click.stop="openAppUrl">
                 {{ flow.firstLine }}
               </span>
-              <span :title="flow.appUrl" @click.stop="openAppUrl">{{ flow.secondLine }}</span>
+              <span :title="flow.planName" @click.stop="openAppUrl">{{ flow.secondLine }}</span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail">
@@ -160,10 +160,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.appUrl" @click.stop="openAppUrl">
+              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
                 {{ `${flow.firstLine} | ${flow.secondLine}` }}
               </span>
-              <span v-else style="font-weight: normal" :title="flow.appUrl" @click.stop="openAppUrl">
+              <span v-else style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
                 {{ flow.firstLine }}
               </span>
             </template>
@@ -408,6 +408,7 @@ const flow = computed(() => {
       };
     } else if (target.status === "success") {
       let {
+        planName,
         appUrl,
         remainingDays,
         expires,
@@ -437,6 +438,7 @@ const flow = computed(() => {
             : expiresInfo;
         }
         return {
+          planName,
           appUrl,
           firstLine: `${getString(
             target.showRemaining
@@ -468,6 +470,7 @@ const flow = computed(() => {
             : expiresInfo;
         }
         return {
+          planName,
           appUrl,
           firstLine: `${t(
             target.showRemaining
