@@ -57,6 +57,9 @@
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
+            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl">
+              <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
+            </span>
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -67,6 +70,9 @@
             style="color: var(--primary-text-color); font-size: 16px"
           >
             {{ displayName || name }}
+            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl">
+              <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
+            </span>
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -348,6 +354,7 @@ const remarkText = computed(() => {
   }
 });
 const { flows } = storeToRefs(subsStore);
+
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
 });
@@ -520,7 +527,13 @@ const closeCompare = () => {
 
   router.back();
 };
+
+const appOpenBtnVisible = computed(() => {
+  return props.type === 'sub' && typeof flow.value === 'object' && flow.value?.appUrl;
+});
+
 const openAppUrl = () => {
+  console.log('flow', flow.value);
   if (typeof flow.value === 'object' && flow.value?.appUrl) {
     window.open(flow.value.appUrl);
   }
@@ -784,8 +797,12 @@ const onClickRefresh = async () => {
         overflow: hidden;
         font-size: 16px;
         color: var(--primary-text-color);
+        vertical-align: middle;
       }
-
+      .app-url {
+        font-size: 14px !important;
+        margin: 0 2px;
+      }
       .tag {
         margin: 0 2px;
       }

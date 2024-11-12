@@ -18,7 +18,7 @@
           }"
           :style="{
             cursor: 'pointer',
-            right: '16px',
+            left: '16px',
             bottom: `${
               bottomSafeArea +
               48 +

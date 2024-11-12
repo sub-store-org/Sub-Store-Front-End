@@ -31,7 +31,8 @@ import {
   faFileImport,
   faFileExport,
   faShareNodes,
-  faLink
+  faLink,
+  faSquareArrowUpRight,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faFileImport);
@@ -65,3 +66,4 @@ library.add(faT);
 library.add(faICursor);
 library.add(faShareNodes);
 library.add(faLink);
+library.add(faSquareArrowUpRight);
