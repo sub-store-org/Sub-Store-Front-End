@@ -138,10 +138,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span>
+              <span :title="flow.appUrl" @click.stop="openAppUrl">
                 {{ flow.firstLine }}
               </span>
-              <span>{{ flow.secondLine }}</span>
+              <span :title="flow.appUrl" @click.stop="openAppUrl">{{ flow.secondLine }}</span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail">
@@ -160,10 +160,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span v-if="flow.secondLine" style="font-weight: normal">
+              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.appUrl" @click.stop="openAppUrl">
                 {{ `${flow.firstLine} | ${flow.secondLine}` }}
               </span>
-              <span v-else style="font-weight: normal">
+              <span v-else style="font-weight: normal" :title="flow.appUrl" @click.stop="openAppUrl">
                 {{ flow.firstLine }}
               </span>
             </template>
@@ -408,6 +408,7 @@ const flow = computed(() => {
       };
     } else if (target.status === "success") {
       let {
+        appUrl,
         remainingDays,
         expires,
         total,
@@ -436,6 +437,7 @@ const flow = computed(() => {
             : expiresInfo;
         }
         return {
+          appUrl,
           firstLine: `${getString(
             target.showRemaining
               ? total - upload - download
@@ -466,6 +468,7 @@ const flow = computed(() => {
             : expiresInfo;
         }
         return {
+          appUrl,
           firstLine: `${t(
             target.showRemaining
               ? "subPage.subItem.showRemainingFlow"
@@ -513,6 +516,11 @@ const closeCompare = () => {
   });
 
   router.back();
+};
+const openAppUrl = () => {
+  if (typeof flow.value === 'object' && flow.value?.appUrl) {
+    window.open(flow.value.appUrl);
+  }
 };
 
 const compareSub = async () => {

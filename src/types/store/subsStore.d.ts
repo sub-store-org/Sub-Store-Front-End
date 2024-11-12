@@ -71,6 +71,7 @@ interface Flow {
   showRemaining?: boolean;
   hideExpire?: boolean;
   data: {
+    appUrl?: string;
     remainingDays?: number;
     expires?: number;
     total: number;
