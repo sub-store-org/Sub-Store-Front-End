@@ -57,7 +57,7 @@
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
-            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl">
+            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span>
             <span v-for="i in tag" :key="i" class="tag">
@@ -70,7 +70,7 @@
             style="color: var(--primary-text-color); font-size: 16px"
           >
             {{ displayName || name }}
-            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl">
+            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span>
             <span v-for="i in tag" :key="i" class="tag">
