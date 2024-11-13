@@ -20,7 +20,15 @@
             class="fa-arrow-rotate-right"
             icon="fa-solid fa-arrow-rotate-right"
           />
-          <!-- <font-awesome-icon v-if="['/subs', '/sync'].includes(route.path) && !isNeedBack && showFloatingRefreshButton" @click.stop="setSimpleMode(true)" class="fa-plus" icon="fa-solid fa-plus" /> -->
+          <font-awesome-icon
+            v-if="
+              ['/subs', '/sync', '/files'].includes(route.path) &&
+              !appearanceSetting.showFloatingAddButton
+            "
+            @click.stop="add(route)"
+            class="fa-plus"
+            icon="fa-solid fa-plus"
+          />
         </template>
 
         <template #right>
@@ -89,16 +97,18 @@ import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
 import { Toast } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
+import { useMethodStore } from '@/store/methodStore';
 
 const { t, locale } = useI18n();
 const router = useRouter();
 const route = useRoute();
+const methodStore = useMethodStore()
 const globalStore = useGlobalStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
-const { appearanceSetting  } = storeToRefs(settingsStore);
+const { appearanceSetting } = storeToRefs(settingsStore);
 // const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
 const isLandscape = ref(false);
 const isSmall = ref(false);
@@ -171,6 +181,16 @@ const changeLang = (type: string) => {
   locale.value = type;
   localStorage.setItem("locale", type);
   showLangSwitchPopup.value = false;
+};
+
+const add = (route: any) => {
+  const routePath = route.path;
+  const addMethodMap = {
+    "/subs": "addSub",
+    "/files": "addFile",
+    "/sync": "addSync",
+  };
+  methodStore.invokeMethod(addMethodMap[routePath], {});
 };
 
 const back = () => {

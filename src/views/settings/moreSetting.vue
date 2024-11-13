@@ -101,6 +101,16 @@
           />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awShowFloatingAddButton"
+            size="mini"
+            @change="setShowFloatingAddButton"
+          />
+        </template>
+      </nut-cell>
 
       <nut-cell :title="$t(`moreSettingPage.tabBar2`)" class="cell-item">
         <template v-slot:link>
@@ -258,6 +268,7 @@
   const awSimpleReicon = ref(true);
   const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
+  const awShowFloatingAddButton = ref(true);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
   // const isEditing = ref(false);
@@ -357,6 +368,14 @@
     const data = {
       ...appearanceSetting.value,
       showFloatingRefreshButton: showFloatingRefreshButton
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setShowFloatingAddButton = (showFloatingAddButton: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      showFloatingAddButton: showFloatingAddButton
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -561,6 +580,7 @@
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
+    awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];

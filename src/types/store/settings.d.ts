@@ -32,6 +32,7 @@ interface SettingsPostData {
     isSimpleReicon?: boolean; // 展示订阅刷新按钮
     isSimpleShowRemark?: boolean; // 展示简洁模式下的备注
     showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
+    showFloatingAddButton?: boolean; // 显示悬浮添加按钮
     istabBar?: boolean; // 隐藏 "Gist 同步" 页
     istabBar2?: boolean; // 隐藏 "文件" 页
     subProgressStyle?: string; // 订阅进度样式

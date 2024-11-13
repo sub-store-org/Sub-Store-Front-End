@@ -91,10 +91,11 @@
 
           <!-- 加号 -->
           <div
+            v-if="appearanceSetting.showFloatingAddButton"
             class="drag-btn"
             @touchmove="onTa"
             @touchend="enTa"
-            @click="setaddSubBtnIsVisible"
+            @click="addSub"
           >
             <font-awesome-icon icon="fa-solid fa-plus" />
           </div>
@@ -249,7 +250,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw, computed } from "vue";
+import { ref, toRaw, computed, onMounted } from "vue";
 import draggable from "vuedraggable";
 import SharePopup from "./share/SharePopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -260,6 +261,7 @@ import SubListItem from "@/components/SubListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
+import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
@@ -275,6 +277,7 @@ const restoreIsLoading = ref(false);
 const addSubBtnIsVisible = ref(false);
 // const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
 // const isColFold = ref(localStorage.getItem('col-fold') === '1');
+const methodStore = useMethodStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
@@ -401,10 +404,14 @@ const enTa = () => {
   }, 100);
 };
 
-const setaddSubBtnIsVisible = () => {
+const addSub = () => {
   if (as.value) return;
   addSubBtnIsVisible.value = true;
 };
+
+onMounted(() => {
+  methodStore.registerMethod("addSub", addSub);
+});
 
 let dragData = null;
 const changeSort = async (

@@ -857,6 +857,7 @@ export default {
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
+    showFloatingAddButton: '显示悬浮添加按钮',
     tabBar: '隐藏 "Gist 同步" 页',
     tabBar2: '隐藏 "文件" 页',
     auto2: '自定义设置 Key',

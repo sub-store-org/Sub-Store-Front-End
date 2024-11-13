@@ -38,6 +38,7 @@
 
           <!-- 加号 -->
           <div
+            v-if="appearanceSetting.showFloatingAddButton"
             @touchmove="onTa"
             @touchend="enTa"
             @click="editFile"
@@ -140,7 +141,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw } from "vue";
+import { ref, toRaw, onMounted } from "vue";
 import draggable from "vuedraggable";
 import SharePopup from "./share/SharePopup.vue";
 
@@ -152,6 +153,7 @@ import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
+import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
@@ -159,6 +161,7 @@ import { isMobile } from "@/utils/isMobile";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
+const methodStore = useMethodStore();
 
 const as = ref(false);
 
@@ -177,6 +180,9 @@ const editFile = () => {
   router.push("/edit/files/UNTITLED");
 };
 
+onMounted(() => {
+  methodStore.registerMethod("addFile", editFile);
+});
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subApi = useSubsApi();
