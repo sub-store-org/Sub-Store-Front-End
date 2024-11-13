@@ -286,6 +286,7 @@ watchEffect(() => {
       }
 
       .fa-plus {
+        padding-top: v-bind(navBartop);
         color: var(--icon-nav-bar-right);
         position: absolute;
         left: 45px;
