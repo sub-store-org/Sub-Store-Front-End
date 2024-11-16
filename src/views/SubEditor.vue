@@ -985,7 +985,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   const subUserinfoTips = () => {
     Dialog({
         title: '手动设置订阅流量信息',
-        content: '格式:\n\nupload=1024; download=10240; total=102400; expire=4115721600',
+        content: '格式:\n\nupload=1024; download=10240; total=102400; expire=4115721600; app_url=http://官网.com\n\n若设置 app_url, 订阅将有一个可点击跳转的按钮',
         popClass: 'auto-dialog',
         okText: 'OK',
         noCancelBtn: true,
