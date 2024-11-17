@@ -144,10 +144,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span :title="flow.planName" @click.stop="openAppUrl">
+              <span :title="flow.planName">
                 {{ flow.firstLine }}
               </span>
-              <span :title="flow.planName" @click.stop="openAppUrl">{{ flow.secondLine }}</span>
+              <span :title="flow.planName">{{ flow.secondLine }}</span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail">
@@ -166,10 +166,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
+              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName">
                 {{ `${flow.firstLine} | ${flow.secondLine}` }}
               </span>
-              <span v-else style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
+              <span v-else style="font-weight: normal" :title="flow.planName">
                 {{ flow.firstLine }}
               </span>
             </template>
