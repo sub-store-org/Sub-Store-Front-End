@@ -57,7 +57,7 @@
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
-            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
+            <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span>
             <span v-for="i in tag" :key="i" class="tag">
@@ -144,10 +144,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span :title="flow.planName" @click.stop="openAppUrl">
+              <span :title="flow.planName">
                 {{ flow.firstLine }}
               </span>
-              <span :title="flow.planName" @click.stop="openAppUrl">{{ flow.secondLine }}</span>
+              <span :title="flow.planName">{{ flow.secondLine }}</span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail">
@@ -166,10 +166,10 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
+              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName">
                 {{ `${flow.firstLine} | ${flow.secondLine}` }}
               </span>
-              <span v-else style="font-weight: normal" :title="flow.planName" @click.stop="openAppUrl">
+              <span v-else style="font-weight: normal" :title="flow.planName">
                 {{ flow.firstLine }}
               </span>
             </template>
@@ -879,6 +879,10 @@ const onClickRefresh = async () => {
       // margin-top: 3.5px;
       max-width: 80%;
       color: var(--comment-text-color);
+      span {
+        display: block;
+        line-height: 1.5;
+      }
     }
   }
   .progress {

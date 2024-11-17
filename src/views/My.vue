@@ -589,6 +589,7 @@ const setTag = (current) => {
         cursor: pointer;
         -webkit-user-select: none;
         user-select: none;
+        flex-shrink: 0;
       }
       .current {
         border-bottom: 1px solid var(--primary-color);
@@ -721,7 +722,7 @@ const setTag = (current) => {
 
         .upload-btn,
         .download-btn {
-          padding: 0 12px;
+          padding: 0 10px;
           width: 116px;
         }
 

@@ -563,7 +563,7 @@ export default {
     storage: {
       gist: {
         label: 'Gist 同步',
-        info: '可在同步配置中将文件/订阅同步到 Gist'
+        info: '在同步配置中同步文件/订阅至 Gist'
       },
       manual: {
         label: '手动管理',
