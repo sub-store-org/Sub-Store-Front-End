@@ -65,12 +65,6 @@ img {
   }
 }
 
-// Safe Area
-.safe-area {
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
 //collapse
 .nut-collapse-item {
   .collapse-item.collapse-item {

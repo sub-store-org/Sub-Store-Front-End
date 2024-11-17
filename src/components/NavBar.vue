@@ -58,6 +58,7 @@
     position="top"
     v-model:visible="showLangSwitchPopup"
     z-index="1000"
+     :style="{ paddingTop: 'env(safe-area-inset-top)' }"
   >
     <nut-cell-group>
       <div
