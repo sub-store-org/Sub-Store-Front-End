@@ -853,6 +853,7 @@ export default {
     isIC: '自定义图标使用原始颜色',
     isDefaultIcon: '恢复默认图标',
     isShowIcon: '展示图标',
+    isSubItemMenuFold: '收纳订阅页菜单功能',
     isEditorCommon: '展示编辑页常用配置',
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',

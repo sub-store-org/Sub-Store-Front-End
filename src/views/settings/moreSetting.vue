@@ -79,7 +79,19 @@
           />
         </template>
       </nut-cell>
-
+      <nut-cell
+        :title="$t(`moreSettingPage.isSubItemMenuFold`)"
+        class="cell-item"
+      >
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awIsSubItemMenuFold"
+            size="mini"
+            @change="setIsSubItemMenuFold"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isEditorCommon`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -264,6 +276,7 @@
   const awIconColor = ref(false);
   const awIsDefaultIcon = ref(false);
   const awIsShowIcon = ref(true);
+  const awIsSubItemMenuFold = ref(true);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awSimpleShowRemark = ref(false);
@@ -332,6 +345,15 @@
     const data = {
       ...appearanceSetting.value,
       isShowIcon: isShowIcon
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setIsSubItemMenuFold = (isSubItemMenuFold: boolean) => {
+    // globalStore.setIsDefaultIcon(isDefaultIcon);
+    const data = {
+      ...appearanceSetting.value,
+      isSubItemMenuFold: isSubItemMenuFold
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -576,6 +598,7 @@
     awIconColor.value = appearanceSetting.value.isIconColor;
     awIsDefaultIcon.value = appearanceSetting.value.isDefaultIcon;
     awIsShowIcon.value = appearanceSetting.value.isShowIcon;
+    awIsSubItemMenuFold.value = appearanceSetting.value.isSubItemMenuFold;
     awEditorCommon.value = appearanceSetting.value.isEditorCommon;
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;

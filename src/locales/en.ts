@@ -864,6 +864,7 @@ export default {
     isIC: "Use original color for custom icons",
     isDefaultIcon: "Restore default icon",
     isShowIcon: 'Show icon',
+    isSubItemMenuFold: "Fold sub item menu",
     isEditorCommon: "Show editor common settings",
     isSimpleReicon: "Show items refresh button",
     isSimpleShowRemarks: "Simple Mode Show items remarks",

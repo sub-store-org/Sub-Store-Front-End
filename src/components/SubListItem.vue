@@ -57,9 +57,9 @@
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
-            <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
+            <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
-            </span>
+            </span> -->
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -70,9 +70,9 @@
             style="color: var(--primary-text-color); font-size: 16px"
           >
             {{ displayName || name }}
-            <span v-if="appOpenBtnVisible" class="app-url" @click="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
+            <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
-            </span>
+            </span> -->
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -80,28 +80,54 @@
 
           <!-- onClickCopyLink 拷贝 -->
           <div
-            style="position: relative"
-            :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
+            class="sub-item-menu"
+            :class="{ 'simple-mode': appearanceSetting.isSimpleMode }"
           >
-            <!-- 预览 -->
+            <!-- 更多 -->
             <button
-              v-if="!appearanceSetting.isShowIcon"
+              v-if="appearanceSetting.isSubItemMenuFold"
               class="compare-sub-link"
-              @click.stop="compareSub"
+              @click.stop="switchItemMenuVisible"
             >
-              <font-awesome-icon icon="fa-solid fa-eye" />
+              <font-awesome-icon
+                :icon="
+                  itemMenuVisible
+                    ? 'fa-solid fa-angle-right'
+                    : 'fa-solid fa-ellipsis'
+                "
+              />
             </button>
-            <!-- 分享 -->
-            <button
-              v-if="shareBtnVisible"
-              class="share-sub-link"
-              @click.stop="onClickShareLink"
+            <template
+              v-if="itemMenuVisible || !appearanceSetting.isSubItemMenuFold"
             >
-              <font-awesome-icon icon="fa-solid fa-share-nodes" />
-            </button>
-            <button class="copy-sub-link" @click.stop="onClickCopyLink">
-              <font-awesome-icon icon="fa-solid fa-clone" />
-            </button>
+              <!-- 官网 -->
+              <button
+                v-if="appOpenBtnVisible"
+                class="compare-sub-link"
+                @click.stop="openAppUrl"
+              >
+                <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
+              </button>
+              <!-- 预览 -->
+              <button
+                v-if="!appearanceSetting.isShowIcon"
+                class="compare-sub-link"
+                @click.stop="compareSub"
+              >
+                <font-awesome-icon icon="fa-solid fa-eye" />
+              </button>
+              <!-- 分享 -->
+              <button
+                v-if="shareBtnVisible"
+                class="share-sub-link"
+                @click.stop="onClickShareLink"
+              >
+                <font-awesome-icon icon="fa-solid fa-share-nodes" />
+              </button>
+              <button class="copy-sub-link" @click.stop="onClickCopyLink">
+                <font-awesome-icon icon="fa-solid fa-clone" />
+              </button>
+            </template>
             <!-- 刷新 -->
             <button
               v-if="
@@ -125,7 +151,7 @@
             <button v-else class="refresh-sub-flow" @click.stop="onClickEdit">
               <font-awesome-icon icon="fa-solid fa-pen-nib" />
             </button>
-
+            <!-- 打开侧边栏 -->
             <button
               v-if="!isMobile()"
               ref="moreAction"
@@ -166,7 +192,11 @@
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
-              <span v-if="flow.secondLine" style="font-weight: normal" :title="flow.planName">
+              <span
+                v-if="flow.secondLine"
+                style="font-weight: normal"
+                :title="flow.planName"
+              >
                 {{ `${flow.firstLine} | ${flow.secondLine}` }}
               </span>
               <span v-else style="font-weight: normal" :title="flow.planName">
@@ -529,12 +559,20 @@ const closeCompare = () => {
 };
 
 const appOpenBtnVisible = computed(() => {
-  return props.type === 'sub' && typeof flow.value === 'object' && flow.value?.appUrl;
+  return (
+    props.type === "sub" && typeof flow.value === "object" && flow.value?.appUrl
+  );
 });
 
+const itemMenuVisible = ref(false);
+
+const switchItemMenuVisible = () => {
+  itemMenuVisible.value = !itemMenuVisible.value;
+};
+
 const openAppUrl = () => {
-  console.log('flow', flow.value);
-  if (typeof flow.value === 'object' && flow.value?.appUrl) {
+  console.log("flow", flow.value);
+  if (typeof flow.value === "object" && flow.value?.appUrl) {
     window.open(flow.value.appUrl);
   }
 };
@@ -733,12 +771,12 @@ const onClickRefresh = async () => {
   try {
     await subsApi.downloadOne(name, { noCache: true });
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
   try {
     await subsStore.fetchFlows(ref([props.sub]).value);
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
   Toast.hide("refresh");
   showNotify({ title: t("globalNotify.refresh.succeed") });
@@ -806,6 +844,17 @@ const onClickRefresh = async () => {
       .tag {
         margin: 0 2px;
       }
+      .sub-item-menu {
+        position: relative;
+        top: 0;
+        // background: var(--card-color);
+        padding: 4px 0;
+        border-radius: var(--item-card-radios);
+        &.simple-mode {
+          position: relative;
+          top: 8px;
+        }
+      }
       .compare-sub-link,
       .share-sub-link,
       .copy-sub-link,
@@ -817,7 +866,6 @@ const onClickRefresh = async () => {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-
         svg {
           width: 16px;
           height: 16px;
@@ -876,7 +924,7 @@ const onClickRefresh = async () => {
       word-break: break-all;
       overflow: hidden;
       font-size: 12px;
-      // margin-top: 3.5px;
+      margin-top: 2px;
       max-width: 80%;
       color: var(--comment-text-color);
       span {
