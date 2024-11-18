@@ -13,22 +13,24 @@
         @on-click-icon="onClickNavbarIcon"
       >
         <template #left>
-          <div :class="isNeedBack ? 'icon-back' : 'icon-null'"></div>
-          <font-awesome-icon
-            v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
-            @click.stop="refresh"
-            class="fa-arrow-rotate-right"
-            icon="fa-solid fa-arrow-rotate-right"
-          />
-          <font-awesome-icon
-            v-if="
-              ['/subs', '/sync', '/files'].includes(route.path) &&
-              !appearanceSetting.showFloatingAddButton
-            "
-            @click.stop="add(route)"
-            class="fa-plus"
-            icon="fa-solid fa-plus"
-          />
+          <div :class="isNeedBack ? 'icon-back' : 'icon-home'"></div>
+          <div class="icon-group">
+            <font-awesome-icon
+              v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
+              @click.stop="refresh"
+              class="icon fa-arrow-rotate-right"
+              icon="fa-solid fa-arrow-rotate-right"
+            />
+            <font-awesome-icon
+              v-if="
+                ['/subs', '/sync', '/files'].includes(route.path) &&
+                !appearanceSetting.showFloatingAddButton
+              "
+              @click.stop="add(route)"
+              class="icon fa-plus"
+              icon="fa-solid fa-plus"
+            />
+          </div>
         </template>
 
         <template #right>
@@ -285,7 +287,13 @@ watchEffect(() => {
         padding-left: 10px;
         color: var(--icon-nav-bar-right);
       }
-
+      .icon-group {
+        .icon {
+          &:first-child:last-child {
+            left: 15px;
+          }
+        }
+      }
       .fa-plus {
         padding-top: v-bind(navBartop);
         color: var(--icon-nav-bar-right);
