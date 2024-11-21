@@ -161,6 +161,7 @@ import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
 import singboxIcon from "@/assets/icons/sing-box.png";
 import clashIcon from "@/assets/icons/clash.png";
+import egernIcon from "@/assets/icons/egern.png";
 import clashMetaIcon from "@/assets/icons/clashmeta.png";
 import loonIcon from "@/assets/icons/loon.png";
 import quanxIcon from "@/assets/icons/quanx.png";
@@ -172,6 +173,7 @@ import surgeMacIcon from "@/assets/icons/surgeformac_text.png";
 import v2rayIcon from "@/assets/icons/v2ray.png";
 import singboxColorIcon from "@/assets/icons/sing-box_color.png";
 import clashColorIcon from "@/assets/icons/clash_color.png";
+import egernColorIcon from "@/assets/icons/egern_color.png";
 import clashMetaColorIcon from "@/assets/icons/clashmeta_color.png";
 import loonColorIcon from "@/assets/icons/loon_color.png";
 import quanxColorIcon from "@/assets/icons/quanx_color.png";
@@ -270,6 +272,8 @@ const icon = computed(() => {
       return appearanceSetting.value.isIconColor ? quanxColorIcon : quanxIcon;
     case "Loon":
       return appearanceSetting.value.isIconColor ? loonColorIcon : loonIcon;
+    case "Egern":
+      return appearanceSetting.value.isIconColor ? egernColorIcon : egernIcon;
     case "Clash":
       return appearanceSetting.value.isIconColor ? clashColorIcon : clashIcon;
     case "ClashMeta":

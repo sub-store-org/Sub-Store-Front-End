@@ -43,10 +43,13 @@
 
 <script lang="ts" setup>
   import { Toast, Dialog } from '@nutui/nutui';
+  import json from '@/assets/icons/json.svg';
+  import uri from '@/assets/icons/uri.svg';
   import surfboard from '@/assets/icons/surfboard.png';
   import surge from '@/assets/icons/surge.png';
   import surgeMac from '@/assets/icons/surgeformac_text.png';
   import clash from '@/assets/icons/clash.png';
+  import egern from '@/assets/icons/egern.png';
   import quanx from '@/assets/icons/quanx.png';
   import loon from '@/assets/icons/loon.png';
   import stash from '@/assets/icons/stash.png';
@@ -111,6 +114,11 @@
       icon: clash,
     },
     {
+      name: 'Egern',
+      path: 'Egern',
+      icon: egern,
+    },
+    {
       name: 'Surfboard',
       path: 'Surfboard',
       icon: surfboard,
@@ -150,6 +158,16 @@
       name: 'V2Ray',
       path: 'V2Ray',
       icon: v2ray,
+    },
+    {
+      name: 'URI',
+      path: 'URI',
+      icon: uri,
+    },
+    {
+      name: 'JSON',
+      path: 'JSON',
+      icon: json,
     },
   ];
   const tips = () => {
@@ -201,7 +219,7 @@
 
       .infos {
         flex: 1;
-        padding: 6px 0;
+        padding: 3px 0;
         display: flex;
         align-items: center;
         gap: 4px;

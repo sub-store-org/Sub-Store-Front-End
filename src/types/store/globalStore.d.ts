@@ -33,6 +33,7 @@ interface ENV {
     | 'Loon'
     | 'Surge'
     | 'ShadowRocket'
+    | 'Egern'
     | 'Clash'
     | 'ClashMeta'
     | 'V2Ray'
