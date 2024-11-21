@@ -4,6 +4,10 @@
       <span>{{ desc }}</span>
       <nut-icon name="tips"></nut-icon>
     </div>
+    <div class="includeUnsupportedProxy">
+      <input type="checkbox" id="includeUnsupportedProxy" name="includeUnsupportedProxy" value="includeUnsupportedProxy" v-model="includeUnsupportedProxy">
+      <label for="includeUnsupportedProxy">包含官方/商店版/未续费订阅不支持的协议</label>
+    </div>
     <ul class="preview-list">
       <li v-for="platform in platformList" :key="platform.name">
         <div class="infos">
@@ -17,9 +21,7 @@
 
         <div class="actions">
           <a
-            :href="`${host}/download/${
-              type === 'sub' ? '' : 'collection/'
-            }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
+            :href="getUrl(platform.path)"
             target="_blank"
           >
             <svg-icon
@@ -42,6 +44,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { Toast, Dialog } from '@nutui/nutui';
   import json from '@/assets/icons/json.svg';
   import uri from '@/assets/icons/uri.svg';
@@ -64,6 +67,7 @@
   import SvgIcon from '@/components/SvgIcon.vue';
   import { useHostAPI } from '@/hooks/useHostAPI';
 
+  const includeUnsupportedProxy = ref(false);
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
@@ -80,11 +84,16 @@
   }>();
 
   const { currentUrl: host } = useHostAPI();
-  const targetCopy = async (path: string) => {
-    const urlTarget: string = path !== null ? `?target=${path}` : '';
-    const url = `${host.value}/download/${
+  const getUrl = (path: string) => {
+    const query = {} as Record<string, string | boolean>
+    if(path !== null) query.target = path;
+    if(includeUnsupportedProxy.value) query.includeUnsupportedProxy = true;
+    return `${host.value}/download/${
       type === 'sub' ? '' : 'collection/'
-    }${encodeURIComponent(name)}${urlTarget}`;
+    }${encodeURIComponent(name)}${Object.keys(query).length > 0 ? `?${Object.entries(query).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&')}` : ''}`;
+  }
+  const targetCopy = async (path: string) => {
+    const url = getUrl(path);
     if (isSupported) {
       await copy(url);
     } else {
@@ -190,6 +199,20 @@
 </script>
 
 <style lang="scss" scoped>
+  .includeUnsupportedProxy {
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    input {
+      cursor: pointer;
+      padding: 0;
+      margin: 0 4px 0 0;
+    }
+    label {
+      cursor: pointer;
+    }
+  }
   .desc {
     display: flex;
     justify-content: center;
