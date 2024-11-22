@@ -26,6 +26,29 @@ const { subs, flows } = storeToRefs(subsStore);
 
 const allLength = ref(null);
 
+// 处于 pwa 且屏幕底部有小白条时将底部安全距离写入 global store
+type NavigatorExtend = Navigator & {
+  standalone?: boolean;
+};
+const navigator: NavigatorExtend = window.navigator;
+
+// 判断是否为非全面屏设备
+function isLegacyDevices() {
+  const screenWidth = window.screen.width;
+  const screenHeight = window.screen.height;
+  if (
+    (screenWidth === 375 && screenHeight === 667) ||
+    (screenWidth === 414 && screenHeight === 736)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+globalStore.setBottomSafeArea(
+  navigator.standalone && !isLegacyDevices() ? 18 : 0
+);
+
 // 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
 const { handleUrlQuery } = useHostAPI();
 handleUrlQuery({

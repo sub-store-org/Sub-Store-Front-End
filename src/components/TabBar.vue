@@ -39,7 +39,16 @@
   const settingsStore = useSettingsStore();
   const { appearanceSetting } = storeToRefs(settingsStore);
 
-  const { env } = storeToRefs(globalStore);
+  const {
+    bottomSafeArea,
+    // istabBar,
+    // istabBar2,
+    env
+  } = storeToRefs(globalStore);
+  const style = {
+    height: `${bottomSafeArea.value + 12 + 44}px`,
+    paddingBottom: bottomSafeArea.value + 'px',
+  };
   onBeforeRouteUpdate((to, from, next) => {
     activeTab.value = routeList.indexOf(to.path);
     // const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -53,7 +62,7 @@
     z-index: 101;
     .tabbar {
       padding-top: 8px;
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: v-bind('style.paddingBottom');
       box-shadow: none;
       backdrop-filter: blur(var(--tab-bar-blur));
       -webkit-backdrop-filter: blur(var(--tab-bar-blur));
