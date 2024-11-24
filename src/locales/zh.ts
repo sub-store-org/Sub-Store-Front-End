@@ -522,7 +522,7 @@ export default {
       defaultUserAgent: '请输入默认 User-Agent',
       defaultProxy: '请输入默认代理/策略',
       defaultTimeout: '默认超时(单位: 毫秒, 默认: 8000)',
-      cacheThreshold: '请输入缓存阈值(单位: KB)',
+      cacheThreshold: '缓存阈值(单位: KB, 默认: 1024)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noDefaultUserAgent: '未配置默认 User-Agent',
