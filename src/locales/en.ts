@@ -526,7 +526,7 @@ export default {
       gistToken: "Please input Gist Token",
       defaultUserAgent: "Please input Default User-Agent",
       defaultProxy: "Please input Default Proxy/Policy",
-      defaultTimeout: "Please input Default Timeout (in milliseconds)",
+      defaultTimeout: "Default Timeout (in milliseconds, default: 8000)",
       cacheThreshold: "Please input Cache Threshold (in KB)",
       noGithubUser: "Not set GitHub username",
       noGistToken: "Not set Gist Token",
