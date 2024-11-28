@@ -544,7 +544,7 @@ const padding = bottomSafeArea.value + "px";
     }
   };
   const selectedSubs = computed(() => {
-    if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return ''
+    if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
     return `: ${form.subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
       return sub?.displayName || sub?.["display-name"] || sub.name;

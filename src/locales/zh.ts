@@ -307,6 +307,7 @@ export default {
         },
         subscriptions: {
           label: '手动选择的订阅',
+          empty: '请先创建单条订阅, 再使用组合订阅功能',
         },
         content: {
           label: '内容',

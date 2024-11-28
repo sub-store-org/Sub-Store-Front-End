@@ -287,6 +287,7 @@ export default {
         },
         subscriptions: {
           label: "Select included subscriptions",
+          empty: 'Please create a subscription first, then use the collection feature',
         },
         content: {
           label: "Content",

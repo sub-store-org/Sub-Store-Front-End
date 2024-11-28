@@ -18,12 +18,11 @@
           }"
           :style="{
             cursor: 'pointer',
-            left: '16px',
+            left: '15px',
             bottom: `${
               bottomSafeArea +
               48 +
-              36 +
-              (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
+              (!isMobile() ? (appearanceSetting.isSimpleMode ? 50 : 48) : 0)
             }px`,
           }"
         >
