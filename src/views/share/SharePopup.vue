@@ -551,10 +551,7 @@ const handleCreateShare = async () => {
   if (res?.data?.status === "success") {
     isCreateShareLinkSuccess.value = true;
     const { token } = res.data.data;
-    const shareUrl = `${host.value.replace(
-      new RegExp(`${secretPath.value}$`),
-      "/share",
-    )}/${typeMap[form.type]}/${encodeURIComponent(
+    const shareUrl = `${host.value.replace(new RegExp(`${secretPath.value}$`), "")}/share/${typeMap[form.type]}/${encodeURIComponent(
       props.data.name,
     )}?token=${encodeURIComponent(token)}`;
     form.shareUrl = shareUrl;
