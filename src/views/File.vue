@@ -21,8 +21,8 @@
             left: '15px',
             bottom: `${
               bottomSafeArea +
-              48 +
-              (!isMobile() ? (appearanceSetting.isSimpleMode ? 50 : 48) : 0)
+              48 + 36 + 
+              (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
             }px`,
           }"
         >
