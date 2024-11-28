@@ -325,10 +325,7 @@ const secretPath = computed(() => {
 const handleShareDetail = (detail: Share) => {
   console.log('detail', detail)
   const { type, name, token } = detail;
-  const shareUrl = `${host.value.replace(
-    new RegExp(`${secretPath.value}`),
-    "/share",
-  )}/${type}/${encodeURIComponent(name)}?token=${token}`;
+  const shareUrl = `${host.value.replace(new RegExp(`${secretPath.value}$`), "")}/share/${type}/${encodeURIComponent(name)}?token=${token}`;
   shareData.value = { ...detail, shareUrl };
   shareDataType.value = type;
   sharePopupVisible.value = true;
