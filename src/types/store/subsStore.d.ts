@@ -27,6 +27,7 @@ interface Process {
   id?: string;
   customName?: string;
   args?: ProcessArg;
+  disabled?: boolean;
 }
 
 interface Sub {

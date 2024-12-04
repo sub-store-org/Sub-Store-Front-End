@@ -269,6 +269,7 @@
         @updateCustomNameModeFlag="updateCustomNameModeFlag"
         @addAction="addAction"
         @deleteAction="deleteAction"
+        @toggleAction="toggleAction"
       />
     </div>
 
@@ -320,7 +321,7 @@ import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
 import ActionBlock from "@/views/editor/ActionBlock.vue";
-import { addItem, deleteItem } from "@/utils/actionsOperate";
+import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
@@ -424,7 +425,7 @@ watchEffect(() => {
     form.process = newProcess;
     if (sourceData.process.length > 0) {
       form.process.forEach((item) => {
-        const { type, id, customName } = item;
+        const { type, id, customName, disabled } = item;
         actionsChecked.push([id, true]);
         const action = {
           type,
@@ -432,6 +433,7 @@ watchEffect(() => {
           customName,
           tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
           component: null,
+          enabled: !disabled,
         };
         switch (type) {
           case "Script Operator":
@@ -456,6 +458,11 @@ const addAction = (val) => {
 const deleteAction = (id) => {
   deleteItem(form, actionsList, actionsChecked, id);
 };
+
+const toggleAction = (id) => {
+  toggleItem(actionsList, id);
+}
+
 const closePreview = () => {
   document.querySelector("html").style["overflow-y"] = "";
   document.querySelector("html").style.height = "";

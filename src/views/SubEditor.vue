@@ -379,6 +379,7 @@
       @updateCustomNameModeFlag="updateCustomNameModeFlag"
       @addAction="addAction"
       @deleteAction="deleteAction"
+      @toggleAction="toggleAction"
     />
   </div>
 
@@ -434,7 +435,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
-import { addItem, deleteItem } from "@/utils/actionsOperate";
+import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import { initStores } from "@/utils/initApp";
 import CompareTable from "@/views/CompareTable.vue";
@@ -641,7 +642,7 @@ watchEffect(() => {
 
   if (sourceData.process.length > 0) {
     form.process.forEach((item) => {
-      const { type, id, customName } = item;
+      const { type, id, customName, disabled } = item;
 
       if (!ignoreList.includes(type)) {
         actionsChecked.push([id, true]);
@@ -651,6 +652,7 @@ watchEffect(() => {
           customName,
           tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
           component: null,
+          enabled: !disabled,
         };
         switch (type) {
           case "Flag Operator":
@@ -693,6 +695,10 @@ const addAction = (val) => {
 
 const deleteAction = (id) => {
   deleteItem(form, actionsList, actionsChecked, id);
+};
+
+const toggleAction = (id) => {
+  toggleItem(actionsList, id);
 };
 
 const closeCompare = () => {

@@ -1,7 +1,7 @@
 export const actionsToProcess = (
   process: Process[],
   actionsList: ActionModuleProps[],
-  ignoreList: string[]
+  ignoreList: string[],
 ): Process[] => {
   const findProcess = (id: string) => process.find((item) => item.id === id);
   const newProcess = process.filter((item) => {
@@ -14,6 +14,7 @@ export const actionsToProcess = (
       args: findProcess(item.id).args,
       customName: findProcess(item.id).customName,
       id: item.id,
+      disabled: !item.enabled,
     });
   });
   return newProcess;

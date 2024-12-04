@@ -15,16 +15,17 @@ export const addItem = (
   const id = Math.random() * 100000000 + '';
   const type = selectedOptions[0].value;
   const args = selectedOptions[0].args;
+  const enabled = true;
   const obj = {
     id,
     customName: "",
     type,
     tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
     component: null,
+    enabled,
   };
 
   actionsChecked.push([id, true]);
-
   switch (type) {
     case 'Flag Operator':
     case 'Sort Operator':
@@ -109,4 +110,9 @@ export const deleteItem = (form, actionsList, actionsChecked, id) => {
   form.process.splice(processIndex, 1);
   actionsList.splice(actionsIndex, 1);
   actionsChecked.splice(checkedIndex, 1);
+};
+
+export const toggleItem = (actionsList, id) => {
+  const index = actionsList.findIndex((item) => item.id === id);
+  actionsList[index].enabled = !actionsList[index].enabled;
 };

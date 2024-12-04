@@ -4,4 +4,6 @@ type ActionModuleProps = {
   type: string;
   component: any;
   tipsDes: string;
+  disabled?: boolean;
+  enabled?: boolean;
 };

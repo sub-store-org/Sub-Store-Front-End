@@ -67,9 +67,25 @@
               </div>
             </div>
             <div class="right">
+              <div class="action-switch">
+                <!-- <nut-switch
+                  v-model="element.enabled"
+                  class="my-switch"
+                  :active-text="t(`editorPage.subConfig.actions.enable`)"
+                  :inactive-text="t(`editorPage.subConfig.actions.disable`)"
+                /> -->
+                <nut-checkbox
+                  v-model="element.enabled"
+                  class="my-switch"
+                ></nut-checkbox>
+                <span @click="toggleActionSwitch(element.id)">{{ $t(`editorPage.subConfig.actions.enable`) }}</span>
+              </div>
               <div class="preview-switch">
-                <!-- <nut-switch class="my-switch" v-model="getItem(element.id)[1]" /> -->
-                <nut-checkbox class="my-switch" v-model="getItem(element.id)[1]"></nut-checkbox>
+                <nut-checkbox
+                  v-model="getItem(element.id)[1]"
+                  class="my-switch"
+                  :disabled="!element.enabled"
+                ></nut-checkbox>
                 <span @click="togglePreviewSwitch(element.id)">
                   {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
                 </span>
@@ -173,6 +189,7 @@ const { checked, list, sourceType } = defineProps<{
   list: ActionModuleProps[];
   sourceType?: string;
 }>();
+
 
 // 通过 i18n 构造 picker 选项
 // const showAddPicker = ref(false);
@@ -281,7 +298,7 @@ const paste = async () => {
     Toast.text(`导入失败 ${e.message ?? e}`);
   }
 };
-const emit = defineEmits(['addAction', 'deleteAction', 'updateCustomNameModeFlag']);
+const emit = defineEmits(['addAction', 'deleteAction', 'updateCustomNameModeFlag', 'toggleAction']);
 // 示例数据
 // const checked = reactive([
 //   ['12839211', true],
@@ -295,7 +312,9 @@ const emit = defineEmits(['addAction', 'deleteAction', 'updateCustomNameModeFlag
 //     tipsDes: '我是第一条提示',
 //   },
 // ]
-
+const toggleActionSwitch = (id: string) => {
+  emit('toggleAction', id);
+};
 // 获取绑定的对应预览开关
 const getItem = (id: string) => {
   return checked.find(item => item[0] === id);
@@ -564,6 +583,25 @@ defineExpose({ exitAllEditName });
     .right {
       display: flex;
       align-items: center;
+      .action-switch {
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        .toggle {
+          color: var(--unimportant-icon-color);
+        }
+        span {
+          font-weight: normal;
+          font-size: 12px;
+          flex-shrink: 0;
+        }
+        .my-switch {
+          width: 18px;
+          :deep(.nut-icon) {
+            font-size: 16px;
+          }
+        }
+      }
       .preview-switch {
         -webkit-user-select: none;
         user-select: none;
@@ -571,18 +609,17 @@ defineExpose({ exitAllEditName });
         display: flex;
         align-items: center;
         // margin-right: 12px;
+        padding: 0 8px;
 
         span {
-          margin-right: 8px;
+          // margin-right: 8px;
+          flex-shrink: 0;
           font-weight: normal;
           font-size: 12px;
         }
 
         .my-switch {
           width: 18px;
-          // width: 45px;
-          // min-width: 40px;
-
           :deep(.nut-icon) {
             font-size: 16px;
           }
@@ -590,17 +627,17 @@ defineExpose({ exitAllEditName });
       }
 
       .copy {
-        padding: 0 12px;
+        padding: 0 8px;
         cursor: pointer;
       }
       .delete {
-        padding: 0 12px;
+        padding: 0 8px;
         color: var(--danger-color);
         cursor: pointer;
       }
 
       .drag-handler {
-        padding-left: 16px;
+        padding-left: 10px;
         color: var(--lowest-text-color);
         cursor: move;
         cursor: grab;
