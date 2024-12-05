@@ -372,6 +372,8 @@ export default {
           placeholder:
             "Failed to read the clipboard automatically, please paste the data manually in this text box.",
         },
+        enable: 'Enable',
+        disable: 'Disable',
       },
       nodeActions: {
         "Flag Operator": {
