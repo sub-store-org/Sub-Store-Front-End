@@ -165,6 +165,11 @@ const defaultIconCollectionColumns = ref([
     value:
       "https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/icons-all.json",
   },
+  {
+    text: "sunfing/iNg",
+    value:
+      "https://raw.githubusercontent.com/sunfing/iNg/main/Icons/AirportIcon.json",
+  },
 ]);
 
 // 默认图标仓库
