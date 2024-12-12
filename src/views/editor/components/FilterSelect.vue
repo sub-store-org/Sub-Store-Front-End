@@ -46,7 +46,8 @@
       'juicity',
       'wireguard',
       'ssh',
-      'external'
+      'external',
+      'direct'
     ],
   };
 

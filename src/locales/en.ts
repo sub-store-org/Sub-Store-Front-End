@@ -447,6 +447,7 @@ export default {
             "WireGuard",
             "SSH",
             "External Proxy Program",
+            "Direct",
           ],
           tipsTitle: "Node Type Filter Tips",
           tipsDes: "Node type filter Operation Description",
