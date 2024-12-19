@@ -784,6 +784,7 @@ export default {
     selectCollectionBtn: '切换图标仓库',
     more: '更多',
     useCustomIconCollection: '使用自定义仓库',
+    resetDefaultIconCollection: '恢复默认',
     collectionPicker: {
       title: '选择一个图标仓库',
       cancel: '取消',

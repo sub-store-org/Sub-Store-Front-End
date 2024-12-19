@@ -25,10 +25,14 @@
         <h1>{{ form.iconCollectionName }}</h1>
         <p>{{ form.iconCollectionDesc }}</p>
       </div>
-      <div class="icon-collection-action" >
+      <div class="icon-collection-action">
         <div class="action-btn" @click="handleMoreIconCollection">
           <span>{{ $t(`iconCollectionPage.more`) }}</span>
-          <nut-icon name="rect-right" size="12px" ></nut-icon>
+          <nut-icon name="rect-right" size="12px"></nut-icon>
+        </div>
+        <div class="action-btn" @click="handleResetDefault">
+          <span>{{ $t(`iconCollectionPage.resetDefaultIconCollection`) }}</span>
+          <!-- <nut-icon name="rect-right" size="12px"></nut-icon> -->
         </div>
       </div>
     </div>
@@ -40,7 +44,7 @@
           size="mini"
           @change="setIconColor"
         />
-        <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>        
+        <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>
       </div>
       <div class="switch-item">
         <nut-switch
@@ -48,7 +52,9 @@
           class="my-switch"
           size="mini"
         />
-        <span class="label">{{ $t(`iconCollectionPage.useCustomIconCollection`) }}</span>
+        <span class="label">
+          {{ $t(`iconCollectionPage.useCustomIconCollection`) }}
+        </span>
       </div>
     </div>
     <div class="icon-collection-search-wrapper">
@@ -63,21 +69,20 @@
               type="text"
               clearable
               @clear="clearIconName"
-            ></nut-input>            
+            ></nut-input>
           </nut-form-item>
           <nut-form-item v-if="showCustomIconCollection">
             <nut-input
-              v-model="form.iconCollectionUrl"
+              v-model="form.customIconCollectionUrl"
               :border="false"
               text-align="left"
               :placeholder="$t(`iconCollectionPage.iconCollectionPlaceholder`)"
               type="text"
               clearable
-              @clear="clearCustomIconCollectionUrl"
               right-icon="refresh"
-              @click-right-icon="refreshIcons"
-            >
-            </nut-input> 
+              @clear="clearCustomIconCollectionUrl"
+              @click-right-icon="handleAddCustomIconCollection"
+            ></nut-input>
           </nut-form-item>
         </nut-form>
       </div>
@@ -108,7 +113,7 @@
     <nut-picker
       v-model="defaultIconCollectionValue"
       v-model:visible="showIconCollectionPicker"
-      :columns="defaultIconCollectionColumns"
+      :columns="iconCollectionColumns"
       :title="$t(`iconCollectionPage.collectionPicker.title`)"
       :cancel-text="$t(`iconCollectionPage.collectionPicker.cancel`)"
       :ok-text="$t(`iconCollectionPage.collectionPicker.confirm`)"
@@ -120,20 +125,29 @@
 
 <script setup lang="ts">
 import { Toast } from "@nutui/nutui";
+import { useDebounceFn } from "@vueuse/core";
 import axios from "axios";
-import { ref, watch, watchEffect, computed, reactive, onMounted } from 'vue'
 import { storeToRefs } from "pinia";
-import { useGlobalStore } from "@/store/global";
-import { useSettingsStore } from '@/store/settings';
+import { computed, onMounted, reactive, ref, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
-import { useDebounceFn } from '@vueuse/core'
 
+import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from "@/store/settings";
+
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false,
+  },
+});
+const emit = defineEmits(["update:visible", "setIcon"]);
 const { t } = useI18n();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
-const { bottomSafeArea, defaultIconCollection } = storeToRefs(globalStore);
+const { customIconCollections, defaultIconCollections, defaultIconCollection } =
+  storeToRefs(globalStore);
 
 const setIconColor = (isIconColor: boolean) => {
   const data = {
@@ -146,6 +160,7 @@ const form = reactive({
   iconName: "",
   iconCollectionName: "",
   iconCollectionUrl: "",
+  customIconCollectionUrl: "",
   iconCollectionDesc: "",
   iconListKey: "",
   iconItemUrlKey: "",
@@ -161,8 +176,8 @@ const performSearch = () => {
     searchResult.value = iconList.value;
   } else {
     const lowercaseTerm = form.iconName.toLowerCase();
-    searchResult.value = iconList.value.filter(item => 
-      item.name.toLowerCase().includes(lowercaseTerm)
+    searchResult.value = iconList.value.filter((item) =>
+      item.name.toLowerCase().includes(lowercaseTerm),
     );
   }
 };
@@ -175,48 +190,22 @@ const iconData = computed(() => {
 });
 
 // 监听 form.iconName 变化以触发搜索
-watch(() => form.iconName, (newValue) => {
-  debouncedSearch();
-});
+watch(
+  () => form.iconName,
+  (newValue) => {
+    debouncedSearch();
+  },
+);
 
 // 图标仓库列表
-const defaultIconCollectionColumns = ref([
-  {
-    text: "cc63/ICON",
-    value: "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
-  },
-  {
-    text: "Koolson/QureColor",
-    value:
-      "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
-  },
-  {
-    text: "Koolson/QureColor-All",
-    value:
-      "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor-All.json",
-  },
-  {
-    text: "Orz-3/mini",
-    value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini.json",
-  },
-  {
-    text: "Orz-3/mini+",
-    value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini%2B.json",
-  },
-  {
-    text: "Orz-3/miniColor",
-    value: "https://raw.githubusercontent.com/Orz-3/mini/master/miniColor.json",
-  },
-  {
-    text: "Orz-3/Color+",
-    value: "https://raw.githubusercontent.com/Orz-3/mini/master/Color%2B.json",
-  },
-  {
-    text: "Twoandz9/TheMagic-Icons",
-    value:
-      "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
-  },
-]);
+const iconCollectionColumns = computed(() => {
+  // 合并自定义和默认图标仓库
+  const mergedCollections = [
+    ...customIconCollections.value,
+    ...defaultIconCollections.value,
+  ];
+  return mergedCollections;
+});
 
 const isIconColor = ref(false);
 
@@ -231,12 +220,12 @@ const showIconCollectionPicker = ref(false);
 
 const showCustomIconCollection = ref(false);
 
-const handleCustomIconCollection = () => {
-  showCustomIconCollection.value = !showCustomIconCollection.value;
-};
-
 const setDefaultIconCollection = (url: string) => {
   globalStore.setDefaultIconCollection(url);
+};
+
+const setCustomIconCollections = (collection: any[]) => {
+  globalStore.setCustomIconCollections(collection);
 };
 
 const fetchIcons = async () => {
@@ -253,6 +242,7 @@ const fetchIcons = async () => {
     iconList.value = data[collectionKey];
     form.iconCollectionName = data.name || "";
     form.iconCollectionDesc = data.description || "";
+    const { name } = data;
     if (iconList.value && iconList.value.length > 0) {
       iconList.value = iconList.value.map((item) => {
         const iconItem = {
@@ -261,6 +251,26 @@ const fetchIcons = async () => {
         };
         return iconItem;
       });
+      // 添加自定义图标仓库，
+      const hasCollection = iconCollectionColumns.value.some(
+        (item) => item.value === form.iconCollectionUrl,
+      );
+      console.log("hasCollection", hasCollection);
+      if (!hasCollection) {
+        const list = [
+          {
+            text: name,
+            value: form.iconCollectionUrl,
+          },
+          ...customIconCollections.value,
+        ];
+        setCustomIconCollections(list);
+        setDefaultIconCollection(form.iconCollectionUrl);
+        defaultIconCollectionValue.value[0] = form.iconCollectionUrl;
+      } else {
+        setDefaultIconCollection(form.iconCollectionUrl);
+        defaultIconCollectionValue.value[0] = form.iconCollectionUrl;
+      }
     } else {
       iconList.value = [];
     }
@@ -275,15 +285,20 @@ const fetchIcons = async () => {
   }
 };
 
+const handleAddCustomIconCollection = () => {
+  form.iconCollectionUrl = form.customIconCollectionUrl;
+  fetchIcons();
+};
+
 const handleIcon = (icon) => {
-  console.log('icon', icon)
-  hide()
-  emit("setIcon", icon)
-}
+  console.log("icon", icon);
+  hide();
+  emit("setIcon", icon);
+};
 
 const handleMoreIconCollection = () => {
   showPicker();
-}
+};
 
 const showPicker = () => {
   showIconCollectionPicker.value = true;
@@ -291,13 +306,15 @@ const showPicker = () => {
 
 const handleConfirm = ({ selectedValue, selectedOptions }) => {
   form.iconCollectionUrl = selectedValue[0];
+  form.customIconCollectionUrl = "";
+  showCustomIconCollection.value = false;
   setDefaultIconCollection(form.iconCollectionUrl);
   refreshIcons();
 };
 
 const handleCancel = () => {
   // showIconCollectionPicker.value = false;
-  console.log('cancel')
+  console.log("cancel");
 };
 
 const init = () => {
@@ -305,9 +322,8 @@ const init = () => {
     form.iconCollectionUrl = defaultIconCollection.value;
     defaultIconCollectionValue.value[0] = defaultIconCollection.value;
   } else {
-    form.iconCollectionUrl = defaultIconCollectionColumns.value[0].value;
-    defaultIconCollectionValue.value[0] =
-      defaultIconCollectionColumns.value[0].value;
+    form.iconCollectionUrl = defaultIconCollections.value[0].value;
+    defaultIconCollectionValue.value[0] = defaultIconCollections.value[0].value;
   }
   refreshIcons();
 };
@@ -317,8 +333,8 @@ const clearIconName = () => {
 };
 
 const clearCustomIconCollectionUrl = () => {
-  form.iconCollectionUrl = "";
-}
+  form.customIconCollectionUrl = "";
+};
 
 const refreshIcons = () => {
   if (!form.iconCollectionUrl) {
@@ -332,42 +348,45 @@ const refreshIcons = () => {
   }
 };
 
+const handleResetDefault = () => {
+  setCustomIconCollections([]);
+  showCustomIconCollection.value = false;
+  form.customIconCollectionUrl = "";
+  form.iconCollectionUrl = defaultIconCollections.value[0].value;
+  defaultIconCollectionValue.value[0] = defaultIconCollections.value[0].value;
+  refreshIcons();
+};
 
 onMounted(() => {
   init();
-})
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(['update:visible', 'setIcon'])
+});
+const isVisible = ref(props.visible);
 
-const isVisible = ref(props.visible)
-
-watch(() => props.visible, (newValue) => {
-  isVisible.value = newValue
-  console.log('newValue', newValue)
-  if (newValue) {
-    refreshIcons()
-  }
-})
+watch(
+  () => props.visible,
+  (newValue) => {
+    isVisible.value = newValue;
+    console.log("newValue", newValue);
+    if (newValue) {
+      refreshIcons();
+    }
+  },
+);
 
 const show = () => {
-  isVisible.value = true
-  emit('update:visible', true)
-}
+  isVisible.value = true;
+  emit("update:visible", true);
+};
 const close = () => {
-  clearIconName()
-  hide()
-}
+  clearIconName();
+  hide();
+};
 const hide = () => {
-  isVisible.value = false
-  emit('update:visible', false)
-}
+  isVisible.value = false;
+  emit("update:visible", false);
+};
 // 暴露方法给父组件
-defineExpose({ show, hide, close })
+defineExpose({ show, hide, close });
 </script>
 
 <style lang="scss" scoped>
@@ -409,12 +428,13 @@ defineExpose({ show, hide, close })
       }
     }
     .icon-collection-action {
-      padding-left: 20px;
+      padding-left: 60px;
       flex-shrink: 0;
       .action-btn {
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        padding-bottom: 10px;
         span {
           font-size: 14px;
           color: var(--comment-text-color);
@@ -423,7 +443,6 @@ defineExpose({ show, hide, close })
           color: var(--comment-text-color);
         }
       }
-
     }
   }
   .switch-wrapper {
@@ -452,9 +471,8 @@ defineExpose({ show, hide, close })
         display: flex;
         justify-content: space-between;
         align-items: center;
-      }      
+      }
     }
-
   }
   .icon-list {
     display: flex;

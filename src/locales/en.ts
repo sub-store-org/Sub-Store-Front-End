@@ -796,6 +796,7 @@ export default {
     selectCollectionBtn: "Select a icon collection",
     more: "More",
     useCustomIconCollection: "Use Custom Icon Collection",
+    resetDefaultIconCollection: "Reset Default",
     collectionPicker: {
       title: "Select a icon collection",
       cancel: "Cancel",
