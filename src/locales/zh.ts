@@ -330,7 +330,7 @@ export default {
         },
         subUserinfo: {
           label: '订阅流量信息',
-          placeholder: '手动设置订阅流量信息',
+          placeholder: '填写值或链接(使用响应内容)',
         },
         proxy: {
           label: '代理/策略',
