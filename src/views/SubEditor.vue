@@ -339,7 +339,24 @@
               </nut-checkbox>
             </nut-checkboxgroup>
             </nut-form-item>
-              <nut-form-item
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.subUserinfo.label`)"
+              prop="subUserinfo"
+            >
+              <nut-input
+                :border="false"
+                class="nut-input-text"
+                v-model.trim="form.subUserinfo"
+                :placeholder="
+                  $t(`editorPage.subConfig.basic.subUserinfo.placeholder`)
+                "
+                type="text"
+                input-align="right"
+                left-icon="tips"
+                @click-left-icon="subUserinfoTips"
+              />
+            </nut-form-item>
+            <nut-form-item
               :label="$t(`editorPage.subConfig.basic.proxy.label`)"
               prop="proxy"
             >
