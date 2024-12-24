@@ -444,6 +444,7 @@ export default {
             "Hysteria",
             "Hysteria 2",
             "Juicity",
+            "mieru",
             "WireGuard",
             "SSH",
             "External Proxy Program",
