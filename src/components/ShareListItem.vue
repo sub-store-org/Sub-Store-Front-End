@@ -334,7 +334,7 @@ const onClickDelete = () => {
       .refresh-sub-flow {
         background-color: transparent;
         border: none;
-        padding: 0 8px;
+        padding: 8px 8px;
         cursor: pointer;
         display: inline-flex;
         justify-content: center;
