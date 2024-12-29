@@ -314,6 +314,9 @@ export default {
           label: "Subscription-Userinfo",
           placeholder: "Value or URL(use response content)",
         },
+        passThroughUA: {
+          label: 'Pass Through Request User-Agent'
+        },
         proxy: {
           label: "Proxy/Policy",
           placeholder: "The proxy/node/policy for downloading resource(s)",

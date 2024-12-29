@@ -332,6 +332,9 @@ export default {
           label: '订阅流量信息',
           placeholder: '填写值或链接(使用响应内容)',
         },
+        passThroughUA: {
+          label: '透传请求的 User-Agent'
+        },
         proxy: {
           label: '代理/策略',
           placeholder: '通过代理/节点/策略获取远程资源，不填使用默认',

@@ -200,6 +200,16 @@
           </nut-form-item>
           <!-- ua -->
           <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.passThroughUA.label`)"
+            prop="passThroughUA"
+            class="ignore-failed-wrapper"
+            v-if="form.source === 'remote'"
+          >
+            <div class="switch-wrapper">
+              <nut-switch v-model="form.passThroughUA" />
+            </div>
+          </nut-form-item>
+          <nut-form-item
             :label="$t(`editorPage.subConfig.basic.ua.label`)"
             prop="ua"
             v-if="form.source === 'remote'"
@@ -586,6 +596,7 @@ const form = reactive<any>({
   remark: "",
   mergeSources: "",
   ignoreFailedRemoteSub: false,
+  passThroughUA: false,
   icon: "",
   process: [
     {
@@ -629,6 +640,7 @@ watchEffect(() => {
   const newProcess = JSON.parse(JSON.stringify(sourceData.process));
   form.mergeSources = sourceData.mergeSources;
   form.ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
+  form.passThroughUA = sourceData.passThroughUA;
   form.name = sourceData.name;
   form.displayName = sourceData.displayName || sourceData["display-name"];
   form.remark = sourceData.remark;
