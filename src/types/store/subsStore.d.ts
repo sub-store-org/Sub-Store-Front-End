@@ -3,6 +3,7 @@ interface SubsStoreState {
   collections: Collection[];
   flows: FlowsDict;
   files: any[];
+  shares: Share[];
 }
 
 interface FlowsDict {
@@ -26,12 +27,14 @@ interface Process {
   id?: string;
   customName?: string;
   args?: ProcessArg;
+  disabled?: boolean;
 }
 
 interface Sub {
   name: string;
   content?: string;
   displayName?: string;
+  remark?: string;
   url?: string;
   source: 'remote' | 'local';
   icon?: string;
@@ -45,8 +48,10 @@ interface Sub {
 interface Collection {
   name: string;
   displayName?: string;
+  remark?: string;
   process: Process[];
   subscriptions: string[];
+  subscriptionTags?: string[];
   icon?: string;
   tag?: string[];
 }
@@ -67,6 +72,8 @@ interface Flow {
   showRemaining?: boolean;
   hideExpire?: boolean;
   data: {
+    planName?: string;
+    appUrl?: string;
     remainingDays?: number;
     expires?: number;
     total: number;
@@ -77,4 +84,22 @@ interface Flow {
   };
 }
 
-type GetOne<T extends Sub | Collection> = (name: string) => T;
+interface Share {
+  type?: 'sub' | 'col'| 'file',
+  name?: string;
+  displayName?: string | null;
+  remark?: string | null;
+  token?: string | null;
+  expiresIn?: string | null;
+  exp?: number | null;
+  createdAt?: number | null;
+}
+
+interface ShareToken {
+  payload: Share;
+  options?: {
+    expiresIn: number | string | undefined;
+  }
+}
+
+type GetOne<T extends Sub | Collection | Share> = (name: string) => T;

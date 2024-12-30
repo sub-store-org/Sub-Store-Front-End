@@ -13,10 +13,38 @@ export default {
   },
   globalNotify: {
     refresh: {
-      succeed: '数据刷新成功！',
-      flowFailed: '刷新 {name} 流量失败！',
+      succeed: '数据刷新完成',
+      flowFailed: '刷新 {name} 失败！',
       failed: '数据刷新失败\n',
       loading: '刷新数据中...',
+    },
+    share: {
+      title: '分享',
+      expiresValue: '有效期时长',
+      expiresValueEmpty: '有效期时长不可为空',
+      expiresValuePlaceholder: '请输入有效期时长',
+      expiresValueRegex: '请输入0.01-99999.99范围内的数字',
+      expiresUnit: '有效期单位',
+      token: '自定义Token',
+      tokenPlaceholder: '默认后端随机Token',
+      remark: '备注',
+      remarkPlaceholder: '请输入备注',
+      shareUrl: '分享链接',
+      shareUrlPlaceholder: '请点击按钮创建分享链接',
+      tipsTitle: '温馨提示',
+      userKnow: '我知道了',
+      confirm: '确定',
+      cancel: '返回',
+      createShare: '创建分享',
+      copyShare: '复制链接',
+      copyShareSuccessTips: '复制分享链接成功！',
+      createShareSuccessTips: '创建分享成功！',
+      unit: {
+        day: '天',
+        month: '月',
+        season: '季',
+        year: '年',
+      }
     },
   },
   // 顶部标题栏
@@ -34,6 +62,7 @@ export default {
       editScript: '脚本编辑',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
+      shareManage: '分享管理',
       iconCollection: '图标仓库',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
@@ -98,6 +127,9 @@ export default {
     ignoreFailedRemoteFile: {
       label: '忽略失败的远程文件'
     },
+    download: {
+      label: '启用下载(文件名为显示名称)'
+    },
   },
   // 订阅管理页
   subPage: {
@@ -108,7 +140,11 @@ export default {
     },
     addSubTitle: '选择要创建的订阅类型',
     previewTitle: '预览/拷贝订阅',
-
+    tag: {
+      addTagTitle: '添加标签',
+      tagPlaceholder: '请输入标签名称',
+      addTagBtn: '+ 新建标签',
+    },
     emptySub: {
       title: '你还没有添加订阅',
       desc: '添加后开始使用 Sub-Store',
@@ -124,7 +160,8 @@ export default {
     },
     collectionItem: {
       noSub: '没有包含子订阅',
-      contain: '包含的订阅',
+      contain: '手动选择的订阅',
+      containTag: '关联的订阅标签',
     },
     subItem: {
       local: '本地订阅',
@@ -221,6 +258,10 @@ export default {
           isEmpty: '名称不能为空',
           isInvalid: '名称已存在或不合法'
         },
+        remark: {
+          label: '备注',
+          placeholder: '请输入备注信息',
+        },
         displayName: {
           label: '显示名称',
           placeholder: '输入展示的名称',
@@ -235,7 +276,11 @@ export default {
         },
         tag: {
           label: '标签',
-          placeholder: '标签(用 , 分隔) 将用于分组',
+          placeholder: '点击右侧图标选择，标签(用 , 分隔) 将用于分组',
+        },
+        subscriptionTags: {
+          label: '关联订阅标签',
+          placeholder: '点击右侧图标选择，使用标签关联单条订阅(用 , 分隔)',
         },
         source: {
           label: '来源',
@@ -250,15 +295,19 @@ export default {
           label: '链接',
           placeholder: '支持多行和参数, 请点击左侧的使用说明查看用法',
           tips: {
+            importFromFile: '从文件导入',
+            fullScreenEdit: '全屏编辑',
+            fullScreenEditCancel: '取消全屏',
             label: '使用说明',
             title: '订阅链接',
-            content: '支持换行输入多个订阅\n\n支持以下参数\n\ncacheKey: 设置乐观缓存的名称 开启后也可自行在持久化缓存中管理(适合经常拉取失败的订阅)\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowUrl: 自定义查询流量的 URL(将使用响应体的内容)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
+            content: '支持换行输入多个订阅\n\n支持以下参数\n\ninsecure: 不验证服务器证书\ncacheKey: 设置乐观缓存的名称 开启后也可自行在持久化缓存中管理(适合经常拉取失败的订阅)\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowUrl: 自定义查询流量的 URL(将使用响应体的内容)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
           },
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
         },
         subscriptions: {
-          label: '包含的订阅',
+          label: '手动选择的订阅',
+          empty: '请先创建单条订阅, 再使用组合订阅功能',
         },
         content: {
           label: '内容',
@@ -281,11 +330,14 @@ export default {
         },
         subUserinfo: {
           label: '订阅流量信息',
-          placeholder: '手动设置订阅流量信息',
+          placeholder: '填写值或链接(使用响应内容)',
+        },
+        passThroughUA: {
+          label: '透传请求的 User-Agent'
         },
         proxy: {
           label: '代理/策略',
-          placeholder: '通过代理/节点/策略获取订阅',
+          placeholder: '通过代理/节点/策略获取远程资源，不填使用默认',
         },
       },
       commonOptions: {
@@ -340,6 +392,8 @@ export default {
           label: '从剪贴板导入',
           placeholder: '自动读取剪贴板失败, 请在此文本框内手动粘贴数据'
         },
+        enable: '启用',
+        disable: '禁用',
       },
       nodeActions: {
         'Script Operator': {
@@ -397,9 +451,11 @@ export default {
             'Hysteria',
             'Hysteria 2',
             'Juicity',
+            'mieru',
             'WireGuard',
             'SSH',
             'External Proxy Program',
+            "Direct",
           ],
           tipsTitle: '节点类型过滤操作提示',
           tipsDes: '按照代理协议类型过滤节点',
@@ -472,11 +528,13 @@ export default {
       githubUser: '请输入 GitHub 用户名',
       gistToken: '请输入 GitHub 令牌',
       defaultUserAgent: '请输入默认 User-Agent',
-      defaultTimeout: '请输入默认超时(单位: 毫秒)',
-      cacheThreshold: '请输入缓存阈值(单位: KB)',
+      defaultProxy: '请输入默认代理/策略',
+      defaultTimeout: '默认超时(单位: 毫秒, 默认: 8000)',
+      cacheThreshold: '缓存阈值(单位: KB, 默认: 1024)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noDefaultUserAgent: '未配置默认 User-Agent',
+      noDefaultProxy: '未配置默认代理/策略',
       noDefaultTimeout: '未配置默认超时',
       noCacheThreshold: '未配置缓存阈值',
     },
@@ -513,7 +571,7 @@ export default {
     storage: {
       gist: {
         label: 'Gist 同步',
-        info: '可在同步配置中将文件/订阅同步到 Gist'
+        info: '在同步配置中同步文件/订阅至 Gist'
       },
       manual: {
         label: '手动管理',
@@ -612,9 +670,9 @@ export default {
         isRequired: '目标平台不能为空',
       },
       includeUnsupportedProxy: {
-        label: '包含官方/商店版不支持的协议',
+        label: '包含官方/商店版/未续费订阅不支持的协议',
         tips: {
-          title: '包含官方/商店版不支持的协议',
+          title: '包含官方/商店版未续费订阅不支持的协议',
           content: 'sing-box: +ShadowsocksR\nQuantumult X: +VLESS'
         }
       },
@@ -645,6 +703,73 @@ export default {
       confirm: '从 gist 恢复',
     }
   },
+  sharePage: {
+    title: "分享编辑",
+    noOriginalTips: "跳转失败, 检查源数据是否已删除",
+    leftTime: "剩余",
+    expired: "已过期",
+    createShare: {
+      expiresValue: {
+        label: "有效期时长",
+        placeholder: "请输入有效期时长",
+        regex: "请输入0.01-99999.99范围内的数字",
+        empty: "有效期时长不可为空",
+      },
+      expiresUnit: {
+        label: "有效期单位",
+      },
+      token: {
+        label: "自定义Token",
+        placeholder: "默认后端随机Token"
+      },
+      remark: {
+        label: "备注",
+        placeholder: "请输入备注",
+      },
+      displayName: {
+        label: "显示名称",
+        placeholder: "输入展示的名称",
+      },
+      shareUrl: {
+        label: "分享链接",
+        placeholder: "请点击按钮创建分享链接"
+      },
+      unit: {
+        day: "天",
+        month: "月",
+        season: "季",
+        year: "年",
+      },
+      copyBtn: "复制链接",
+      updateBtn: "更新分享",
+      createBtn: "创建分享",
+      succeedNotify: "创建分享成功！",
+    },
+    copyShare: {
+      succeedNotify: "复制分享链接成功",
+    },
+    emptyShare: {
+      title: '你还没有创建分享',
+      desc: '创建分享后开始使用',
+      btn: '立即创建',
+    },
+    updateShare: {
+      failNotify: "更新分享失败",
+      title: "温馨提示",
+      tips: "更新分享后，原分享链接将失效，是否继续?",
+      confirm: "确认",
+      cancel: "取消",
+    },
+    deleteShare: {
+      title: "温馨提示",
+      desc: "是否确认删除 {displayName}？删除后不可恢复！",
+      succeedNotify: "删除分享成功！",
+      btn: {
+        confirm: "确认删除",
+        cancel: "取消",
+      },
+    },
+  },
   // 图标仓库页
   iconCollectionPage: {
     iconCollection: '图标仓库',
@@ -663,6 +788,7 @@ export default {
     selectCollectionBtn: '切换图标仓库',
     more: '更多',
     useCustomIconCollection: '使用自定义仓库',
+    resetDefaultIconCollection: '恢复默认',
     collectionPicker: {
       title: '选择一个图标仓库',
       cancel: '取消',
@@ -711,6 +837,7 @@ export default {
       background: '显示为背景',
     },
     moreSettingTitle: '更多设置',
+    shareManageTitle: '分享管理',
     clearData: {
       label: '清除后端数据',
       title: '清除后端数据',
@@ -734,9 +861,13 @@ export default {
     islr: '卡片右滑呼出',
     isIC: '自定义图标使用原始颜色',
     isDefaultIcon: '恢复默认图标',
+    isShowIcon: '展示图标',
+    isSubItemMenuFold: '收纳订阅页菜单功能',
     isEditorCommon: '展示编辑页常用配置',
-    isSimpleReicon: '简洁模式展示订阅刷新按钮',
+    isSimpleReicon: '简洁模式展示刷新按钮',
+    isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
+    showFloatingAddButton: '显示悬浮添加按钮',
     tabBar: '隐藏 "Gist 同步" 页',
     tabBar2: '隐藏 "文件" 页',
     auto2: '自定义设置 Key',

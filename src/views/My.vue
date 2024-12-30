@@ -174,6 +174,17 @@
           />
           <nut-input
             class="input"
+            v-model="proxyInput"
+            :disabled="!isEditing"
+            :placeholder="$t(`myPage.placeholder.defaultProxy`)"
+            type="text"
+            input-align="left"
+            :left-icon="iconProxy"
+            right-icon="tips"
+            @click-right-icon="proxyTips"
+          />
+          <nut-input
+            class="input"
             v-model="uaInput"
             :disabled="!isEditing"
             :placeholder="$t(`myPage.placeholder.defaultUserAgent`)"
@@ -210,13 +221,18 @@
 
       <nut-cell-group>
         <nut-cell
+          v-if="shareBtnVisible"
+          :title="$t(`moreSettingPage.shareManageTitle`)"
+          class="change-themes"
+          @click.stop="onClickShareManage"
+          is-link
+        ></nut-cell>
+        <nut-cell
           :title="$t(`apiSettingPage.apiSettingTitle`)"
           class="change-themes"
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
-        
-
         <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="change-themes"
@@ -257,6 +273,7 @@ import { useSettingsApi } from "@/api/settings";
 import avatar from "@/assets/icons/avatar.svg?url";
 import iconKey from "@/assets/icons/key-solid.png";
 import iconUser from "@/assets/icons/user-solid.png";
+import iconProxy from "@/assets/icons/proxy.svg";
 import iconUA from "@/assets/icons/user-agent.svg";
 import iconMax from "@/assets/icons/max.svg";
 import iconTimeout from "@/assets/icons/timeout.svg";
@@ -280,7 +297,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultTimeout, cacheThreshold, syncPlatform } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, syncPlatform } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -289,10 +306,17 @@ const displayAvatar = computed(() => {
 
 const { icon, env } = useBackend();
 
+const shareBtnVisible = computed(() => {
+  return env.value?.feature?.share;
+});
+
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
 };
 
+const onClickShareManage = () => {
+  router.push(`/share/manage`);
+};
 const onClickMore = () => {
   router.push(`/settings/more`);
 };
@@ -306,6 +330,7 @@ const syncPlatformInput = ref("");
 const userInput = ref("");
 const tokenInput = ref("");
 const uaInput = ref("");
+const proxyInput = ref("");
 const timeoutInput = ref("");
 const cacheThresholdInput = ref("");
 const isEditing = ref(false);
@@ -322,6 +347,7 @@ const toggleEditMode = async () => {
       githubUser: userInput.value,
       gistToken: tokenInput.value,
       defaultUserAgent: uaInput.value,
+      defaultProxy: proxyInput.value,
       defaultTimeout: timeoutInput.value,
       cacheThreshold: cacheThresholdInput.value,
     });
@@ -331,6 +357,7 @@ const toggleEditMode = async () => {
     userInput.value = githubUser.value;
     tokenInput.value = gistToken.value;
     uaInput.value = defaultUserAgent.value;
+    proxyInput.value = defaultProxy.value;
     timeoutInput.value = defaultTimeout.value;
     cacheThresholdInput.value = cacheThreshold.value;
   }
@@ -376,6 +403,7 @@ const setDisplayInfo = () => {
     ? gistToken.value.slice(0, 6) + "************"
     : t(`myPage.placeholder.noGistToken`);
   uaInput.value = defaultUserAgent.value || t(`myPage.placeholder.noDefaultUserAgent`);
+  proxyInput.value = defaultProxy.value || t(`myPage.placeholder.noDefaultProxy`);
   timeoutInput.value = defaultTimeout.value || t(`myPage.placeholder.noDefaultTimeout`);
   cacheThresholdInput.value = cacheThreshold.value || t(`myPage.placeholder.noCacheThreshold`);
 };
@@ -478,6 +506,18 @@ const sync = async (query: "download" | "upload") => {
   downloadIsLoading.value = false;
   uploadIsLoading.value = false;
 };
+const proxyTips = () => {
+  Dialog({
+      title: '通过代理/节点/策略进行下载',
+      content: '1. Surge(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888\n\n※ 优先级由高到低: 单条订阅, 组合订阅, 默认配置',
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
 const uaTips = () => {
   Dialog({
       title: '默认为 clash.meta',
@@ -549,6 +589,7 @@ const setTag = (current) => {
         cursor: pointer;
         -webkit-user-select: none;
         user-select: none;
+        flex-shrink: 0;
       }
       .current {
         border-bottom: 1px solid var(--primary-color);
@@ -681,7 +722,7 @@ const setTag = (current) => {
 
         .upload-btn,
         .download-btn {
-          padding: 0 12px;
+          padding: 0 10px;
           width: 116px;
         }
 

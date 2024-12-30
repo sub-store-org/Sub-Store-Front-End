@@ -28,6 +28,46 @@ export const useGlobalStore = defineStore('globalStore', {
       ishostApi: getHostAPIUrl(),
       savedPositions: {},
       defaultIconCollection: localStorage.getItem('defaultIconCollection') || '',
+      defaultIconCollections: [
+        {
+          text: "cc63/ICON",
+          value: "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
+        },
+        {
+          text: "Koolson/QureColor",
+          value:
+            "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
+        },
+        {
+          text: "Koolson/QureColor-All",
+          value:
+            "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor-All.json",
+        },
+        {
+          text: "Orz-3/mini",
+          value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini.json",
+        },
+        {
+          text: "Orz-3/mini+",
+          value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini%2B.json",
+        },
+        {
+          text: "Orz-3/miniColor",
+          value: "https://raw.githubusercontent.com/Orz-3/mini/master/miniColor.json",
+        },
+        {
+          text: "Orz-3/Color+",
+          value: "https://raw.githubusercontent.com/Orz-3/mini/master/Color%2B.json",
+        },
+        {
+          text: "Twoandz9/TheMagic-Icons",
+          value:
+            "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
+        },
+      ],
+      customIconCollections: localStorage.getItem("customIconCollections")
+        ? JSON.parse(localStorage.getItem("customIconCollections"))
+        : [],
     };
   },
   getters: {},
@@ -148,6 +188,19 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('defaultIconCollection');
       }
       this.defaultIconCollection = defaultIconCollection;
+    },
+    setCustomIconCollections(collections: any[]) {
+      if (collections && collections.length > 0) {
+        // 合并去重
+        const list = Array.from(
+          new Set([...this.customIconCollections, ...collections]),
+        );
+        localStorage.setItem('customIconCollections', JSON.stringify(list));
+        this.customIconCollections = list;
+      } else {
+        localStorage.removeItem('customIconCollections');
+        this.customIconCollections = [];
+      }
     },
   },
 });

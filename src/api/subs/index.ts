@@ -21,6 +21,13 @@ export function useSubsApi() {
         method: 'get',
       });
     },
+    downloadOne: (name: string, params?: any): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/download/${encodeURIComponent(name)}`,
+        params,
+        method: 'get',
+      });
+    },
     getFlow: (name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/sub/flow/${encodeURIComponent(name)}`,

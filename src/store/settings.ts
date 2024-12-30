@@ -17,6 +17,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       gistToken: "",
       githubUser: "",
       defaultUserAgent: "",
+      defaultProxy: "",
       defaultTimeout: "",
       cacheThreshold: "",
       syncTime: 0,
@@ -31,9 +32,13 @@ export const useSettingsStore = defineStore("settingsStore", {
         isLeftRight: false,
         isDefaultIcon: false,
         isIconColor: false,
+        isShowIcon: true,
+        isSimpleShowRemark: false,
         isEditorCommon: true,
         isSimpleReicon: false,
+        isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
+        showFloatingAddButton: false,
         istabBar: false,
         istabBar2: false,
         subProgressStyle: "hidden",
@@ -53,6 +58,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
         this.githubUser = res.data.data.githubUser || "";
+        this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
@@ -70,9 +76,13 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.isLeftRight = res.data.data.appearanceSetting?.isLeftRight ?? "";
         this.appearanceSetting.isDefaultIcon = res.data.data.appearanceSetting?.isDefaultIcon ?? "";
         this.appearanceSetting.isIconColor = res.data.data.appearanceSetting?.isIconColor ?? "";
+        this.appearanceSetting.isShowIcon = res.data.data.appearanceSetting?.isShowIcon ?? true;
+        this.appearanceSetting.isSimpleShowRemark = res.data.data.appearanceSetting?.isSimpleShowRemark ?? "";
         this.appearanceSetting.isEditorCommon = res.data.data.appearanceSetting?.isEditorCommon ?? true;
         this.appearanceSetting.isSimpleReicon = res.data.data.appearanceSetting?.isSimpleReicon ?? "";
+        this.appearanceSetting.isSubItemMenuFold = res.data.data.appearanceSetting?.isSubItemMenuFold ?? true;
         this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
+        this.appearanceSetting.showFloatingAddButton = res.data.data.appearanceSetting?.showFloatingAddButton ?? false;
         this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
         this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
@@ -90,6 +100,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
         this.githubUser = res.data.data.githubUser || "";
+        this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";

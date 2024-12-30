@@ -18,6 +18,8 @@ interface GlobalStoreState {
   savedPositions: any;
   subProgressStyle: any;
   defaultIconCollection: string;
+  defaultIconCollections?: any;
+  customIconCollections?: any[];
 }
 
 interface ENV {
@@ -25,6 +27,7 @@ interface ENV {
   hasNewVersion?: boolean;
   latestVersion?: string;
   version?: string;
+  feature?: any;
   backend?:
     | 'sing-box'
     | 'Stash'
@@ -32,6 +35,7 @@ interface ENV {
     | 'Loon'
     | 'Surge'
     | 'ShadowRocket'
+    | 'Egern'
     | 'Clash'
     | 'ClashMeta'
     | 'V2Ray'

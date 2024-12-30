@@ -10,6 +10,7 @@ type ArtifactsPlatform =
   | 'Clash'
   | 'Stash'
   | 'ShadowRocket'
+  | 'Egern'
   | 'ClashMeta'
   | 'sing-box'
   | 'V2Ray';

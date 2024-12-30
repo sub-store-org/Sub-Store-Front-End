@@ -2,6 +2,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 import {
   faAnglesRight,
+  faAngleRight,
   faArrowRotateRight,
   faArrowUpRightFromSquare,
   faBan,
@@ -14,6 +15,7 @@ import {
   faCloudArrowUp,
   faCode,
   faEye,
+  faEllipsis,
   faFloppyDisk,
   faGrip,
   faLanguage,
@@ -30,6 +32,9 @@ import {
   faICursor,
   faFileImport,
   faFileExport,
+  faShareNodes,
+  faLink,
+  faSquareArrowUpRight
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faFileImport);
@@ -53,6 +58,7 @@ library.add(faLocationArrow);
 library.add(faCode);
 library.add(faArrowRotateRight);
 library.add(faAnglesRight);
+library.add(faAngleRight);
 library.add(faCloudArrowDown);
 library.add(faCloudArrowUp);
 library.add(faBan);
@@ -61,3 +67,7 @@ library.add(faPaste);
 library.add(faEraser);
 library.add(faT);
 library.add(faICursor);
+library.add(faShareNodes);
+library.add(faLink);
+library.add(faSquareArrowUpRight);
+library.add(faEllipsis);

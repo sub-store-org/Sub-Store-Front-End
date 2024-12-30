@@ -18,11 +18,10 @@
           }"
           :style="{
             cursor: 'pointer',
-            right: '16px',
+            left: '15px',
             bottom: `${
               bottomSafeArea +
-              48 +
-              36 +
+              48 + 36 + 
               (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
             }px`,
           }"
@@ -38,6 +37,7 @@
 
           <!-- 加号 -->
           <div
+            v-if="appearanceSetting.showFloatingAddButton"
             @touchmove="onTa"
             @touchend="enTa"
             @click="editFile"
@@ -79,6 +79,7 @@
                 :file="element"
                 type="file"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -129,13 +130,19 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
+    <SharePopup
+      v-model:visible="sharePopupVisible"
+      :data="shareData"
+      action="add"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw } from "vue";
+import { ref, toRaw, onMounted } from "vue";
 import draggable from "vuedraggable";
+import SharePopup from "./share/SharePopup.vue";
 
 import { useAppNotifyStore } from "@/store/appNotify";
 // import { Dialog, Toast } from '@nutui/nutui';
@@ -145,6 +152,7 @@ import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
+import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
@@ -152,6 +160,7 @@ import { isMobile } from "@/utils/isMobile";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
+const methodStore = useMethodStore();
 
 const as = ref(false);
 
@@ -170,6 +179,9 @@ const editFile = () => {
   router.push("/edit/files/UNTITLED");
 };
 
+onMounted(() => {
+  methodStore.registerMethod("addFile", editFile);
+});
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subApi = useSubsApi();
@@ -254,6 +266,18 @@ const handleDragEnd = (dataValue: any) => {
     dragData = null;
   }
   swipeDisabled.value = false;
+};
+
+const shareData = ref(null);
+const sharePopupVisible = ref(false);
+const handleShare = (element, type) => {
+  console.log("share", element);
+  shareData.value = {
+    displayName: element.displayName || "",
+    name: element.name,
+    type: type as "file",
+  };
+  sharePopupVisible.value = true;
 };
 </script>
 

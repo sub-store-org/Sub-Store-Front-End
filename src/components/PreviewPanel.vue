@@ -4,6 +4,10 @@
       <span>{{ desc }}</span>
       <nut-icon name="tips"></nut-icon>
     </div>
+    <div class="includeUnsupportedProxy">
+      <input type="checkbox" id="includeUnsupportedProxy" name="includeUnsupportedProxy" value="includeUnsupportedProxy" v-model="includeUnsupportedProxy">
+      <label for="includeUnsupportedProxy">包含官方/商店版/未续费订阅不支持的协议</label>
+    </div>
     <ul class="preview-list">
       <li v-for="platform in platformList" :key="platform.name">
         <div class="infos">
@@ -11,15 +15,12 @@
             <img :src="platform.icon" class="auto-reverse" />
           </div>
           <p>{{ platform.name }}</p>
-          <!-- <nut-icon name="tips" v-if="platform.name === 'Surge'" @click="tips"></nut-icon>
-          <nut-icon name="tips" v-if="platform.name === general" @click="tips"></nut-icon> -->
+          <nut-icon name="tips" v-if="platform.path === 'SurgeMac'" @click="tips"></nut-icon>
         </div>
 
         <div class="actions">
           <a
-            :href="`${host}/download/${
-              type === 'sub' ? '' : 'collection/'
-            }${encodeURIComponent(name)}${platform.path !== null ? `?target=${platform.path}` : ''}`"
+            :href="getUrl(platform.path)"
             target="_blank"
           >
             <svg-icon
@@ -42,11 +43,15 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { Toast, Dialog } from '@nutui/nutui';
+  import json from '@/assets/icons/json.svg';
+  import uri from '@/assets/icons/uri.svg';
   import surfboard from '@/assets/icons/surfboard.png';
   import surge from '@/assets/icons/surge.png';
   import surgeMac from '@/assets/icons/surgeformac_text.png';
   import clash from '@/assets/icons/clash.png';
+  import egern from '@/assets/icons/egern.png';
   import quanx from '@/assets/icons/quanx.png';
   import loon from '@/assets/icons/loon.png';
   import stash from '@/assets/icons/stash.png';
@@ -61,6 +66,7 @@
   import SvgIcon from '@/components/SvgIcon.vue';
   import { useHostAPI } from '@/hooks/useHostAPI';
 
+  const includeUnsupportedProxy = ref(false);
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
@@ -77,11 +83,16 @@
   }>();
 
   const { currentUrl: host } = useHostAPI();
-  const targetCopy = async (path: string) => {
-    const urlTarget: string = path !== null ? `?target=${path}` : '';
-    const url = `${host.value}/download/${
+  const getUrl = (path: string) => {
+    const query = {} as Record<string, string | boolean>
+    if(path !== null) query.target = path;
+    if(includeUnsupportedProxy.value) query.includeUnsupportedProxy = true;
+    return `${host.value}/download/${
       type === 'sub' ? '' : 'collection/'
-    }${encodeURIComponent(name)}${urlTarget}`;
+    }${encodeURIComponent(name)}${Object.keys(query).length > 0 ? `?${Object.entries(query).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&')}` : ''}`;
+  }
+  const targetCopy = async (path: string) => {
+    const url = getUrl(path);
     if (isSupported) {
       await copy(url);
     } else {
@@ -109,6 +120,11 @@
       name: 'Clash(Deprecated)',
       path: 'Clash',
       icon: clash,
+    },
+    {
+      name: 'Egern',
+      path: 'Egern',
+      icon: egern,
     },
     {
       name: 'Surfboard',
@@ -151,6 +167,16 @@
       path: 'V2Ray',
       icon: v2ray,
     },
+    {
+      name: 'URI',
+      path: 'URI',
+      icon: uri,
+    },
+    {
+      name: 'JSON',
+      path: 'JSON',
+      icon: json,
+    },
   ];
   const tips = () => {
     window.open('https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E');
@@ -172,6 +198,20 @@
 </script>
 
 <style lang="scss" scoped>
+  .includeUnsupportedProxy {
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    input {
+      cursor: pointer;
+      padding: 0;
+      margin: 0 4px 0 0;
+    }
+    label {
+      cursor: pointer;
+    }
+  }
   .desc {
     display: flex;
     justify-content: center;
@@ -201,7 +241,7 @@
 
       .infos {
         flex: 1;
-        padding: 6px 0;
+        padding: 3px 0;
         display: flex;
         align-items: center;
         gap: 4px;

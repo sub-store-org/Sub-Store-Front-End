@@ -15,7 +15,29 @@
           />
         </template>
       </nut-cell>
-
+      <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleReicon"
+            size="mini"
+            @change="setSimpleReicon"
+          />
+        </template>
+      </nut-cell>
+      <nut-cell
+        :title="$t(`moreSettingPage.isSimpleShowRemarks`)"
+        class="cell-item"
+      >
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awSimpleShowRemark"
+            size="mini"
+            @change="setSimpleShowRemark"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.islr`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -37,6 +59,16 @@
           />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.isShowIcon`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awIsShowIcon"
+            size="mini"
+            @change="setIsShowIcon"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isIC`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -47,7 +79,19 @@
           />
         </template>
       </nut-cell>
-
+      <nut-cell
+        :title="$t(`moreSettingPage.isSubItemMenuFold`)"
+        class="cell-item"
+      >
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awIsSubItemMenuFold"
+            size="mini"
+            @change="setIsSubItemMenuFold"
+          />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isEditorCommon`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -59,16 +103,6 @@
         </template>
       </nut-cell>
 
-      <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awSimpleReicon"
-            size="mini"
-            @change="setSimpleReicon"
-          />
-        </template>
-      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch
@@ -76,6 +110,16 @@
             v-model="awShowFloatingRefreshButton"
             size="mini"
             @change="setShowFloatingRefreshButton"
+          />
+        </template>
+      </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awShowFloatingAddButton"
+            size="mini"
+            @change="setShowFloatingAddButton"
           />
         </template>
       </nut-cell>
@@ -231,9 +275,13 @@
   const LeftRight = ref(false);
   const awIconColor = ref(false);
   const awIsDefaultIcon = ref(false);
+  const awIsShowIcon = ref(true);
+  const awIsSubItemMenuFold = ref(true);
   const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
+  const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
+  const awShowFloatingAddButton = ref(true);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
   // const isEditing = ref(false);
@@ -292,6 +340,24 @@
     changeAppearanceSetting({ appearanceSetting: data });
   };
 
+  const setIsShowIcon = (isShowIcon: boolean) => {
+    // globalStore.setIsDefaultIcon(isDefaultIcon);
+    const data = {
+      ...appearanceSetting.value,
+      isShowIcon: isShowIcon
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setIsSubItemMenuFold = (isSubItemMenuFold: boolean) => {
+    // globalStore.setIsDefaultIcon(isDefaultIcon);
+    const data = {
+      ...appearanceSetting.value,
+      isSubItemMenuFold: isSubItemMenuFold
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
   const setEditorCommon = (isEditorCommon: boolean) => {
     // globalStore.setEditorCommon(isEditorCommon);
     const data = {
@@ -310,11 +376,28 @@
     changeAppearanceSetting({ appearanceSetting: data });
   };
 
+  const setSimpleShowRemark = (isSimpleShowRemark: boolean) => {
+    // globalStore.setSimpleReicon(isSimpleReicon);
+    const data = {
+      ...appearanceSetting.value,
+      isSimpleShowRemark: isSimpleShowRemark
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
   const setShowFloatingRefreshButton = (showFloatingRefreshButton: boolean) => {
     // globalStore.setShowFloatingRefreshButton(showFloatingRefreshButton);
     const data = {
       ...appearanceSetting.value,
       showFloatingRefreshButton: showFloatingRefreshButton
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+
+  const setShowFloatingAddButton = (showFloatingAddButton: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      showFloatingAddButton: showFloatingAddButton
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -514,9 +597,13 @@
     LeftRight.value = appearanceSetting.value.isLeftRight;
     awIconColor.value = appearanceSetting.value.isIconColor;
     awIsDefaultIcon.value = appearanceSetting.value.isDefaultIcon;
+    awIsShowIcon.value = appearanceSetting.value.isShowIcon;
+    awIsSubItemMenuFold.value = appearanceSetting.value.isSubItemMenuFold;
     awEditorCommon.value = appearanceSetting.value.isEditorCommon;
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
+    awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
+    awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];

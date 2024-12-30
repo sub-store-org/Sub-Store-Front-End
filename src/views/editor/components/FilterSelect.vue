@@ -44,9 +44,11 @@
       'hysteria',
       'hysteria2',
       'juicity',
+      'mieru',
       'wireguard',
       'ssh',
-      'external'
+      'external',
+      'direct'
     ],
   };
 

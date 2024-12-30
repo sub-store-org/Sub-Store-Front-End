@@ -71,11 +71,10 @@
           }"
           :style="{
             cursor: 'pointer',
-            right: '16px',
+            left: '15px',
             bottom: `${
               bottomSafeArea +
-              48 +
-              36 +
+              48 + 36 + 
               (!isMobile() ? (appearanceSetting.isSimpleMode ? 44 : 48) : 0)
             }px`,
           }"
@@ -91,10 +90,11 @@
 
           <!-- 加号 -->
           <div
+            v-if="appearanceSetting.showFloatingAddButton"
             class="drag-btn"
             @touchmove="onTa"
             @touchend="enTa"
-            @click="setaddSubBtnIsVisible"
+            @click="addSub"
           >
             <font-awesome-icon icon="fa-solid fa-plus" />
           </div>
@@ -145,6 +145,7 @@
                 :sub="element"
                 type="sub"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -185,6 +186,7 @@
                 :collection="element"
                 type="collection"
                 :disabled="swipeDisabled"
+                @share="handleShare"
               />
             </div>
           </template>
@@ -236,14 +238,20 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
+
+    <SharePopup
+      v-model:visible="sharePopupVisible"
+      :data="shareData"
+      action="add"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw, computed } from "vue";
+import { ref, toRaw, computed, onMounted } from "vue";
 import draggable from "vuedraggable";
-
+import SharePopup from "./share/SharePopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { Dialog, Toast } from '@nutui/nutui';
 
@@ -252,6 +260,7 @@ import SubListItem from "@/components/SubListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
+import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
@@ -267,6 +276,7 @@ const restoreIsLoading = ref(false);
 const addSubBtnIsVisible = ref(false);
 // const isSubFold = ref(localStorage.getItem('sub-fold') === '1');
 // const isColFold = ref(localStorage.getItem('col-fold') === '1');
+const methodStore = useMethodStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
@@ -284,6 +294,8 @@ const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
 const hasUntagged = ref(false);
+const hasLocal = ref(false);
+const hasRemote = ref(false);
 const getTag = () => {
     return localStorage.getItem('sub-tag') || 'all'
   }
@@ -293,6 +305,11 @@ const tags = computed(() => {
   // 从 subs 和 collections 中获取所有的 tag, 去重
   const set = new Set()
   subs.value.forEach(sub => {
+    if(sub.source === 'remote') {
+      hasRemote.value = true
+    } else {
+      hasLocal.value = true
+    }
     if (Array.isArray(sub.tag) && sub.tag.length > 0) {
       sub.tag.forEach(i => {
         set.add(i)
@@ -312,21 +329,35 @@ const tags = computed(() => {
   })
 
   let tags: any[] = Array.from(set)
-  if(tags.length === 0) return []
+  if(tags.length === 0 && !hasRemote.value && !hasLocal.value) return []
   tags = tags.map(i => ({ label: i, value: i }));
   
   const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
-  if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+  if(hasRemote.value) result.push({ label: t("editorPage.subConfig.basic.source.remote"), value: "remote" })
+  if(hasLocal.value) result.push({ label: t("editorPage.subConfig.basic.source.local"), value: "local" })
+  if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
 
   if (!result.find(i => i.value === tag.value)) {
     tag.value = 'all'
   }
   return result
 });
-
+const shareData = ref(null);
+const sharePopupVisible = ref(false);
+const handleShare = (element, type) => {
+  console.log("share", element);
+  shareData.value = {
+    displayName: element.displayName || "",
+    name: element.name,
+    type: type as "col" | "sub",
+  };
+  sharePopupVisible.value = true;
+};
 const filterdSubsCount = computed(() => {
   if(tag.value === 'all') return subs.value.length
   if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
+  if(tag.value === 'remote') return subs.value.filter(i => i.source === "remote").length
+  if(tag.value === 'local') return subs.value.filter(i => i.source === "local").length
   return subs.value.filter(i => i.tag.includes(tag.value)).length
 });
 const filterdColsCount = computed(() => {
@@ -372,10 +403,14 @@ const enTa = () => {
   }, 100);
 };
 
-const setaddSubBtnIsVisible = () => {
+const addSub = () => {
   if (as.value) return;
   addSubBtnIsVisible.value = true;
 };
+
+onMounted(() => {
+  methodStore.registerMethod("addSub", addSub);
+});
 
 let dragData = null;
 const changeSort = async (
@@ -476,6 +511,8 @@ const setTag = (current) => {
 const shouldShowElement = (element) => {
   if(tag.value === 'all') return true
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0
+  if(tag.value === 'remote') return element.source === 'remote'
+  if(tag.value === 'local') return element.source === 'local'
   return element.tag.includes(tag.value)
 };
 const upload = async() => {
