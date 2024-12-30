@@ -5,7 +5,7 @@
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
   >
-      <!-- 添加订阅弹窗 -->
+    <!-- 添加订阅弹窗 -->
     <!-- lock-scroll -->
     <div>
       <nut-popup
@@ -22,8 +22,7 @@
         round
       >
         <div class="title-btn">
-          <!-- <p class="add-sub-panel-title">{{ $t(`subPage.addSubTitle`) }}</p> -->
-          <p class="add-sub-panel-title">创建文件</p>
+          <p class="add-sub-panel-title">{{ $t(`filePage.addFileTitle`) }}</p>
           <p class="add-sub-panel-title or">{{ $t(`specificWord.or`) }}</p>
           <input type="file" ref="fileInput" accept="application/json,text/json,.json" @change="fileChange" style="display: none">
           <nut-button
@@ -46,9 +45,8 @@
         <ul class="add-sub-panel-list">
           <li>
             <router-link to="/edit/files/UNTITLED" class="router-link">
-              <svg-icon name="singleSubs" />
-              <!-- <span>{{ $t(`specificWord.singleSub`) }}</span> -->
-              <span>文件</span>
+              <svg-icon name="file" />
+              <span>{{ $t(`specificWord.file`) }}</span>
             </router-link>
           </li>
           <!-- <li>
@@ -394,8 +392,8 @@ const fileChange = async (event) => {
 const importTips = () => {
   addSubBtnIsVisible.value = false
   Dialog({
-      title: '导入 Sub-Store 文件数据',
-      content: '文件管理页面, 在某个文件左滑/右滑的更多项中, 点击导出图标按钮',
+      title: t(`filePage.importFileTitle`),
+      content: t(`filePage.importFileTips`),
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,
@@ -486,7 +484,7 @@ const importTips = () => {
     color: var(--second-text-color);
 
     > li {
-      width: 50%;
+      flex: 1;
       display: flex;
       justify-content: center;
 
