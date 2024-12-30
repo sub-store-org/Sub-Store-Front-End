@@ -229,7 +229,7 @@
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
-      <div v-if="type === 'sub'" class="sub-item-swipe-btn-wrapper">
+      <div class="sub-item-swipe-btn-wrapper">
         <a
           :href="`${host}/api/${props.type}/${encodeURIComponent(name)}?raw=1`"
           target="_blank"
@@ -269,7 +269,7 @@
           <font-awesome-icon icon="fa-solid fa-paste" />
         </nut-button>
       </div>
-      <div v-if="type === 'sub'" class="sub-item-swipe-btn-wrapper">
+      <div class="sub-item-swipe-btn-wrapper">
         <a
           :href="`${host}/api/${props.type}/${encodeURIComponent(name)}?raw=1`"
           target="_blank"

@@ -536,7 +536,7 @@ const fileChange = async (event) => {
       item.name += `_${suffix}`
       item.displayName += `_${suffix}`
       item['display-name'] = item.displayName
-      const res = await subsApi.createSub('subs', item);
+      const res = await subsApi.createSub(item.subscriptions ? 'collections' : 'subs', item);
       // await subsStore.fetchSubsData();
       
       // const res = await useSettingsApi().restoreSettings({ content: String(reader.result) });
@@ -569,8 +569,8 @@ const fileChange = async (event) => {
 const importTips = () => {
   addSubBtnIsVisible.value = false
   Dialog({
-      title: '仅支持 Sub-Store 单条订阅数据',
-      content: '订阅管理页面, 在某个单条订阅左滑/右滑的更多项中, 点击导出图标按钮',
+      title: '导入 Sub-Store 订阅数据',
+      content: '订阅管理页面, 在某个订阅左滑/右滑的更多项中, 点击导出图标按钮',
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,
