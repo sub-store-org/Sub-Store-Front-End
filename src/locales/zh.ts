@@ -99,6 +99,9 @@ export default {
     backendDesc: '如果你看到这个 可能是因为浏览器前端路由拦截的问题 可以强制刷新查看或直接使用该链接 不影响此链接的使用',
   },
   filePage: {
+    addFileTitle: '创建文件',
+    importFileTitle: '导入 Sub-Store 文件数据',
+    importFileTips: '文件管理页面, 在某个文件左滑/右滑的更多项中, 点击导出图标按钮',
     deleteFile: {
       succeedNotify: '删除文件成功',
     },

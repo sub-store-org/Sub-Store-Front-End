@@ -134,14 +134,18 @@
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <a
+        <!-- <a
           :href="`${host}/api/wholeFile/${encodeURIComponent(name)}?raw=1`"
           target="_blank"
+        > -->
+        <nut-button
+          shape="square"
+          type="success"
+          class="sub-item-swipe-btn"
+          @click="onClickExportFile(name)"
         >
-          <nut-button shape="square" type="success" class="sub-item-swipe-btn">
-            <font-awesome-icon icon="fa-solid fa-file-export" />
-          </nut-button>
-        </a>
+          <font-awesome-icon icon="fa-solid fa-file-export" />
+        </nut-button>
       </div>
       <!-- preview -->
       <!-- <div class="sub-item-swipe-btn-wrapper">
@@ -174,14 +178,14 @@
         </nut-button>
       </div>
       <div class="sub-item-swipe-btn-wrapper">
-        <a
-          :href="`${host}/api/wholeFile/${encodeURIComponent(name)}?raw=1`"
-          target="_blank"
+        <nut-button
+          shape="square"
+          type="success"
+          class="sub-item-swipe-btn"
+          @click="onClickExportFile(name)"
         >
-          <nut-button shape="square" type="success" class="sub-item-swipe-btn">
-            <font-awesome-icon icon="fa-solid fa-file-export" />
-          </nut-button>
-        </a>
+          <font-awesome-icon icon="fa-solid fa-file-export" />
+        </nut-button>
       </div>
       <!-- <div class="sub-item-swipe-btn-wrapper">
         <nut-button shape="square" type="success" class="sub-item-swipe-btn" @click="onClickPreview">
@@ -422,6 +426,14 @@
   const shareBtnVisible = computed(() => {
     return env.value?.feature?.share;
   });
+
+  const onClickExportFile = (name) => {
+    swipeClose();
+    const url = `${host.value}/api/wholeFile/${encodeURIComponent(name)}?raw=1`;
+    console.log('url', url);
+    window.open(url, '_blank');  // 在新窗口中打开链接
+  };
+
   const onClickShareLink = async () => {
     console.log('props', props)
     const type = props.type;

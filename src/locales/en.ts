@@ -72,6 +72,9 @@ export default {
       "If you are seeing this, it is probably due to a routing interception issue on the front end of your browser. You can force a refresh to see it or use the link directly without affecting the use of this link.",
   },
   filePage: {
+    addFileTitle: "Add File",
+    importFileTitle: "Import Sub-Store file data",
+    importFileTips: "On the File Management page, click the Export icon button in the More items section of a file.",
     deleteFile: {
       succeedNotify: "Successfully deleted!",
     },
