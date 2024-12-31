@@ -569,8 +569,8 @@ const fileChange = async (event) => {
 const importTips = () => {
   addSubBtnIsVisible.value = false
   Dialog({
-      title: '导入 Sub-Store 订阅数据',
-      content: '订阅管理页面, 在某个订阅左滑/右滑的更多项中, 点击导出图标按钮',
+      title: t(`subPage.import.tipsTitle`),
+      content: t(`subPage.import.tipsContent`),
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,

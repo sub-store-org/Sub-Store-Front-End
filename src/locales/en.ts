@@ -72,8 +72,8 @@ export default {
       "If you are seeing this, it is probably due to a routing interception issue on the front end of your browser. You can force a refresh to see it or use the link directly without affecting the use of this link.",
   },
   filePage: {
-    addFileTitle: "Add File",
-    importFileTitle: "Import Sub-Store file data",
+    addFileTitle: "Create File",
+    importFileTitle: "Import File data",
     importFileTips: "On the File Management page, click the Export icon button in the More items section of a file.",
     deleteFile: {
       succeedNotify: "Successfully deleted!",
@@ -115,8 +115,10 @@ export default {
       label: "Import",
       succeed: "Successfully imported!",
       failed: "Failed to import!\n{e}",
+      tipsTitle: "Import Subscription data",
+      tipsContent: "On the Subscription management page, click on the Export icon button on the left/right slide of a subscription with more items.",
     },
-    addSubTitle: "Which type you want to create?",
+    addSubTitle: "Choose Subscription type",
     previewTitle: "Copy/Preview a subscription",
     tag: {
       addTagTitle: "Add Tag",

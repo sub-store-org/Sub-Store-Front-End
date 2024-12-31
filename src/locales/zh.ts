@@ -140,6 +140,8 @@ export default {
       label: '导入',
       succeed: '导入成功',
       failed: '导入失败\n{e}',
+      tipsTitle: '导入 Sub-Store 订阅数据',
+      tipsContent: '订阅管理页面, 在某个订阅左滑/右滑的更多项中, 点击导出图标按钮',
     },
     addSubTitle: '选择要创建的订阅类型',
     previewTitle: '预览/拷贝订阅',
