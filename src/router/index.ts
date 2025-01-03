@@ -297,7 +297,7 @@ router.beforeResolve(async (to, from) => {
   // 进入编辑页面前查询是否存在订阅
   if (to.fullPath.startsWith('/edit/')) {
     const name = to.params.id as string;
-    if (name !== 'UNTITLED') {
+    if (!['UNTITLED', 'UNTITLED-mihomoProfile'].includes(name)) {
       try {
         if (to.params.editType === 'subs') {
           await useSubsApi().getOne('sub', name);

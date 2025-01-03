@@ -49,12 +49,13 @@
               <span>{{ $t(`specificWord.file`) }}</span>
             </router-link>
           </li>
-          <!-- <li>
-            <router-link to="/edit/collections/UNTITLED" class="router-link">
-              <svg-icon name="collectionSubs" />
-              <span>{{ $t(`specificWord.collectionSub`) }}</span>
+          <li>
+            <router-link to="/edit/files/UNTITLED-mihomoProfile" class="router-link">
+              <img src="@/assets/icons/clashmeta_color.png" alt="">
+              <span>{{ $t(`filePage.type.mihomoProfile`) }}</span>
+              <small>{{ $t(`filePage.type.mihomoProfileTips`) }}</small>
             </router-link>
-          </li> -->
+          </li>
         </ul>
       </nut-popup>
     </div>
@@ -476,7 +477,7 @@ const importTips = () => {
   }
 
   .add-sub-panel-list {
-    padding: 16px 0;
+    padding: 10px 0;
     font-size: 16px;
     font-weight: bold;
     display: flex;
@@ -493,13 +494,20 @@ const importTips = () => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
 
-        > svg {
+        > svg, > img {
           width: 44px;
           height: 44px;
           color: var(--primary-color);
           margin-bottom: 12px;
+        }
+        span {
+          font-size: 14px;
+        }
+        small {
+          font-size: 12px;
+          color: var(--comment-text-color);
         }
       }
     }

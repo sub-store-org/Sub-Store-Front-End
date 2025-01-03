@@ -10,6 +10,7 @@ export default {
     all: "All",
     untagged: "Untagged",
     or: "or",
+    type: "Type",
   },
   globalNotify: {
     refresh: {
@@ -72,6 +73,10 @@ export default {
       "If you are seeing this, it is probably due to a routing interception issue on the front end of your browser. You can force a refresh to see it or use the link directly without affecting the use of this link.",
   },
   filePage: {
+    type: {
+      mihomoProfile: 'Mihomo Profile',
+      mihomoProfileTips: 'Override is supported',
+    },
     addFileTitle: "Create File",
     importFileTitle: "Import File data",
     importFileTips: "On the File Management page, click the Export icon button in the More items section of a file.",

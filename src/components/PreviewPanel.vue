@@ -112,7 +112,7 @@
       icon: stash,
     },
     {
-      name: 'Clash.Meta(mihomo)',
+      name: 'Mihomo',
       path: 'ClashMeta',
       icon: clashmeta,
     },
