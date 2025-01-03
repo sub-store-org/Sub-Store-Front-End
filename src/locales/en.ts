@@ -76,6 +76,7 @@ export default {
     type: {
       mihomoProfile: 'Mihomo Profile',
       mihomoProfileTips: 'Override is supported',
+      mihomoProfileTips2: 'Override(JavaScript/YAML) is supported',
     },
     addFileTitle: "Create File",
     importFileTitle: "Import File data",

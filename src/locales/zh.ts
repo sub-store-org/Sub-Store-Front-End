@@ -103,6 +103,7 @@ export default {
     type: {
       mihomoProfile: 'Mihomo 配置',
       mihomoProfileTips: '可使用覆写',
+      mihomoProfileTips2: '可使用 JavaScript/YAML 覆写',
     },
     addFileTitle: '创建文件',
     importFileTitle: '导入 Sub-Store 文件数据',

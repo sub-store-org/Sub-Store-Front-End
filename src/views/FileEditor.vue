@@ -311,7 +311,7 @@
         </nut-form>
       </div>
       <div class="sticky-title-wrapper actions-title-wrapper" v-if="form.type === 'mihomoProfile'">
-        <p>{{ $t(`filePage.type.mihomoProfileTips`) }}</p>
+        <p>{{ $t(`filePage.type.mihomoProfileTips2`) }}</p>
         <small class="doc"><a href="https://mihomo.party/docs/guide/override">{{ $t("subPage.panel.tips.ok") }}</a></small>
       </div>
       <ActionBlock
