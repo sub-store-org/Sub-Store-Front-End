@@ -118,7 +118,7 @@
             class="artifact-radio-group"
           >
             <nut-radio label="Stash">Stash</nut-radio>
-            <nut-radio label="ClashMeta">Clash.Meta(mihomo)</nut-radio>
+            <nut-radio label="ClashMeta">Mihomo</nut-radio>
             <nut-radio label="Clash">Clash(Deprecated)</nut-radio>
             <nut-radio label="Egern">Egern</nut-radio>
             <nut-radio label="Surfboard">Surfboard</nut-radio>

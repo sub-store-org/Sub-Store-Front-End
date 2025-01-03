@@ -47,9 +47,7 @@
               class="nut-input-text"
               data-1p-ignore
               v-model.trim="form.displayName"
-              :placeholder="
-                $t(`editorPage.subConfig.basic.displayName.placeholder`)
-              "
+              :placeholder="$t(`editorPage.subConfig.basic.displayName.placeholder`)"
               type="text"
             />
           </nut-form-item>
@@ -62,9 +60,7 @@
               class="nut-input-text"
               :border="false"
               v-model="form.remark"
-              :placeholder="
-                $t(`editorPage.subConfig.basic.remark.placeholder`)
-              "
+              :placeholder="$t(`editorPage.subConfig.basic.remark.placeholder`)"
               type="text"
               input-align="right"
               rows="1"
@@ -82,10 +78,7 @@
             </div>
           </nut-form-item>
           <!-- icon -->
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.icon.label`)"
-            prop="icon"
-          >
+          <nut-form-item :label="$t(`editorPage.subConfig.basic.icon.label`)" prop="icon">
             <nut-input
               :border="false"
               class="nut-input-text"
@@ -98,168 +91,228 @@
             />
           </nut-form-item>
           <nut-form-item
-            required
-            :label="$t(`editorPage.subConfig.basic.source.label`)"
-            prop="source"
-          >
-            <div class="radio-wrapper">
-              <nut-radiogroup direction="horizontal" v-model="form.source">
-                <nut-radio shape="button" label="remote">
-                  {{ $t(`filePage.source.remote`) }}
-                </nut-radio>
-                <nut-radio shape="button" label="local">
-                  {{ $t(`filePage.source.local`) }}
-                </nut-radio>
-              </nut-radiogroup>
-            </div>
-          </nut-form-item>
-          <nut-form-item
-            required
-            v-if="form.source === 'remote'"
-            :label="$t(`editorPage.subConfig.basic.url.label`)"
-            prop="url"
-            :rules="[
-              {
-                required: true,
-                message: $t(`filePage.url.isEmpty`),
-              },
-              {
-                validator: urlValidator,
-                message: $t(`filePage.url.isIllegal`),
-              },
-            ]"
-          >
-            <nut-textarea
-              class="textarea-wrapper"
-              @blur="customerBlurValidate('url')"
-              v-model="form.url"
-              :autosize="{ maxHeight: 110, minHeight: 50 }"
-              :placeholder="$t(`filePage.url.placeholder`)"
-              type="text"
-            />
-          </nut-form-item>
-          <nut-form-item
-            v-else-if="form.source === 'local'"
-            :label="undefined"
-            prop="content"
-          >
-            <!-- <nut-textarea
-            class="textarea-wrapper"
-            v-model="form.content"
-            text-align="left"
-            :autosize="{ maxHeight: 410, minHeight: 50 }"
-            :placeholder="$t(`filePage.content.placeholder`)"
-            type="text"
-          /> -->
-
-            <button class="cimg-button" @click="isDis = false">
-              <img src="" />
-              {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
-              <!-- 测试 后续再改效果 -->
-            </button>
-            <input type="file" ref="fileInput" @change="fileChange" style="display: none">
-            <button class="cimg-button" @click="upload">
-              {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
-            </button>
-            <div
-              style="
-                margin-left: -15px;
-                margin-right: -15px;
-                max-height: 60vh;
-                overflow: auto;
-              "
+              required
+              :label="$t(`specificWord.type`)"
+              prop="type"
             >
-              <cmView :isReadOnly="false" id="FileEditer" />
-            </div>
-          </nut-form-item>
-          <!-- ua -->
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.ua.label`)"
-            prop="ua"
-            v-if="form.source === 'remote'"
-          >
-            <input
-              class="nut-input-text"
-              v-model.trim="form.ua"
-              :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
+              <div class="radio-wrapper">
+                <nut-radiogroup direction="horizontal" v-model="form.type">
+                  <nut-radio shape="button" label="mihomoProfile">
+                    {{ $t(`filePage.type.mihomoProfile`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="file">
+                    {{ $t(`specificWord.file`) }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </div>
+            </nut-form-item>
+          <template v-if="form.type === 'mihomoProfile'">
+            <nut-form-item
+              required
+              :label="$t(`editorPage.subConfig.basic.source.label`)"
+              prop="source"
+            >
+              <div class="radio-wrapper">
+                <nut-radiogroup direction="horizontal" v-model="form.sourceType">
+                  <nut-radio shape="button" label="subscription">
+                    {{ $t(`specificWord.singleSub`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="collection">
+                    {{ $t(`specificWord.collectionSub`) }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </div>
+            </nut-form-item>
+            <nut-form-item
+              required
+              :label="$t(`tabBar.sub`) + $t(`editorPage.subConfig.basic.name.label`)"
+              prop="sourceName"
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`editorPage.subConfig.basic.name.isEmpty`),
+                },
+              ]"
+            >
+              <input
+                class="nut-input-text"
+                data-1p-ignore
+                @blur="customerBlurValidate('name')"
+                v-model.trim="form.sourceName"
+                :placeholder="$t(`editorPage.subConfig.basic.name.placeholder`)"
+                type="text"
+              />
+            </nut-form-item>
+          </template>
+          <template v-else>
+            <nut-form-item
+              required
+              :label="$t(`editorPage.subConfig.basic.source.label`)"
+              prop="source"
+            >
+              <div class="radio-wrapper">
+                <nut-radiogroup direction="horizontal" v-model="form.source">
+                  <nut-radio shape="button" label="remote">
+                    {{ $t(`filePage.source.remote`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="local">
+                    {{ $t(`filePage.source.local`) }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </div>
+            </nut-form-item>
+            <nut-form-item
+              required
+              v-if="form.source === 'remote'"
+              :label="$t(`editorPage.subConfig.basic.url.label`)"
+              prop="url"
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`filePage.url.isEmpty`),
+                },
+                {
+                  validator: urlValidator,
+                  message: $t(`filePage.url.isIllegal`),
+                },
+              ]"
+            >
+              <nut-textarea
+                class="textarea-wrapper"
+                @blur="customerBlurValidate('url')"
+                v-model="form.url"
+                :autosize="{ maxHeight: 110, minHeight: 50 }"
+                :placeholder="$t(`filePage.url.placeholder`)"
+                type="text"
+              />
+            </nut-form-item>
+            <nut-form-item
+              v-else-if="form.source === 'local'"
+              :label="undefined"
+              prop="content"
+            >
+              <!-- <nut-textarea
+              class="textarea-wrapper"
+              v-model="form.content"
+              text-align="left"
+              :autosize="{ maxHeight: 410, minHeight: 50 }"
+              :placeholder="$t(`filePage.content.placeholder`)"
               type="text"
-            />
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.proxy.label`)"
-            prop="proxy"
-          >
-            <nut-input
-              :border="false"
-              class="nut-input-text"
-              v-model.trim="form.proxy"
-              :placeholder="$t(`editorPage.subConfig.basic.proxy.placeholder`)"
-              type="text"
-              input-align="right"
-              left-icon="tips"
-              @click-left-icon="proxyTips"
-            />
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
-            prop="subInfoUrl"
-          >
-            <input
-              class="nut-input-text"
-              data-1p-ignore
-              v-model.trim="form.subInfoUrl"
-              :placeholder="
-                $t(`editorPage.subConfig.basic.subInfoUrl.placeholder`)
-              "
-              type="text"
-            />
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.subInfoUserAgent.label`)"
-            prop="subInfoUserAgent"
-          >
-            <input
-              class="nut-input-text"
-              data-1p-ignore
-              v-model.trim="form.subInfoUserAgent"
-              :placeholder="
-                $t(`editorPage.subConfig.basic.subInfoUserAgent.placeholder`)
-              "
-              type="text"
-            />
-          </nut-form-item>
+            /> -->
 
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
-            prop="mergeSources"
-          >
-            <div class="radio-wrapper">
-              <nut-radiogroup
-                direction="horizontal"
-                v-model="form.mergeSources"
+              <button class="cimg-button" @click="isDis = false">
+                <img src="" />
+                {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
+                <!-- 测试 后续再改效果 -->
+              </button>
+              <input
+                type="file"
+                ref="fileInput"
+                @change="fileChange"
+                style="display: none"
+              />
+              <button class="cimg-button" @click="upload">
+                {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
+              </button>
+              <div
+                style="
+                  margin-left: -15px;
+                  margin-right: -15px;
+                  max-height: 60vh;
+                  overflow: auto;
+                "
               >
-                <nut-radio shape="button" label="">
-                  {{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
-                </nut-radio>
-                <nut-radio shape="button" label="localFirst">
-                  {{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
-                </nut-radio>
-                <nut-radio shape="button" label="remoteFirst">
-                  {{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
-                </nut-radio>
-              </nut-radiogroup>
-            </div>
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
-            prop="ignoreFailedRemoteFile"
-            class="ignore-failed-wrapper"
-          >
-            <div class="switch-wrapper">
-              <nut-switch v-model="form.ignoreFailedRemoteFile" />
-            </div>
-          </nut-form-item>
+                <cmView :isReadOnly="false" id="FileEditer" />
+              </div>
+            </nut-form-item>
+            <!-- ua -->
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.ua.label`)"
+              prop="ua"
+              v-if="form.source === 'remote'"
+            >
+              <input
+                class="nut-input-text"
+                v-model.trim="form.ua"
+                :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
+                type="text"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.proxy.label`)"
+              prop="proxy"
+            >
+              <nut-input
+                :border="false"
+                class="nut-input-text"
+                v-model.trim="form.proxy"
+                :placeholder="$t(`editorPage.subConfig.basic.proxy.placeholder`)"
+                type="text"
+                input-align="right"
+                left-icon="tips"
+                @click-left-icon="proxyTips"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
+              prop="subInfoUrl"
+            >
+              <input
+                class="nut-input-text"
+                data-1p-ignore
+                v-model.trim="form.subInfoUrl"
+                :placeholder="$t(`editorPage.subConfig.basic.subInfoUrl.placeholder`)"
+                type="text"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.subInfoUserAgent.label`)"
+              prop="subInfoUserAgent"
+            >
+              <input
+                class="nut-input-text"
+                data-1p-ignore
+                v-model.trim="form.subInfoUserAgent"
+                :placeholder="
+                  $t(`editorPage.subConfig.basic.subInfoUserAgent.placeholder`)
+                "
+                type="text"
+              />
+            </nut-form-item>
+
+            <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
+              prop="mergeSources"
+            >
+              <div class="radio-wrapper">
+                <nut-radiogroup direction="horizontal" v-model="form.mergeSources">
+                  <nut-radio shape="button" label="">
+                    {{ $t(`editorPage.subConfig.basic.source.noMerge`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="localFirst">
+                    {{ $t(`editorPage.subConfig.basic.source.localFirst`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="remoteFirst">
+                    {{ $t(`editorPage.subConfig.basic.source.remoteFirst`) }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </div>
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
+              prop="ignoreFailedRemoteFile"
+              class="ignore-failed-wrapper"
+            >
+              <div class="switch-wrapper">
+                <nut-switch v-model="form.ignoreFailedRemoteFile" />
+              </div>
+            </nut-form-item>
+          </template>
         </nut-form>
+      </div>
+      <div class="sticky-title-wrapper actions-title-wrapper" v-if="form.type === 'mihomoProfile'">
+        <p>{{ $t(`filePage.type.mihomoProfileTips`) }}</p>
+        <small class="doc"><a href="https://mihomo.party/docs/guide/override">{{ $t("subPage.panel.tips.ok") }}</a></small>
       </div>
       <ActionBlock
         ref="actionBlockRef"
@@ -278,19 +331,14 @@
         <font-awesome-icon icon="fa-solid fa-eye" />
         {{ $t("editorPage.subConfig.btn.compare") }}
       </nut-button>
-      <nut-button
-        @click="submit"
-        class="submit-btn btn"
-        type="primary"
-        shape="square"
-      >
+      <nut-button @click="submit" class="submit-btn btn" type="primary" shape="square">
         <font-awesome-icon icon="fa-solid fa-floppy-disk" />
         {{ $t("editorPage.subConfig.btn.save") }}
       </nut-button>
     </div>
   </div>
 
-  <div v-else style="width: 100%;height: 95vh;">
+  <div v-else style="width: 100%; height: 95vh">
     <button class="cimg-button" @click="isDis = true">
       <img src="" />
       {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEditCancel`) }}
@@ -303,10 +351,7 @@
     :previewData="previewData"
     @closePreview="closePreview"
   />
-  <icon-popup
-    v-model:visible="iconPopupVisible"
-    ref="iconPopupRef"
-    @setIcon="setIcon">
+  <icon-popup v-model:visible="iconPopupVisible" ref="iconPopupRef" @setIcon="setIcon">
   </icon-popup>
 </template>
 
@@ -318,7 +363,7 @@ import { useFilesApi } from "@/api/files";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
-import { useSettingsStore } from '@/store/settings';
+import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import ActionBlock from "@/views/editor/ActionBlock.vue";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
@@ -343,6 +388,8 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
+import clashmetaIcon from '@/assets/icons/clashmeta_color.png';
+
 const cmStore = useCodeStore();
 const isDis = ref(true);
 const { t } = useI18n();
@@ -379,6 +426,7 @@ const form = reactive<any>({
   icon: "",
   source: "local",
   process: [],
+  type: configName === 'UNTITLED-mihomoProfile' ? 'mihomoProfile' : 'file',
 });
 provide("form", form);
 // 排除非动作卡片
@@ -393,7 +441,7 @@ watch(
 
 watchEffect(() => {
   if (isInit.value) return;
-  if (configName === "UNTITLED") {
+  if (['UNTITLED', 'UNTITLED-mihomoProfile'].includes(configName)) {
     const fc = "// " + t(`filePage.content.placeholder`) + "\n";
     cmStore.setEditCode("FileEditer", fc);
     // 标记 加载完成
@@ -411,6 +459,9 @@ watchEffect(() => {
     form.remark = sourceData.remark;
     form.icon = sourceData.icon;
     form.source = sourceData.source || "local";
+    form.type = sourceData.type || 'file';
+    form.sourceType = sourceData.sourceType || 'collection';
+    form.sourceName = sourceData.sourceName;
     form.url = sourceData.url;
     form.subInfoUrl = sourceData.subInfoUrl;
     form.subInfoUserAgent = sourceData.subInfoUserAgent;
@@ -461,7 +512,7 @@ const deleteAction = (id) => {
 
 const toggleAction = (id) => {
   toggleItem(actionsList, id);
-}
+};
 
 const closePreview = () => {
   document.querySelector("html").style["overflow-y"] = "";
@@ -480,31 +531,30 @@ const closePreview = () => {
 
   router.back();
 };
-const upload = async() => {
+const upload = async () => {
   try {
-    fileInput.value.click()
+    fileInput.value.click();
   } catch (e) {
     console.error(e);
   }
-}
+};
 const fileChange = async (event) => {
   const file = event.target.files[0];
-  if(!file) return
+  if (!file) return;
   try {
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = () => {
       cmStore.setEditCode("FileEditer", String(reader.result));
-    }
+    };
 
-    reader.onerror = e => {
-      throw e
-    }
-    
+    reader.onerror = (e) => {
+      throw e;
+    };
   } catch (e) {
     showNotify({
       type: "danger",
-      title: '文件导入失败',
+      title: "文件导入失败",
     });
     console.error(e);
   }
@@ -551,8 +601,7 @@ const compare = () => {
       document.querySelector("html").style.height = "100%";
       document.body.style.height = "100%";
       document.body.style["overflow-y"] = "hidden";
-      (document.querySelector("#app") as HTMLElement).style["overflow-y"] =
-        "hidden";
+      (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "hidden";
       (document.querySelector("#app") as HTMLElement).style.height = "100%";
 
       filePreviewIsVisible.value = true;
@@ -593,7 +642,7 @@ const submit = () => {
 
     let res = null;
 
-    if (configName === "UNTITLED") {
+    if (['UNTITLED', 'UNTITLED-mihomoProfile'].includes(configName)) {
       res = await filesApi.createFile(data);
       await subsStore.fetchSubsData();
       if (data.source === "remote") await initStores(false, true, false);
@@ -622,47 +671,47 @@ const submit = () => {
   });
 };
 const proxyTips = () => {
-    Dialog({
-        title: '通过代理/节点/策略获取远程文件',
-        content: '1. Surge(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888\n\n※ 优先级由高到低: 文件配置, 默认配置',
-        popClass: 'auto-dialog',
-        textAlign: 'left',
-        okText: 'OK',
-        noCancelBtn: true,
-        closeOnPopstate: true,
-        lockScroll: false,
-      });
-  };
+  Dialog({
+    title: "通过代理/节点/策略获取远程文件",
+    content:
+      '1. Surge(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以使节点名称、策略组名称，也可以说是一个Loon格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(模块 request 的 proxy 参数):\n\n例: http://127.0.0.1:8888\n\n※ 优先级由高到低: 文件配置, 默认配置',
+    popClass: "auto-dialog",
+    textAlign: "left",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+};
 // 图标
 const fileIcon = computed(() => {
-    if (form.icon) {
-      return form.icon
-    } else {
-      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon
-    }
-  })
-  const iconPopupVisible = ref(false)
-  const iconPopupRef = ref(null)
-  const showIconPopup = () => {
-    iconPopupVisible.value = true
+  if (form.icon) {
+    return form.icon;
+  } else {
+    if (form.type === 'mihomoProfile') return clashmetaIcon;
+    return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   }
-  const setIcon = (icon: any) => {
-    form.icon = icon.url
-  }
-  const iconTips = () => {
-    router.push(`/icon/collection`);
-  };
+});
+const iconPopupVisible = ref(false);
+const iconPopupRef = ref(null);
+const showIconPopup = () => {
+  iconPopupVisible.value = true;
+};
+const setIcon = (icon: any) => {
+  form.icon = icon.url;
+};
+const iconTips = () => {
+  router.push(`/icon/collection`);
+};
 // 名称验证器
 const nameValidator = (val: string): Promise<boolean> => {
   return new Promise((resolve) => {
-    if (val === "UNTITLED") resolve(false);
+    if (['UNTITLED', 'UNTITLED-mihomoProfile'].includes(val)) resolve(false);
     if (/\//.test(val)) {
       resolve(false);
     }
     const nameList = subsStore.files.map((item) => item.name);
-    nameList.includes(val) && configName !== val
-      ? resolve(false)
-      : resolve(true);
+    nameList.includes(val) && configName !== val ? resolve(false) : resolve(true);
   });
 };
 
@@ -686,9 +735,9 @@ const urlValidator = (val: string): Promise<boolean> => {
 const customerBlurValidate = (prop: string) => {
   ruleForm.value.validate(prop);
 };
-const actionBlockRef = ref(null)
-const customNameModeFlag = ref(false)
-const updateCustomNameModeFlag = (flag) => customNameModeFlag.value = flag
+const actionBlockRef = ref(null);
+const customNameModeFlag = ref(false);
+const updateCustomNameModeFlag = (flag) => (customNameModeFlag.value = flag);
 const handleEditGlobalClick = () => {
   if (actionBlockRef.value) {
     if (customNameModeFlag.value) {
@@ -696,18 +745,19 @@ const handleEditGlobalClick = () => {
       actionBlockRef.value.exitAllEditName();
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .page-wrapper {
-  padding: 0 var(--safe-area-side) calc(v-bind("padding") + 63px)
-    var(--safe-area-side);
+  padding: 0 var(--safe-area-side) calc(v-bind("padding") + 63px) var(--safe-area-side);
 
   :deep(.nut-cell-group__warp) {
     border-radius: var(--item-card-radios);
   }
-  :deep(.nut-icon-tips:before), :deep(.nut-icon-shop:before) {
+
+  :deep(.nut-icon-tips:before),
+  :deep(.nut-icon-shop:before) {
     cursor: pointer;
   }
 }
@@ -721,6 +771,7 @@ const handleEditGlobalClick = () => {
     border-color: transparent;
     color: var(--second-text-color);
   }
+
   :deep(.nut-radio__button) {
     padding: 5px 10px;
   }
@@ -728,9 +779,11 @@ const handleEditGlobalClick = () => {
 
 .form-block-wrapper {
   position: relative;
+
   .sticky-title-icon-container {
     display: flex;
     justify-content: center;
+
     .nut-image {
       cursor: pointer;
       width: 70px;
@@ -739,12 +792,14 @@ const handleEditGlobalClick = () => {
       overflow: hidden;
       background: transparent;
       padding: 10px;
+
       :deep(img) {
         width: 100%;
         height: 100%;
         border-radius: 12px;
       }
     }
+
     .sub-item-customer-icon {
       :deep(img) {
         & {
@@ -755,15 +810,24 @@ const handleEditGlobalClick = () => {
     }
   }
 }
-
+.actions-title-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: var(--comment-text-color);
+  .doc {
+    margin-left: 4px;
+    
+    color: var(--primary-text-color);
+  }
+}
 .bottom-btn-wrapper {
   position: fixed;
   display: flex;
   justify-content: space-between;
   bottom: 0;
   width: 100%;
-  padding: 8px var(--safe-area-side) calc(v-bind("padding") + 8px)
-    var(--safe-area-side);
+  padding: 8px var(--safe-area-side) calc(v-bind("padding") + 8px) var(--safe-area-side);
   z-index: 20;
   background: var(--background-color);
   border-top: 1px solid var(--divider-color);
@@ -794,9 +858,11 @@ const handleEditGlobalClick = () => {
 .ignore-failed-wrapper {
   flex-direction: row;
   justify-content: space-between;
+
   :deep(.nut-form-item__label) {
     width: auto;
   }
+
   .switch-wrapper {
     display: flex;
     justify-content: end;

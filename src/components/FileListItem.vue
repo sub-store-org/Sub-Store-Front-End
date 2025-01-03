@@ -236,6 +236,7 @@
   import { useRouter, useRoute } from 'vue-router';
   import { useHostAPI } from '@/hooks/useHostAPI';
   import { useBackend } from "@/hooks/useBackend";
+  import clashmetaIcon from '@/assets/icons/clashmeta_color.png';
 
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
@@ -291,6 +292,7 @@
   })
   const { flows } = storeToRefs(subsStore);
   const icon = computed(() => {
+    if (props.file.type === 'mihomoProfile') return clashmetaIcon;
     return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   })
   const collectionDetail = computed(() => {
@@ -309,6 +311,7 @@
   });
 
   const flow = computed(() => {
+    if (props.file.type === 'mihomoProfile') return t('filePage.type.mihomoProfile');
     if (props.file.source === 'remote') return t('filePage.source.remote');
     return t('filePage.source.local');
   });
