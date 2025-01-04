@@ -90,22 +90,18 @@
               @click-left-icon="showIconPopup"
             />
           </nut-form-item>
-          <nut-form-item
-              required
-              :label="$t(`specificWord.type`)"
-              prop="type"
-            >
-              <div class="radio-wrapper">
-                <nut-radiogroup direction="horizontal" v-model="form.type">
-                  <nut-radio shape="button" label="mihomoProfile">
-                    {{ $t(`filePage.type.mihomoProfile`) }}
-                  </nut-radio>
-                  <nut-radio shape="button" label="file">
-                    {{ $t(`specificWord.file`) }}
-                  </nut-radio>
-                </nut-radiogroup>
-              </div>
-            </nut-form-item>
+          <nut-form-item required :label="$t(`specificWord.type`)" prop="type">
+            <div class="radio-wrapper">
+              <nut-radiogroup v-model="form.type" direction="horizontal">
+                <nut-radio shape="button" label="mihomoProfile">
+                  {{ $t(`filePage.type.mihomoProfile`) }}
+                </nut-radio>
+                <nut-radio shape="button" label="file">
+                  {{ $t(`specificWord.file`) }}
+                </nut-radio>
+              </nut-radiogroup>
+            </div>
+          </nut-form-item>
           <template v-if="form.type === 'mihomoProfile'">
             <nut-form-item
               required
@@ -113,7 +109,11 @@
               prop="source"
             >
               <div class="radio-wrapper">
-                <nut-radiogroup direction="horizontal" v-model="form.sourceType">
+                <nut-radiogroup
+                  v-model="form.sourceType"
+                  direction="horizontal"
+                  @change="handleTypeChange"
+                >
                   <nut-radio shape="button" label="subscription">
                     {{ $t(`specificWord.singleSub`) }}
                   </nut-radio>
@@ -134,13 +134,17 @@
                 },
               ]"
             >
-              <input
+              <nut-input
                 class="nut-input-text"
+                :border="false"
                 data-1p-ignore
                 @blur="customerBlurValidate('name')"
+                input-align="right"
                 v-model.trim="form.sourceName"
                 :placeholder="(form.sourceType === 'subscription' ? $t(`specificWord.singleSub`) : $t(`specificWord.collectionSub`))+$t(`editorPage.subConfig.basic.name.label`)"
                 type="text"
+                right-icon="rect-right"
+                @click-right-icon="showSourceName"
               />
             </nut-form-item>
           </template>
@@ -353,6 +357,21 @@
   />
   <icon-popup v-model:visible="iconPopupVisible" ref="iconPopupRef" @setIcon="setIcon">
   </icon-popup>
+  <!-- 订阅名称 -->
+  <nut-picker
+    :key="sourceNameColumns.length"
+    v-model="selectSourceName"
+    v-model:visible="showSourceNamePicker"
+    :columns="sourceNameColumns"
+    :title="$t(`editorPage.subConfig.sourceNamePicker.title`)"
+    :cancel-text="$t(`editorPage.subConfig.sourceNamePicker.cancel`)"
+    :ok-text="$t(`editorPage.subConfig.sourceNamePicker.confirm`)"
+    @confirm="handleSourceNameConfirm"
+  >
+    <div v-if="!sourceNameColumns.length" class="empty-tips" @click="goAddSub">
+      <p>{{ t(`editorPage.subConfig.sourceNamePicker.emptyTips`) }}</p>
+    </div>
+  </nut-picker>
 </template>
 
 <script lang="ts" setup>
@@ -404,6 +423,7 @@ const { showNotify } = useAppNotifyStore();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { subs, collections } = storeToRefs(subsStore);
 const { appearanceSetting } = storeToRefs(settingsStore);
 const padding = bottomSafeArea.value + "px";
 
@@ -426,13 +446,44 @@ const form = reactive<any>({
   icon: "",
   source: "local",
   sourceType: "collection",
+  sourceName: "",
   process: [],
   type: configName === 'UNTITLED-mihomoProfile' ? 'mihomoProfile' : 'file',
 });
 provide("form", form);
 // 排除非动作卡片
 const ignoreList = ["Quick Setting Operator"];
-
+// 订阅名称
+const showSourceNamePicker = ref(false);
+const selectSourceName = computed(() => [form.sourceName]);
+const sourceNameColumns = computed(() => {
+  const list =
+    form.sourceType === "collection" ? subsStore.collections : subsStore.subs;
+  if (!list || list.length === 0) {
+    return [];
+  }
+  return list.map((item) => {
+    return {
+      text: item.displayName ? `${item.displayName}` : item.name,
+      value: item.name,
+    };
+  });
+});
+const handleTypeChange = (val) => {
+  form.sourceName = "";
+};
+const showSourceName = () => {
+  showSourceNamePicker.value = true;
+};
+const handleSourceNameConfirm = ({ selectedValue, selectedOptions }) => {
+  if (selectedValue[0]) {
+    form.sourceName = selectedValue[0];
+  }
+  showSourceNamePicker.value = false;
+};
+const goAddSub = () => {
+  router.push("/subs");
+};
 watch(
   () => cmStore.EditCode["FileEditer"],
   (newCode) => {
@@ -499,6 +550,7 @@ watchEffect(() => {
     }
     // 标记 加载完成
     isInit.value = true;
+    console.log('form', form);
     return;
   }
 });
@@ -810,6 +862,16 @@ const handleEditGlobalClick = () => {
       }
     }
   }
+  :deep(.nut-form-item__label) {
+    width: auto;
+  }
+  :deep(.nut-input-text){
+    .nut-input-inner {
+      .nut-input-right-icon {
+        margin-left: 10px;
+      }
+    }
+  }
 }
 .actions-title-wrapper {
   display: flex;
@@ -818,7 +880,6 @@ const handleEditGlobalClick = () => {
   color: var(--comment-text-color);
   .doc {
     margin-left: 4px;
-    
     color: var(--primary-text-color);
   }
 }
@@ -922,6 +983,20 @@ const handleEditGlobalClick = () => {
         }
       }
     }
+  }
+}
+
+.empty-tips {
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  p {
+    // color: var(--primary-text-color);
+    color: var(--comment-text-color);
+    font-size: 14px;
+    text-align: center;
   }
 }
 </style>

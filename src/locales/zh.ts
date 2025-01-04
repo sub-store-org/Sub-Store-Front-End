@@ -528,6 +528,12 @@ export default {
           tipsDes: '使用一段 JavaScript 脚本来过滤节点',
         },
       },
+      sourceNamePicker: {
+        title: '选择订阅名称',
+        cancel: '取消',
+        confirm: '确定',
+        emptyTips: '未找到订阅？点击去添加订阅',
+      },
     },
   },
   myPage: {

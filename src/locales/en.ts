@@ -533,6 +533,12 @@ export default {
           tipsDes: "Use a JavaScript script to filter nodes",
         },
       },
+      sourceNamePicker: {
+        title: 'Select Subscription Name',
+        cancel: 'Cancel',
+        confirm: 'Confirm',
+        emptyTips: 'Subscription not found? Click to add a subscription',
+      },
     },
   },
   myPage: {
