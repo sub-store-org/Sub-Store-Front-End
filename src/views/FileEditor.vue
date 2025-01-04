@@ -90,6 +90,32 @@
               @click-left-icon="showIconPopup"
             />
           </nut-form-item>
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
+            prop="subInfoUrl"
+          >
+            <input
+              class="nut-input-text"
+              data-1p-ignore
+              v-model.trim="form.subInfoUrl"
+              :placeholder="$t(`editorPage.subConfig.basic.subInfoUrl.placeholder`)"
+              type="text"
+            />
+          </nut-form-item>
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.subInfoUserAgent.label`)"
+            prop="subInfoUserAgent"
+          >
+            <input
+              class="nut-input-text"
+              data-1p-ignore
+              v-model.trim="form.subInfoUserAgent"
+              :placeholder="
+                $t(`editorPage.subConfig.basic.subInfoUserAgent.placeholder`)
+              "
+              type="text"
+            />
+          </nut-form-item>
           <nut-form-item required :label="$t(`specificWord.type`)" prop="type">
             <div class="radio-wrapper">
               <nut-radiogroup v-model="form.type" direction="horizontal">
@@ -257,33 +283,6 @@
                 @click-left-icon="proxyTips"
               />
             </nut-form-item>
-            <nut-form-item
-              :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
-              prop="subInfoUrl"
-            >
-              <input
-                class="nut-input-text"
-                data-1p-ignore
-                v-model.trim="form.subInfoUrl"
-                :placeholder="$t(`editorPage.subConfig.basic.subInfoUrl.placeholder`)"
-                type="text"
-              />
-            </nut-form-item>
-            <nut-form-item
-              :label="$t(`editorPage.subConfig.basic.subInfoUserAgent.label`)"
-              prop="subInfoUserAgent"
-            >
-              <input
-                class="nut-input-text"
-                data-1p-ignore
-                v-model.trim="form.subInfoUserAgent"
-                :placeholder="
-                  $t(`editorPage.subConfig.basic.subInfoUserAgent.placeholder`)
-                "
-                type="text"
-              />
-            </nut-form-item>
-
             <nut-form-item
               :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
               prop="mergeSources"
