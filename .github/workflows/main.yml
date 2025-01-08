@@ -26,10 +26,19 @@ jobs:
       - name: Install dependencies
         run: |
           npm install -g pnpm
+          pnpm config set registry https://registry.npmmirror.com
           pnpm i --no-frozen-lockfile
       - name: build
         run: |
           pnpm build
+      - uses: amondnet/vercel-action@v20 #deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
+          vercel-args: "--prod" # Optional
+          vercel-org-id: ${{ secrets.ORG_ID}} # Required
+          vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
+          working-directory: dist
       - name: zip
         run: |
           zip -r dist.zip dist
