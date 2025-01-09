@@ -87,11 +87,11 @@ img {
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   z-index: 1100;
-  max-height: 90vh;
+  max-height: 95vh;
   max-width: 80vw;
   width: 80vw;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: auto;
   padding-bottom: 24px;
 }
 .nut-button {
