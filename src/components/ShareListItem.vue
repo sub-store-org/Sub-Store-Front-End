@@ -1,6 +1,13 @@
 <template>
   <!-- 滚动内容 -->
-  <nut-swipe ref="swipe" class="sub-item-swipe" :disabled="props.disabled">
+  <nut-swipe
+    ref="swipe"
+    class="sub-item-swipe"
+    :disabled="props.disabled"
+    @close="setIsMoveClose()"
+    @open="setIsMoveOpen()"
+    @click="onClickPreviews()"
+  >
     <div
       class="sub-item-wrapper"
       :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
@@ -123,6 +130,7 @@ import { computed, createVNode, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
+import PreviewPanel from "@/components/PreviewPanel.vue";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
@@ -157,7 +165,7 @@ const name = computed(() => {
 
 const displayName = computed(() => {
   return props?.data?.displayName;
-})
+});
 const remark = computed(() => {
   return props?.data?.remark;
 });
@@ -236,23 +244,26 @@ const getOneShareOrigin = async (keyName: string) => {
     case "file":
       return subsStore.getOneFile(keyName);
   }
-}
+};
+
 const onClickShareLink = async () => {
-  console.log("props", props);
-  const keyName = encodeURIComponent(name.value);
-  const item = await getOneShareOrigin(keyName);
-  console.log('item', item)
-  if (!item) {
-    return Toast.text(t("sharePage.noOriginalTips"));
-  }
-  if (type.value === 'file') {
-    router.push(`/edit/files/${keyName}`);
-  }
-  if (type.value === 'sub') {
-    router.push(`/edit/subs/${keyName}`);
-  }
-  if (type.value === 'col') {
-    router.push(`/edit/collections/${keyName}`);
+  try {
+    const keyName = encodeURIComponent(name.value);
+    const item = await getOneShareOrigin(keyName);
+    if (!item) {
+      return Toast.text(t("sharePage.noOriginalTips"));
+    }
+    if (type.value === "file") {
+      router.push(`/edit/files/${keyName}`);
+    }
+    if (type.value === "sub") {
+      router.push(`/edit/subs/${keyName}`);
+    }
+    if (type.value === "col") {
+      router.push(`/edit/collections/${keyName}`);
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -276,6 +287,82 @@ const onClickDelete = () => {
   });
 };
 
+const ismove = ref(false);
+
+// 增加延迟防止打开时 触发不了
+const setTimeoutTF = () => {
+  setTimeout(() => {
+    ismove.value = false;
+  }, 200);
+};
+
+const setIsMoveOpen = () => {
+  ismove.value = true;
+  setTimeoutTF();
+};
+
+const setIsMoveClose = () => {
+  ismove.value = true;
+  setTimeoutTF();
+};
+
+const secretPath = computed(() => {
+  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
+});
+
+const getShareUrl = () => {
+  try {
+    const { type, name, token } = props.data;
+    const shareUrl = `${host.value.replace(
+      new RegExp(`${secretPath.value}$`),
+      "",
+    )}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(
+      token,
+    )}`;
+    return shareUrl;
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
+const onClickPreviews = () => {
+  console.log('name', name.value);
+  console.log('props', props.data);
+  if (type.value === "file") {
+    return;
+  }
+  if (ismove.value) {
+    return false;
+  }
+  swipeController();
+  const url = getShareUrl();
+  console.log('url', url);
+  Dialog({
+    title: t("subPage.previewTitle"),
+    content: createVNode(PreviewPanel, {
+      name,
+      type: "share",
+      url,
+      general: t("subPage.panel.general"),
+      notify: t("subPage.copyNotify.succeed"),
+      tipsTitle: t(`subPage.panel.tips.title`),
+      tipsContent: `${t("subPage.panel.tips.content")}\n${t(
+        "syncPage.addArtForm.includeUnsupportedProxy.tips.content",
+      )}`,
+      desc: t(`subPage.panel.tips.desc`),
+      tipsOkText: t(`subPage.panel.tips.ok`),
+      tipsCancelText: t(`subPage.panel.tips.cancel`),
+    }),
+    onOpened: () => swipe.value.close(),
+    popClass: "auto-dialog",
+    // @ts-ignore
+    closeOnClickOverlay: true,
+    noOkBtn: true,
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+};
 </script>
 
 <style lang="scss" scoped>
