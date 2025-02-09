@@ -64,6 +64,9 @@
             <button class="copy-sub-link" @click.stop="onClickShareLink">
               <font-awesome-icon icon="fa-solid fa-link" />
             </button>
+            <button class="copy-sub-link" @click.stop="onClickCopyLink">
+              <font-awesome-icon icon="fa-solid fa-clone" />
+            </button>
             <!-- 编辑 -->
             <button class="refresh-sub-flow" @click.stop="onClickEdit">
               <font-awesome-icon icon="fa-solid fa-pen-nib" />
@@ -123,6 +126,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useClipboard } from "@vueuse/core";
+import useV3Clipboard from "vue-clipboard3";
 import { Dialog, Toast } from "@nutui/nutui";
 import dayjs from "dayjs";
 import { storeToRefs } from "pinia";
@@ -138,14 +143,17 @@ import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { isMobile } from "@/utils/isMobile";
 import { useRouter } from "vue-router";
+import { useAppNotifyStore } from "@/store/appNotify";
 
+const { showNotify } = useAppNotifyStore();
 const router = useRouter();
 const props = defineProps<{
   data: Share;
   disabled?: boolean;
 }>();
 const emit = defineEmits(["detail", "delete"]);
-
+const { copy, isSupported } = useClipboard();
+const { toClipboard: copyFallback } = useV3Clipboard();
 const { t } = useI18n();
 const { env } = useBackend();
 const scrollTop = 0;
@@ -244,6 +252,17 @@ const getOneShareOrigin = async (keyName: string) => {
     case "file":
       return subsStore.getOneFile(keyName);
   }
+};
+
+const onClickCopyLink = async () => {
+  const url = getShareUrl();
+  console.log('url', url);
+  if (isSupported) {
+    await copy(url);
+  } else {
+    await copyFallback(url);
+  }
+  showNotify({ title: t("sharePage.copyShare.succeedNotify") });
 };
 
 const onClickShareLink = async () => {
