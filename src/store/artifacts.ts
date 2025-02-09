@@ -78,6 +78,8 @@ export const useArtifactsStore = defineStore('artifactsStore', {
           title: t('syncPage.syncAllSucceed'),
           type: 'success',
         });
+      } else {
+        await this.fetchArtifactsData();
       }
     },
     async syncOneArtifact(name: string) {
