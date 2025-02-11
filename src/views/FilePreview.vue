@@ -4,7 +4,7 @@
       <header class="compare-page-header">
         <template v-if="url">
           <h1>
-            <span class="title">外部资源中使用, 请复制: </span>
+            <span class="title" @click="copyUrl">外部资源中使用, 请复制: </span>
             <span class="displayName">
               <font-awesome-icon class="copy" icon="fa-solid fa-clone" @click="copyUrl" />
               <!-- <font-awesome-icon icon="fa-solid fa-angles-right" /> -->
@@ -281,6 +281,7 @@ const copyUrl = async () => {
   width: 100vw;
   .title {
     white-space: nowrap;
+    cursor: pointer;
   }
   .displayName {
     overflow: hidden;
@@ -289,6 +290,7 @@ const copyUrl = async () => {
     max-width: 40vw;
     .copy {
       cursor: pointer;
+      font-size: 16px;
     }
     .url {
       text-decoration: underline;
