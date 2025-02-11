@@ -81,7 +81,11 @@ const processedData = ref('')
 watchEffect(async () => {
   if (url) {
     try {
-      const response = await axios.get(url as string)
+      const response = await axios.get(url as string, {
+        responseType: 'text',
+        transformResponse: [(data) => data],
+      })
+      console.log(typeof response.data)
       processedData.value = response.data
       cmStore.setEditCode('filePreview', processedData.value)
     } catch (error) {
