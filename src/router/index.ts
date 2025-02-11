@@ -11,6 +11,7 @@ import NotFound from '@/views/NotFound.vue';
 
 import File from '@/views/File.vue';
 import FileEditor from '@/views/FileEditor.vue';
+import FilePreview from '@/views/FilePreview.vue';
 // import editScript from '@/views/editCode/editScript.vue';
 import IconCollection from '@/views/icon/IconCollection.vue';
 
@@ -135,6 +136,15 @@ const router = createRouter({
         //   },
         // },
         {
+          path: '/preview',
+          component: FilePreview,
+          meta: {
+            title: 'preview',
+            needTabBar: false,
+            needNavBack: false,
+          },
+        },
+        {
           path: '/edit/:editType(files)/:id',
           component: FileEditor,
           meta: {
@@ -247,6 +257,7 @@ router.afterEach(async (to, from) => {
   }
 });
 router.beforeEach((to, from) => {
+  document.title = 'Sub Store';
   // console.log(`beforeEach ${from.path} => ${to.path}`)
   if (!globalStore) {
     globalStore = useGlobalStore();

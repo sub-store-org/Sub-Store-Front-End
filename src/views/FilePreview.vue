@@ -2,24 +2,36 @@
   <Teleport to="#app">
     <div class="compare-page-wrapper">
       <header class="compare-page-header">
-        <h1>
-          <font-awesome-icon icon="fa-solid fa-eye" />
-          <span class="title">{{ $t(`comparePage.title`) }}</span>
-          <span class="displayName">
-            <font-awesome-icon icon="fa-solid fa-angles-right" />
-            {{ displayName }}
-          </span>
-        </h1>
-        <!-- <button class="copy" @click.stop="copyContent">
-          <svg-icon
-            name="copy"
-            class="action-icon"
-            color="var(--comment-text-color)"
-          />
-        </button> -->
-        <button @click="clickClose">
-          <font-awesome-icon icon="fa-solid fa-circle-xmark" />
-        </button>
+        <template v-if="url">
+          <h1>
+            <span class="title">外部资源中使用, 请复制: </span>
+            <span class="displayName">
+              <font-awesome-icon class="copy" icon="fa-solid fa-clone" @click="copyUrl" />
+              <!-- <font-awesome-icon icon="fa-solid fa-angles-right" /> -->
+              <a class="url" :href="url" target="_blank">{{ url }}</a>
+            </span>
+          </h1>
+        </template>
+        <template v-else>
+          <h1>
+            <font-awesome-icon icon="fa-solid fa-eye" />
+            <span class="title">{{ $t(`comparePage.title`) }}</span>
+            <span class="displayName">
+              <font-awesome-icon icon="fa-solid fa-angles-right" />
+              {{ displayName }}
+            </span>
+          </h1>
+          <!-- <button class="copy" @click.stop="copyContent">
+            <svg-icon
+              name="copy"
+              class="action-icon"
+              color="var(--comment-text-color)"
+            />
+          </button> -->
+          <button @click="clickClose">
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" />
+          </button>
+        </template>
       </header>
       <cmView :isReadOnly="false" id="filePreview" />
       <!-- <div class="compare-page-body">
@@ -40,16 +52,19 @@
 </template>
 
 <script lang="ts" setup>
+import axios from 'axios';
 import { useSubsApi } from "@/api/subs";
 import { useSubsStore } from "@/store/subs";
 import { Toast } from "@nutui/nutui";
-import { computed, ref, toRaw } from "vue";
+import { computed, ref, toRaw, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
 import useV3Clipboard from "vue-clipboard3";
 import { useAppNotifyStore } from "@/store/appNotify";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
+import { useRoute } from 'vue-router';
+
 const cmStore = useCodeStore();
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
@@ -57,6 +72,27 @@ const { showNotify } = useAppNotifyStore();
 
 const { t } = useI18n();
 const subsStore = useSubsStore();
+
+const route = useRoute();
+const { url } = route.query as { url: string };
+
+const processedData = ref('')
+
+watchEffect(async () => {
+  if (url) {
+    try {
+      const response = await axios.get(url as string)
+      processedData.value = response.data
+      cmStore.setEditCode('filePreview', processedData.value)
+    } catch (error) {
+      console.error('Error fetching URL:', error)
+    }
+  }
+  if (route.query.name) {
+    document.title = `${route.query.name} - Sub Store`
+  }
+})
+
 const { previewData, name } = defineProps<{
   previewData: any;
   name: string;
@@ -68,26 +104,27 @@ const isOriginalVisible = ref(true);
 const isProcessedVisible = ref(true);
 
 const displayName = computed(() => {
+  if(route.query.name) return route.query.name
   const sub = subsStore.getOneFile(name);
   return sub?.displayName || sub?.["display-name"] || name;
 });
 
-const originalData = previewData.original;
-const processedData = previewData.processed;
+const originalData = previewData?.original;
+if(!url) processedData.value = previewData?.processed;
 // cmStore.setCmCode(processedData)
-cmStore.setEditCode('filePreview',processedData)
+cmStore.setEditCode('filePreview',processedData.value )
 
  
 const clickClose = () => {
   emit("closePreview");
 };
-const copyContent = async () => {
+const copyUrl = async () => {
   if (isSupported) {
-    await copy(processedData);
+    await copy(url);
   } else {
-    await copyFallback(processedData);
+    await copyFallback(url);
   }
-  showNotify({ title: "已复制预览内容" });
+  showNotify({ title: `已复制链接: ${url}` });
 };
 </script>
 
@@ -250,6 +287,12 @@ const copyContent = async () => {
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 40vw;
+    .copy {
+      cursor: pointer;
+    }
+    .url {
+      text-decoration: underline;
+    }
   }
   h1 {
     display: flex;

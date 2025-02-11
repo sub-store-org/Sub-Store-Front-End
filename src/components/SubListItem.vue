@@ -656,6 +656,7 @@ const onClickPreviews = () => {
     title: t("subPage.previewTitle"),
     content: createVNode(PreviewPanel, {
       name,
+      displayName,
       type: props.type,
       general: t("subPage.panel.general"),
       notify: t("subPage.copyNotify.succeed"),

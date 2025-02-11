@@ -35,6 +35,7 @@ export default {
       editScript: "Script Edit",
       subEditor: "Subscription Editor",
       fileEditor: "File Editor",
+      preview: 'Preview',
       shareManage: "Share Manage",
       iconCollection: "Icon Collection",
       themeSetting: "Theme Setting",

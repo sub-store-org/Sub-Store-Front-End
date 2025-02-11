@@ -356,10 +356,12 @@ const onClickPreviews = () => {
   swipeController();
   const url = getShareUrl();
   console.log('url', url);
+
   Dialog({
     title: t("subPage.previewTitle"),
     content: createVNode(PreviewPanel, {
-      name,
+      name: name.value,
+      displayName: displayName.value,
       type: "share",
       url,
       general: t("subPage.panel.general"),

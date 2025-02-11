@@ -20,7 +20,7 @@
 
         <div class="actions">
           <a
-            :href="getUrl(platform.path)"
+            :href="getUrl(platform.path, true)"
             target="_blank"
           >
             <svg-icon
@@ -70,8 +70,9 @@
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
-  const { name, type, url, general, notify, tipsTitle, tipsContent, desc,tipsCancelText, tipsOkText } = defineProps<{
+  const { name, displayName, type, url, general, notify, tipsTitle, tipsContent, desc,tipsCancelText, tipsOkText } = defineProps<{
     name: string;
+    displayName?: string;
     type: 'sub' | 'collection';
     general: string;
     notify: string;
@@ -102,7 +103,7 @@
     return `${url}${hasQueryParams ? '&' : '?'}${queryString}`;
   };
 
-  const getUrl = (path: string) => {
+  const getUrl = (path: string, preview: boolean = false) => {
     const query = {} as Record<string, string | boolean>;
     if (path !== null) {
       query.target = path;
@@ -110,13 +111,15 @@
     if (includeUnsupportedProxy.value) {
       query.includeUnsupportedProxy = true;
     }
+    let previewUrl
     if (url) {
-      return buildUrlWithQuery(url, query);
+      previewUrl = buildUrlWithQuery(url, query);
     } else {
-      return `${host.value}/download/${
+      previewUrl = `${host.value}/download/${
         type === "sub" ? "" : "collection/"
         }${encodeURIComponent(name)}${Object.keys(query).length > 0 ? `?${Object.entries(query).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&')}` : ''}`; 
     }
+    return preview ? `/preview?url=${encodeURIComponent(previewUrl)}&name=${encodeURIComponent(displayName || name)}` : previewUrl
   }
   const targetCopy = async (path: string) => {
     const url = getUrl(path);
