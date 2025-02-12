@@ -39,6 +39,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
         showFloatingAddButton: false,
+        displayPreviewInWebPage: true,
         istabBar: false,
         istabBar2: false,
         subProgressStyle: "hidden",

@@ -123,6 +123,16 @@
           />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.displayPreviewInWebPage`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch
+            class="my-switch"
+            v-model="awDisplayPreviewInWebPage"
+            size="mini"
+            @change="setDisplayPreviewInWebPage"
+          />
+        </template>
+      </nut-cell>
 
       <nut-cell :title="$t(`moreSettingPage.tabBar2`)" class="cell-item">
         <template v-slot:link>
@@ -282,6 +292,7 @@
   const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
   const awShowFloatingAddButton = ref(true);
+  const awDisplayPreviewInWebPage = ref(true);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
   // const isEditing = ref(false);
@@ -402,6 +413,13 @@
     changeAppearanceSetting({ appearanceSetting: data });
   };
 
+  const setDisplayPreviewInWebPage = (displayPreviewInWebPage: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      displayPreviewInWebPage: displayPreviewInWebPage
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
   const settabBar = (istabBar: boolean) => {
     // globalStore.settabBar(istabBar);
     const data = {
@@ -604,6 +622,7 @@
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
     awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
+    awDisplayPreviewInWebPage.value = appearanceSetting.value.displayPreviewInWebPage;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];

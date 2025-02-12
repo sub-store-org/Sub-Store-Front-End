@@ -34,6 +34,7 @@ interface SettingsPostData {
     isSubItemMenuFold?: boolean; // 订阅项菜单折叠
     showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
     showFloatingAddButton?: boolean; // 显示悬浮添加按钮
+    displayPreviewInWebPage?: boolean; // 在网页中预览
     istabBar?: boolean; // 隐藏 "Gist 同步" 页
     istabBar2?: boolean; // 隐藏 "文件" 页
     subProgressStyle?: string; // 订阅进度样式

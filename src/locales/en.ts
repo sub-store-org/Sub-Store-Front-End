@@ -897,6 +897,7 @@ export default {
     isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
     showFloatingAddButton: "Show floating add button",
+    displayPreviewInWebPage: 'Display preview in web page',
     tabBar: 'Hide "Sync" Page',
     tabBar2: 'Hide "File" Page',
     auto2: "MoreSetting Key",

@@ -20,7 +20,7 @@
 
         <div class="actions">
           <a
-            :href="getUrl(platform.path, true)"
+            :href="getUrl(platform.path, appearanceSetting.displayPreviewInWebPage)"
             target="_blank"
           >
             <svg-icon
@@ -65,6 +65,12 @@
   import { useAppNotifyStore } from '@/store/appNotify';
   import SvgIcon from '@/components/SvgIcon.vue';
   import { useHostAPI } from '@/hooks/useHostAPI';
+  import { storeToRefs } from "pinia";
+  import { useSettingsStore } from '@/store/settings';
+
+  const settingsStore = useSettingsStore();
+  const { changeAppearanceSetting } = settingsStore;
+  const { appearanceSetting } = storeToRefs(settingsStore);
 
   const includeUnsupportedProxy = ref(false);
   const { copy, isSupported } = useClipboard();
