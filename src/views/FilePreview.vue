@@ -81,15 +81,18 @@ const processedData = ref('')
 watchEffect(async () => {
   if (url) {
     try {
+      cmStore.setEditCode('filePreview', 'Loading...')
       const response = await axios.get(url as string, {
         responseType: 'text',
         transformResponse: [(data) => data],
       })
       console.log(typeof response.data)
       processedData.value = response.data
-      cmStore.setEditCode('filePreview', processedData.value)
+      cmStore.setEditCode('filePreview', processedData.value || '')
     } catch (error) {
       console.error('Error fetching URL:', error)
+      cmStore.setEditCode('filePreview', `Error: ${error.message}`)
+      showNotify({ title: `加载失败: ${error.message}` })
     }
   }
   if (route.query.name) {
@@ -114,9 +117,9 @@ const displayName = computed(() => {
 });
 
 const originalData = previewData?.original;
-if(!url) processedData.value = previewData?.processed;
-// cmStore.setCmCode(processedData)
-cmStore.setEditCode('filePreview',processedData.value )
+if(!url) {
+  cmStore.setEditCode('filePreview', previewData?.processed)
+}
 
  
 const clickClose = () => {
