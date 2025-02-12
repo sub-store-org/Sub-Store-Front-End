@@ -4,9 +4,9 @@
       <header class="compare-page-header">
         <template v-if="url">
           <h1>
-            <span class="title" @click="copyUrl">外部资源中使用, 请复制: </span>
+            <span class="title" @click="copyUrl"><font-awesome-icon class="copy" icon="fa-solid fa-clone" @click="copyUrl" />点击复制, 在外部资源中使用: </span>
             <span class="displayName">
-              <font-awesome-icon class="copy" icon="fa-solid fa-clone" @click="copyUrl" />
+              
               <!-- <font-awesome-icon icon="fa-solid fa-angles-right" /> -->
               <a class="url" :href="url" target="_blank">{{ url }}</a>
             </span>
