@@ -268,7 +268,7 @@ const onClickCopyLink = async () => {
 const onClickShareLink = async () => {
   try {
     const keyName = encodeURIComponent(name.value);
-    const item = await getOneShareOrigin(keyName);
+    const item = await getOneShareOrigin(name.value);
     if (!item) {
       return Toast.text(t("sharePage.noOriginalTips"));
     }
