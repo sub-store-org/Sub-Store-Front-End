@@ -464,6 +464,7 @@ export default {
             'Hysteria 2',
             'Juicity',
             'mieru',
+            'anytls',
             'WireGuard',
             'SSH',
             'External Proxy Program',

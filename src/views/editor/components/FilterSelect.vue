@@ -45,6 +45,7 @@
       'hysteria2',
       'juicity',
       'mieru',
+      'anytls',
       'wireguard',
       'ssh',
       'external',
