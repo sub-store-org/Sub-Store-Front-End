@@ -532,7 +532,7 @@ const flow = computed(() => {
         };
       } else {
         return {
-          firstLine: `${target.error?.type}`,
+          firstLine: `⚠️ ${target.error?.type}`,
           secondLine: `${target.error?.message}`,
         };
       }
