@@ -24,7 +24,7 @@
         <div class="title-btn">
           <p class="add-sub-panel-title">{{ $t(`subPage.addSubTitle`) }}</p>
           <p class="add-sub-panel-title or">{{ $t(`specificWord.or`) }}</p>
-          <input type="file" ref="fileInput" accept="application/json,text/json,.json" @change="fileChange" style="display: none">
+          <input ref="fileInput" type="file" accept="application/json,text/json,.json" style="display: none" @change="fileChange">
           <nut-button
             class="upload-btn"
             plain
@@ -35,8 +35,8 @@
             @click="upload()"
           >
             <font-awesome-icon
-              icon="fa-solid fa-file-import"
               v-if="!uploadIsLoading"
+              icon="fa-solid fa-file-import"
             />
             {{ $t(`subPage.import.label`) }}
           </nut-button>
@@ -105,92 +105,93 @@
     <!-- 页面内容 -->
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
-      <div v-if="tags && tags.length > 0" class="radio-wrapper" >
+      <div v-if="tags && tags.length > 0" ref="radioWrapperRef" class="radio-wrapper" >
         <!-- <nut-radiogroup v-model="tag" direction="horizontal"> -->
           <!-- <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio> -->
-          <span v-for="i in tags" :class="{ 'tag': true, 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
+          <span v-for="i in tags" class="tag" :class="{ 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
         <!-- </nut-radiogroup> -->
       </div>
-      <div v-if="filterdSubsCount > 0">
-        <div class="sticky-title-wrappers">
-          <p class="list-title" @click="toggleFold('sub')">
-            <p>{{ $t(`specificWord.singleSub`) + '('+filterdSubsCount+')' }}</p>
-            <nut-icon v-if="!isFold('sub')" name="rect-down" size="12px"></nut-icon>
-            <nut-icon v-else name="rect-right" size="12px"></nut-icon>
-          </p>
+      <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
+        <div v-if="filterdSubsCount > 0" class="subs-list-content">
+          <div class="sticky-title-wrappers">
+            <p class="list-title" @click="toggleFold('sub')">
+              <p>{{ `${$t(`specificWord.singleSub`)  }(${filterdSubsCount})` }}</p>
+              <nut-icon v-if="!isFold('sub')" name="rect-down" size="12px"></nut-icon>
+              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+            </p>
+          </div>
+
+          <draggable
+            v-if="!isFold('sub')"
+            v-model="subs"
+            item-key="name"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('subs', subs)"
+            @start="handleDragStart(subs)"
+            @end="handleDragEnd(subs)"
+          >
+            <template #item="{ element }">
+              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+                <SubListItem
+                  :sub="element"
+                  type="sub"
+                  :disabled="swipeDisabled"
+                  @share="handleShare"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
+        <div v-if="filterdColsCount > 0" class="subs-list-content">
+          <div class="sticky-title-wrappers">
+            <p class="list-title" @click="toggleFold('col')">
+              <p>{{ `${$t(`specificWord.collectionSub`)  }(${filterdColsCount})`}}</p>
+              <nut-icon v-if="!isFold('col')" name="rect-down" size="12px"></nut-icon>
+              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+            </p>
+          </div>
 
-        <draggable
-          v-if="!isFold('sub')"
-          v-model="subs"
-          item-key="name"
-          :scroll-sensitivity="200"
-          :force-fallback="true"
-          :scroll-speed="8"
-          :scroll="true"
-          v-bind="{
-            animation: 200,
-            disabled: false,
-            delay: 200,
-            chosenClass: 'chosensub',
-            handle: 'div',
-          }"
-          @change="changeSort('subs', subs)"
-          @start="handleDragStart(subs)"
-          @end="handleDragEnd(subs)"
-        >
-          <template #item="{ element }">
-            <div :key="element.name" class="draggable-item" v-show="shouldShowElement(element)">
-              <SubListItem
-                :sub="element"
-                type="sub"
-                :disabled="swipeDisabled"
-                @share="handleShare"
-              />
-            </div>
-          </template>
-        </draggable>
-      </div>
-
-      <div v-if="filterdColsCount > 0">
-        <div class="sticky-title-wrappers">
-          <p class="list-title" @click="toggleFold('col')">
-            <p>{{ $t(`specificWord.collectionSub`) + '('+filterdColsCount+')'}}</p>
-            <nut-icon v-if="!isFold('col')" name="rect-down" size="12px"></nut-icon>
-            <nut-icon v-else name="rect-right" size="12px"></nut-icon>
-          </p>
+          <draggable
+            v-if="!isFold('col')"
+            v-model="collections"
+            item-key="name"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('collections', collections)"
+            @start="handleDragStart(collections)"
+            @end="handleDragEnd(collections)"
+          >
+            <template #item="{ element }">
+              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+                <SubListItem
+                  :collection="element"
+                  type="collection"
+                  :disabled="swipeDisabled"
+                  @share="handleShare"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
-
-        <draggable
-          v-if="!isFold('col')"
-          v-model="collections"
-          item-key="name"
-          :scroll-sensitivity="200"
-          :force-fallback="true"
-          :scroll-speed="8"
-          :scroll="true"
-          v-bind="{
-            animation: 200,
-            disabled: false,
-            delay: 200,
-            chosenClass: 'chosensub',
-            handle: 'div',
-          }"
-          @change="changeSort('collections', collections)"
-          @start="handleDragStart(collections)"
-          @end="handleDragEnd(collections)"
-        >
-          <template #item="{ element }">
-            <div :key="element.name" class="draggable-item" v-show="shouldShowElement(element)">
-              <SubListItem
-                :collection="element"
-                type="collection"
-                :disabled="swipeDisabled"
-                @share="handleShare"
-              />
-            </div>
-          </template>
-        </draggable>
       </div>
     </div>
     <!-- 没有数据 -->
@@ -248,22 +249,23 @@
 </template>
 
 <script lang="ts" setup>
+import { Dialog } from '@nutui/nutui';
 import { storeToRefs } from "pinia";
-import { ref, toRaw, computed, onMounted } from "vue";
+import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRoute } from 'vue-router';
 import draggable from "vuedraggable";
-import SharePopup from "./share/SharePopup.vue";
-import { useAppNotifyStore } from "@/store/appNotify";
-import { Dialog, Toast } from '@nutui/nutui';
 
+import SharePopup from "./share/SharePopup.vue";
 import { useSubsApi } from "@/api/subs";
 import SubListItem from "@/components/SubListItem.vue";
-import { useGlobalStore } from "@/store/global";
-import { useSubsStore } from "@/store/subs";
-import { useSettingsStore } from '@/store/settings';
-import { useMethodStore } from '@/store/methodStore';
-import { initStores } from "@/utils/initApp";
-import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
+import { useAppNotifyStore } from "@/store/appNotify";
+import { useGlobalStore } from "@/store/global";
+import { useMethodStore } from '@/store/methodStore';
+import { useSettingsStore } from '@/store/settings';
+import { useSubsStore } from "@/store/subs";
+import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 
 const { env } = useBackend();
@@ -297,50 +299,50 @@ const hasUntagged = ref(false);
 const hasLocal = ref(false);
 const hasRemote = ref(false);
 const getTag = () => {
-    return localStorage.getItem('sub-tag') || 'all'
-  }
+    return localStorage.getItem('sub-tag') || 'all';
+  };
 const tag = ref(getTag());
 const tags = computed(() => {
-  if(!hasSubs.value && !hasCollections.value) return []
+  if(!hasSubs.value && !hasCollections.value) return [];
   // 从 subs 和 collections 中获取所有的 tag, 去重
-  const set = new Set()
+  const set = new Set();
   subs.value.forEach(sub => {
     if(sub.source === 'remote') {
-      hasRemote.value = true
+      hasRemote.value = true;
     } else {
-      hasLocal.value = true
+      hasLocal.value = true;
     }
     if (Array.isArray(sub.tag) && sub.tag.length > 0) {
       sub.tag.forEach(i => {
-        set.add(i)
+        set.add(i);
       });
     } else {
-      hasUntagged.value = true
+      hasUntagged.value = true;
     }
-  })
+  });
   collections.value.forEach(col => {
     if (Array.isArray(col.tag) && col.tag.length > 0) {
       col.tag.forEach(i => {
-        set.add(i)
+        set.add(i);
       });
     } else {
-      hasUntagged.value = true
+      hasUntagged.value = true;
     }
-  })
+  });
 
-  let tags: any[] = Array.from(set)
-  if(tags.length === 0 && !hasRemote.value && !hasLocal.value) return []
+  let tags: any[] = Array.from(set);
+  if(tags.length === 0 && !hasRemote.value && !hasLocal.value) return [];
   tags = tags.map(i => ({ label: i, value: i }));
   
-  const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
-  if(hasRemote.value) result.push({ label: t("editorPage.subConfig.basic.source.remote"), value: "remote" })
-  if(hasLocal.value) result.push({ label: t("editorPage.subConfig.basic.source.local"), value: "local" })
-  if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+  const result = [{ label: t("specificWord.all"), value: "all" }, ...tags];
+  if(hasRemote.value) result.push({ label: t("editorPage.subConfig.basic.source.remote"), value: "remote" });
+  if(hasLocal.value) result.push({ label: t("editorPage.subConfig.basic.source.local"), value: "local" });
+  if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" });
 
   if (!result.find(i => i.value === tag.value)) {
-    tag.value = 'all'
+    tag.value = 'all';
   }
-  return result
+  return result;
 });
 const shareData = ref(null);
 const sharePopupVisible = ref(false);
@@ -354,16 +356,16 @@ const handleShare = (element, type) => {
   sharePopupVisible.value = true;
 };
 const filterdSubsCount = computed(() => {
-  if(tag.value === 'all') return subs.value.length
-  if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
-  if(tag.value === 'remote') return subs.value.filter(i => i.source === "remote").length
-  if(tag.value === 'local') return subs.value.filter(i => i.source === "local").length
-  return subs.value.filter(i => i.tag.includes(tag.value)).length
+  if(tag.value === 'all') return subs.value.length;
+  if(tag.value === 'untagged') return subs.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length;
+  if(tag.value === 'remote') return subs.value.filter(i => i.source === "remote").length;
+  if(tag.value === 'local') return subs.value.filter(i => i.source === "local").length;
+  return subs.value.filter(i => i.tag.includes(tag.value)).length;
 });
 const filterdColsCount = computed(() => {
-  if(tag.value === 'all') return collections.value.length
-  if(tag.value === 'untagged') return collections.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length
-  return collections.value.filter(i => i.tag.includes(tag.value)).length
+  if(tag.value === 'all') return collections.value.length;
+  if(tag.value === 'untagged') return collections.value.filter(i => !Array.isArray(i.tag) || i.tag.length === 0).length;
+  return collections.value.filter(i => i.tag.includes(tag.value)).length;
 });
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
@@ -407,6 +409,36 @@ const addSub = () => {
   if (as.value) return;
   addSubBtnIsVisible.value = true;
 };
+
+const route = useRoute();
+const radioWrapperRef = ref(null);
+const radioWrapperHeight = ref(0);
+
+// 更新标签栏高度
+const updateRadioWrapperHeight = () => {
+  nextTick(() => {
+    if (radioWrapperRef.value) {
+      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
+    } else {
+      radioWrapperHeight.value = 0;
+    }
+  });
+};
+const navBarHeight = computed(() => {
+  if (route.meta.needTabBar) {
+    return `${44 + 12 + bottomSafeArea.value  }px`;
+  } else {
+    return '16px';
+  }
+});
+
+watch(tag, () => {
+  updateRadioWrapperHeight();
+});
+
+watch(() => tags.value, () => {
+  updateRadioWrapperHeight();
+}, { deep: true, immediate: true });
 
 onMounted(() => {
   methodStore.registerMethod("addSub", addSub);
@@ -462,28 +494,28 @@ const handleDragEnd = (dataValue: any) => {
   swipeDisabled.value = false;
 };
 function getFoldState() {
-  let states = {}
+  let states = {};
   try {
-    let raw = localStorage.getItem('sub-fold')
-    states = raw ? JSON.parse(raw) : {}
+    const raw = localStorage.getItem('sub-fold');
+    states = raw ? JSON.parse(raw) : {};
   } catch (e) {}
   return states;
 }
 const fold = ref(getFoldState());
 const isFold = (type) => {
   return fold.value?.[type]?.[tag.value];
-}
+};
 const toggleFold = (type) => {
   if (fold.value?.[type]?.[tag.value]) {
-    delete fold.value[type][tag.value]
+    delete fold.value[type][tag.value];
   } else {
     if (!fold.value[type]) {
-      fold.value[type] = {}
+      fold.value[type] = {};
     }
-    fold.value[type][tag.value] = 1
+    fold.value[type][tag.value] = 1;
   }
   localStorage.setItem('sub-fold', JSON.stringify(fold.value));
-}
+};
 // const toggleSubFold = () => {
 //   isSubFold.value = !isSubFold.value;
 //   if (isSubFold.value) {
@@ -500,42 +532,55 @@ const toggleFold = (type) => {
 //     localStorage.removeItem('col-fold')
 //   }
 // };
-const setTag = (current) => {
-  tag.value = current
-  if (current === 'all') {
-    localStorage.removeItem('sub-tag')
-  } else {
-    localStorage.setItem('sub-tag', current)
-  }
+
+const scrollToTop = () => {
+  const scrollPosition = 0;
+  
+  window.scrollTo({
+    top: scrollPosition,
+    behavior: "smooth"
+  });
 };
+
+const setTag = (current) => {
+  tag.value = current;
+  if (current === 'all') {
+    localStorage.removeItem('sub-tag');
+  } else {
+    localStorage.setItem('sub-tag', current);
+  }
+  // 增加滚动到顶部
+  scrollToTop();
+};
+
 const shouldShowElement = (element) => {
-  if(tag.value === 'all') return true
-  if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0
-  if(tag.value === 'remote') return element.source === 'remote'
-  if(tag.value === 'local') return element.source === 'local'
-  return element.tag.includes(tag.value)
+  if(tag.value === 'all') return true;
+  if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
+  if(tag.value === 'remote') return element.source === 'remote';
+  if(tag.value === 'local') return element.source === 'local';
+  return element.tag.includes(tag.value);
 };
 const upload = async() => {
   try {
-    fileInput.value.click()
+    fileInput.value.click();
   } catch (e) {
     console.error(e);
   }
-}
+};
 
 const fileChange = async (event) => {
   const file = event.target.files[0];
-  if(!file) return
+  if(!file) return;
   try {
     restoreIsLoading.value = true;
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = async () => {
-      const item = JSON.parse(String(reader.result))
-      const suffix = new Date().getTime()
-      item.name += `_${suffix}`
-      item.displayName += `_${suffix}`
-      item['display-name'] = item.displayName
+      const item = JSON.parse(String(reader.result));
+      const suffix = new Date().getTime();
+      item.name += `_${suffix}`;
+      item.displayName += `_${suffix}`;
+      item['display-name'] = item.displayName;
       const res = await subsApi.createSub(item.subscriptions ? 'collections' : 'subs', item);
       // await subsStore.fetchSubsData();
       
@@ -546,15 +591,15 @@ const fileChange = async (event) => {
           type: "success",
           title: t(`subPage.import.succeed`),
         });
-        addSubBtnIsVisible.value = false
+        addSubBtnIsVisible.value = false;
       } else {
-        throw new Error('restore failed')
+        throw new Error('restore failed');
       }
-    }
+    };
 
     reader.onerror = e => {
-      throw e
-    }
+      throw e;
+    };
     
   } catch (e) {
     showNotify({
@@ -567,7 +612,7 @@ const fileChange = async (event) => {
   }
 };
 const importTips = () => {
-  addSubBtnIsVisible.value = false
+  addSubBtnIsVisible.value = false;
   Dialog({
       title: t(`subPage.import.tipsTitle`),
       content: t(`subPage.import.tipsContent`),
@@ -723,11 +768,10 @@ const importTips = () => {
 }
 
 .sticky-title-wrappers {
-  margin-top: var(--safe-area-side);
+  // margin-top: var(--safe-area-side);
   // backdrop-filter: blur(var(--sticky-title-blur));
   // -webkit-backdrop-filter: blur(var(--sticky-title-blur));
   color: var(--comment-text-color);
-  // background-color: var(--nav-bar-color);
 }
 
 .desc-about {
@@ -764,20 +808,19 @@ const importTips = () => {
 }
 
 .subs-list-wrapper {
-  width: calc(100% - 1.5rem);
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
   .radio-wrapper {
-    margin-top: 5px;
+    box-sizing: border-box;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    
-
-    // :deep(.nut-radio__button.false) {
-    //   background: var(--divider-color);
-    //   border-color: transparent;
-    //   color: var(--second-text-color);
-    // }
+    position: fixed;
+    padding: 10px;
+    top: v-bind(navBarHeight);
+    z-index: 10;
+    backdrop-filter: blur(var(--nav-bar-blur));
+    -webkit-backdrop-filter: blur(var(--nav-bar-blur));
+    background: var(--nav-bar-color);
     .tag {
       font-size: 12px;
       color: var(--second-text-color);
@@ -792,6 +835,12 @@ const importTips = () => {
       border-bottom: 1px solid var(--primary-color);
       color: var(--primary-color);
     }
+  }
+  .subs-list-content {
+    width: calc(100% - 1.5rem);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: var(--safe-area-side);
   }
 }
 </style>
