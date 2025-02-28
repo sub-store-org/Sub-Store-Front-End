@@ -1,6 +1,6 @@
 <template>
-  <Teleport to="#app">
-    <div class="compare-page-wrapper">
+  <Teleport to="#app" :disabled="!!url">
+    <div class="compare-page-wrapper" :style="{ height: url ? 'calc(100vh - 80px)' : '100vh' }">
       <header class="compare-page-header">
         <template v-if="url">
           <h1>
