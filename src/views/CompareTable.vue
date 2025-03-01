@@ -56,7 +56,7 @@
                       <nut-tag class="type-tag">{{ processed.type }}</nut-tag
                       >{{ processed.name }}
                     </div>
-                    <div>{{ processed.server }}:{{ processed.port }}</div>
+                    <div>{{ processed.server || processed.addresses?.join(',') }}:{{ processed.port || processed["local-port"] }}</div>
                   </div>
                 </td>
                 <td>
@@ -103,7 +103,7 @@
                     <div>
                       {{ original.name }}
                     </div>
-                    <div>{{ original.server }}:{{ original.port }}</div>
+                    <div>{{ original.server || original.addresses?.join(',') }}:{{ original.port || original["local-port"] }}</div>
                   </div>
                 </td>
                 <td>
@@ -181,7 +181,7 @@
                       <nut-tag class="type-tag">{{ node.type }} </nut-tag
                       >{{ node.name }}
                     </div>
-                    <div>{{ node.server }}:{{ node.port }}</div>
+                    <div>{{ node.server || node.addresses?.join(',') }}:{{ node.port || node["local-port"] }}</div>
                   </div>
                 </td>
                 <td>
