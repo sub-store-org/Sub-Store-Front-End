@@ -146,10 +146,14 @@
                   <nut-radio shape="button" label="collection">
                     {{ $t(`specificWord.collectionSub`) }}
                   </nut-radio>
+                  <nut-radio shape="button" label="none">
+                    {{ $t(`specificWord.none`) }}
+                  </nut-radio>
                 </nut-radiogroup>
               </div>
             </nut-form-item>
             <nut-form-item
+              v-if="form.sourceType !== 'none'"
               required
               :label="$t(`tabBar.sub`) + $t(`editorPage.subConfig.basic.name.label`)"
               prop="sourceName"

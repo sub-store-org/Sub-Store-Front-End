@@ -11,6 +11,7 @@ export default {
     untagged: "Untagged",
     or: "or",
     type: "Type",
+    none: "None",
   },
   globalNotify: {
     refresh: {

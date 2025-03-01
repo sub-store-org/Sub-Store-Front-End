@@ -11,6 +11,7 @@ export default {
     untagged: '未分组',
     or: '或',
     type: '类型',
+    none: '无',
   },
   globalNotify: {
     refresh: {
