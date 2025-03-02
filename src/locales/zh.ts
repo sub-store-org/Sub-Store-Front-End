@@ -445,12 +445,16 @@ export default {
         },
         'Region Filter': {
           label: '区域过滤',
+          des: ['区域', '工作模式'],
+          modeOptions: ['保留模式', '过滤模式'],
           options: ['🇭🇰 HK', '🇨🇳 TW', '🇸🇬 SG', '🇯🇵 JP', '🇬🇧 UK', '🇺🇸 US', '🇩🇪 DE', '🇰🇷 KR'],
           tipsTitle: '区域过滤操作提示',
           tipsDes: '按照国家和区域过滤节点',
         },
         'Type Filter': {
           label: '协议过滤',
+          des: ['协议', '工作模式'],
+          modeOptions: ['保留模式', '过滤模式'],
           options: [
             'Shadowsocks',
             'ShadowsocksR',

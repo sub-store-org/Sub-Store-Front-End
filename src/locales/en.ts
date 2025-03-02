@@ -432,6 +432,8 @@ export default {
         },
         "Region Filter": {
           label: "Region Filter",
+          des: ["Region", "Mode"],
+          modeOptions: ["Retain", "Remove"],
           options: [
             "🇭🇰 HK",
             "🇨🇳 TW",
@@ -447,6 +449,8 @@ export default {
         },
         "Type Filter": {
           label: "Node Type Filter",
+          des: ["Type", "Mode"],
+          modeOptions: ["Retain", "Remove"],
           options: [
             "Shadowsocks",
             "ShadowsocksR",
