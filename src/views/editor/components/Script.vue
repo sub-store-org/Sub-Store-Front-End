@@ -118,6 +118,12 @@ const form = inject<Sub | Collection>("form");
 
 const modeList = ["link", "script"];
 
+// const params = reactive({
+//   url: '',
+//   arguments: {},
+//   noCache: false,
+// });
+
 const editorIsVisible = ref(false);
 usePopupRoute(editorIsVisible);
 const value = reactive({
@@ -237,6 +243,47 @@ watch(value, () => {
     placeholders = " ";
   } else {
     item.args.content = value.content;
+
+    // // 1. 从 URL 中提取参数
+    // let $arguments = {};
+    // let noCache;
+    // let url = value.content || '';
+    // if (url.endsWith('#noCache')) {
+    //     url = url.replace(/#noCache$/, '');
+    //     noCache = true;
+    // }
+    // // extract link arguments
+    // const rawArgs = url.split('#');
+    // if (rawArgs.length > 1) {
+    //     try {
+    //         // 支持 `#${encodeURIComponent(JSON.stringify({arg1: "1"}))}`
+    //         $arguments = JSON.parse(decodeURIComponent(rawArgs[1]));
+    //     } catch (e) {
+    //         for (const pair of rawArgs[1].split('&')) {
+    //             const key = pair.split('=')[0];
+    //             const value = pair.split('=')[1];
+    //             // 部分兼容之前的逻辑 const value = pair.split('=')[1] || true;
+    //             $arguments[key] =
+    //                 value == null || value === ''
+    //                     ? true
+    //                     : decodeURIComponent(value);
+    //         }
+    //     }
+    // }
+    // params.url = url.split('#')[0];
+    // params.arguments = $arguments; // 传入脚本的参数, 可以增删改
+    // params.noCache = noCache; // 不缓存
+
+    // // 2. params 变化后的逻辑, 应该写到 watch 里
+    // // 2.1 如果是远程链接, 组成新的 URL, 写回 value.content
+    // if(item.args.mode === "link") {
+    //   const newUrl = `${params.url}${params.arguments ? `#${Object.entries(params.arguments).map(([key, value]) => `${key}=${encodeURIComponent(value?.toString() ?? '')}`).join('&')}` : ''}${params.noCache ? '#noCache' : ''}`
+    //   console.log(newUrl)
+    //   value.content = newUrl
+    // } else {
+    // // 2.2 如果是本地脚本, 则将参数写入 value.arguments. 这样本地脚本也能用参数了(后端需适配)
+    //   value.arguments = params.arguments
+    // }
   }
 });
 
