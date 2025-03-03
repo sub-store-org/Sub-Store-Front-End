@@ -469,7 +469,7 @@ export default {
             'Hysteria 2',
             'Juicity',
             'mieru',
-            'anytls',
+            'AnyTLS',
             'WireGuard',
             'SSH',
             'External Proxy Program',
