@@ -9,8 +9,8 @@
         {{ $t("subPage.panel.tips.ok") }}
       </a>
     </p>
-    <nut-radiogroup direction="horizontal" v-model="value.mode">
-      <nut-radio v-for="(key, index) in modeList" :label="key" :key="index">
+    <nut-radiogroup v-model="value.mode" direction="horizontal">
+      <nut-radio v-for="(key, index) in modeList" :key="index" :label="key">
         {{
           $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
         }}
@@ -20,7 +20,7 @@
     <!-- <p class="des-label" v-if="value.mode === 'link'">
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[1]`) }}
     </p> -->
-    <div class="input-wrapper" v-if="value.mode === 'link'">
+    <div v-if="value.mode === 'link'" class="input-wrapper">
       <nut-textarea
         v-model="value.content"
         :placeholder="
@@ -29,43 +29,59 @@
         :rows="5"
       />
     </div>
-    <div class="input-wrapper-title">
-      <nut-switch v-model="showKeyValue" />
-      <span>可视化参数编辑</span>
-      <div class="button">
-        <div @click="addParameter">添加参数</div>
-      </div>
-    </div>
-    <div v-if="showKeyValue" class="key-value-container">
-      <div class="key-value-box">
-        <div class="header">
-          <div class="item">key</div>
-          <div class="item">value</div>
-          <div class="item">操作</div>
+    <template v-if="value.mode === 'link'">
+      <div class="input-wrapper-title">
+        <div class="title-label">
+          <nut-switch v-model="showKeyValue" />
+          <span>参数编辑</span>
         </div>
-        <div class="content">
-          <div
-            v-for="(item, index) in paramsArguments"
-            :key="index"
-            class="key-value-row"
-          >
-            <div class="item">
-              <nut-input v-model="item.key" :border="false" placeholder="key" />
+        <div class="title-label">
+          <nut-switch v-model="params.noCache" />
+          <span>是否缓存</span>
+        </div>
+
+        <div v-if="showKeyValue" class="button">
+          <div @click="addParameter">添加参数</div>
+        </div>
+      </div>
+      <div v-if="showKeyValue" class="key-value-container">
+        <div class="key-value-box">
+          <div class="header">
+            <div class="item">key</div>
+            <div class="item">value</div>
+            <div class="item">操作</div>
+          </div>
+          <div class="content">
+            <div
+              v-for="(item, index) in paramsArguments"
+              :key="index"
+              class="key-value-row"
+            >
+              <div class="item">
+                <nut-input
+                  v-model="item.key"
+                  :border="false"
+                  placeholder="key"
+                />
+              </div>
+              <div class="item">
+                <nut-input
+                  v-model="item.value"
+                  :border="false"
+                  placeholder="value"
+                />
+              </div>
+              <div class="item key-value-operation">
+                <div @click="deleteItem(index)">删除</div>
+              </div>
             </div>
-            <div class="item">
-              <nut-input
-                v-model="item.value"
-                :border="false"
-                placeholder="value"
-              />
-            </div>
-            <div class="item key-value-operation">
-              <div @click="deleteItem(index)">删除</div>
+            <div v-if="!paramsArguments.length" class="empty-tips">
+              <p>暂无参数数据</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
 
     <div
       v-if="value.mode === 'script'"
@@ -93,7 +109,7 @@
       <font-awesome-icon icon="fa-solid fa-eraser" />
     </button>
     </span> -->
-      <cmView :isReadOnly="false" :id="id" />
+      <cmView :id="id" :is-read-only="false" />
       <!-- <button
         class="open-editor-btn"
         v-if="value.mode === 'script'"
@@ -132,22 +148,20 @@ function filter(proxies, targetPlatform) {
 </template>
 
 <script lang="ts" setup>
-import { inject, reactive, onMounted, watch, ref, toRaw, computed } from "vue";
-import { usePopupRoute } from "@/hooks/usePopupRoute";
-// import MonacoEditor from '@/views/editor/components/MonacoEditor.vue';
-// import { useRouter } from "vue-router";
-// import { Dialog } from "@nutui/nutui";
+import { inject, onMounted, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import cmView from "@/views/editCode/cmView.vue";
-import { useCodeStore } from "@/store/codeStore";
-const cmStore = useCodeStore();
 
-// const router = useRouter();
+import { usePopupRoute } from "@/hooks/usePopupRoute";
+import { useCodeStore } from "@/store/codeStore";
+import cmView from "@/views/editCode/cmView.vue";
+
 const { type, id, sourceType } = defineProps<{
   type: string;
   id: string;
   sourceType?: string;
 }>();
+
+const cmStore = useCodeStore();
 
 const { t } = useI18n();
 
@@ -160,17 +174,11 @@ const showKeyValue = ref(false);
 const isEditKeyValue = ref(true);
 
 const params = reactive({
-  url: '',
+  url: "",
   arguments: {},
   noCache: false,
 });
 
-// 返回arguments,构造json
-// {
-//  "key": "name",
-//  "value": "value"
-// }
-//
 const paramsArguments = ref([]);
 
 const addParameter = () => {
@@ -181,13 +189,49 @@ const deleteItem = (index) => {
   paramsArguments.value.splice(index, 1);
 };
 
-// 监听参数变化
-// watch(paramsArguments, (newVal) => {
-//   params.arguments = newVal.reduce((acc, cur) => {
-//     acc[cur.key] = cur.value;
-//     return acc;
-//   }, {});
-// });
+const parseUrlParams = (urlStr) => {
+  let $arguments = {};
+  let noCache = false;
+  let url = urlStr || "";
+
+  if (url.endsWith("#noCache")) {
+    url = url.replace(/#noCache$/, "");
+    noCache = true;
+  }
+
+  const rawArgs = url.split("#");
+  if (rawArgs.length > 1) {
+    try {
+      $arguments = JSON.parse(decodeURIComponent(rawArgs[1]));
+    } catch (e) {
+      for (const pair of rawArgs[1].split("&")) {
+        const key = pair.split("=")[0];
+        const value = pair.split("=")[1];
+        $arguments[key] =
+          value == null || value === "" ? true : decodeURIComponent(value);
+      }
+    }
+  }
+
+  return {
+    url: rawArgs[0],
+    arguments: $arguments,
+    noCache,
+  };
+};
+
+const buildUrlWithParams = (baseUrl, args, noCache) => {
+  let argString = "";
+  if (args && Object.keys(args).length > 0) {
+    argString = `#${Object.entries(args)
+      .map(
+        ([key, value]) =>
+          `${key}=${encodeURIComponent(value?.toString() ?? "")}`,
+      )
+      .join("&")}`;
+  }
+  return `${baseUrl}${argString}${noCache ? "#noCache" : ""}`;
+};
 
 const editorIsVisible = ref(false);
 usePopupRoute(editorIsVisible);
@@ -272,13 +316,7 @@ $content = JSON.stringify({}, null, 2)
 // { $content, $files } will be passed to the next operator 
 // $content is the final content of the file
 `);
-// const onCloseEditor = (val) => {
-//   // value.code = val;
-//   editorIsVisible.value = false;
-//   router.back();
-// };
 
-// 挂载时将 value 值指针指向 form 对应的数据
 onMounted(() => {
   const item = form.process.find((item) => item.id === id);
   if (item) {
@@ -287,86 +325,111 @@ onMounted(() => {
       value.code = item.args.content;
       cmStore.setEditCode(
         id,
-        item.args.content ? item.args.content : placeholders
+        item.args.content ? item.args.content : placeholders,
       );
+      if (item.args.arguments) {
+        params.arguments = item.args.arguments;
+        paramsArguments.value = Object.entries(params.arguments).map(
+          ([key, value]) => ({ key, value }),
+        );
+      }
     } else {
       value.content = item.args.content;
-    }
-  }
-});
-
-watch(value, () => {
-  const item = form.process.find((item) => item.id === id);
-  item.args.mode = value.mode;
-  if (item.args.mode === "script") {
-    item.args.content = value.code;
-    !cmStore.CodeClear[id] && // 判断清除状态
-      cmStore.setEditCode(
-        id,
-        item.args.content ? item.args.content : placeholders
+      const parsedParams = parseUrlParams(value.content);
+      params.url = parsedParams.url;
+      params.arguments = parsedParams.arguments;
+      params.noCache = parsedParams.noCache;
+      paramsArguments.value = Object.entries(params.arguments).map(
+        ([key, value]) => ({ key, value }),
       );
-    placeholders = " ";
-  } else {
-    item.args.content = value.content;
-    // 1. 从 URL 中提取参数
-    let $arguments = {};
-    let noCache;
-    let url = value.content || '';
-    if (url.endsWith('#noCache')) {
-      url = url.replace(/#noCache$/, '');
-      noCache = true;
-    }
-    // extract link arguments
-    const rawArgs = url.split('#');
-    if (rawArgs.length > 1) {
-        try {
-            // 支持 `#${encodeURIComponent(JSON.stringify({arg1: "1"}))}`
-            $arguments = JSON.parse(decodeURIComponent(rawArgs[1]));
-        } catch (e) {
-            for (const pair of rawArgs[1].split('&')) {
-                const key = pair.split('=')[0];
-                const value = pair.split('=')[1];
-                // 部分兼容之前的逻辑 const value = pair.split('=')[1] || true;
-                $arguments[key] =
-                    value == null || value === ''
-                        ? true
-                        : decodeURIComponent(value);
-            }
-        }
-    }
-    params.url = url.split('#')[0];
-    params.arguments = $arguments; // 传入脚本的参数, 可以增删改
-    params.noCache = noCache; // 不缓存
-    console.log('params', params)
-    console.log('paramsArguments', paramsArguments.value)
-    // 当item.args.content改变的时候, 也要改变paramsArguments.value
-    paramsArguments.value = Object.entries(params.arguments).map(([key, value]) => ({ key, value }));
-
-
-    // // 2. params 变化后的逻辑, 应该写到 watch 里
-    // // 2.1 如果是远程链接, 组成新的 URL, 写回 value.content
-    if(item.args.mode === "link") {
-      const newUrl = `${params.url}${params.arguments ? `#${Object.entries(params.arguments).map(([key, value]) => `${key}=${encodeURIComponent(value?.toString() ?? '')}`).join('&')}` : ''}${params.noCache ? '#noCache' : ''}`
-      console.log(newUrl)
-      value.content = newUrl
-    } else {
-    // 2.2 如果是本地脚本, 则将参数写入 value.arguments. 这样本地脚本也能用参数了(后端需适配)
-      value.arguments = params.arguments
     }
   }
 });
 
 watch(
+  paramsArguments,
+  (newVal) => {
+    params.arguments = newVal.reduce((acc, cur) => {
+      if (cur.key) {
+        acc[cur.key] = cur.value;
+      }
+      return acc;
+    }, {});
+
+    if (value.mode === "link") {
+      value.content = buildUrlWithParams(
+        params.url,
+        params.arguments,
+        params.noCache,
+      );
+    }
+  },
+  { deep: true },
+);
+
+watch(value, () => {
+  const item = form.process.find((item) => item.id === id);
+  item.args.mode = value.mode;
+
+  if (item.args.mode === "script") {
+    item.args.content = value.code;
+    !cmStore.CodeClear[id] &&
+      cmStore.setEditCode(
+        id,
+        item.args.content ? item.args.content : placeholders,
+      );
+    placeholders = " ";
+
+    item.args.arguments = params.arguments;
+  } else {
+    item.args.content = value.content;
+
+    const parsedParams = parseUrlParams(value.content);
+    params.url = parsedParams.url;
+    params.arguments = parsedParams.arguments;
+    params.noCache = parsedParams.noCache;
+
+    if (!isEditKeyValue.value) {
+      paramsArguments.value = Object.entries(params.arguments).map(
+        ([key, value]) => ({ key, value }),
+      );
+      isEditKeyValue.value = true;
+    }
+  }
+});
+
+watch(
+  () => params.noCache,
+  (newValue) => {
+    if (value.mode === "link") {
+      value.content = buildUrlWithParams(
+        params.url,
+        params.arguments,
+        newValue,
+      );
+    }
+  },
+);
+
+watch(
+  () => params.url,
+  (newValue) => {
+    if (value.mode === "link") {
+      value.content = buildUrlWithParams(
+        newValue,
+        params.arguments,
+        params.noCache,
+      );
+    }
+  },
+);
+
+watch(
   () => cmStore.EditCode[id],
   (newCode) => {
     value.code = newCode;
-  }
+  },
 );
-
-// const pushEditCode = () => {
-//   cmStore.setEditCode(id,value.code ? value.code : placeholders);
-//   router.push(`/edit/Script/${id}`);
-// };
 </script>
 
 <style lang="scss" scoped>
@@ -410,8 +473,15 @@ watch(
   align-items: center;
   margin-top: 16px;
   margin-bottom: 8px;
-  span {
+  .title-label {
+    display: flex;
+    align-items: center;
     font-size: 14px;
+    color: var(--second-text-color);
+    padding-left: 8px;
+  }
+  span {
+    font-size: 12px;
     color: var(--second-text-color);
     padding-left: 8px;
   }
@@ -421,6 +491,7 @@ watch(
       cursor: pointer;
       color: var(--primary-color);
       margin: 0 8px;
+      font-size: 12px;
     }
   }
 }
@@ -442,15 +513,12 @@ watch(
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         padding: 8px 0;
-        // border-bottom: 1px solid var(--lowest-text-color);
         .item {
           text-align: center;
           :deep(.nut-input) {
             background: transparent;
             padding: 8px 12px;
-            // border-bottom: 1px solid;
             color: var(--second-text-color);
-            // border-color: var(--lowest-text-color);
             :deep(input) {
               color: inherit;
             }
@@ -465,6 +533,15 @@ watch(
               margin: 0 8px;
             }
           }
+        }
+      }
+      .empty-tips {
+        display: flex;
+        justify-content: center;
+        padding: 8px 0;
+        color: var(--comment-text-color);
+        p {
+          font-size: 12px;
         }
       }
     }
@@ -489,33 +566,10 @@ watch(
 
 .editor-page-header {
   padding: var(--safe-area-side);
-  // position: sticky;
   top: 0;
-  // z-index: 19;
   display: flex;
-  // justify-content: space-between;
   align-items: center;
   height: 56px;
-  // color: #951b1bee;
-  // background: #272823;
-
-  // h1 {
-  //   font-size: 20px;
-  //   line-height: 1;
-  //   font-weight: 500;
-
-  //   span {
-  //     font-size: 12px;
-  //     margin-left: 8px;
-  //     color: #84494988;
-  //   }
-
-  //   svg {
-  //     margin-right: 6px;
-  //     width: 20px;
-  //     height: 20px;
-  //   }
-  // }
 
   button {
     background: none;
