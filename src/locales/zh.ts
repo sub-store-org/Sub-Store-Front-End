@@ -417,6 +417,12 @@ export default {
           openEditorBtn: '打开脚本编辑器',
           tipsTitle: '脚本操作操作提示',
           tipsDes: '使用一段 JavaScript 脚本来修改节点信息',
+          paramsEdit: '参数编辑',
+          noCache: '关闭缓存',
+          paramsAdd: '添加参数',
+          paramsDelete: '删除',
+          paramsOptions: '操作',
+          paramsEmpty: '暂无参数数据',
         },
         'Flag Operator': {
           label: '旗帜操作',

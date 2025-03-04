@@ -538,6 +538,12 @@ export default {
           openEditorBtn: "Open Code Editor",
           tipsTitle: "Script Operator Tips",
           tipsDes: "Use a JavaScript script to filter nodes",
+          paramsEdit: 'Edit Parameters',
+          noCache: 'noCache',
+          paramsAdd: 'Add',
+          paramsDelete: 'Delete',
+          paramsOptions: 'Options',
+          paramsEmpty: 'No parameters',
         },
       },
       sourceNamePicker: {
