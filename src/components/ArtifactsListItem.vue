@@ -26,6 +26,13 @@
           </h3>
           <div class="title-right-wrapper" v-if="!appearanceSetting.isSimpleMode">
             <button
+              v-if="!appearanceSetting.isShowIcon && artifact.url"
+              class="copy-sub-link"
+              @click.stop="openUrl"
+            >
+              <font-awesome-icon icon="fa-solid fa-eye" />
+            </button>
+            <button
               class="copy-sub-link"
               style="padding: 0 12px"
               v-if="artifact.url"
@@ -33,7 +40,6 @@
             >
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
             </button>
-
             <button
               class="copy-sub-link"
               @click.stop="swipeController"
@@ -53,6 +59,13 @@
             <p>{{ detail.secondLine }}</p>
             <div class="task-switch">
               <div v-if="appearanceSetting.isSimpleMode">
+                <button
+                  v-if="!appearanceSetting.isShowIcon && artifact.url"
+                  class="copy-sub-link"
+                  @click.stop="openUrl"
+                >
+                  <font-awesome-icon icon="fa-solid fa-eye" />
+                </button>
                 <button
                   v-if="artifact.url"
                   class="copy-sub-link"
