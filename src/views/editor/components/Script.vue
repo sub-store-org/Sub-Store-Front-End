@@ -17,9 +17,6 @@
       </nut-radio>
     </nut-radiogroup>
 
-    <!-- <p class="des-label" v-if="value.mode === 'link'">
-      {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[1]`) }}
-    </p> -->
     <div v-if="value.mode === 'link'" class="input-wrapper">
       <nut-textarea
         v-model="value.content"
@@ -31,66 +28,6 @@
         @blur="handleLinkValueChange"
       />
     </div>
-    <template v-if="value.mode === 'link' || value.mode === 'script'">
-      <div class="input-wrapper-title">
-        <div class="title-label">
-          <nut-switch v-model="showKeyValue" />
-          <span>{{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsEdit`) }}</span>
-        </div>
-        <div class="title-label">
-          <nut-switch v-model="params.noCache" />
-          <span>{{ $t(`editorPage.subConfig.nodeActions['${type}'].noCache`) }}</span>
-        </div>
-
-        <div v-if="showKeyValue" class="button">
-          <div @click="addParameter">{{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsAdd`) }}</div>
-        </div>
-      </div>
-      <div v-if="showKeyValue" class="key-value-container">
-        <div class="key-value-box">
-          <div class="header">
-            <div class="item">key</div>
-            <div class="item">value</div>
-            <div class="item">{{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsOptions`) }}</div>
-          </div>
-          <div class="content">
-            <div
-              v-for="(item, index) in paramsArguments"
-              :key="index"
-              class="key-value-row"
-            >
-              <div class="item">
-                <nut-textarea
-                  v-model="item.key"
-                  :border="false"
-                  placeholder="key"
-                  type="text"
-                  :rows="1"
-                  autosize
-                />
-              </div>
-              <div class="item">
-                <nut-textarea
-                  v-model="item.value"
-                  :border="false"
-                  placeholder="value"
-                  type="text"
-                  :rows="1"
-                  autosize
-                />
-              </div>
-              <div class="item key-value-operation">
-                <div @click="deleteItem(index)">{{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsDelete`) }}</div>
-              </div>
-            </div>
-            <div v-if="!paramsArguments.length" class="empty-tips">
-              <p>{{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsEmpty`) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
-
     <div
       v-if="value.mode === 'script'"
       style="
@@ -100,65 +37,56 @@
         overflow: auto;
       "
     >
-      <!-- <div class="input-wrapper"> -->
-      <!-- <nut-textarea
-          v-model="value.code"
-          :placeholder="placeholders"
-          :rows="9"
-        /> -->
-      <!-- <span>
-        <font-awesome-icon icon="fa-solid fa-code" />
-        {{ $t(`editorPage.subConfig.nodeActions['${type}'].openEditorBtn`) }}
-      </span> -->
-      <!-- </div> -->
-      <!-- <br> -->
-      <!-- <span class="editor-page-header">
-      <button  @click="pushEditCode">
-      <font-awesome-icon icon="fa-solid fa-eraser" />
-    </button>
-    </span> -->
       <cmView :id="id" :is-read-only="false" />
-      <!-- <button
-        class="open-editor-btn"
-        v-if="value.mode === 'script'"
-        @click="pushEditCode"
-      >
-        <span>
-          <font-awesome-icon icon="fa-solid fa-code" />
-          前往脚本编辑器
-        </span>
-      </button> -->
     </div>
-    <!-- <nut-textarea
-        v-model="value.content"
-        :placeholder="
-          $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
-        "
-        :rows="5"
-      /> -->
 
-    <!-- function operator(proxies, targetPlatform) {
-  return proxies.map( proxy => {
-    // Change proxy information here
-
-    return proxy;
-  });
-}
-
-function filter(proxies, targetPlatform) {
-  return proxies.map( proxy => {
-    // Return true if the current proxy is selected
-
-    return true;
-  });
-} -->
+    <!-- 参数编辑控制部分 -->
+    <div class="input-wrapper-title">
+      <!-- 参数编辑开关 -->
+      <div class="title-label">
+        <nut-switch v-model="showKeyValue" />
+        <span>
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsEdit`) }}
+        </span>
+        <font-awesome-icon
+          class="icon"
+          icon="fa-solid fa-circle-question"
+          @click.stop="showParamsEditTips"
+        />
+      </div>
+      <!-- 无缓存开关 - 仅在link模式时显示 -->
+      <div v-if="value.mode === 'link'" class="title-label">
+        <nut-switch v-model="params.noCache" />
+        <span>
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].noCache`) }}
+        </span>
+        <font-awesome-icon
+          class="icon"
+          icon="fa-solid fa-circle-question"
+          @click.stop="showNoCacheTips"
+        />
+      </div>
+      <!-- 添加参数按钮 -->
+      <div v-if="showKeyValue" class="button">
+        <div @click="addParameter">
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsAdd`) }}
+        </div>
+      </div>
+    </div>
+    <ParamsEditor
+      v-model:paramsArguments="paramsArguments"
+      :visible="showKeyValue"
+      :type="type"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Dialog } from "@nutui/nutui";
 import { inject, onMounted, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
+import ParamsEditor from "@/components/ParamsEditor.vue";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useCodeStore } from "@/store/codeStore";
 import cmView from "@/views/editCode/cmView.vue";
@@ -189,34 +117,34 @@ const params = reactive({
 
 const paramsArguments = ref([]);
 
-const addParameter = () => {
-  paramsArguments.value.push({ key: "", value: "" });
-};
-
-const deleteItem = (index) => {
-  paramsArguments.value.splice(index, 1);
-};
-
 const parseUrlParams = (urlStr) => {
   let $arguments = {};
   let noCache = false;
-  let url = urlStr || "";
+  let url = urlStr?.trim() || "";
 
   // 处理没有参数的情况
-  if (!url || url.trim() === "") {
+  if (!url) {
     return { url: "", arguments: {}, noCache: false };
+  }
+
+  // 处理URL末尾的所有 #noCache 标记
+  while (url.endsWith("#noCache")) {
+    url = url.slice(0, -8);
+    noCache = true;
   }
 
   // 安全的URL解码函数
   const safeDecodeURIComponent = (encodedURIComponent) => {
+    if (!encodedURIComponent) return "";
+
     try {
       return decodeURIComponent(encodedURIComponent);
     } catch (e) {
-      // 尝试处理嵌套的URL编码（例如 %25252F -> %252F -> %2F -> / )
+      // 尝试处理嵌套的URL编码
       let result = encodedURIComponent;
       let previousResult = "";
       let attempts = 0;
-      const maxAttempts = 5; // 避免无限循环
+      const maxAttempts = 5;
 
       while (result !== previousResult && attempts < maxAttempts) {
         try {
@@ -224,46 +152,56 @@ const parseUrlParams = (urlStr) => {
           result = decodeURIComponent(previousResult);
           attempts++;
         } catch (decodeError) {
-          return previousResult; // 返回最后一次成功解码的结果
+          return previousResult;
         }
       }
       return result;
     }
   };
 
-  // 处理noCache标记
-  if (url.endsWith("#noCache")) {
-    url = url.replace(/#noCache$/, "");
-    noCache = true;
-  }
-
-  // 分割URL和参数
+  // 查找第一个 # 符号
   const hashIndex = url.indexOf("#");
   if (hashIndex === -1) {
-    // 没有参数
     return { url, arguments: {}, noCache };
   }
 
-  // 获取基本URL和参数部分
+  // 提取基础URL和参数部分
   const baseUrl = url.substring(0, hashIndex);
-  let paramsSection = url.substring(hashIndex + 1);
+  let paramsText = url.substring(hashIndex + 1);
 
-  // 检查参数部分是否包含noCache
-  if (paramsSection.endsWith("#noCache")) {
-    paramsSection = paramsSection.replace(/#noCache$/, "");
-    noCache = true;
-  } else if (paramsSection === "noCache") {
-    return { url: baseUrl, arguments: {}, noCache: true };
+  // 处理参数部分的所有 #noCache 标记（支持在参数中间出现 #noCache）
+  const parts = paramsText.split("#");
+  const cleanParts = [];
+
+  for (const part of parts) {
+    if (part === "noCache") {
+      noCache = true;
+    } else {
+      cleanParts.push(part);
+    }
+  }
+
+  // 重新组合参数部分，排除noCache标记
+  paramsText = cleanParts.join("#");
+
+  // 如果参数部分为空，则返回基本URL和noCache状态
+  if (!paramsText) {
+    return { url: baseUrl, arguments: {}, noCache };
   }
 
   // 尝试解析参数
   try {
     // 先尝试作为JSON解析
     try {
-      $arguments = JSON.parse(safeDecodeURIComponent(paramsSection));
+      const decodedParams = safeDecodeURIComponent(paramsText);
+      if (decodedParams.startsWith("{") && decodedParams.endsWith("}")) {
+        $arguments = JSON.parse(decodedParams);
+      } else {
+        throw new Error("Not a JSON object");
+      }
     } catch (jsonError) {
       // JSON解析失败，使用&分割参数
-      const pairs = paramsSection.split("&");
+      const pairs = paramsText.split("&");
 
       for (const pair of pairs) {
         if (!pair) continue;
@@ -271,19 +209,18 @@ const parseUrlParams = (urlStr) => {
         const equalIndex = pair.indexOf("=");
         if (equalIndex === -1) {
           // 没有等号，将整个值作为键，值为true
-          $arguments[pair] = true;
+          const key = pair.trim();
+          if (key) $arguments[key] = true;
         } else {
           // 有等号，分割键和值
-          const key = pair.substring(0, equalIndex);
+          const key = pair.substring(0, equalIndex).trim();
           if (!key) continue;
 
           let value;
           try {
-            // 处理值可能被截断的情况
             const encodedValue = pair.substring(equalIndex + 1);
             value = encodedValue ? safeDecodeURIComponent(encodedValue) : "";
           } catch (e) {
-            // 如果值解析失败，使用原始编码值
             value = pair.substring(equalIndex + 1) || "";
           }
 
@@ -293,6 +230,7 @@ const parseUrlParams = (urlStr) => {
     }
   } catch (e) {
     console.error("Failed to parse URL parameters:", e);
+    $arguments = {};
   }
 
   return {
@@ -303,16 +241,45 @@ const parseUrlParams = (urlStr) => {
 };
 
 const buildUrlWithParams = (baseUrl, args, noCache) => {
-  let argString = "";
-  if (args && Object.keys(args).length > 0) {
-    argString = `#${Object.entries(args)
-      .map(
-        ([key, value]) =>
-          `${key}=${encodeURIComponent(value?.toString() ?? "")}`,
-      )
-      .join("&")}`;
+  if (!baseUrl) return noCache ? "#noCache" : "";
+
+  const validArgs = args && typeof args === "object" && Object.keys(args).length > 0;
+
+  // 如果没有参数且不需要noCache，直接返回baseUrl
+  if (!validArgs && !noCache) return baseUrl;
+
+  let paramStrings = [];
+
+  if (validArgs) {
+    // 为了一致性，对键名进行排序
+    paramStrings = Object.entries(args)
+      .filter(([key]) => key && typeof key === "string")
+      .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+      .map(([key, value]) => {
+        // 处理布尔值 true - 直接输出键名，无等号
+        if (value === true) {
+          return key;
+        }
+
+        // 处理其他值 - 转换为字符串并编码
+        const strValue = value === null || value === undefined ? "" : value.toString();
+        return `${key}=${encodeURIComponent(strValue)}`;
+      });
   }
-  return `${baseUrl}${argString}${noCache ? "#noCache" : ""}`;
+
+  // 构建最终URL
+  let result = baseUrl;
+
+  if (paramStrings.length > 0) {
+    result += `#${paramStrings.join("&")}`;
+  }
+
+  // noCache 标记始终放在末尾
+  if (noCache) {
+    result += "#noCache";
+  }
+
+  return result;
 };
 
 const editorIsVisible = ref(false);
@@ -322,6 +289,36 @@ const value = reactive({
   content: "",
   code: "",
 });
+
+// 添加参数方法
+const addParameter = () => {
+  const newParamsArguments = [...paramsArguments.value, { key: "", value: "" }];
+  paramsArguments.value = newParamsArguments;
+};
+
+// 显示noCache提示
+const showNoCacheTips = () => {
+  Dialog({
+    title: t(`editorPage.subConfig.nodeActions['${type}'].helpTitle`),
+    content: t(`editorPage.subConfig.nodeActions['${type}'].noCacheTips`),
+    popClass: "auto-dialog",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnClickOverlay: true,
+  });
+};
+
+// 显示参数编辑提示
+const showParamsEditTips = () => {
+  Dialog({
+    title: t(`editorPage.subConfig.nodeActions['${type}'].helpTitle`),
+    content: t(`editorPage.subConfig.nodeActions['${type}'].paramsEditTips`),
+    popClass: "auto-dialog",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnClickOverlay: true,
+  });
+};
 
 const handleLinkValueChange = () => {
   if (value.mode === "link") {
@@ -442,6 +439,7 @@ onMounted(() => {
         paramsArguments.value = Object.entries(params.arguments).map(
           ([key, value]) => ({ key, value }),
         );
+        showKeyValue.value = true;
       }
     } else {
       value.content = item.args.content;
@@ -459,13 +457,13 @@ onMounted(() => {
 watch(
   paramsArguments,
   (newVal) => {
+    console.log("paramsArguments changed:", newVal);
     params.arguments = newVal.reduce((acc, cur) => {
       if (cur.key) {
         acc[cur.key] = cur.value;
       }
       return acc;
     }, {});
-
     if (value.mode === "link") {
       value.content = buildUrlWithParams(
         params.url,
@@ -473,6 +471,8 @@ watch(
         params.noCache,
       );
     }
+    const item = form.process.find((item) => item.id === id);
+    item.args.arguments = params.arguments;
   },
   { deep: true },
 );
@@ -588,85 +588,24 @@ watch(
     align-items: center;
     font-size: 14px;
     color: var(--second-text-color);
-    padding-left: 8px;
+    padding-right: 8px;
+    flex-shrink: 0;
+    .icon {
+      margin-left: 4px;
+      color: var(--unimportant-icon-color);
+    }
   }
   span {
     font-size: 12px;
     color: var(--second-text-color);
-    padding-left: 8px;
+    padding-left: 4px;
   }
   .button {
     margin-left: auto;
-    div {
+    > div {
       cursor: pointer;
       color: var(--primary-color);
-      margin: 0 8px;
       font-size: 12px;
-    }
-  }
-}
-.key-value-container {
-  .key-value-box {
-    .header {
-      display: grid;
-      grid-template-columns: 2fr 2fr 1fr;
-      font-size: 14px;
-      color: var(--second-text-color);
-      padding: 8px 0;
-      border-bottom: 1px solid var(--lowest-text-color);
-      .item {
-        text-align: left;
-        padding: 8px 12px;
-        &:last-child {
-          text-align: center;
-        }
-      }
-    }
-    .content {
-      .key-value-row {
-        display: grid;
-        grid-template-columns: 2fr 2fr 1fr;
-        padding: 8px 0;
-        .item {
-          text-align: left;
-          display: flex;
-          align-items: center;
-
-          :deep(.nut-textarea) {
-            width: 100%;
-            background: transparent;
-            padding: 8px 12px;
-            color: var(--second-text-color);
-
-            :deep(.nut-textarea__textarea) {
-              color: inherit;
-              min-height: unset;
-              height: auto;
-              overflow: hidden;
-            }
-          }
-
-          &.key-value-operation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            div {
-              cursor: pointer;
-              color: var(--primary-color);
-              margin: 0 8px;
-            }
-          }
-        }
-      }
-      .empty-tips {
-        display: flex;
-        justify-content: center;
-        padding: 8px 0;
-        color: var(--comment-text-color);
-        p {
-          font-size: 12px;
-        }
-      }
     }
   }
 }
