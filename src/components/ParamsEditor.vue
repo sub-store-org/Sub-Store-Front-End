@@ -44,8 +44,9 @@
                 type="text"
                 :rows="1"
                 autosize
-                @blur="trimValue(item, 'value')"
+                
               />
+              <!-- @blur="trimValue(item, 'value')" -->
             </div>
             <div class="item key-value-operation">
               <div @click="deleteItem(index)">{{ deleteParamsText }}</div>
