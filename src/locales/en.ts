@@ -92,7 +92,7 @@ export default {
     url: {
       label: "URL",
       placeholder:
-        "URL (please separate multiple urls with a new line). Supported parameters: noCache - do not use cache. For example: http://a.com#noCache",
+        "URL (please separate multiple urls with a new line). Supported parameters: noCache - do not use cache; insecure - do not verify the server certificate. For example: http://a.com#noCache",
       isEmpty: "URL cannot be empty",
       isIllegal: "Invalid URL",
     },

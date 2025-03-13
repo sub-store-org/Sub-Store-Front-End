@@ -118,7 +118,7 @@ export default {
     },
     url: {
       label: '链接',
-      placeholder: '链接(多个链接请换行) 支持参数: noCache 不使用缓存. 例: http://a.com#noCache',
+      placeholder: '链接(多个链接请换行) 支持参数: noCache 不使用缓存; insecure 不验证服务器证书. 例: http://a.com#noCache',
       isEmpty: '链接不能为空',
       isIllegal: '链接格式非法',
     },
