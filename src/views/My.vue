@@ -397,15 +397,15 @@ const toggleSyncPlatform = () => {
   
 };
 const setDisplayInfo = () => {
-  syncPlatformInput.value = syncPlatform.value || '';
-  userInput.value = githubUser.value || t(`myPage.placeholder.noGithubUser`);
+  syncPlatformInput.value = syncPlatform.value || "";
+  userInput.value = githubUser.value || "";
   tokenInput.value = gistToken.value
-    ? gistToken.value.slice(0, 6) + "************"
-    : t(`myPage.placeholder.noGistToken`);
-  uaInput.value = defaultUserAgent.value || t(`myPage.placeholder.noDefaultUserAgent`);
-  proxyInput.value = defaultProxy.value || t(`myPage.placeholder.noDefaultProxy`);
-  timeoutInput.value = defaultTimeout.value || t(`myPage.placeholder.noDefaultTimeout`);
-  cacheThresholdInput.value = cacheThreshold.value || t(`myPage.placeholder.noCacheThreshold`);
+    ? `${gistToken.value.slice(0, 6)}************`
+    : "";
+  uaInput.value = defaultUserAgent.value || "";
+  proxyInput.value = defaultProxy.value || "";
+  timeoutInput.value = defaultTimeout.value || "";
+  cacheThresholdInput.value = cacheThreshold.value || "";
 };
 
 // 同步 上传
