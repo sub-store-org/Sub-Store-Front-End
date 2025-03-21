@@ -101,7 +101,11 @@ import { storeToRefs } from "pinia";
 import { Toast } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
+import { useAppNotifyStore } from "@/store/appNotify";
+import i18n from "@/locales";
 
+const { t:i18n_global } = i18n.global;
+const { showNotify } = useAppNotifyStore();
 const { t, locale } = useI18n();
 const router = useRouter();
 const route = useRoute();
@@ -218,11 +222,26 @@ const setSimpleMode = (isSimpleMode: boolean) => {
   changeAppearanceSetting({ appearanceSetting: data })
 };
 
-const refresh = () => {
+const refresh = async () => {
   if (["/subs", "/sync", "/files"].includes(route.path)) {
     initStores(true, true, true);
   } else {
-    window.location.reload();
+    if ("serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (let registration of registrations) {
+        await registration.unregister();
+      }
+    }
+    if ("caches" in window) {
+      const cacheNames = await caches.keys();
+      for (let cacheName of cacheNames) {
+        await caches.delete(cacheName);
+      }
+    }
+    showNotify({ title: i18n_global("globalNotify.refresh.rePwa"), type: "primary" });
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 };
 watchEffect(() => {

@@ -371,6 +371,12 @@ const pasteNav = async () => {
   border-radius: 16px;
 }
 
+.ͼ1 .cm-button {
+  margin: .6em 0.2em .6em .6em !important;
+  padding: .2em 1em;
+  white-space: pre;
+}
+
 .cm-img-button {
   display: flex;
   padding-top: 9px;

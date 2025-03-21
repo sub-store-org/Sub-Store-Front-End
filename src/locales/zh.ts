@@ -19,6 +19,7 @@ export default {
       flowFailed: '刷新 {name} 失败！',
       failed: '数据刷新失败\n',
       loading: '刷新数据中...',
+      rePwa: '重置 PWA 缓存成功，即将刷新页面...',
     },
     share: {
       title: '分享',

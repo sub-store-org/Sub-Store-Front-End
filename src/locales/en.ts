@@ -19,6 +19,7 @@ export default {
       flowFailed: "Refresh of {name} failed!",
       failed: "Refresh Failed\n",
       loading: "Refreshing Data...",
+      rePwa: 'PWA cache reset successfully. The page will refresh soon...',
     },
   },
   // Title Bar

@@ -1092,14 +1092,14 @@ class SearchPanel {
         this.dom = elt("div", { onkeydown: (e) => this.keydown(e), class: "cm-search" }, [
             this.searchField,
             // ⇧⇩
-            button("prev", () => findPrevious(view), [phrase(view, "⇧")]),
+            button("prev", () => findPrevious(view), [phrase(view, "  ▲  ")]),
             elt("label", null, [this.caseField, phrase(view, "Aa")]),
             elt("label", null, [this.wordField, phrase(view, "ab")]),
             elt("label", null, [this.reField, phrase(view, " .*")]),
             ...view.state.readOnly ? [] : [
                 elt("br"),
                 this.replaceField,
-                button("next", () => findNext(view), [phrase(view, "⇩")]),
+                button("next", () => findNext(view), [phrase(view, "  ▼  ")]),
                 button("replace", () => replaceNext(view), [phrase(view, "Replace")]),
                 button("replaceAll", () => replaceAll(view), [phrase(view, "Rep All")])
             ],
