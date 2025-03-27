@@ -66,6 +66,17 @@
           @click.stop="showNoCacheTips"
         />
       </div>
+      <div v-if="value.mode === 'link'" class="title-label">
+        <nut-switch v-model="params.insecure" />
+        <span>
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].insecure`) }}
+        </span>
+        <font-awesome-icon
+          class="icon"
+          icon="fa-solid fa-circle-question"
+          @click.stop="showInsecureTips"
+        />
+      </div>
       <!-- 添加参数按钮 -->
       <div v-if="showKeyValue" class="button">
         <div @click="addParameter">
@@ -113,140 +124,91 @@ const params = reactive({
   url: "",
   arguments: {},
   noCache: false,
+  insecure: false,
 });
 
 const paramsArguments = ref([]);
 
 const parseUrlParams = (urlStr) => {
-  let $arguments = {};
+  let $arguments = {} as any;
+  let otherArguments = {} as any;
   let noCache = false;
+  let insecure = false;
   let url = urlStr?.trim() || "";
 
   // 处理没有参数的情况
   if (!url) {
-    return { url: "", arguments: {}, noCache: false };
+    return { url: "", arguments: {}, noCache: false, insecure: false };
   }
-
-  // 处理URL末尾的所有 #noCache 标记
-  while (url.endsWith("#noCache")) {
-    url = url.slice(0, -8);
-    noCache = true;
-  }
-
-  // 安全的URL解码函数
-  const safeDecodeURIComponent = (encodedURIComponent) => {
-    if (!encodedURIComponent) return "";
-
-    try {
-      return decodeURIComponent(encodedURIComponent);
-    } catch (e) {
-      // 尝试处理嵌套的URL编码
-      let result = encodedURIComponent;
-      let previousResult = "";
-      let attempts = 0;
-      const maxAttempts = 5;
-
-      while (result !== previousResult && attempts < maxAttempts) {
-        try {
-          previousResult = result;
-          result = decodeURIComponent(previousResult);
-          attempts++;
-        } catch (decodeError) {
-          return previousResult;
-        }
-      }
-      return result;
-    }
-  };
-
-  // 查找第一个 # 符号
-  const hashIndex = url.indexOf("#");
-  if (hashIndex === -1) {
-    return { url, arguments: {}, noCache };
-  }
-
-  // 提取基础URL和参数部分
-  const baseUrl = url.substring(0, hashIndex);
-  let paramsText = url.substring(hashIndex + 1);
-
-  // 处理参数部分的所有 #noCache 标记（支持在参数中间出现 #noCache）
-  const parts = paramsText.split("#");
-  const cleanParts = [];
-
-  for (const part of parts) {
-    if (part === "noCache") {
-      noCache = true;
-    } else {
-      cleanParts.push(part);
-    }
-  }
-
-  // 重新组合参数部分，排除noCache标记
-  paramsText = cleanParts.join("#");
-
-  // 如果参数部分为空，则返回基本URL和noCache状态
-  if (!paramsText) {
-    return { url: baseUrl, arguments: {}, noCache };
-  }
-
-  // 尝试解析参数
+  // extract link arguments
+  const rawArgs = url.split('#');
   try {
-    // 先尝试作为JSON解析
-    try {
-      const decodedParams = safeDecodeURIComponent(paramsText);
-      if (decodedParams.startsWith("{") && decodedParams.endsWith("}")) {
-        $arguments = JSON.parse(decodedParams);
-      } else {
-        throw new Error("Not a JSON object");
-      }
-    } catch (jsonError) {
-      // JSON解析失败，使用&分割参数
-      const pairs = paramsText.split("&");
-
-      for (const pair of pairs) {
-        if (!pair) continue;
-
-        const equalIndex = pair.indexOf("=");
-        if (equalIndex === -1) {
-          // 没有等号，将整个值作为键，值为true
-          const key = pair.trim();
-          if (key) $arguments[key] = true;
-        } else {
-          // 有等号，分割键和值
-          const key = pair.substring(0, equalIndex).trim();
-          if (!key) continue;
-
-          let value;
-          try {
-            const encodedValue = pair.substring(equalIndex + 1);
-            value = encodedValue ? safeDecodeURIComponent(encodedValue) : "";
-          } catch (e) {
-            value = pair.substring(equalIndex + 1) || "";
-          }
-
-          $arguments[key] = value;
+    if (rawArgs.length > 1) {
+        try {
+            // 支持 `#${encodeURIComponent(JSON.stringify({arg1: "1"}))}`
+            $arguments = JSON.parse(decodeURIComponent(rawArgs[1]));
+        } catch (e) {
+            for (const pair of rawArgs[1].split('&')) {
+                const key = pair.split('=')[0];
+                const value = pair.split('=')[1];
+                // 部分兼容之前的逻辑 const value = pair.split('=')[1] || true;
+                $arguments[key] =
+                    value == null || value === ''
+                        ? true
+                        : decodeURIComponent(value);
+            }
         }
-      }
     }
   } catch (e) {
     console.error("Failed to parse URL parameters:", e);
     $arguments = {};
   }
+  try {
+    if (rawArgs.length > 2) {
+      for (const pair of rawArgs[2].split('&')) {
+          const key = pair.split('=')[0];
+          const value = pair.split('=')[1];
+          // 部分兼容之前的逻辑 const value = pair.split('=')[1] || true;
+          otherArguments[key] =
+              value == null || value === ''
+                  ? true
+                  : decodeURIComponent(value);
+      }
+      noCache = otherArguments?.noCache;
+      insecure = otherArguments?.insecure;
+    } else if ($arguments?.noCache != null || $arguments?.insecure != null) {
+      noCache = $arguments?.noCache;
+      insecure = $arguments?.insecure;
+    }
+  } catch (e) {
+    console.error("Failed to parse additional URL parameters:", e);
+  }
 
   return {
-    url: baseUrl,
+    url: url.split('#')[0],
     arguments: $arguments,
     noCache,
+    insecure,
   };
 };
 
-const buildUrlWithParams = (baseUrl, args, noCache) => {
-  if (!baseUrl) return noCache ? "#noCache" : "";
+const buildUrlWithParams = (baseUrl, args, noCache, insecure) => {
+  if (!baseUrl) {
+    if(noCache && insecure){
+      return "##noCache&insecure"
+    }else if(noCache){
+      return "##noCache"
+    }else if(insecure){
+      return "##insecure"
+    } else {
+      return ""
+    }
+  }
 
   const validArgs = args && typeof args === "object" && Object.keys(args).length > 0;
 
   // 如果没有参数且不需要noCache，直接返回baseUrl
-  if (!validArgs && !noCache) return baseUrl;
+  if (!validArgs && !noCache && !insecure) return baseUrl;
 
   let paramStrings = [];
 
@@ -275,8 +237,12 @@ const buildUrlWithParams = (baseUrl, args, noCache) => {
   }
 
   // noCache 标记始终放在末尾
-  if (noCache) {
+  if (noCache && insecure) {
+    result += "#noCache&insecure";
+  }else if (noCache) {
     result += "#noCache";
+  }else if (insecure) {
+    result += "#insecure";
   }
 
   return result;
@@ -307,6 +273,16 @@ const showNoCacheTips = () => {
     closeOnClickOverlay: true,
   });
 };
+const showInsecureTips = () => {
+  Dialog({
+    title: t(`editorPage.subConfig.nodeActions['${type}'].helpTitle`),
+    content: t(`editorPage.subConfig.nodeActions['${type}'].insecureTips`),
+    popClass: "auto-dialog",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnClickOverlay: true,
+  });
+};
 
 // 显示参数编辑提示
 const showParamsEditTips = () => {
@@ -329,6 +305,7 @@ const handleLinkValueChange = () => {
       // 更新URL和noCache状态
       params.url = parsedParams.url;
       params.noCache = parsedParams.noCache;
+      params.insecure = parsedParams.insecure;
 
       // 更新arguments对象
       params.arguments = parsedParams.arguments || {};
@@ -447,6 +424,7 @@ onMounted(() => {
       params.url = parsedParams.url;
       params.arguments = parsedParams.arguments;
       params.noCache = parsedParams.noCache;
+      params.insecure = parsedParams.insecure;
       paramsArguments.value = Object.entries(params.arguments).map(
         ([key, value]) => ({ key, value }),
       );
@@ -469,6 +447,7 @@ watch(
         params.url,
         params.arguments,
         params.noCache,
+        params.insecure,
       );
     }
     const item = form.process.find((item) => item.id === id);
@@ -498,6 +477,7 @@ watch(value, () => {
     params.url = parsedParams.url;
     params.arguments = parsedParams.arguments;
     params.noCache = parsedParams.noCache;
+    params.insecure = parsedParams.insecure;
 
     if (!isEditKeyValue.value) {
       paramsArguments.value = Object.entries(params.arguments).map(
@@ -516,6 +496,20 @@ watch(
         params.url,
         params.arguments,
         newValue,
+        params.insecure,
+      );
+    }
+  },
+);
+watch(
+  () => params.insecure,
+  (newValue) => {
+    if (value.mode === "link") {
+      value.content = buildUrlWithParams(
+        params.url,
+        params.arguments,
+        params.noCache,
+        newValue,
       );
     }
   },
@@ -529,6 +523,7 @@ watch(
         newValue,
         params.arguments,
         params.noCache,
+        params.insecure,
       );
     }
   },
