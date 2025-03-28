@@ -12,6 +12,18 @@
         </nut-radio>
       </nut-radiogroup>
     </template>
+    <template v-if="type === 'Regex Sort Operator'">
+      <p class="des-label">
+        {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[1]`) }}
+      </p>
+      <nut-radiogroup direction="horizontal" v-model="mode">
+        <nut-radio v-for="(key, index) in opt[type]" :label="key" :key="index"
+          >{{
+            $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
+          }}
+        </nut-radio>
+      </nut-radiogroup>
+    </template>
     <p class="des-label">
       {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
     </p>
@@ -84,6 +96,7 @@
   // 值的次序需要与该选项的 options 值 顺序相同
   const opt = {
     'Regex Filter': [0, 1],
+    'Regex Sort Operator': ['asc', 'desc', 'original'],
   };
 
   const input1 = ref('');
@@ -165,6 +178,19 @@
           value.value = item.args.regex;
           mode.value = item.args.keep ? 0 : 1;
           break;
+        case 'Regex Sort Operator':
+          const order = item.args?.order || 'asc';
+          let expressions = item.args?.expressions;
+          if (Array.isArray(item.args)) {
+              expressions = item.args;
+          }
+          if (!Array.isArray(expressions)) {
+              expressions = [];
+          }
+          item.args = { order, expressions };
+          value.value = item.args.expressions;
+          mode.value = item.args.order;
+          break;
         default:
           value.value = item.args;
           break;
@@ -176,6 +202,9 @@
     const item = form.process.find(item => item.id === id);
     if (item && type === 'Regex Filter') {
       item.args.keep = !mode.value;
+    }
+    if (item && type === 'Regex Sort Operator') {
+      item.args.order = mode.value;
     }
   });
 
@@ -220,7 +249,7 @@
   .nut-radiogroup {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .tag-wrapper {

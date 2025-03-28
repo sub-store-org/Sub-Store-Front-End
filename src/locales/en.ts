@@ -485,7 +485,8 @@ export default {
         },
         "Regex Sort Operator": {
           label: "Regex Sort",
-          des: ["Regular Expressions"],
+          des: ["Regular Expressions", "Sort of Unmatched Nodes"],
+          options: ["Ascending", "Descending", "Original"],
           placeholder: ["Regular Expressions"],
           tipsTitle: "Regex Sort Tips",
           tipsDes: "Regular sorting operation instructions",

@@ -501,7 +501,8 @@ export default {
         },
         'Regex Sort Operator': {
           label: '正则排序',
-          des: ['正则表达式'],
+          des: ['正则表达式', '未匹配节点排序方式'],
+          options: ['正序', '逆序', '不变'],
           placeholder: ['填入正则表达式'],
           tipsTitle: '正则排序操作提示',
           tipsDes:
