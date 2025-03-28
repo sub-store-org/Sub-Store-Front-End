@@ -179,6 +179,8 @@ const parseUrlParams = (urlStr) => {
     } else if ($arguments?.noCache != null || $arguments?.insecure != null) {
       noCache = $arguments?.noCache;
       insecure = $arguments?.insecure;
+      delete $arguments?.noCache;
+      delete $arguments?.insecure;
     }
   } catch (e) {
     console.error("Failed to parse additional URL parameters:", e);
