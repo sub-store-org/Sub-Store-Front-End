@@ -336,7 +336,7 @@ $server.name = 'prefix-' + $server.name
 $server.ecn = true
 $server['test-url'] = 'http://1.0.0.1/generate_204'
 // 2. operator function
-function operator(proxies, targetPlatform) {
+function operator(proxies, targetPlatform, context) {
   return proxies.map( proxy => {
     // Change proxy information here
 
@@ -399,7 +399,7 @@ let clashMetaProxies = await produceArtifact({
 // JSON
 $content = JSON.stringify({}, null, 2)
 
-// { $content, $files } will be passed to the next operator 
+// { $content, $files, $options } will be passed to the next operator
 // $content is the final content of the file
 `);
 
