@@ -129,6 +129,8 @@
             <nut-radio label="QX">Quantumult X</nut-radio>
             <nut-radio label="sing-box">sing-box</nut-radio>
             <nut-radio label="V2Ray">V2Ray</nut-radio>
+            <nut-radio label="URI">URI</nut-radio>
+            <nut-radio label="JSON">JSON</nut-radio>
           </nut-radiogroup>
         </nut-form-item>
       </template>
