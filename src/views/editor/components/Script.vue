@@ -580,6 +580,10 @@ watch(
   align-items: center;
   margin-top: 16px;
   margin-bottom: 8px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  line-height: 3.5;
   .title-label {
     display: flex;
     align-items: center;

@@ -19,6 +19,7 @@ export default {
       flowFailed: "Refresh of {name} failed!",
       failed: "Refresh Failed\n",
       loading: "Refreshing Data...",
+      rePwaing: 'Resetting PWA cache...',
       rePwa: 'PWA cache reset successfully. The page will refresh soon...',
     },
   },

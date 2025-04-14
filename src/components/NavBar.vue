@@ -226,6 +226,7 @@ const refresh = async () => {
   if (["/subs", "/sync", "/files"].includes(route.path)) {
     initStores(true, true, true);
   } else {
+    showNotify({ title: i18n_global("globalNotify.refresh.rePwaing"), type: "primary" });
     if ("serviceWorker" in navigator) {
       const registrations = await navigator.serviceWorker.getRegistrations();
       for (let registration of registrations) {

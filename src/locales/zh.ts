@@ -20,6 +20,7 @@ export default {
       failed: '数据刷新失败\n',
       loading: '刷新数据中...',
       rePwa: '重置 PWA 缓存成功，即将刷新页面...',
+      rePwaing: '重置 PWA 缓存中...',
     },
     share: {
       title: '分享',
@@ -429,6 +430,7 @@ export default {
           paramsOptions: '操作',
           paramsEmpty: '暂无参数数据',
           duplicateKeyWarning: '重复的键名',
+          insecureTips: '开启后，将不对服务器证书进行验证。',
         },
         'Flag Operator': {
           label: '旗帜操作',
