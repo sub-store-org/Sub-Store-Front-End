@@ -983,8 +983,8 @@ const urlValidator = (val: string): Promise<boolean> => {
   // 去除空格
   const strTrim = (prop: string) => {
     if (typeof form[prop] === "string") {
-      // 正则表达式去除首尾空格,
-      form[prop] = form[prop].replace(/[^\S\r\n]+/g, '')
+      // 去除首尾空格
+      form[prop] = form[prop].trim();
     }
   }
   // 图标
