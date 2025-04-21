@@ -114,6 +114,9 @@ export default {
     },
     ignoreFailedRemoteFile: {
       label: "Ignore failed remote file(s)",
+      quiet: 'Enabled (without notification)',
+      disabled: 'Disabled',
+      enabled : 'Enabled (with notification)'
     },
     download: {
       label: "Enable download (filename: display name)",
@@ -320,6 +323,9 @@ export default {
         },
         ignoreFailedRemoteSub: {
           label: "Ignore failed remote subscription(s)",
+          quiet: 'Enabled (without notification)',
+          disabled: 'Disabled',
+          enabled : 'Enabled (with notification)'
         },
         ua: {
           label: "User-Agent",

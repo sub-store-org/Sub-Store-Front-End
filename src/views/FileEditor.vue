@@ -310,8 +310,22 @@
               prop="ignoreFailedRemoteFile"
               class="ignore-failed-wrapper"
             >
-              <div class="switch-wrapper">
+              <!-- <div class="switch-wrapper">
                 <nut-switch v-model="form.ignoreFailedRemoteFile" />
+              </div> -->
+              <div class="radio-wrapper">
+                <nut-radiogroup direction="horizontal" v-model="form.ignoreFailedRemoteFile">
+                  <nut-radio shape="button" label="disabled">
+                    {{ $t(`filePage.ignoreFailedRemoteFile.disabled`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="quiet">
+                    {{ $t(`filePage.ignoreFailedRemoteFile.quiet`) }}
+                  </nut-radio>
+                  <nut-radio shape="button" label="enabled">
+                    {{ $t(`filePage.ignoreFailedRemoteFile.enabled`) }}
+                  </nut-radio>
+                
+                </nut-radiogroup>
               </div>
             </nut-form-item>
           </template>
@@ -526,7 +540,13 @@ watchEffect(() => {
     form.mergeSources = sourceData.mergeSources;
     form.content = sourceData.content;
     cmStore.setEditCode("FileEditer", sourceData.content);
-    form.ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
+    let ignoreFailedRemoteFile = sourceData.ignoreFailedRemoteFile;
+    if (ignoreFailedRemoteFile === true) {
+      ignoreFailedRemoteFile = 'quiet';
+    } else if (ignoreFailedRemoteFile === false || ignoreFailedRemoteFile == null) {
+      ignoreFailedRemoteFile = 'disabled';
+    }
+    form.ignoreFailedRemoteFile = ignoreFailedRemoteFile;
     form.download = sourceData.download;
     const newProcess = JSON.parse(JSON.stringify(sourceData.process));
     form.process = newProcess;
@@ -635,6 +655,9 @@ const compare = () => {
     Toast.loading("生成中...", { id: "compare", cover: true, duration: 1500 });
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    if (data.ignoreFailedRemoteFile === "disabled"){
+      data.ignoreFailedRemoteFile = false;
+    }
 
     // 过滤掉预览开关关闭的操作
     actionsChecked.forEach((item) => {
@@ -696,6 +719,9 @@ const submit = () => {
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    if (data.ignoreFailedRemoteFile === "disabled"){
+      data.ignoreFailedRemoteFile = false;
+    }
 
     let res = null;
 

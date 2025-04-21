@@ -388,8 +388,22 @@
           prop="ignoreFailedRemoteSub"
           class="ignore-failed-wrapper"
         >
-          <div class="switch-wrapper">
+          <!-- <div class="switch-wrapper">
             <nut-switch v-model="form.ignoreFailedRemoteSub" />
+          </div> -->
+          <div class="radio-wrapper">
+            <nut-radiogroup direction="horizontal" v-model="form.ignoreFailedRemoteSub">
+              <nut-radio shape="button" label="disabled">
+                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.disabled`) }}
+              </nut-radio>
+              <nut-radio shape="button" label="quiet">
+                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.quiet`) }}
+              </nut-radio>
+              <nut-radio shape="button" label="enabled">
+                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.enabled`) }}
+              </nut-radio>
+            
+            </nut-radiogroup>
           </div>
         </nut-form-item>
       </nut-form>
@@ -639,7 +653,13 @@ watchEffect(() => {
   const sourceData: any = toRaw(sub.value) || toRaw(collection.value);
   const newProcess = JSON.parse(JSON.stringify(sourceData.process));
   form.mergeSources = sourceData.mergeSources;
-  form.ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
+  let ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
+  if (ignoreFailedRemoteSub === true) {
+    ignoreFailedRemoteSub = 'quiet';
+  } else if (ignoreFailedRemoteSub === false || ignoreFailedRemoteSub == null) {
+    ignoreFailedRemoteSub = 'disabled';
+  }
+  form.ignoreFailedRemoteSub = ignoreFailedRemoteSub;
   form.passThroughUA = sourceData.passThroughUA;
   form.name = sourceData.name;
   form.displayName = sourceData.displayName || sourceData["display-name"];
@@ -799,6 +819,9 @@ const compare = () => {
     });
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    if (data.ignoreFailedRemoteSub === "disabled"){
+      data.ignoreFailedRemoteSub = false;
+    }
     data.tag = [
       ...new Set(
         (data.tag || "")
@@ -901,6 +924,9 @@ const submit = () => {
     ];
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    if (data.ignoreFailedRemoteSub === "disabled"){
+      data.ignoreFailedRemoteSub = false;
+    }
 
     console.log('submit.....\n', data);
 

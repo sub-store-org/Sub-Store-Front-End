@@ -138,7 +138,10 @@ export default {
       remote: '远程',
     },
     ignoreFailedRemoteFile: {
-      label: '忽略失败的远程文件'
+      label: '忽略失败的远程文件',
+      quiet: '启用(无通知)',
+      disabled: '禁用',
+      enabled : '启用(有通知)'
     },
     download: {
       label: '启用下载(文件名为显示名称)'
@@ -337,7 +340,10 @@ export default {
           placeholder: '可点击左侧或顶部图标, 从图标库填入图标链接，不要使用 jpg',
         },
         ignoreFailedRemoteSub: {
-          label: '忽略失败的远程订阅'
+          label: '忽略失败的远程订阅',
+          quiet: '启用(无通知)',
+          disabled: '禁用',
+          enabled : '启用(有通知)'
         },
         ua: {
           label: 'User-Agent',
