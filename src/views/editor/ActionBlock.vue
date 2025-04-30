@@ -400,7 +400,7 @@ const inCustomNameEditMode = computed(() =>
   editNameList.map((item) => item.isEditing).includes(true),
 );
 
-watch(list, (newV: ActionModuleProps[]) => {
+watch(() => list, (newV: ActionModuleProps[]) => {
   if (editNameList.length > newV.length) {
     // delete
     const elementsToDelete = editNameList.filter(
