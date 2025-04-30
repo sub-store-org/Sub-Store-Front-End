@@ -421,7 +421,7 @@ watch(() => list, (newV: ActionModuleProps[]) => {
       editNameList.push(generateEditNameItem(element));
     });
   }
-});
+}, { deep: true }); // https://cn.vuejs.org/guide/essentials/watchers
 
 watch(inCustomNameEditMode, (newV) => {
   emit('updateCustomNameModeFlag', newV);
