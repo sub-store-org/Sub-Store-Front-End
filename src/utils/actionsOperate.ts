@@ -16,9 +16,10 @@ export const addItem = (
   const type = selectedOptions[0].value;
   const args = selectedOptions[0].args;
   const enabled = true;
+  const customName = selectedOptions[0].customName || "";
   const obj = {
     id,
-    customName: "",
+    customName,
     type,
     tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
     component: null,
@@ -31,22 +32,22 @@ export const addItem = (
     case 'Sort Operator':
     case 'Resolve Domain Operator':
       obj.component = shallowRef(ActionRadio);
-      form.process.push({ id, type, args: args ?? null });
+      form.process.push({ id, type, args: args ?? null, customName });
       break;
     case 'Region Filter':
     case 'Type Filter':
       obj.component = shallowRef(FilterSelect);
-      form.process.push({ id, type, args: args ?? [] });
+      form.process.push({ id, type, args: args ?? [], customName });
       break;
     case 'Regex Filter':
       obj.component = shallowRef(Regex);
-      form.process.push({ id, type, args: args ?? { keep: true, regex: [] } });
+      form.process.push({ id, type, args: args ?? { keep: true, regex: [] }, customName });
       break;
     case 'Regex Sort Operator':
     case 'Regex Delete Operator':
     case 'Regex Rename Operator':
       obj.component = shallowRef(Regex);
-      form.process.push({ id, type, args: args ?? [] });
+      form.process.push({ id, type, args: args ?? [] , customName});
       break;
     case 'Handle Duplicate Operator':
       obj.component = shallowRef(HandleDuplicate);
@@ -59,6 +60,7 @@ export const addItem = (
           position: 'back',
           template: '0 1 2 3 4 5 6 7 8 9',
         },
+        customName
       });
       break;
     case 'Script Filter':
@@ -71,6 +73,7 @@ export const addItem = (
           content: '',
           mode: 'link',
         },
+        customName
       });
       break;
   }
