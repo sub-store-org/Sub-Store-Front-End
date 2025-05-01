@@ -18,7 +18,7 @@ export const addItem = (
   const enabled = true;
   const obj = {
     id,
-    customName: "",
+    customName: selectedOptions[0].customName || "",
     type,
     tipsDes: t(`editorPage.subConfig.nodeActions['${type}'].tipsDes`),
     component: null,
