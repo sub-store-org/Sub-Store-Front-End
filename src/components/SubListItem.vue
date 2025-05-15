@@ -1,16 +1,21 @@
 <template>
-  <!-- 滚动内容 -->
+  <div
+    v-show="swipeIsOpen"
+    class="swipe-overlay"
+    @click="handleOverlayClick"
+  ></div>
+
   <nut-swipe
     ref="swipe"
     class="sub-item-swipe"
     :disabled="props.disabled"
     @close="setIsMoveClose()"
     @open="setIsMoveOpen()"
-    @click="onClickPreviews()"
   >
     <div
       class="sub-item-wrapper"
       :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      @click="handleContentClick"
     >
       <div
         v-if="
@@ -617,10 +622,15 @@ const swipeController = () => {
   } else {
     if (appearanceSetting.value.isLeftRight) {
       swipe.value.open("right");
+      setTimeout(() => {
+        swipeIsOpen.value = true;
+      }, 100);
     } else {
       swipe.value.open("left");
-      swipeIsOpen.value = true;
-      if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+      setTimeout(() => {
+        swipeIsOpen.value = true;
+        if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+      }, 100);
     }
   }
 };
@@ -634,11 +644,17 @@ const ismove = ref(false);
 
 const setIsMoveOpen = () => {
   ismove.value = true;
+
+  setTimeout(() => {
+    swipeIsOpen.value = true;
+  }, 100);
+
   setTimeoutTF();
 };
 
 const setIsMoveClose = () => {
   ismove.value = true;
+  swipeIsOpen.value = false;
   setTimeoutTF();
 };
 
@@ -649,9 +665,29 @@ const setTimeoutTF = () => {
   }, 200);
 };
 
-const onClickPreviews = () => {
+const handleOverlayClick = () => {
+  swipe.value.close();
+  swipeIsOpen.value = false;
+  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+};
+
+const handleContentClick = (event) => {
+  event.stopPropagation();
+
+  if (swipeIsOpen.value) {
+    swipe.value.close();
+    swipeIsOpen.value = false;
+    if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+    return;
+  }
+
+  if (!ismove.value) {
+    openPreviewPanel();
+  }
+};
+
+const openPreviewPanel = () => {
   if (ismove.value) return;
-  swipeController();
   Dialog({
     title: t("subPage.previewTitle"),
     content: createVNode(PreviewPanel, {
@@ -785,6 +821,20 @@ const onClickRefresh = async () => {
 </script>
 
 <style lang="scss" scoped>
+.sub-item-swipe {
+  position: relative;
+}
+
+.swipe-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 9999;
+}
+
 .sub-item-customer-icon {
   :deep(img) {
     & {
