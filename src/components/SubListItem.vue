@@ -647,6 +647,7 @@ const setIsMoveOpen = () => {
 
   setTimeout(() => {
     swipeIsOpen.value = true;
+    if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
   }, 100);
 
   setTimeoutTF();
