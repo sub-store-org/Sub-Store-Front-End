@@ -1,10 +1,4 @@
 <template>
-  <div
-    v-show="swipeIsOpen"
-    class="swipe-overlay"
-    @click="handleOverlayClick"
-  ></div>
-
   <nut-swipe
     ref="swipe"
     class="sub-item-swipe"
@@ -619,20 +613,45 @@ const swipeController = () => {
     swipe.value.close();
     swipeIsOpen.value = false;
     if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+
+    document.removeEventListener('click', handleGlobalClick);
   } else {
     if (appearanceSetting.value.isLeftRight) {
       swipe.value.open("right");
       setTimeout(() => {
         swipeIsOpen.value = true;
+        setTimeout(() => {
+          document.addEventListener('click', handleGlobalClick);
+        }, 10);
       }, 100);
     } else {
       swipe.value.open("left");
       setTimeout(() => {
         swipeIsOpen.value = true;
         if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+
+        setTimeout(() => {
+          document.addEventListener('click', handleGlobalClick);
+        }, 10);
       }, 100);
     }
   }
+};
+
+const handleGlobalClick = (event) => {
+  const swipeRightEl = document.querySelector('.nut-swipe__right');
+  const swipeLeftEl = document.querySelector('.nut-swipe__left');
+
+  if ((swipeRightEl && swipeRightEl.contains(event.target)) ||
+      (swipeLeftEl && swipeLeftEl.contains(event.target))) {
+    return;
+  }
+
+  swipe.value.close();
+  swipeIsOpen.value = false;
+  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+
+  document.removeEventListener('click', handleGlobalClick);
 };
 
 const onDeleteConfirm = async () => {
@@ -666,11 +685,7 @@ const setTimeoutTF = () => {
   }, 200);
 };
 
-const handleOverlayClick = () => {
-  swipe.value.close();
-  swipeIsOpen.value = false;
-  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
-};
+
 
 const handleContentClick = (event) => {
   event.stopPropagation();
@@ -724,7 +739,7 @@ const onClickShareLink = async () => {
   emit("share", data, type);
 };
 const onClickCopyConfig = async () => {
-  swipeController();
+  // 移除 swipeController() 调用，保持左滑状态
   let data: Sub | Collection;
   switch (props.type) {
     case "sub":
@@ -741,7 +756,6 @@ const onClickCopyConfig = async () => {
   await subsStore.fetchSubsData();
   Toast.hide("copyConfig");
   showNotify({ title: t("subPage.copyConfigNotify.succeed") });
-  swipe.value.close();
 };
 // const onClickExport = async () => {
 //   swipeController()
@@ -769,7 +783,6 @@ const onClickEdit = () => {
 };
 
 const onClickDelete = () => {
-  swipeController();
   Dialog({
     title: t("subPage.deleteSub.title"),
     content: createVNode(
@@ -779,7 +792,6 @@ const onClickDelete = () => {
     ),
     onCancel: () => {},
     onOk: onDeleteConfirm,
-    onOpened: () => swipe.value.close(),
     popClass: "auto-dialog",
     cancelText: t("subPage.deleteSub.btn.cancel"),
     okText: t("subPage.deleteSub.btn.confirm"),
@@ -826,15 +838,7 @@ const onClickRefresh = async () => {
   position: relative;
 }
 
-.swipe-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  z-index: 9999;
-}
+
 
 .sub-item-customer-icon {
   :deep(img) {
@@ -1012,6 +1016,7 @@ const onClickRefresh = async () => {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    z-index: 10;
 
     .sub-item-swipe-btn-wrapper {
       padding-left: 14px;
