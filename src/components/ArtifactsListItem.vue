@@ -4,12 +4,12 @@
     ref="swipe"
     @close="setIsMoveClose()"
     @open="setIsMoveOpen()"
-    @click.stop="previewSource"
-    :disabled="$props.disabled"
+    :disabled="props.disabled"
   >
     <div
       class="sub-item-wrapper"
       :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      @click="handleContentClick"
     >
       <div v-if="appearanceSetting.isShowIcon" class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar
@@ -220,7 +220,7 @@ const { toClipboard: copyFallback } = useV3Clipboard();
 const { t } = useI18n();
 const { currentUrl: host } = useHostAPI();
 
-const { name } = defineProps<{
+const props = defineProps<{
   name: string;
   disabled?: boolean;
 }>();
@@ -232,7 +232,7 @@ const settingsStore = useSettingsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const artifact = computed(() => {
-  return artifacts.value.find((item) => item.name === name);
+  return artifacts.value.find((item) => item.name === props.name);
 });
 const emit = defineEmits(["edit"]);
 
@@ -344,11 +344,26 @@ const ismove = ref(false);
 
 const setIsMoveOpen = () => {
   ismove.value = true;
+
+  setTimeout(() => {
+    swipeIsOpen.value = true;
+    if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+
+    setTimeout(() => {
+      document.addEventListener('click', handleGlobalClick);
+    }, 10);
+  }, 100);
+
   setTimeoutTF();
 };
 
 const setIsMoveClose = () => {
   ismove.value = true;
+  swipeIsOpen.value = false;
+  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+
+  document.removeEventListener('click', handleGlobalClick);
+
   setTimeoutTF();
 };
 
@@ -359,7 +374,38 @@ const setTimeoutTF = () => {
   }, 200);
 };
 
-const previewSource = () => {
+const handleGlobalClick = (event: MouseEvent) => {
+  const swipeRightEl = document.querySelector('.nut-swipe__right');
+  const swipeLeftEl = document.querySelector('.nut-swipe__left');
+
+  if ((swipeRightEl && swipeRightEl.contains(event.target as Node)) ||
+      (swipeLeftEl && swipeLeftEl.contains(event.target as Node))) {
+    return;
+  }
+
+  swipe.value.close();
+  swipeIsOpen.value = false;
+  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+
+  document.removeEventListener('click', handleGlobalClick);
+};
+
+const handleContentClick = (event: MouseEvent) => {
+  event.stopPropagation();
+
+  if (swipeIsOpen.value) {
+    swipe.value.close();
+    swipeIsOpen.value = false;
+    if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+    return;
+  }
+
+  if (!ismove.value && sourceUrl.value) {
+    openPreviewSource();
+  }
+};
+
+const openPreviewSource = () => {
   if (ismove.value || !sourceUrl.value) return;
   Dialog({
     title: t("tabBar.sub"),
@@ -438,13 +484,27 @@ const swipeController = () => {
     swipe.value.close();
     swipeIsOpen.value = false;
     if(moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+
+    document.removeEventListener('click', handleGlobalClick);
   } else {
     if (appearanceSetting.value.isLeftRight) {
       swipe.value.open("right");
+      setTimeout(() => {
+        swipeIsOpen.value = true;
+        setTimeout(() => {
+          document.addEventListener('click', handleGlobalClick);
+        }, 10);
+      }, 100);
     } else {
       swipe.value.open("left");
-      swipeIsOpen.value = true;
-      if(moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+      setTimeout(() => {
+        swipeIsOpen.value = true;
+        if(moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
+
+        setTimeout(() => {
+          document.addEventListener('click', handleGlobalClick);
+        }, 10);
+      }, 100);
     }
   }
 };
@@ -468,15 +528,13 @@ const onDeleteConfirm = async () => {
   }
 
   await artifactsStore.deleteArtifact(artifact.value.name);
-  
+
   if (shouldShowToast) {
     Toast.hide("delete-toast");
   }
 };
 
 const onClickSync = async () => {
-  swipeController()
-  swipe.value.close();
   Toast.loading("同步中...", {
     cover: true,
     id: "sync-toast",
@@ -487,17 +545,10 @@ const onClickSync = async () => {
 };
 
 const onClickEdit = () => {
-  swipeController()
-  swipe.value.close();
   emit("edit", artifact.value);
 };
 
-const onclose = () => {
-  swipe.value.close();
-};
-
 const onClickDelete = () => {
-  swipeController()
   Dialog({
     title: t("syncPage.deleteArt.title"),
     content: createVNode(
@@ -507,7 +558,7 @@ const onClickDelete = () => {
     ),
     onCancel: () => {},
     onOk: onDeleteConfirm,
-    onOpened: () => swipe.value.close(),
+    onOpened: () => {},
     popClass: "auto-dialog",
     cancelText: t("syncPage.deleteArt.btn.cancel"),
     okText: t("syncPage.deleteArt.btn.confirm"),
@@ -611,7 +662,7 @@ watch(isSyncOpen, async () => {
           flex: 1;
           display: flex;
           align-items: center;
-          
+
           flex-direction: row;
           justify-content: flex-end; // ios 14
 
