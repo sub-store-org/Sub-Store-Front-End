@@ -17,6 +17,7 @@ export const useGlobalStore = defineStore('globalStore', {
       isDefaultIcon: localStorage.getItem('isDefaultIcon') === '1',
       isDarkMode: false,
       env: {},
+      isDockerDeployment: false,
       isSimpleMode: localStorage.getItem('isSimpleMode') === '1',
       isLeftRight: localStorage.getItem('isLr') === '1',
       isIconColor: localStorage.getItem('iconColor') === '1',
@@ -176,7 +177,15 @@ export const useGlobalStore = defineStore('globalStore', {
       const res = await envApi.getEnv();
       if (res?.data?.status === 'success') {
         this.env = res.data.data;
+
+        // 检测是否是Docker部署
+        if (this.env?.meta?.node?.env?.SUB_STORE_DOCKER === 'true') {
+          this.isDockerDeployment = true;
+        }
       }
+    },
+    setDockerDeployment(isDockerDeployment: boolean) {
+      this.isDockerDeployment = isDockerDeployment;
     },
     setSavedPositions(key: string, value: any) {
       this.savedPositions[key] = value;

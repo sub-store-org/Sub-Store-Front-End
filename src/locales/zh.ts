@@ -953,4 +953,27 @@ export default {
       title: '更新日志',
     },
   },
+  magicPath: {
+    title: '后端连接配置',
+    description: '检测到您需要配置自定义后端，请输入后端路径或地址<br><br>支持三种格式：<br>• 路径前缀（/path）<br>• 主机+路径（host:port/path）<br>• 完整URL（http(s)://host:port/path）',
+    placeholder: '请输入后端路径或地址',
+    connect: '连接',
+    skip: '跳过',
+    info: '您可以稍后在"我的"页面中的"后端设置"中配置',
+    dockerInfo: '可通过环境变量 设置后端路径',
+    preview: '预览',
+    inputTypes: {
+      path: '仅路径模式 (使用当前域名)',
+      host: '主机+路径模式',
+      full: '完整URL模式'
+    },
+    success: '连接成功！',
+    errors: {
+      empty: '输入不能为空',
+      invalid: '无效的后端地址',
+      connection: '连接失败，请检查输入是否正确',
+      unknown: '发生未知错误',
+      portRequired: '主机格式需要包含端口号'
+    }
+  },
 };

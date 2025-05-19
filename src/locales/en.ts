@@ -963,4 +963,27 @@ export default {
       title: "Changelogs",
     },
   },
+  magicPath: {
+    title: "Backend Connection Configuration",
+    description: "Custom backend configuration needed. Please enter the backend path or address<br><br>Supports three formats:<br>• Path prefix (/path)<br>• Host+path (host:port/path)<br>• Full URL (http(s)://host:port/path)",
+    placeholder: "Please enter backend path or address",
+    connect: "Connect",
+    skip: "Skip",
+    info: "You can configure this later in the Backend Settings in the My Profile page",
+    dockerInfo: "Backend path can be set via SUB_STORE_FRONTEND_BACKEND_PATH environment variable",
+    preview: "Preview",
+    inputTypes: {
+      path: "Path only mode (using current domain)",
+      host: "Host+Path mode",
+      full: "Full URL mode"
+    },
+    success: "Connected successfully!",
+    errors: {
+      empty: "Input cannot be empty",
+      invalid: "Invalid backend address",
+      connection: "Connection failed, please check if the input is correct",
+      unknown: "An unknown error occurred",
+      portRequired: "Host format must include port number"
+    }
+  },
 };
