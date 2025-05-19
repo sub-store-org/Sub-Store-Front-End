@@ -23,6 +23,8 @@
           class="magic-path-input"
           :error="!!error"
           :error-message="error"
+          @blur="validateInput"
+          @keyup.enter="handleSubmit"
         />
 
         <!-- 实时预览区域 -->
@@ -110,12 +112,19 @@ const currentOrigin = ref(window.location.origin);
 
 // 处理提交
 const handleSubmit = async () => {
-  if (!magicPath.value.trim()) {
-    error.value = t('magicPath.errors.empty');
+  // 先进行输入验证
+  if (!validateInput()) {
+    // 强制更新错误状态，确保错误信息显示
+    error.value = error.value || t('magicPath.errors.invalid');
+
+    // 如果没有显示通知，则显示一个
+    showNotify({
+      title: error.value,
+      type: 'danger'
+    });
     return;
   }
 
-  error.value = '';
   loading.value = true;
 
   try {
@@ -127,18 +136,23 @@ const handleSubmit = async () => {
       return;
     }
 
-    console.log('尝试连接到API:', apiUrl);
-
     // 测试API连接
     try {
       const res = await axios.get(`${apiUrl}/api/utils/env`);
       if (res?.data?.status !== 'success') {
-        throw new Error(t('magicPath.errors.invalid'));
+        error.value = t('magicPath.errors.invalid');
+        return;
       }
 
       // 添加API并设置为当前API
       const apiName = `Custom_${new Date().getTime()}`;
-      await addApi({ name: apiName, url: apiUrl });
+      const addResult = await addApi({ name: apiName, url: apiUrl });
+
+      if (!addResult) {
+        // addApi内部已经显示了错误通知，这里不需要再设置error
+        return;
+      }
+
       setCurrent(apiName);
 
       showNotify({
@@ -158,11 +172,17 @@ const handleSubmit = async () => {
       sessionStorage.removeItem('showMagicPathDialog');
     } catch (e) {
       error.value = t('magicPath.errors.connection');
-      console.error('API连接测试失败:', e);
+      showNotify({
+        title: t('magicPath.errors.connection'),
+        type: 'danger'
+      });
     }
   } catch (e) {
     error.value = t('magicPath.errors.unknown');
-    console.error('处理magicPath时出错:', e);
+    showNotify({
+      title: t('magicPath.errors.unknown'),
+      type: 'danger'
+    });
   } finally {
     loading.value = false;
   }
@@ -174,6 +194,53 @@ const handleSkip = () => {
   localStorage.setItem('magicPathConfigured', 'true'); // 兼容旧版本
   sessionStorage.removeItem('showMagicPathDialog');
   visible.value = false;
+};
+
+// 验证输入
+const validateInput = () => {
+  const input = magicPath.value.trim();
+
+  if (!input) {
+    error.value = t('magicPath.errors.empty');
+    return false;
+  }
+
+  // 根据输入内容判断类型并验证
+  if (input.includes('://')) {
+    // 完整URL格式
+    try {
+      new URL(input);
+    } catch (e) {
+      error.value = t('magicPath.errors.invalid');
+      showNotify({
+        title: t('magicPath.errors.invalid'),
+        type: 'danger'
+      });
+      return false;
+    }
+  } else if (/^\d+\.\d+\.\d+\.\d+(?::\d+)?$/.test(input) || /^localhost(?::\d+)?$/.test(input)) {
+    // IP地址或localhost格式
+    if (!input.includes(':')) {
+      error.value = t('magicPath.errors.invalid');
+      showNotify({
+        title: t('magicPath.errors.invalid') + ' - ' + t('magicPath.errors.portRequired'),
+        type: 'danger'
+      });
+      return false;
+    }
+  } else if (/^https?:\/\//.test(input)) {
+    // 不完整的URL格式（有http(s):// 但格式不正确）
+    error.value = t('magicPath.errors.invalid');
+    showNotify({
+      title: t('magicPath.errors.invalid'),
+      type: 'danger'
+    });
+    return false;
+  }
+
+  // 如果通过所有验证，清除错误
+  error.value = '';
+  return true;
 };
 
 // 当对话框关闭时重置状态
@@ -189,14 +256,20 @@ watch(visible, (newValue) => {
 // 实时解析输入
 watchEffect(() => {
   const input = magicPath.value.trim();
-  console.log('输入变化 (watchEffect):', input);
 
+  // 如果输入为空，设置默认值并返回
   if (!input) {
     inputType.value = 'path';
     parsedHost.value = '';
     parsedPath.value = '';
     previewUrl.value = '';
     return;
+  }
+
+  // 只有当用户正在输入时才清除错误状态
+  // 如果用户刚刚完成输入（通过blur事件触发验证），我们不应该清除错误
+  if (document.activeElement === document.querySelector('.magic-path-input input')) {
+    error.value = '';
   }
 
   // 判断输入类型
@@ -303,6 +376,14 @@ watchEffect(() => {
 
       :deep(.nut-input-error-message) {
         color: var(--danger-color);
+        font-size: 12px;
+        padding: 4px 0;
+        display: block;
+        font-weight: bold;
+        background-color: rgba(255, 0, 0, 0.05);
+        border-radius: 4px;
+        padding: 6px 8px;
+        margin-top: 4px;
       }
     }
 

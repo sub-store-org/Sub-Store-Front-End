@@ -102,6 +102,22 @@ function checkAndShowMagicPathDialog() {
     return;
   }
 
+  // 检查是否已经配置过hostAPI
+  const hostAPIConfig = localStorage.getItem('hostAPI');
+  if (hostAPIConfig) {
+    try {
+      const hostAPIData = JSON.parse(hostAPIConfig);
+      // 如果已经有配置的API且当前选择了一个API，则认为已配置
+      if (hostAPIData.apis && hostAPIData.apis.length > 0 && hostAPIData.current) {
+        // 设置已配置标志，避免再次显示配置对话框
+        localStorage.setItem('backendConfigured', 'true');
+        return;
+      }
+    } catch (e) {
+      console.error('解析hostAPI配置时出错:', e);
+    }
+  }
+
   // 检查是否需要配置
   const needConfiguration = checkNeedConfiguration();
   if (needConfiguration && route.path === '/subs') {
@@ -115,9 +131,9 @@ function checkAndShowMagicPathDialog() {
 
 // 检测是否需要配置
 function checkNeedConfiguration() {
-  // 只在非特定域名下自动弹窗
+  // 只在特定域名下自动弹窗
   const hostname = window.location.hostname;
-  if (hostname !== 'sub-store.vercel.app') {
+  if (hostname === 'sub-store.vercel.app') {
     return true;
   }
 

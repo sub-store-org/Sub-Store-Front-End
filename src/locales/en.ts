@@ -982,7 +982,8 @@ export default {
       empty: "Input cannot be empty",
       invalid: "Invalid backend address",
       connection: "Connection failed, please check if the input is correct",
-      unknown: "An unknown error occurred"
+      unknown: "An unknown error occurred",
+      portRequired: "Host format must include port number"
     }
   },
 };
