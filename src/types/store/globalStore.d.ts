@@ -6,6 +6,7 @@ interface GlobalStoreState {
   bottomSafeArea: number;
   isDarkMode: boolean;
   env: ENV;
+  isDockerDeployment: boolean;
   isSimpleMode: boolean;
   isLeftRight: boolean;
   isIconColor: boolean;
@@ -23,7 +24,7 @@ interface GlobalStoreState {
 }
 
 interface ENV {
-  meta?: any; 
+  meta?: any;
   hasNewVersion?: boolean;
   latestVersion?: string;
   version?: string;

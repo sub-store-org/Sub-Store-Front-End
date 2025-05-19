@@ -132,26 +132,69 @@ export const useHostAPI = () => {
     const query = window.location.search;
     if (!query) return await errorCb?.();
 
+    // 处理api参数
     const apiUrl = query
       .slice(1)
       .split('&')
       .map(i => i.split('='))
       .find(i => i[0] === 'api');
-    if (!apiUrl) return await errorCb?.();
 
-    const url = decodeURIComponent(apiUrl[1]);
-    if (!url) return await errorCb?.();
+    // 处理magicpath参数
+    const magicPathParam = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'magicpath');
 
-    const isExist = apis.value.find(api => api.url === url);
+    // 优先处理api参数
+    if (apiUrl) {
+      const url = decodeURIComponent(apiUrl[1]);
+      if (!url) return await errorCb?.();
 
-    if (isExist) {
-      if (isExist.name === currentName.value) return await errorCb?.();
-      return setCurrent(isExist.name);
+      const isExist = apis.value.find(api => api.url === url);
+
+      if (isExist) {
+        if (isExist.name === currentName.value) return await errorCb?.();
+        return setCurrent(isExist.name);
+      }
+
+      const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
+      await addApi({ name, url });
+      setCurrent(name);
+      return;
     }
 
-    const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
-    await addApi({ name, url });
-    setCurrent(name);
+    // 处理magicpath参数
+    if (magicPathParam) {
+      const magicPath = decodeURIComponent(magicPathParam[1]);
+      if (!magicPath) return await errorCb?.();
+
+      // 构建完整的API URL
+      const currentHost = window.location.origin;
+      const apiUrl = `${currentHost}/${magicPath.replace(/^\/+/, '')}`;
+
+      const isExist = apis.value.find(api => api.url === apiUrl);
+
+      if (isExist) {
+        if (isExist.name === currentName.value) return await errorCb?.();
+        return setCurrent(isExist.name);
+      }
+
+      try {
+        const name = `Docker_${new Date().getTime()}`;
+        await addApi({ name, url: apiUrl });
+        setCurrent(name);
+
+        // 设置已配置标志
+        localStorage.setItem('magicPathConfigured', 'true');
+        return;
+      } catch (e) {
+        console.error('处理magicPath参数时出错:', e);
+      }
+    }
+
+    // 如果没有处理任何参数，执行错误回调
+    return await errorCb?.();
   };
 
   return {

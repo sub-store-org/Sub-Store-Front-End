@@ -4,11 +4,13 @@
   <main class="page-body">
     <router-view />
   </main>
+  <MagicPathDialog v-model="showMagicPathDialog" />
 </template>
 
 <script setup lang="ts">
 // import GlobalNotify from '@/components/GlobalNotify.vue';
 import NavBar from "@/components/NavBar.vue";
+import MagicPathDialog from "@/components/MagicPathDialog.vue";
 import { useThemes } from "@/hooks/useThemes";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
@@ -17,14 +19,18 @@ import { initStores } from "@/utils/initApp";
 import { storeToRefs } from "pinia";
 import { ref, watchEffect, onMounted } from "vue";
 import { useHostAPI } from "@/hooks/useHostAPI"; //onMounted
+import { useRoute, useRouter } from "vue-router";
 
 const subsStore = useSubsStore();
-
 const globalStore = useGlobalStore();
+const route = useRoute();
+const router = useRouter();
 
 const { subs, flows } = storeToRefs(subsStore);
 
 const allLength = ref(null);
+// 初始化时检查sessionStorage中是否有保存的状态
+const showMagicPathDialog = ref(sessionStorage.getItem('showMagicPathDialog') === 'true');
 
 // 处于 pwa 且屏幕底部有小白条时将底部安全距离写入 global store
 type NavigatorExtend = Navigator & {
@@ -67,6 +73,70 @@ watchEffect(() => {
   const currentLength = Object.keys(flows.value).length;
   globalStore.setFlowFetching(allLength.value !== currentLength);
 });
+
+// 检测是否需要显示后端配置对话框
+onMounted(() => {
+  // 开发环境下清除之前的配置标记，方便测试
+  if (import.meta.env.DEV) {
+    localStorage.removeItem('backendConfigured');
+    localStorage.removeItem('magicPathConfigured'); // 兼容旧版本
+  }
+
+  // 添加路由守卫，确保在每次路由变化时检查是否需要显示magicpath对话框
+  router.afterEach((to) => {
+    // 只在主页面（/subs）显示对话框
+    if (to.path === '/subs') {
+      checkAndShowMagicPathDialog();
+    }
+  });
+
+  // 初始检查
+  checkAndShowMagicPathDialog();
+});
+
+// 检查是否需要显示后端配置对话框
+function checkAndShowMagicPathDialog() {
+  // 检查是否已经配置过后端
+  const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
+  if (backendConfigured === 'true') {
+    return;
+  }
+
+  // 检查是否需要配置
+  const needConfiguration = checkNeedConfiguration();
+  if (needConfiguration && route.path === '/subs') {
+    // 在主页面显示配置对话框
+    showMagicPathDialog.value = true;
+
+    // 将状态保存到sessionStorage，确保刷新页面后仍然显示对话框
+    sessionStorage.setItem('showMagicPathDialog', 'true');
+  }
+}
+
+// 检测是否需要配置
+function checkNeedConfiguration() {
+  // 只在非特定域名下自动弹窗
+  const hostname = window.location.hostname;
+  if (hostname !== 'sub-store.vercel.app') {
+    return true;
+  }
+
+  // 开发环境下可以通过URL参数强制显示配置对话框
+  if (import.meta.env.DEV) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('config') === 'true') {
+      return true;
+    }
+  }
+
+  // 检查URL中是否有相关参数（仅保留config参数）
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('config') === 'true') {
+    return true;
+  }
+
+  return false;
+}
 </script>
 
 <style lang="scss">
