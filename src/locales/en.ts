@@ -892,7 +892,7 @@ export default {
       title: "Add New Backend",
       placeholder: {
         name: "Please input backend name, must be unique",
-        url: "Please input backend url",
+        url: "Please input the full URL of the backend",
       },
       btn: "Add",
     },

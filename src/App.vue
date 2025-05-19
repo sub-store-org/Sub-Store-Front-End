@@ -76,12 +76,6 @@ watchEffect(() => {
 
 // 检测是否需要显示后端配置对话框
 onMounted(() => {
-  // 开发环境下清除之前的配置标记，方便测试
-  if (import.meta.env.DEV) {
-    localStorage.removeItem('backendConfigured');
-    localStorage.removeItem('magicPathConfigured'); // 兼容旧版本
-  }
-
   // 添加路由守卫，确保在每次路由变化时检查是否需要显示magicpath对话框
   router.afterEach((to) => {
     // 只在主页面（/subs）显示对话框
@@ -100,22 +94,6 @@ function checkAndShowMagicPathDialog() {
   const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
   if (backendConfigured === 'true') {
     return;
-  }
-
-  // 检查是否已经配置过hostAPI
-  const hostAPIConfig = localStorage.getItem('hostAPI');
-  if (hostAPIConfig) {
-    try {
-      const hostAPIData = JSON.parse(hostAPIConfig);
-      // 如果已经有配置的API且当前选择了一个API，则认为已配置
-      if (hostAPIData.apis && hostAPIData.apis.length > 0 && hostAPIData.current) {
-        // 设置已配置标志，避免再次显示配置对话框
-        localStorage.setItem('backendConfigured', 'true');
-        return;
-      }
-    } catch (e) {
-      console.error('解析hostAPI配置时出错:', e);
-    }
   }
 
   // 检查是否需要配置

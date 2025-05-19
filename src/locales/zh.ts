@@ -881,7 +881,7 @@ export default {
       title: '添加新后端',
       placeholder: {
         name: '请输入后端名称，必须唯一',
-        url: '请输入后端地址',
+        url: '请输入完整后端地址',
       },
       btn: '添加',
     },

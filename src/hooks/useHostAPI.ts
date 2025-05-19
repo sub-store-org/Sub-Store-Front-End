@@ -161,6 +161,7 @@ export const useHostAPI = () => {
       const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
       await addApi({ name, url });
       setCurrent(name);
+      localStorage.setItem('backendConfigured', 'true');
       return;
     }
 
