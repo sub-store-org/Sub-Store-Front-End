@@ -57,6 +57,11 @@
           </div>
           <div class="api-item-right">
             <font-awesome-icon
+              class="copy-icon"
+              icon="fa-solid fa-clone"
+              @click.stop="copyApi(api)"
+            />
+            <font-awesome-icon
               icon="fa-solid fa-xmark"
               @click.stop="deleteApi(api.name)"
             />
@@ -119,6 +124,14 @@ import { ref, onMounted } from 'vue';
 import { useBackend } from '@/hooks/useBackend';
 import { useHostAPI } from '@/hooks/useHostAPI';
 
+import { useClipboard } from '@vueuse/core';
+import useV3Clipboard from 'vue-clipboard3';
+import { useAppNotifyStore } from '@/store/appNotify';
+
+const { copy, isSupported } = useClipboard();
+const { toClipboard: copyFallback } = useV3Clipboard();
+const { showNotify } = useAppNotifyStore();
+
 const { icon, env, isEnvReady } = useBackend();
 const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi }
     = useHostAPI();
@@ -139,6 +152,16 @@ const addApiHandler = async () => {
         url: '',
       });
   checkingAPI.value = false;
+};
+
+const copyApi = async (api) => {
+  const url = `${window.location.origin}?api=${encodeURIComponent(api.url)}`;
+  if (isSupported) {
+    await copy(url);
+  } else {
+    await copyFallback(url);
+  }
+  showNotify({ title: url });
 };
 
 onMounted(() => {
@@ -230,6 +253,10 @@ onMounted(() => {
       .api-item-right {
         font-size: 20px;
         color: var(--comment-text-color);
+        cursor: pointer;
+        .copy-icon {
+          margin-right: 16px;
+        }
       }
     }
 
