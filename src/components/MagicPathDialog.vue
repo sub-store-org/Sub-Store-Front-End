@@ -7,13 +7,14 @@
       width: isMobile() ? '90%' : '400px',
       borderRadius: '12px',
       padding: '20px',
+      backgroundColor: 'var(--popup-color)',
     }"
     z-index="11000"
     :close-on-click-overlay="false"
   >
     <div class="magic-path-container">
-      <h3 class="title">{{ $t('magicPath.title') }}</h3>
-      <p class="description" v-html="$t('magicPath.description')"></p>
+      <div class="title">{{ $t('magicPath.title') }}</div>
+      <div class="description" v-html="$t('magicPath.description')"></div>
 
       <div class="input-container">
         <nut-input
@@ -255,6 +256,17 @@ watchEffect(() => {
     margin-bottom: 20px;
     text-align: center;
     color: var(--second-text-color);
+
+    :deep(br) {
+      display: block;
+      content: "";
+      margin-top: 8px;
+    }
+
+    :deep(a) {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
   }
 
   .input-container {
@@ -262,29 +274,60 @@ watchEffect(() => {
 
     .magic-path-input {
       width: 100%;
+      background: transparent;
+
+      :deep(.nut-input-inner) {
+        background-color: var(--card-color);
+        color: var(--primary-text-color);
+        border: 1px solid var(--divider-color);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      :deep(.nut-input__text) {
+        color: var(--primary-text-color);
+      }
+
+      :deep(.nut-input__placeholder) {
+        color: var(--comment-text-color);
+      }
+
+      :deep(input) {
+        background-color: transparent;
+        color: var(--primary-text-color);
+      }
+
+      :deep(.nut-input-clear) {
+        color: var(--comment-text-color);
+      }
+
+      :deep(.nut-input-error-message) {
+        color: var(--danger-color);
+      }
     }
 
     .preview-container {
       margin-top: 10px;
       padding: 10px;
       border-radius: 8px;
-      background-color: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: var(--card-color);
+      border: 1px solid var(--divider-color);
       font-size: 13px;
 
       .preview-label {
         font-weight: bold;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         color: var(--second-text-color);
       }
 
       .preview-url {
         word-break: break-all;
-        margin-bottom: 5px;
-        padding: 5px;
+        margin-bottom: 8px;
+        padding: 8px;
         border-radius: 4px;
-        background-color: rgba(0, 0, 0, 0.05);
+        background-color: var(--background-color);
         font-family: monospace;
+        border: 1px solid var(--divider-color);
 
         .preview-protocol, .preview-origin {
           color: var(--comment-text-color);
@@ -296,7 +339,7 @@ watchEffect(() => {
         }
 
         .preview-path {
-          color: var(--second-text-color);
+          color: var(--primary-text-color);
         }
 
         .preview-full {
@@ -308,6 +351,9 @@ watchEffect(() => {
         font-size: 12px;
         color: var(--comment-text-color);
         font-style: italic;
+        margin-top: 6px;
+        padding-top: 4px;
+        border-top: 1px solid var(--divider-color);
       }
     }
   }
@@ -323,14 +369,29 @@ watchEffect(() => {
     font-size: 12px;
     color: var(--comment-text-color);
     text-align: center;
+    background-color: var(--card-color);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--divider-color);
+    margin-top: 5px;
 
     p {
-      margin: 4px 0;
+      margin: 5px 0;
+      line-height: 1.4;
     }
   }
 }
 
 .magic-path-popup {
   background-color: var(--popup-color);
+
+  :deep(.nut-input) {
+    background-color: transparent;
+  }
+
+  :deep(input) {
+    background-color: transparent;
+    color: var(--primary-text-color);
+  }
 }
 </style>
