@@ -133,24 +133,9 @@ function checkAndShowMagicPathDialog() {
 function checkNeedConfiguration() {
   // 只在特定域名下自动弹窗
   const hostname = window.location.hostname;
-  if (hostname === 'sub-store.vercel.app') {
+  if (hostname !== 'sub-store.vercel.app') {
     return true;
   }
-
-  // 开发环境下可以通过URL参数强制显示配置对话框
-  if (import.meta.env.DEV) {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('config') === 'true') {
-      return true;
-    }
-  }
-
-  // 检查URL中是否有相关参数（仅保留config参数）
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('config') === 'true') {
-    return true;
-  }
-
   return false;
 }
 </script>
