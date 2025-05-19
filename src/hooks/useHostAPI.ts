@@ -181,7 +181,7 @@ export const useHostAPI = () => {
       }
 
       try {
-        const name = `Docker_${new Date().getTime()}`;
+        const name = `Custom_${new Date().getTime()}`;
         await addApi({ name, url: apiUrl });
         setCurrent(name);
 
