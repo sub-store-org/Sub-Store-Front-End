@@ -16,6 +16,12 @@
       <div class="title">{{ $t('magicPath.title') }}</div>
       <div class="description" v-html="$t('magicPath.description')"></div>
 
+      <!-- 显示URL参数错误信息 -->
+      <div v-if="props.urlApiError" class="url-api-error">
+        <nut-icon name="failure" size="16"></nut-icon>
+        <span>{{ props.urlApiError }}</span>
+      </div>
+
       <div class="input-container">
         <nut-input
           v-model="magicPath"
@@ -88,6 +94,7 @@ const { addApi, setCurrent } = useHostAPI();
 
 const props = defineProps<{
   modelValue: boolean;
+  urlApiError?: string;
 }>();
 
 const emit = defineEmits<{
@@ -243,13 +250,24 @@ const validateInput = () => {
   return true;
 };
 
-// 当对话框关闭时重置状态
+// 当对话框关闭时重置状态，当对话框打开时检查URL参数错误
 watch(visible, (newValue) => {
   if (!newValue) {
     magicPath.value = '';
     error.value = '';
     // 清除sessionStorage中的状态
     sessionStorage.removeItem('showMagicPathDialog');
+  } else if (newValue && props.urlApiError) {
+    // 如果有URL参数错误信息，显示在错误提示中
+    error.value = props.urlApiError;
+  }
+});
+
+// 监听URL参数错误信息的变化
+watch(() => props.urlApiError, (newValue) => {
+  if (newValue && visible.value) {
+    // 如果有新的URL参数错误信息且对话框正在显示，更新错误提示
+    error.value = newValue;
   }
 });
 
@@ -339,6 +357,27 @@ watchEffect(() => {
     :deep(a) {
       color: var(--primary-color);
       text-decoration: none;
+    }
+  }
+
+  .url-api-error {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 0, 0, 0.05);
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+
+    .nut-icon {
+      flex-shrink: 0;
+    }
+
+    span {
+      flex: 1;
     }
   }
 

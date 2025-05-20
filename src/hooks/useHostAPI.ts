@@ -130,7 +130,10 @@ export const useHostAPI = () => {
     errorCb?: () => Promise<void>;
   }) => {
     const query = window.location.search;
-    if (!query) return await errorCb?.();
+    if (!query) {
+      await errorCb?.();
+      return false; // 没有URL参数，返回false
+    }
 
     // 处理api参数
     const apiUrl = query
@@ -155,14 +158,50 @@ export const useHostAPI = () => {
 
       if (isExist) {
         if (isExist.name === currentName.value) return await errorCb?.();
-        return setCurrent(isExist.name);
+        setCurrent(isExist.name);
+        // 设置已配置标志，表示用户已通过URL参数成功配置了后端
+        localStorage.setItem('backendConfigured', 'true');
+        return true; // 返回true表示成功处理了URL参数
       }
 
-      const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
-      await addApi({ name, url });
-      setCurrent(name);
-      localStorage.setItem('backendConfigured', 'true');
-      return;
+      try {
+        // 测试API连接是否有效，添加超时处理
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+
+        const res = await axios.get<{ status: 'success' | 'failed' }>(
+          url + '/api/utils/env',
+          { signal: controller.signal }
+        );
+
+        clearTimeout(timeoutId); // 清除超时计时器
+
+        if (res?.data?.status === 'success') {
+          // API连接有效，添加到列表并设置为当前API
+          const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
+          const addResult = await addApi({ name, url });
+          if (addResult) {
+            setCurrent(name);
+            // 设置已配置标志，表示用户已通过URL参数成功配置了后端
+            localStorage.setItem('backendConfigured', 'true');
+            // 设置fetchResult为true，表示连接成功
+            useGlobalStore().setFetchResult(true);
+            return true; // 返回true表示成功处理了URL参数
+          }
+        } else {
+          // API连接无效，返回false以便显示配置弹窗
+          console.error('URL参数指定的API无效:', url);
+          // 设置fetchResult为false，表示连接失败
+          useGlobalStore().setFetchResult(false);
+          return false;
+        }
+      } catch (e) {
+        // API连接测试失败，返回false以便显示配置弹窗
+        console.error('测试URL参数指定的API时出错:', e);
+        // 设置fetchResult为false，表示连接失败
+        useGlobalStore().setFetchResult(false);
+        return false;
+      }
     }
 
     // 处理magicpath参数
@@ -178,24 +217,68 @@ export const useHostAPI = () => {
 
       if (isExist) {
         if (isExist.name === currentName.value) return await errorCb?.();
-        return setCurrent(isExist.name);
+        setCurrent(isExist.name);
+        // 设置已配置标志
+        localStorage.setItem('magicPathConfigured', 'true');
+        return true; // 返回true表示成功处理了URL参数
       }
 
       try {
-        const name = `Custom_${new Date().getTime()}`;
-        await addApi({ name, url: apiUrl });
-        setCurrent(name);
+        // 测试API连接是否有效，添加超时处理
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
 
-        // 设置已配置标志
-        localStorage.setItem('magicPathConfigured', 'true');
-        return;
+        const res = await axios.get<{ status: 'success' | 'failed' }>(
+          apiUrl + '/api/utils/env',
+          { signal: controller.signal }
+        );
+
+        clearTimeout(timeoutId); // 清除超时计时器
+
+        if (res?.data?.status === 'success') {
+          // API连接有效，添加到列表并设置为当前API
+          const name = `Custom_${new Date().getTime()}`;
+          const addResult = await addApi({ name, url: apiUrl });
+          if (addResult) {
+            setCurrent(name);
+            // 设置已配置标志
+            localStorage.setItem('magicPathConfigured', 'true');
+            localStorage.setItem('backendConfigured', 'true');
+            // 设置fetchResult为true，表示连接成功
+            useGlobalStore().setFetchResult(true);
+            return true; // 返回true表示成功处理了URL参数
+          }
+        } else {
+          // API连接无效，返回false以便显示配置弹窗
+          console.error('URL参数指定的magicpath无效:', apiUrl);
+          // 设置fetchResult为false，表示连接失败
+          useGlobalStore().setFetchResult(false);
+          return false;
+        }
       } catch (e) {
-        console.error('处理magicPath参数时出错:', e);
+        // API连接测试失败，返回false以便显示配置弹窗
+        console.error('测试URL参数指定的magicpath时出错:', e);
+        // 设置fetchResult为false，表示连接失败
+        useGlobalStore().setFetchResult(false);
+        return false;
       }
     }
 
     // 如果没有处理任何参数，执行错误回调
-    return await errorCb?.();
+    try {
+      await errorCb?.();
+      // 检查是否成功连接到后端
+      const globalStore = useGlobalStore();
+      const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+      if (!hasBackendEnv) {
+        // 如果没有连接到后端，设置fetchResult为false
+        globalStore.setFetchResult(false);
+      }
+    } catch (e) {
+      console.error('Error in errorCb:', e);
+      useGlobalStore().setFetchResult(false);
+    }
+    return false; // 返回false表示没有成功处理URL参数
   };
 
   return {

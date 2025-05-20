@@ -878,10 +878,13 @@ export default {
       currentTag: '当前',
     },
     addApi: {
-      title: '添加新后端',
+      title: '添加新的后端连接配置',
       placeholder: {
         name: '请输入后端名称，必须唯一',
-        url: '请输入完整后端地址',
+        url: '请输入后端路径或地址',
+      },
+      errors: {
+        nameEmpty: '名称不能为空',
       },
       btn: '添加',
     },
