@@ -4,7 +4,10 @@
   <main class="page-body">
     <router-view />
   </main>
-  <MagicPathDialog v-model="showMagicPathDialog" />
+  <MagicPathDialog
+    v-model="showMagicPathDialog"
+    :url-api-error="urlApiError"
+  />
 </template>
 
 <script setup lang="ts">
@@ -55,11 +58,114 @@ globalStore.setBottomSafeArea(
   navigator.standalone && !isLegacyDevices() ? 18 : 0
 );
 
-// 如果带有 url 参数配置 api，则将其添加到 api 列表并切换
 const { handleUrlQuery } = useHostAPI();
-handleUrlQuery({
-  errorCb: async () => initStores(true, true, false),
-});
+const urlApiConfigSuccess = ref(false);
+const urlApiError = ref('');
+
+const processUrlApiConfig = async () => {
+  const query = window.location.search;
+  let hasUrlParams = false;
+
+  if (query) {
+    const hasApiParam = query.includes('api=');
+    const hasMagicPathParam = query.includes('magicpath=');
+
+    if (hasApiParam) {
+      urlApiError.value = '通过URL参数指定的API地址连接失败，请检查地址是否正确';
+      hasUrlParams = true;
+    } else if (hasMagicPathParam) {
+      urlApiError.value = '通过URL参数指定的magicpath连接失败，请检查路径是否正确';
+      hasUrlParams = true;
+    }
+  }
+
+  const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
+
+  if (backendConfigured !== 'true' && route.path === '/subs' && !hasUrlParams) {
+    showMagicPathDialog.value = true;
+    sessionStorage.setItem('showMagicPathDialog', 'true');
+  }
+
+  const result = await handleUrlQuery({
+    errorCb: async () => {
+      try {
+        await initStores(true, true, false);
+        // 只检查是否有环境信息，不再要求必须有数据
+        const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+        if (hasBackendEnv) {
+          showMagicPathDialog.value = false;
+          sessionStorage.removeItem('showMagicPathDialog');
+          localStorage.setItem('backendConfigured', 'true');
+        } else {
+          globalStore.setFetchResult(false);
+          localStorage.removeItem('backendConfigured');
+          localStorage.removeItem('magicPathConfigured');
+          if (route.path === '/subs') {
+            showMagicPathDialog.value = true;
+            sessionStorage.setItem('showMagicPathDialog', 'true');
+          }
+        }
+      } catch (e) {
+        console.error('Error initializing stores:', e);
+        globalStore.setFetchResult(false);
+        localStorage.removeItem('backendConfigured');
+        localStorage.removeItem('magicPathConfigured');
+        if (route.path === '/subs') {
+          showMagicPathDialog.value = true;
+          sessionStorage.setItem('showMagicPathDialog', 'true');
+        }
+      }
+    },
+  });
+
+  if (result) {
+    urlApiConfigSuccess.value = true;
+    urlApiError.value = '';
+
+    showMagicPathDialog.value = false;
+    sessionStorage.removeItem('showMagicPathDialog');
+
+    await initStores(false, true, false);
+  } else {
+    if (hasUrlParams) {
+      globalStore.setFetchResult(false);
+      localStorage.removeItem('backendConfigured');
+      localStorage.removeItem('magicPathConfigured');
+      if (route.path === '/subs') {
+        showMagicPathDialog.value = true;
+        sessionStorage.setItem('showMagicPathDialog', 'true');
+      }
+    }
+    try {
+      await initStores(true, true, false);
+      const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+      const fetchResult = globalStore.fetchResult;
+      if (hasBackendEnv && fetchResult) {
+        showMagicPathDialog.value = false;
+        sessionStorage.removeItem('showMagicPathDialog');
+        localStorage.setItem('backendConfigured', 'true');
+      } else {
+        localStorage.removeItem('backendConfigured');
+        localStorage.removeItem('magicPathConfigured');
+        if (route.path === '/subs') {
+          showMagicPathDialog.value = true;
+          sessionStorage.setItem('showMagicPathDialog', 'true');
+        }
+      }
+    } catch (e) {
+      console.error('Error initializing stores:', e);
+      globalStore.setFetchResult(false);
+      localStorage.removeItem('backendConfigured');
+      localStorage.removeItem('magicPathConfigured');
+      if (route.path === '/subs') {
+        showMagicPathDialog.value = true;
+        sessionStorage.setItem('showMagicPathDialog', 'true');
+      }
+    }
+  }
+}
+
+processUrlApiConfig();
 
 // 初始化颜色主题
 useThemes();
@@ -72,6 +178,34 @@ watchEffect(() => {
   allLength.value = getFlowsUrlList(subs.value).length;
   const currentLength = Object.keys(flows.value).length;
   globalStore.setFlowFetching(allLength.value !== currentLength);
+});
+
+watchEffect(() => {
+  if (!globalStore.isLoading) {
+    setTimeout(() => {
+      // 只检查是否有环境信息，不再要求必须有数据
+      const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+      const fetchResult = globalStore.fetchResult;
+
+      if (hasBackendEnv && fetchResult) {
+        localStorage.setItem('backendConfigured', 'true');
+        showMagicPathDialog.value = false;
+        sessionStorage.removeItem('showMagicPathDialog');
+      } else {
+        if (!fetchResult) {
+          localStorage.removeItem('backendConfigured');
+          localStorage.removeItem('magicPathConfigured');
+
+          if (route.path === '/subs') {
+            showMagicPathDialog.value = true;
+            sessionStorage.setItem('showMagicPathDialog', 'true');
+          }
+        } else {
+          checkAndShowMagicPathDialog();
+        }
+      }
+    }, 100);
+  }
 });
 
 // 检测是否需要显示后端配置对话框
@@ -88,28 +222,85 @@ onMounted(() => {
   checkAndShowMagicPathDialog();
 });
 
-// 检查是否需要显示后端配置对话框
 function checkAndShowMagicPathDialog() {
-  // 检查是否已经配置过后端
-  const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
-  if (backendConfigured === 'true') {
+  if (showMagicPathDialog.value) {
     return;
   }
 
-  // 检查是否需要配置
+  const fetchResult = globalStore.fetchResult;
+  if (!fetchResult && !globalStore.isLoading) {
+    localStorage.removeItem('backendConfigured');
+    localStorage.removeItem('magicPathConfigured');
+
+    if (route.path === '/subs') {
+      showMagicPathDialog.value = true;
+      sessionStorage.setItem('showMagicPathDialog', 'true');
+    }
+    return;
+  }
+
+  const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
+  if (backendConfigured === 'true') {
+    // 只检查是否有环境信息，不再要求必须有数据
+    const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+
+    // 如果有配置标志但没有环境信息，仍然需要显示配置弹窗
+    if (!hasBackendEnv && !globalStore.isLoading) {
+      localStorage.removeItem('backendConfigured');
+      localStorage.removeItem('magicPathConfigured');
+    } else {
+      return;
+    }
+  }
+
+  if (urlApiConfigSuccess.value) {
+    return;
+  }
+
+  if (globalStore.isLoading) {
+    return;
+  }
+
   const needConfiguration = checkNeedConfiguration();
   if (needConfiguration && route.path === '/subs') {
-    // 在主页面显示配置对话框
     showMagicPathDialog.value = true;
 
-    // 将状态保存到sessionStorage，确保刷新页面后仍然显示对话框
     sessionStorage.setItem('showMagicPathDialog', 'true');
+  } else {
+    showMagicPathDialog.value = false;
+    sessionStorage.removeItem('showMagicPathDialog');
   }
 }
 
-// 检测是否需要配置
 function checkNeedConfiguration() {
-  // 只在特定域名下自动弹窗
+  const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+  const fetchResult = globalStore.fetchResult;
+
+  if (!fetchResult) {
+    return true;
+  }
+
+  if (hasBackendEnv && fetchResult) {
+    localStorage.setItem('backendConfigured', 'true');
+    return false;
+  }
+
+  const query = window.location.search;
+  if (query) {
+    const hasApiParam = query.includes('api=');
+    const hasMagicPathParam = query.includes('magicpath=');
+
+    if (hasApiParam || hasMagicPathParam) {
+      if (!urlApiConfigSuccess.value) {
+        return true;
+      }
+    }
+  }
+
+  if (!hasBackendEnv) {
+    return true;
+  }
+
   const hostname = window.location.hostname;
   if (hostname !== 'sub-store.vercel.app') {
     return true;
