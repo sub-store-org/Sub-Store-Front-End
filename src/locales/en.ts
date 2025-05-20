@@ -889,10 +889,13 @@ export default {
       currentTag: "Current",
     },
     addApi: {
-      title: "Add New Backend",
+      title: "Add New Backend Connection",
       placeholder: {
         name: "Please input backend name, must be unique",
-        url: "Please input the full URL of the backend",
+        url: "Please input backend path or address",
+      },
+      errors: {
+        nameEmpty: "Name cannot be empty",
       },
       btn: "Add",
     },
