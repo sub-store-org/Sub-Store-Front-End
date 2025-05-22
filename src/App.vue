@@ -33,7 +33,9 @@ const { subs, flows } = storeToRefs(subsStore);
 
 const allLength = ref(null);
 // 初始化时检查sessionStorage中是否有保存的状态
-const showMagicPathDialog = ref(sessionStorage.getItem('showMagicPathDialog') === 'true');
+const showMagicPathDialog = ref(false);
+// 添加状态变量，用于跟踪后端连接状态的检查过程
+const isBackendCheckInProgress = ref(true);
 
 // 处于 pwa 且屏幕底部有小白条时将底部安全距离写入 global store
 type NavigatorExtend = Navigator & {
@@ -63,9 +65,13 @@ const urlApiConfigSuccess = ref(false);
 const urlApiError = ref('');
 
 const processUrlApiConfig = async () => {
+  // 设置检查状态为进行中
+  isBackendCheckInProgress.value = true;
+
   const query = window.location.search;
   let hasUrlParams = false;
 
+  // 检查URL参数
   if (query) {
     const hasApiParam = query.includes('api=');
     const hasMagicPathParam = query.includes('magicpath=');
@@ -79,30 +85,27 @@ const processUrlApiConfig = async () => {
     }
   }
 
-  const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
-
-  if (backendConfigured !== 'true' && route.path === '/subs' && !hasUrlParams) {
-    showMagicPathDialog.value = true;
-    sessionStorage.setItem('showMagicPathDialog', 'true');
-  }
-
+  // 处理URL参数中的后端配置
   const result = await handleUrlQuery({
     errorCb: async () => {
       try {
+        // 尝试初始化stores，获取后端环境信息
         await initStores(true, true, false);
-        // 只检查是否有环境信息，不再要求必须有数据
+
+        // 检查是否有环境信息
         const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+
         if (hasBackendEnv) {
           showMagicPathDialog.value = false;
-          sessionStorage.removeItem('showMagicPathDialog');
           localStorage.setItem('backendConfigured', 'true');
+          globalStore.setFetchResult(true);
         } else {
           globalStore.setFetchResult(false);
           localStorage.removeItem('backendConfigured');
           localStorage.removeItem('magicPathConfigured');
+
           if (route.path === '/subs') {
             showMagicPathDialog.value = true;
-            sessionStorage.setItem('showMagicPathDialog', 'true');
           }
         }
       } catch (e) {
@@ -110,59 +113,69 @@ const processUrlApiConfig = async () => {
         globalStore.setFetchResult(false);
         localStorage.removeItem('backendConfigured');
         localStorage.removeItem('magicPathConfigured');
+
+        // 只在/subs路径下且连接出错时才显示弹窗
         if (route.path === '/subs') {
           showMagicPathDialog.value = true;
-          sessionStorage.setItem('showMagicPathDialog', 'true');
         }
       }
     },
   });
 
   if (result) {
+    // URL参数指定的后端连接成功
     urlApiConfigSuccess.value = true;
     urlApiError.value = '';
-
     showMagicPathDialog.value = false;
-    sessionStorage.removeItem('showMagicPathDialog');
 
+    // 初始化stores，获取数据
     await initStores(false, true, false);
   } else {
     if (hasUrlParams) {
+      // URL参数指定的后端连接失败
       globalStore.setFetchResult(false);
       localStorage.removeItem('backendConfigured');
       localStorage.removeItem('magicPathConfigured');
+
       if (route.path === '/subs') {
         showMagicPathDialog.value = true;
-        sessionStorage.setItem('showMagicPathDialog', 'true');
       }
-    }
-    try {
-      await initStores(true, true, false);
-      const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
-      const fetchResult = globalStore.fetchResult;
-      if (hasBackendEnv && fetchResult) {
-        showMagicPathDialog.value = false;
-        sessionStorage.removeItem('showMagicPathDialog');
-        localStorage.setItem('backendConfigured', 'true');
-      } else {
+    } else {
+      try {
+        // 尝试使用默认或已配置的后端
+        await initStores(true, true, false);
+
+        const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+        const fetchResult = globalStore.fetchResult;
+
+        if (hasBackendEnv && fetchResult) {
+          // 连接成功
+          showMagicPathDialog.value = false;
+          localStorage.setItem('backendConfigured', 'true');
+        } else {
+          // 连接失败
+          localStorage.removeItem('backendConfigured');
+          localStorage.removeItem('magicPathConfigured');
+
+          if (route.path === '/subs') {
+            showMagicPathDialog.value = true;
+          }
+        }
+      } catch (e) {
+        console.error('Error initializing stores:', e);
+        globalStore.setFetchResult(false);
         localStorage.removeItem('backendConfigured');
         localStorage.removeItem('magicPathConfigured');
+
         if (route.path === '/subs') {
           showMagicPathDialog.value = true;
-          sessionStorage.setItem('showMagicPathDialog', 'true');
         }
-      }
-    } catch (e) {
-      console.error('Error initializing stores:', e);
-      globalStore.setFetchResult(false);
-      localStorage.removeItem('backendConfigured');
-      localStorage.removeItem('magicPathConfigured');
-      if (route.path === '/subs') {
-        showMagicPathDialog.value = true;
-        sessionStorage.setItem('showMagicPathDialog', 'true');
       }
     }
   }
+
+  // 设置检查状态为完成
+  isBackendCheckInProgress.value = false;
 }
 
 processUrlApiConfig();
@@ -181,28 +194,29 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-  if (!globalStore.isLoading) {
+  // 只有当加载完成且后端连接检查也完成时才执行
+  if (!globalStore.isLoading && !isBackendCheckInProgress.value) {
+    // 使用setTimeout确保DOM已更新
     setTimeout(() => {
-      // 只检查是否有环境信息，不再要求必须有数据
+      // 检查是否有环境信息
       const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
       const fetchResult = globalStore.fetchResult;
 
       if (hasBackendEnv && fetchResult) {
+        // 连接成功
         localStorage.setItem('backendConfigured', 'true');
         showMagicPathDialog.value = false;
-        sessionStorage.removeItem('showMagicPathDialog');
-      } else {
-        if (!fetchResult) {
-          localStorage.removeItem('backendConfigured');
-          localStorage.removeItem('magicPathConfigured');
+      } else if (!fetchResult) {
+        // 连接失败
+        localStorage.removeItem('backendConfigured');
+        localStorage.removeItem('magicPathConfigured');
 
-          if (route.path === '/subs') {
-            showMagicPathDialog.value = true;
-            sessionStorage.setItem('showMagicPathDialog', 'true');
-          }
-        } else {
-          checkAndShowMagicPathDialog();
+        if (route.path === '/subs') {
+          showMagicPathDialog.value = true;
         }
+      } else {
+        // 其他情况，调用检查函数
+        checkAndShowMagicPathDialog();
       }
     }, 100);
   }
@@ -223,10 +237,17 @@ onMounted(() => {
 });
 
 function checkAndShowMagicPathDialog() {
+  // 如果后端连接检查仍在进行中，不显示弹窗
+  if (isBackendCheckInProgress.value) {
+    return;
+  }
+
+  // 如果弹窗已经显示，不需要再次检查
   if (showMagicPathDialog.value) {
     return;
   }
 
+  // 如果后端连接失败且不在加载状态，显示弹窗
   const fetchResult = globalStore.fetchResult;
   if (!fetchResult && !globalStore.isLoading) {
     localStorage.removeItem('backendConfigured');
@@ -234,77 +255,82 @@ function checkAndShowMagicPathDialog() {
 
     if (route.path === '/subs') {
       showMagicPathDialog.value = true;
-      sessionStorage.setItem('showMagicPathDialog', 'true');
     }
     return;
   }
 
+  // 检查是否已配置后端
   const backendConfigured = localStorage.getItem('backendConfigured') || localStorage.getItem('magicPathConfigured');
   if (backendConfigured === 'true') {
-    // 只检查是否有环境信息，不再要求必须有数据
+    // 检查是否有环境信息
     const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
 
-    // 如果有配置标志但没有环境信息，仍然需要显示配置弹窗
+    // 如果有配置标志但没有环境信息，说明连接失败，需要显示配置弹窗
     if (!hasBackendEnv && !globalStore.isLoading) {
       localStorage.removeItem('backendConfigured');
       localStorage.removeItem('magicPathConfigured');
     } else {
+      // 连接成功，不显示弹窗
       return;
     }
   }
 
+  // 如果URL参数指定的后端连接成功，不显示弹窗
   if (urlApiConfigSuccess.value) {
     return;
   }
 
+  // 如果正在加载中，不显示弹窗
   if (globalStore.isLoading) {
     return;
   }
 
+  // 最终检查是否需要配置
   const needConfiguration = checkNeedConfiguration();
   if (needConfiguration && route.path === '/subs') {
     showMagicPathDialog.value = true;
-
-    sessionStorage.setItem('showMagicPathDialog', 'true');
   } else {
     showMagicPathDialog.value = false;
-    sessionStorage.removeItem('showMagicPathDialog');
   }
 }
 
 function checkNeedConfiguration() {
+  // 如果后端连接检查仍在进行中，不需要配置
+  if (isBackendCheckInProgress.value) {
+    return false;
+  }
+
   const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
   const fetchResult = globalStore.fetchResult;
 
+  // 如果连接失败，需要配置
   if (!fetchResult) {
     return true;
   }
 
+  // 如果连接成功且有环境信息，不需要配置
   if (hasBackendEnv && fetchResult) {
     localStorage.setItem('backendConfigured', 'true');
     return false;
   }
 
+  // 检查URL参数
   const query = window.location.search;
   if (query) {
     const hasApiParam = query.includes('api=');
     const hasMagicPathParam = query.includes('magicpath=');
 
-    if (hasApiParam || hasMagicPathParam) {
-      if (!urlApiConfigSuccess.value) {
-        return true;
-      }
+    // 如果URL中有参数但连接失败，需要配置
+    if ((hasApiParam || hasMagicPathParam) && !urlApiConfigSuccess.value) {
+      return true;
     }
   }
 
+  // 如果没有环境信息，需要配置
   if (!hasBackendEnv) {
     return true;
   }
 
-  const hostname = window.location.hostname;
-  if (hostname !== 'sub-store.vercel.app') {
-    return true;
-  }
   return false;
 }
 </script>
