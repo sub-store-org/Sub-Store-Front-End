@@ -110,6 +110,10 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           // globPatterns: ['**/*.{css,js,gz,eot,html,svg,png,ico,ttf,woff2}'],
           runtimeCaching: [
             {
+              urlPattern: /(^|\/.+)\/(api|download|share)\/.+/,
+              handler: "NetworkOnly",
+            },
+            {
               urlPattern: /.*\.(?:js|css|gz|html|json)/i, // json
               handler: "CacheFirst",
               options: {
