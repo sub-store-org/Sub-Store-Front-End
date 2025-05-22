@@ -16,8 +16,8 @@
       <div class="title">{{ $t('magicPath.title') }}</div>
       <div class="description" v-html="$t('magicPath.description')"></div>
 
-      <!-- 显示URL参数错误信息 -->
-      <div v-if="props.urlApiError" class="url-api-error">
+      <!-- 显示URL参数错误信息 - 仅在非URL参数指定API的情况下显示 -->
+      <div v-if="props.urlApiError && !props.urlApiValue" class="url-api-error">
         <nut-icon name="failure" size="16"></nut-icon>
         <span>{{ props.urlApiError }}</span>
       </div>
@@ -96,6 +96,8 @@ const { addApi, setCurrent } = useHostAPI();
 const props = defineProps<{
   modelValue: boolean;
   urlApiError?: string;
+  urlApiValue?: string; // URL参数中指定的API地址
+  connectionCycle?: number; // 当前的连接检测周期
 }>();
 
 const emit = defineEmits<{
@@ -198,9 +200,20 @@ const handleSubmit = async () => {
 
 // 跳过配置
 const handleSkip = () => {
+  // 设置配置标志
   localStorage.setItem('backendConfigured', 'true');
   localStorage.setItem('magicPathConfigured', 'true'); // 兼容旧版本
+
+  // 记录用户跳过的连接检测周期
+  // 这样只有在当前连接检测周期内才会尊重用户的跳过选择
+  if (props.connectionCycle) {
+    sessionStorage.setItem('skippedConnectionCycle', props.connectionCycle.toString());
+  }
+
+  // 清除会话存储中的状态
   sessionStorage.removeItem('showMagicPathDialog');
+
+  // 关闭弹窗
   visible.value = false;
 };
 
@@ -251,16 +264,26 @@ const validateInput = () => {
   return true;
 };
 
-// 当对话框关闭时重置状态，当对话框打开时检查URL参数错误
+// 当对话框关闭时重置状态，当对话框打开时检查URL参数错误和API值
 watch(visible, (newValue) => {
   if (!newValue) {
     magicPath.value = '';
     error.value = '';
     // 清除sessionStorage中的状态
     sessionStorage.removeItem('showMagicPathDialog');
-  } else if (newValue && props.urlApiError) {
-    // 如果有URL参数错误信息，显示在错误提示中
-    error.value = props.urlApiError;
+  } else if (newValue) {
+    // 如果对话框打开
+    if (props.urlApiValue) {
+      // 如果有URL参数指定的API地址，自动填入输入框
+      magicPath.value = props.urlApiValue;
+      // 如果有URL参数错误信息，显示在输入框下方的错误提示中
+      if (props.urlApiError) {
+        error.value = props.urlApiError;
+      }
+    } else if (props.urlApiError) {
+      // 如果只有URL参数错误信息，显示在错误提示中
+      error.value = props.urlApiError;
+    }
   }
 });
 
@@ -269,6 +292,14 @@ watch(() => props.urlApiError, (newValue) => {
   if (newValue && visible.value) {
     // 如果有新的URL参数错误信息且对话框正在显示，更新错误提示
     error.value = newValue;
+  }
+});
+
+// 监听URL参数API值的变化
+watch(() => props.urlApiValue, (newValue) => {
+  if (newValue && visible.value) {
+    // 如果有新的URL参数API值且对话框正在显示，更新输入框
+    magicPath.value = newValue;
   }
 });
 
