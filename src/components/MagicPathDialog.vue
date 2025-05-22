@@ -74,7 +74,8 @@
 
       <div class="info">
         <p>{{ $t('magicPath.info') }}</p>
-        <p>{{ $t('magicPath.dockerInfo') }}</p>
+        <p>{{ $t('magicPath.customInfo') }}</p>
+        <p><a href="https://t.me/zhetengsha/1068" target="_blank">{{ $t('magicPath.troubleshooting') }}</a></p>
       </div>
     </div>
   </nut-popup>
@@ -498,6 +499,9 @@ watchEffect(() => {
     p {
       margin: 5px 0;
       line-height: 1.4;
+    }
+    a {
+      color: var(--primary-color);
     }
   }
 }

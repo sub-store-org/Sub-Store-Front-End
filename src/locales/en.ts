@@ -973,7 +973,8 @@ export default {
     connect: "Connect",
     skip: "Skip",
     info: "You can configure this later in the Backend Settings in the My Profile page",
-    dockerInfo: "Backend path can be set via SUB_STORE_FRONTEND_BACKEND_PATH environment variable",
+    customInfo: "Self-Hosted: Backend path can be set via SUB_STORE_FRONTEND_BACKEND_PATH environment variable",
+    troubleshooting: 'You may refer to this troubleshooting guide',
     preview: "Preview",
     inputTypes: {
       path: "Path only mode (using current domain)",

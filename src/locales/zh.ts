@@ -963,7 +963,8 @@ export default {
     connect: '连接',
     skip: '跳过',
     info: '您可以稍后在"我的"页面中的"后端设置"中配置',
-    dockerInfo: '可通过环境变量 SUB_STORE_FRONTEND_BACKEND_PATH 设置后端路径',
+    customInfo: '自建后端: 可通过环境变量 SUB_STORE_FRONTEND_BACKEND_PATH 设置后端路径',
+    troubleshooting: '你可以查看此排查指南',
     preview: '预览',
     inputTypes: {
       path: '仅路径模式 (使用当前域名)',

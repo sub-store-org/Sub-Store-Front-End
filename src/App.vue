@@ -73,14 +73,23 @@ const processUrlApiConfig = async () => {
 
   // 检查URL参数
   if (query) {
-    const hasApiParam = query.includes('api=');
-    const hasMagicPathParam = query.includes('magicpath=');
+    
+    const hasApiParam = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'api');
+    const hasMagicPathParam = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'magicpath');
 
     if (hasApiParam) {
-      urlApiError.value = '通过URL参数指定的API地址连接失败，请检查地址是否正确';
+      urlApiError.value = '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确';
       hasUrlParams = true;
     } else if (hasMagicPathParam) {
-      urlApiError.value = '通过URL参数指定的magicpath连接失败，请检查路径是否正确';
+      urlApiError.value = '通过 URL 参数指定的 magicpath 连接失败，请检查路径是否正确';
       hasUrlParams = true;
     }
   }
