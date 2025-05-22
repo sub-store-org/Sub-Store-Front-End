@@ -7,6 +7,7 @@
   <MagicPathDialog
     v-model="showMagicPathDialog"
     :url-api-error="urlApiError"
+    :url-api-value="urlApiValue"
     :connection-cycle="connectionCheckCycle"
   />
 </template>
@@ -66,6 +67,7 @@ globalStore.setBottomSafeArea(
 const { handleUrlQuery } = useHostAPI();
 const urlApiConfigSuccess = ref(false);
 const urlApiError = ref('');
+const urlApiValue = ref('');
 
 const processUrlApiConfig = async () => {
   // 设置检查状态为进行中
@@ -92,9 +94,15 @@ const processUrlApiConfig = async () => {
       .find(i => i[0] === 'magicpath');
 
     if (hasApiParam) {
+      const apiValue = decodeURIComponent(hasApiParam[1]);
+      urlApiValue.value = apiValue;
       urlApiError.value = '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确';
       hasUrlParams = true;
     } else if (hasMagicPathParam) {
+      const magicPath = decodeURIComponent(hasMagicPathParam[1]);
+      const currentHost = window.location.origin;
+      const apiUrl = `${currentHost}/${magicPath.replace(/^\/+/, '')}`;
+      urlApiValue.value = apiUrl;
       urlApiError.value = '通过 URL 参数指定的 magicpath 连接失败，请检查路径是否正确';
       hasUrlParams = true;
     }
