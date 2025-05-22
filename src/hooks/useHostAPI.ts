@@ -85,7 +85,7 @@ export const useHostAPI = () => {
     currentName.value = name;
   };
 
-  const addApi = async ({ name, url }: HostAPI) => {
+  const addApi = async ({ name, url }: HostAPI, skipConnectionCheck = false) => {
     if (apis.value.find(api => api.name === name)) {
       showNotify({
         title: 'API 名称重复',
@@ -93,6 +93,12 @@ export const useHostAPI = () => {
       });
       return false;
     } else {
+      // 如果跳过连接检查，直接添加API
+      if (skipConnectionCheck) {
+        apis.value.push({ name, url });
+        return true;
+      }
+
       try {
         const res = await axios.get<{ status: 'success' | 'failed' }>(
           url + '/api/utils/env'
@@ -214,42 +220,58 @@ export const useHostAPI = () => {
       }
 
       try {
-        // 测试API连接是否有效，添加超时处理
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+        // 生成API名称
+        const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
 
-        const res = await axios.get<{ status: 'success' | 'failed' }>(
-          url + '/api/utils/env',
-          { signal: controller.signal }
-        );
+        // 无论连接是否成功，都先添加到列表并设置为当前API
+        // 使用skipConnectionCheck=true跳过连接检查直接添加
+        const addResult = await addApi({ name, url }, true);
+        if (addResult) {
+          // 设置为当前API
+          setCurrent(name);
 
-        clearTimeout(timeoutId); // 清除超时计时器
-
-        if (res?.data?.status === 'success') {
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
 
-          // API连接有效，添加到列表并设置为当前API
-          const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
-          const addResult = await addApi({ name, url });
-          if (addResult) {
-            setCurrent(name);
-            // 设置已配置标志，表示用户已通过URL参数成功配置了后端
-            localStorage.setItem('backendConfigured', 'true');
-            // 设置fetchResult为true，表示连接成功
-            globalStore.setFetchResult(true);
-            return true; // 返回true表示成功处理了URL参数
+          // 测试API连接是否有效，添加超时处理
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+
+          try {
+            const res = await axios.get<{ status: 'success' | 'failed' }>(
+              url + '/api/utils/env',
+              { signal: controller.signal }
+            );
+
+            clearTimeout(timeoutId); // 清除超时计时器
+
+            if (res?.data?.status === 'success') {
+              // 设置已配置标志，表示用户已通过URL参数成功配置了后端
+              localStorage.setItem('backendConfigured', 'true');
+              // 设置fetchResult为true，表示连接成功
+              globalStore.setFetchResult(true);
+            } else {
+              // API连接无效，但已添加到列表
+              console.error('URL参数指定的API无效:', url);
+              // 设置fetchResult为false，表示连接失败
+              globalStore.setFetchResult(false);
+            }
+          } catch (connectionError) {
+            // API连接测试失败，但已添加到列表
+            console.error('测试URL参数指定的API时出错:', connectionError);
+            // 设置fetchResult为false，表示连接失败
+            globalStore.setFetchResult(false);
           }
-        } else {
-          // API连接无效，返回false以便显示配置弹窗
-          console.error('URL参数指定的API无效:', url);
-          // 设置fetchResult为false，表示连接失败
-          globalStore.setFetchResult(false);
-          return false;
+
+          // 无论连接是否成功，都返回true表示已处理URL参数
+          return true;
         }
+
+        // 如果添加API失败（例如名称重复），返回false
+        return false;
       } catch (e) {
-        // API连接测试失败，返回false以便显示配置弹窗
-        console.error('测试URL参数指定的API时出错:', e);
+        // 处理过程中出现其他错误
+        console.error('处理URL参数指定的API时出错:', e);
         // 设置fetchResult为false，表示连接失败
         globalStore.setFetchResult(false);
         return false;
@@ -316,43 +338,59 @@ export const useHostAPI = () => {
       }
 
       try {
-        // 测试API连接是否有效，添加超时处理
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+        // 生成API名称
+        const name = `Custom_${new Date().getTime()}`;
 
-        const res = await axios.get<{ status: 'success' | 'failed' }>(
-          apiUrl + '/api/utils/env',
-          { signal: controller.signal }
-        );
+        // 无论连接是否成功，都先添加到列表并设置为当前API
+        // 使用skipConnectionCheck=true跳过连接检查直接添加
+        const addResult = await addApi({ name, url: apiUrl }, true);
+        if (addResult) {
+          // 设置为当前API
+          setCurrent(name);
 
-        clearTimeout(timeoutId); // 清除超时计时器
-
-        if (res?.data?.status === 'success') {
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
 
-          // API连接有效，添加到列表并设置为当前API
-          const name = `Custom_${new Date().getTime()}`;
-          const addResult = await addApi({ name, url: apiUrl });
-          if (addResult) {
-            setCurrent(name);
-            // 设置已配置标志
-            localStorage.setItem('magicPathConfigured', 'true');
-            localStorage.setItem('backendConfigured', 'true');
-            // 设置fetchResult为true，表示连接成功
-            globalStore.setFetchResult(true);
-            return true; // 返回true表示成功处理了URL参数
+          // 测试API连接是否有效，添加超时处理
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超时
+
+          try {
+            const res = await axios.get<{ status: 'success' | 'failed' }>(
+              apiUrl + '/api/utils/env',
+              { signal: controller.signal }
+            );
+
+            clearTimeout(timeoutId); // 清除超时计时器
+
+            if (res?.data?.status === 'success') {
+              // 设置已配置标志
+              localStorage.setItem('magicPathConfigured', 'true');
+              localStorage.setItem('backendConfigured', 'true');
+              // 设置fetchResult为true，表示连接成功
+              globalStore.setFetchResult(true);
+            } else {
+              // API连接无效，但已添加到列表
+              console.error('URL参数指定的magicpath无效:', apiUrl);
+              // 设置fetchResult为false，表示连接失败
+              globalStore.setFetchResult(false);
+            }
+          } catch (connectionError) {
+            // API连接测试失败，但已添加到列表
+            console.error('测试URL参数指定的magicpath时出错:', connectionError);
+            // 设置fetchResult为false，表示连接失败
+            globalStore.setFetchResult(false);
           }
-        } else {
-          // API连接无效，返回false以便显示配置弹窗
-          console.error('URL参数指定的magicpath无效:', apiUrl);
-          // 设置fetchResult为false，表示连接失败
-          globalStore.setFetchResult(false);
-          return false;
+
+          // 无论连接是否成功，都返回true表示已处理URL参数
+          return true;
         }
+
+        // 如果添加API失败（例如名称重复），返回false
+        return false;
       } catch (e) {
-        // API连接测试失败，返回false以便显示配置弹窗
-        console.error('测试URL参数指定的magicpath时出错:', e);
+        // 处理过程中出现其他错误
+        console.error('处理URL参数指定的magicpath时出错:', e);
         // 设置fetchResult为false，表示连接失败
         globalStore.setFetchResult(false);
         return false;

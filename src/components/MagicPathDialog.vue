@@ -96,6 +96,7 @@ const { addApi, setCurrent } = useHostAPI();
 const props = defineProps<{
   modelValue: boolean;
   urlApiError?: string;
+  connectionCycle?: number; // 当前的连接检测周期
 }>();
 
 const emit = defineEmits<{
@@ -198,9 +199,20 @@ const handleSubmit = async () => {
 
 // 跳过配置
 const handleSkip = () => {
+  // 设置配置标志
   localStorage.setItem('backendConfigured', 'true');
   localStorage.setItem('magicPathConfigured', 'true'); // 兼容旧版本
+
+  // 记录用户跳过的连接检测周期
+  // 这样只有在当前连接检测周期内才会尊重用户的跳过选择
+  if (props.connectionCycle) {
+    sessionStorage.setItem('skippedConnectionCycle', props.connectionCycle.toString());
+  }
+
+  // 清除会话存储中的状态
   sessionStorage.removeItem('showMagicPathDialog');
+
+  // 关闭弹窗
   visible.value = false;
 };
 
