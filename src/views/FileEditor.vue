@@ -808,10 +808,10 @@ const urlValidator = (val: string): Promise<boolean> => {
           .split(/[\r\n]+/)
           .map((i) => i.trim())
           .filter((i) => i.length)
-          .every((i) => /^(http|https):\/\/\S+$/.test(i))
+          .every((i) => /^(http|https):\/\/\S+$/.test(i) || /^\/api\/(file|module)\/(.+)/.test(i) || /^\/.+/.test(i))
       );
     } else {
-      resolve(/^(http|https):\/\/\S+$/.test(val));
+      resolve(/^(http|https):\/\/\S+$/.test(val) || /^\/api\/(file|module)\/(.+)/.test(val) || /^\/.+/.test(val));
     }
   });
 };
