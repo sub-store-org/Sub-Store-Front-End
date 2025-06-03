@@ -16,6 +16,7 @@
           </div>
           <p>{{ platform.name }}</p>
           <nut-icon name="tips" v-if="platform.path === 'SurgeMac'" @click="tips"></nut-icon>
+          <nut-icon name="tips" v-if="platform.path === 'QX'" @click="qxTips"></nut-icon>
         </div>
 
         <div class="actions">
@@ -152,11 +153,11 @@
       path: 'ClashMeta',
       icon: clashmeta,
     },
-    {
-      name: 'Clash(Deprecated)',
-      path: 'Clash',
-      icon: clash,
-    },
+    // {
+    //   name: 'Clash(Deprecated)',
+    //   path: 'Clash',
+    //   icon: clash,
+    // },
     {
       name: 'Egern',
       path: 'Egern',
@@ -231,6 +232,11 @@
     // });
 
   };
+  const qxTips = () => {
+    Toast.warn('由于 QX 资源解析器对 QX 格式的输入支持不完善, 请勿对 Sub-Store 链接启用资源解析器. 如果一定要用资源解析器, 请手动选择 V2Ray 输出, 将形如 ?target=V2Ray 的链接填入 QX', {
+      duration: 5000
+    });
+  }
 </script>
 
 <style lang="scss" scoped>

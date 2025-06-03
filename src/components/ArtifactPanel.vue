@@ -118,19 +118,19 @@
             class="artifact-radio-group"
           >
             <nut-radio label="Stash">Stash</nut-radio>
-            <nut-radio label="ClashMeta">Mihomo</nut-radio>
-            <nut-radio label="Clash">Clash(Deprecated)</nut-radio>
             <nut-radio label="Egern">Egern</nut-radio>
+            <nut-radio label="ClashMeta">Mihomo</nut-radio>
             <nut-radio label="Surfboard">Surfboard</nut-radio>
-            <nut-radio label="SurgeMac">Surge(macOS) <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" target="_blank">ⓘ</a></nut-radio>
             <nut-radio label="Surge">Surge</nut-radio>
+            <nut-radio label="SurgeMac">Surge(macOS) <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" target="_blank">ⓘ</a></nut-radio>
             <nut-radio label="Loon">Loon</nut-radio>
             <nut-radio label="ShadowRocket">Shadowrocket</nut-radio>
-            <nut-radio label="QX">Quantumult X</nut-radio>
+            <nut-radio label="QX">Quantumult X<span name="tips" @click="qxTips">&nbsp;ⓘ</span></nut-radio>
             <nut-radio label="sing-box">sing-box</nut-radio>
             <nut-radio label="V2Ray">V2Ray</nut-radio>
             <nut-radio label="URI">URI</nut-radio>
             <nut-radio label="JSON">JSON</nut-radio>
+            <nut-radio label="Clash">Clash(Deprecated)</nut-radio>
           </nut-radiogroup>
         </nut-form-item>
       </template>
@@ -347,6 +347,11 @@
       isInit.value = true;
     }
   });
+  const qxTips = () => {
+    Toast.warn('由于 QX 资源解析器对 QX 格式的输入支持不完善, 请勿对 Sub-Store 链接启用资源解析器. 如果一定要用资源解析器, 请手动选择 V2Ray 输出, 将形如 ?target=V2Ray 的链接填入 QX', {
+      duration: 5000
+    });
+  }
 </script>
 
 <style lang="scss">
