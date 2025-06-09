@@ -38,9 +38,8 @@ export const useHostAPI = () => {
   const apis = ref(getHostAPI().apis);
   const currentName = ref(getHostAPI().current);
   const currentUrl = computed(() => {
-    return (
-      apis.value.find(api => api.name === currentName.value)?.url ?? defaultAPI
-    );
+    const url = apis.value.find(api => api.name === currentName.value)?.url ?? defaultAPI
+    return url.startsWith('/') ? `${window.location.origin}${url}` : url;
   });
 
   const stopWatchCurrent = watch(currentName, async (newName, oldName) => {
