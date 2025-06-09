@@ -774,6 +774,7 @@ export default {
     noOriginalTips: "Failed to jump, check if the source data has been deleted.",
     leftTime: "Remaining time",
     expired: "Expired",
+    generateToken: "Generate",
     createShare: {
       expiresValue: {
         label: "Valid for",

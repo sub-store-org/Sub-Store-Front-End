@@ -64,15 +64,21 @@
               </nut-radiogroup>
             </nut-form-item>
             <nut-form-item :label="$t(`sharePage.createShare.token.label`)" prop="token">
-              <nut-input
-                v-model="form.token"
-                :border="false"
-                :placeholder="$t(`sharePage.createShare.token.placeholder`)"
-                type="text"
-                max-length="100"
-                clearable
-                @clear="clearToken"
-              ></nut-input>
+              <div style="display: flex; align-items: center;">
+                <nut-input
+                  v-model="form.token"
+                  :border="false"
+                  :placeholder="$t(`sharePage.createShare.token.placeholder`)"
+                  type="text"
+                  max-length="100"
+                  clearable
+                  @clear="clearToken"
+                >
+                </nut-input>
+                <nut-button size="mini" type="primary" @click="generateToken" style="margin-left: 4px;">
+                  {{ $t(`sharePage.generateToken`) }}
+                </nut-button>
+              </div>
             </nut-form-item>
             <nut-form-item :label="$t(`sharePage.createShare.displayName.label`)" prop="displayName">
               <nut-input
@@ -569,6 +575,16 @@ const confirmUpdateShare = async () => {
   await subsStore.deleteShare(props.data?.token, false);
   await handleCreateShare();
 };
+
+// 生成 token 的方法
+const generateToken = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let token = ''
+  for (let i = 0; i < 16; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  form.token = token
+}
 
 watch(
   () => props.visible,

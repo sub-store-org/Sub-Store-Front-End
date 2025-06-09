@@ -764,6 +764,7 @@ export default {
     noOriginalTips: "跳转失败, 检查源数据是否已删除",
     leftTime: "剩余",
     expired: "已过期",
+    generateToken: "生成",
     createShare: {
       expiresValue: {
         label: "有效期时长",
