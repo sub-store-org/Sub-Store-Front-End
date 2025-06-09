@@ -323,30 +323,46 @@
               v-model="form.subscriptions"
               class="subs-checkbox-wrapper"
             >
-              <nut-checkbox
-                v-for="item in subsSelectList"
-                v-show="shouldShowElement(item[3])"
-                :key="item[0]"
-                :label="item[0]"
-                text-position="left"
-                class="subs-checkbox"
+              <draggable
+                :list="filteredSubsSelectList"
+                :sort="true"
+                item-key="0"
+                animation="300"
+                :scroll-sensitivity="200"
+                :force-fallback="true"
+                :scroll-speed="8"
+                :scroll="true"
+                handle=".drag-handle"
+                @start="onStartDrag"
+                @end="onEndDrag"
               >
-                <div class="sub-img-wrapper">
-                  <nut-avatar
-                    :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor, 'icon': true  }"
-                    v-if="item[2]"
-                    size="32"
-                    :url="item[2]"
-                    bg-color=""
-                  ></nut-avatar>
-                  <span class="sub-item">
-                    <span class="name">{{ item[1] }}</span>
-                    <span class="tag" v-for="i in item[3]" :key="i">
-                      <nut-tag>{{ i }}</nut-tag>
-                    </span>
-                  </span>
-                </div>
-              </nut-checkbox>
+                <template #item="{ element }">
+                  <nut-checkbox
+                    v-show="shouldShowElement(element[3])"
+                    :key="element[0]"
+                    :label="element[0]"
+                    text-position="left"
+                    class="subs-checkbox"
+                  >
+                    <div class="sub-img-wrapper">
+                      <nut-avatar
+                        :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor, 'icon': true  }"
+                        v-if="element[2]"
+                        size="32"
+                        :url="element[2]"
+                        bg-color=""
+                      ></nut-avatar>
+                      <span class="sub-item">
+                        <span class="name">{{ element[1] }}</span>
+                        <span class="tag" v-for="i in element[3]" :key="i">
+                          <nut-tag>{{ i }}</nut-tag>
+                        </span>
+                      </span>
+                      <font-awesome-icon icon="fa-solid fa-bars" class="drag-handle"/>
+                    </div>
+                  </nut-checkbox>
+                </template>
+              </draggable>
             </nut-checkboxgroup>
             </nut-form-item>
             <nut-form-item
@@ -479,6 +495,7 @@ import { useSubsStore } from "@/store/subs";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import { initStores } from "@/utils/initApp";
+import draggable from "vuedraggable";
 import CompareTable from "@/views/CompareTable.vue";
 import ActionBlock from "@/views/editor/ActionBlock.vue";
 import CommonBlock from "@/views/editor/CommonBlock.vue";
@@ -1148,6 +1165,48 @@ const urlValidator = (val: string): Promise<boolean> => {
     }
     subCheckboxIndeterminate.value = false
   };
+  const filteredSubsSelectList = ref([]);
+
+  const updateFilteredSubsList = () => {
+    if (subsSelectList.value && subsSelectList.value.length > 0) {
+      filteredSubsSelectList.value = subsSelectList.value.filter(item => shouldShowElement(item[3]));
+    } else {
+      filteredSubsSelectList.value = [];
+    }
+  };
+  watch([tag, subsSelectList, () => subsStore.subs], () => {
+    updateFilteredSubsList();
+  }, { immediate: true, deep: true });
+  const isDragging = ref(false);
+
+  const onStartDrag = () => {
+    console.log("开始拖拽");
+    isDragging.value = true;
+  };
+
+  const onEndDrag = () => {
+    console.log("结束拖拽");
+    isDragging.value = false;
+  
+    const newFilteredOrder = filteredSubsSelectList.value.map(item => item[0]);
+    
+    const newSubscriptions = [];
+    
+    // 先按新顺序添加当前过滤列表中已选中的订阅
+    newFilteredOrder.forEach(name => {
+      if (form.subscriptions.includes(name)) {
+        newSubscriptions.push(name);
+      }
+    });
+    
+    // 添加不在当前过滤列表中但已选中的订阅（保持原有顺序）
+    form.subscriptions.forEach(name => {
+      if (!newFilteredOrder.includes(name)) {
+        newSubscriptions.push(name);
+      }
+    });
+    form.subscriptions.splice(0, form.subscriptions.length, ...newSubscriptions);
+  };
   watch([tag, form.subscriptions, subsSelectList], () => {
     const selected = toRaw(form.subscriptions) || []
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
@@ -1383,6 +1442,7 @@ const handleEditGlobalClick = () => {
         align-items: center;
         font-size: 14px;
         color: var(--second-text-color);
+        position: relative;
         .icon {
           margin-right: 8px;
         }
@@ -1420,6 +1480,15 @@ const handleEditGlobalClick = () => {
               filter: brightness(var(--img-brightness));
             }
           }
+        }
+        .drag-handle {
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--second-text-color);
+          font-size: 16px;
+          padding: 10px;
         }
       }
     }
