@@ -13,7 +13,7 @@
     :safe-area-inset-bottom="true"
     close-icon="close-little"
     z-index="1100"
-    :close-on-click-overlay="false"
+    :close-on-click-overlay="true"
     closeable
     round
     @close="close"
