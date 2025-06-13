@@ -28,7 +28,7 @@
       >
         <!-- icon visible -->
         <div v-if="appearanceSetting.isShowIcon">
-          <div v-if="appearanceSetting.isIconColor">
+          <div v-if="isIconColor">
             <nut-avatar
               v-if="props[props.type].icon"
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
@@ -387,6 +387,11 @@ const { flows } = storeToRefs(subsStore);
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
 });
+
+const isIconColor = computed(() => {
+  return props[props.type].isIconColor !== false;
+});
+
 const collectionDetail = computed(() => {
   const nameList = props?.collection.subscriptions || [];
   const subTags = props?.collection.subscriptionTags || [];

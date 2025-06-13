@@ -18,7 +18,7 @@
         @click.stop="onClickEdit"
       >
         <div v-if="appearanceSetting.isShowIcon">
-          <div v-if="appearanceSetting.isIconColor">
+          <div v-if="isIconColor">
             <nut-avatar
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
               :url="shareIcon"
@@ -216,6 +216,19 @@ const shareIcon = computed(() => {
       return icon.value;
   }
 });
+
+const isIconColor = computed(() => {
+  switch (type.value) {
+    case "sub":
+      return subsStore.getOneSub(name.value)?.isIconColor !== false;
+    case "col":
+      return subsStore.getOneCollection(name.value)?.isIconColor !== false;
+    case "file":
+      return subsStore.getOneFile(name.value)?.isIconColor !== false;
+    default:
+      return true;
+  }
+})
 
 const swipeController = () => {
   if (swipeIsOpen.value) {

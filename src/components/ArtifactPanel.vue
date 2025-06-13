@@ -27,6 +27,15 @@
         />
       </nut-form-item>
       <nut-form-item
+        :label="$t(`editorPage.subConfig.basic.isIconColor.label`)"
+        prop="isIconColor"
+        class="icon-color"
+      >
+        <div class="switch-wrapper">
+          <nut-switch v-model="isIconColor" />
+        </div>
+      </nut-form-item>
+      <nut-form-item
         :label="$t(`syncPage.addArtForm.name.label`)"
         prop="name"
         :required="!isEditMode"
@@ -174,12 +183,18 @@
     name: '',
     displayName: '',
     icon: '',
+    isIconColor: true,
     source: '',
     type: 'file',
     platform: 'Stash',
     includeUnsupportedProxy: false,
   });
-
+  const isIconColor = computed({
+    get: () => editPanelData.value.isIconColor !== false,
+    set: (value) => {
+      editPanelData.value.isIconColor = value;
+    },
+  });
   const sourceSelectorIsVisible = ref(false);
   const sourceOptions = computed(() => {
     const subsNameList = useSubsStore().subs.map(sub => {
@@ -368,6 +383,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        p {
+          text-align: left;
+          padding-right: 20px;
+        }
+        .nut-icon {
+          flex-shrink: 0;
+          margin-right: 6px;
+        }
       }
     }
     .nut-dialog {
@@ -399,6 +422,21 @@
 
                 .nut-radio {
                   margin: 20px 0 0 0;
+                }
+              }
+              &.icon-color {
+                flex-direction: row;
+                justify-content: space-between;
+                .nut-form-item__label {
+                  width: auto;
+                  padding-right: 20px;
+                }
+                :deep(.nut-form-item__label) {
+                  width: auto;
+                }
+                .switch-wrapper {
+                  display: flex;
+                  justify-content: flex-end
                 }
               }
             }

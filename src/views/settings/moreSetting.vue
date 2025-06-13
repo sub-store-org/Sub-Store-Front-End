@@ -69,16 +69,6 @@
           />
         </template>
       </nut-cell>
-      <nut-cell :title="$t(`moreSettingPage.isIC`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awIconColor"
-            size="mini"
-            @change="setIconColor"
-          />
-        </template>
-      </nut-cell>
       <nut-cell
         :title="$t(`moreSettingPage.isSubItemMenuFold`)"
         class="cell-item"
@@ -283,7 +273,6 @@
   const autoSwitchSync = ref(false);
   const SimpleSwitch = ref(false);
   const LeftRight = ref(false);
-  const awIconColor = ref(false);
   const awIsDefaultIcon = ref(false);
   const awIsShowIcon = ref(true);
   const awIsSubItemMenuFold = ref(true);
@@ -334,14 +323,6 @@
     changeAppearanceSetting({ appearanceSetting: data });
   };
 
-  const setIconColor = (isIconColor: boolean) => {
-    // globalStore.setIconColor(isIconColor);
-    const data = {
-      ...appearanceSetting.value,
-      isIconColor: isIconColor
-    }
-    changeAppearanceSetting({ appearanceSetting: data });
-  };
   const setIsDefaultIcon = (isDefaultIcon: boolean) => {
     // globalStore.setIsDefaultIcon(isDefaultIcon);
     const data = {
@@ -613,7 +594,6 @@
   watchEffect(() => {
     SimpleSwitch.value = appearanceSetting.value.isSimpleMode;
     LeftRight.value = appearanceSetting.value.isLeftRight;
-    awIconColor.value = appearanceSetting.value.isIconColor;
     awIsDefaultIcon.value = appearanceSetting.value.isDefaultIcon;
     awIsShowIcon.value = appearanceSetting.value.isShowIcon;
     awIsSubItemMenuFold.value = appearanceSetting.value.isSubItemMenuFold;

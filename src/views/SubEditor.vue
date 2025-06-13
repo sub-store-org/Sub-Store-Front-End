@@ -5,7 +5,7 @@
     <div class="form-block-wrapper">
       <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
         <nut-image
-          :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
+          :class="{ 'sub-item-customer-icon': !form.isIconColor }"
           :src="subIcon"
           fit="cover"
           show-loading
@@ -108,7 +108,16 @@
               @click-left-icon="showIconPopup"
             />
         </nut-form-item>
-
+        <!-- isIconColor -->
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.isIconColor.label`)"
+          prop="isIconColor"
+          class="ignore-failed-wrapper"
+        >
+          <div class="switch-wrapper">
+            <nut-switch v-model="form.isIconColor" />
+          </div>
+        </nut-form-item>
         <template v-if="editType === 'subs'">
           <!-- source -->
           <nut-form-item
@@ -346,7 +355,7 @@
                   >
                     <div class="sub-img-wrapper">
                       <nut-avatar
-                        :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor, 'icon': true  }"
+                        :class="{ 'sub-item-customer-icon': !element[4], 'icon': true  }"
                         v-if="element[2]"
                         size="32"
                         :url="element[2]"
@@ -555,7 +564,8 @@ const padding = bottomSafeArea.value + "px";
         item.name,
         item.displayName || item['display-name'] || item.name,
         item.icon || (appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon),
-        item.tag
+        item.tag,
+        item.isIconColor !== false
       ];
     });
   });
@@ -629,6 +639,7 @@ const form = reactive<any>({
   ignoreFailedRemoteSub: false,
   passThroughUA: false,
   icon: "",
+  isIconColor: true,
   process: [
     {
       type: "Quick Setting Operator",
@@ -682,6 +693,7 @@ watchEffect(() => {
   form.displayName = sourceData.displayName || sourceData["display-name"];
   form.remark = sourceData.remark;
   form.icon = sourceData.icon;
+  form.isIconColor = sourceData.isIconColor !== false;
   form.process = newProcess;
   form.subUserinfo = sourceData.subUserinfo;
   form.proxy = sourceData.proxy;

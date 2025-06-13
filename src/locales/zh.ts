@@ -339,6 +339,9 @@ export default {
           label: '图标链接',
           placeholder: '可点击左侧或顶部图标, 从图标库填入图标链接，不要使用 jpg',
         },
+        isIconColor: {
+          label: '图标原色',
+        },
         ignoreFailedRemoteSub: {
           label: '忽略失败的远程订阅',
           quiet: '启用(无通知)',

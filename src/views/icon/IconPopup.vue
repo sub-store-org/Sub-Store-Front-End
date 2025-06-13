@@ -39,15 +39,6 @@
     <div class="switch-wrapper">
       <div class="switch-item">
         <nut-switch
-          v-model="isIconColor"
-          class="my-switch"
-          size="mini"
-          @change="setIconColor"
-        />
-        <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>
-      </div>
-      <div class="switch-item">
-        <nut-switch
           v-model="showCustomIconCollection"
           class="my-switch"
           size="mini"
@@ -95,7 +86,6 @@
         @click="handleIcon(icon)"
       >
         <nut-image
-          :class="{ 'sub-item-customer-icon': !isIconColor }"
           :src="icon.url"
           fit="cover"
           lazy-load
@@ -149,13 +139,6 @@ const { appearanceSetting } = storeToRefs(settingsStore);
 const { customIconCollections, defaultIconCollections, defaultIconCollection } =
   storeToRefs(globalStore);
 
-const setIconColor = (isIconColor: boolean) => {
-  const data = {
-    ...appearanceSetting.value,
-    isIconColor,
-  };
-  changeAppearanceSetting({ appearanceSetting: data });
-};
 const form = reactive({
   iconName: "",
   iconCollectionName: "",
@@ -205,12 +188,6 @@ const iconCollectionColumns = computed(() => {
     ...defaultIconCollections.value,
   ];
   return mergedCollections;
-});
-
-const isIconColor = ref(false);
-
-watchEffect(() => {
-  isIconColor.value = appearanceSetting.value.isIconColor;
 });
 
 // 默认图标仓库

@@ -43,15 +43,6 @@
           </div>
         </nut-form>
       </div>
-      <div class="switch-wrapper">
-        <nut-switch
-          v-model="appearanceSetting.isIconColor"
-          class="my-switch"
-          size="mini"
-          @change="setIconColor"
-        />
-        <span class="label">{{ $t(`moreSettingPage.isIC`) }}</span>
-      </div>
       <div class="icon-list">
         <div
           v-for="(icon, index) in iconData"
@@ -60,7 +51,6 @@
           @click="copyIconUrl(icon)"
         >
           <nut-image
-            :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
             :src="icon.url"
             fit="cover"
             lazy-load
@@ -110,14 +100,6 @@ const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
-const setIconColor = (isIconColor: boolean) => {
-  // globalStore.setIconColor(isIconColor);
-  const data = {
-    ...appearanceSetting.value,
-    isIconColor: isIconColor
-  }
-  changeAppearanceSetting({ appearanceSetting: data });
-};
 
 const setDefaultIconCollection = (url: string) => {
   globalStore.setDefaultIconCollection(url);

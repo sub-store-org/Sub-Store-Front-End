@@ -19,7 +19,7 @@
       >
         <!-- icon visible -->
         <div v-if="appearanceSetting.isShowIcon">
-          <div v-if="appearanceSetting.isIconColor">
+          <div v-if="isIconColor">
             <nut-avatar
               v-if="props[props.type].icon"
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
@@ -302,6 +302,10 @@
     if (props.file.type === 'mihomoProfile') return clashmetaIcon;
     return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   })
+  const isIconColor = computed(() => {
+    return props.file.isIconColor !== false;
+  });
+
   const collectionDetail = computed(() => {
     const nameList = props?.collection.subscriptions || [];
     if (nameList.length === 0) {

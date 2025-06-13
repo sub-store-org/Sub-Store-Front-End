@@ -21,6 +21,7 @@ interface Artifact {
   name: string;
   displayName?: string;
   icon?: string;
+  isIconColor?: boolean;
   type: ArtifactType;
   source: string;
   platform: ArtifactsPlatform;

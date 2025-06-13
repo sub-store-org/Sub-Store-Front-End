@@ -321,6 +321,9 @@ export default {
           placeholder:
             "Click on the left or top icon, fill in the icon link from the icon library, do not use jpg.",
         },
+        isIconColor: {
+          label: 'Custom Icon Use Original Color',
+        },
         ignoreFailedRemoteSub: {
           label: "Ignore failed remote subscription(s)",
           quiet: 'Enabled (without notification)',

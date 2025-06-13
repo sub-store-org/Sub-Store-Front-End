@@ -13,7 +13,7 @@
     >
       <div v-if="appearanceSetting.isShowIcon" class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar
-          :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
+          :class="{ 'sub-item-customer-icon': !isIconColor }"
           :size="appearanceSetting.isSimpleMode ? '36' : '48'"
           :url="icon"
           bg-color=""
@@ -211,9 +211,6 @@ import { useI18n } from "vue-i18n";
 import { useGlobalStore } from "@/store/global";
 import { useHostAPI } from "@/hooks/useHostAPI";
 const globalStore = useGlobalStore();
-
-// const { isLeftRight, isSimpleMode, isIconColor, isDefaultIcon } =
-//   storeToRefs(globalStore);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
@@ -262,6 +259,9 @@ const sourceSub = computed(() => {
       return subsStore.getOneFile(name);
   }
 });
+const isIconColor = computed(() => {
+  return artifact.value.isIconColor !== false;
+});
 
 const icon = computed(() => {
   const icon = artifact.value.icon;
@@ -278,33 +278,34 @@ const icon = computed(() => {
   }
   switch (platform) {
     case "Surge":
-      return appearanceSetting.value.isIconColor ? surgeColorIcon : surgeIcon;
+      return isIconColor ? surgeColorIcon : surgeIcon;
     case "SurgeMac":
-      return appearanceSetting.value.isIconColor ? surgeMacColorIcon : surgeMacIcon;
+      return isIconColor ? surgeMacColorIcon : surgeMacIcon;
     case "QX":
-      return appearanceSetting.value.isIconColor ? quanxColorIcon : quanxIcon;
+      return isIconColor ? quanxColorIcon : quanxIcon;
     case "Loon":
-      return appearanceSetting.value.isIconColor ? loonColorIcon : loonIcon;
+      return isIconColor ? loonColorIcon : loonIcon;
     case "Egern":
-      return appearanceSetting.value.isIconColor ? egernColorIcon : egernIcon;
+      return isIconColor ? egernColorIcon : egernIcon;
     case "Clash":
-      return appearanceSetting.value.isIconColor ? clashColorIcon : clashIcon;
+      return isIconColor ? clashColorIcon : clashIcon;
     case "ClashMeta":
-      return appearanceSetting.value.isIconColor ? clashMetaColorIcon : clashMetaIcon;
+      return isIconColor ? clashMetaColorIcon : clashMetaIcon;
     case "Stash":
-      return appearanceSetting.value.isIconColor ? stashColorIcon : stashIcon;
+      return isIconColor ? stashColorIcon : stashIcon;
     case "ShadowRocket":
-      return appearanceSetting.value.isIconColor ? shadowRocketColorIcon : shadowRocketIcon;
+      return isIconColor ? shadowRocketColorIcon : shadowRocketIcon;
     case "V2Ray":
-      return appearanceSetting.value.isIconColor ? v2rayColorIcon : v2rayIcon;
+      return isIconColor ? v2rayColorIcon : v2rayIcon;
     case "sing-box":
-      return appearanceSetting.value.isIconColor ? singboxColorIcon : singboxIcon;
+      return isIconColor ? singboxColorIcon : singboxIcon;
     case "Surfboard":
-      return appearanceSetting.value.isIconColor ? surfboardColorIcon : surfboardIcon;
+      return isIconColor ? surfboardColorIcon : surfboardIcon;
     default:
       return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   }
 });
+
 
 const sourceUrl = computed(() => {
   if (!artifact.value.type) {
@@ -591,6 +592,7 @@ watch(isSyncOpen, async () => {
 .sub-item-customer-icon {
   :deep(img) {
     & {
+      opacity: 0.8;
       filter: brightness(var(--img-brightness));
     }
   }

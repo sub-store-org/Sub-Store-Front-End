@@ -38,6 +38,7 @@ interface Sub {
   url?: string;
   source: 'remote' | 'local';
   icon?: string;
+  isIconColor?: boolean;
   ua?: string;
   mergeSources?: string;
   subUserinfo?: string;
@@ -53,6 +54,7 @@ interface Collection {
   subscriptions: string[];
   subscriptionTags?: string[];
   icon?: string;
+  isIconColor?: boolean;
   tag?: string[];
 }
 

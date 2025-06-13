@@ -5,7 +5,7 @@
       <div class="form-block-wrapper">
         <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
           <nut-image
-            :class="{ 'sub-item-customer-icon': !appearanceSetting.isIconColor }"
+            :class="{ 'sub-item-customer-icon': !isIconColor }"
             :src="fileIcon"
             fit="cover"
             show-loading
@@ -89,6 +89,16 @@
               left-icon="shop"
               @click-left-icon="showIconPopup"
             />
+          </nut-form-item>
+          <!-- isIconColor -->
+          <nut-form-item
+            :label="$t(`editorPage.subConfig.basic.isIconColor.label`)"
+            prop="isIconColor"
+            class="ignore-failed-wrapper"
+          >
+            <div class="switch-wrapper">
+              <nut-switch v-model="form.isIconColor" />
+            </div>
           </nut-form-item>
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
@@ -462,6 +472,7 @@ const form = reactive<any>({
   displayName: "",
   remark: "",
   icon: "",
+  isIconColor: true,
   source: "local",
   sourceType: "collection",
   sourceName: "",
@@ -528,6 +539,7 @@ watchEffect(() => {
     form.displayName = sourceData.displayName || sourceData["display-name"];
     form.remark = sourceData.remark;
     form.icon = sourceData.icon;
+    form.isIconColor = sourceData.isIconColor !== false;
     form.source = sourceData.source || "local";
     form.type = sourceData.type || 'file';
     form.sourceType = sourceData.sourceType || 'collection';
@@ -775,6 +787,9 @@ const fileIcon = computed(() => {
     if (form.type === 'mihomoProfile') return clashmetaIcon;
     return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   }
+});
+const isIconColor = computed(() => {
+  return form.isIconColor;
 });
 const iconPopupVisible = ref(false);
 const iconPopupRef = ref(null);
