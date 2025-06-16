@@ -708,6 +708,7 @@ watchEffect(() => {
     case "collections":
       form.subscriptions = [];
       form.subscriptions.push(...sourceData.subscriptions);
+      console.log('form.subscriptions ==>', form.subscriptions);
       break;
     case "subs":
       form.source = sourceData.source;
@@ -1181,7 +1182,29 @@ const urlValidator = (val: string): Promise<boolean> => {
 
   const updateFilteredSubsList = () => {
     if (subsSelectList.value && subsSelectList.value.length > 0) {
-      filteredSubsSelectList.value = subsSelectList.value.filter(item => shouldShowElement(item[3]));
+      const filtered = subsSelectList.value.filter(item => shouldShowElement(item[3]));
+      
+      // 分离已勾选和未勾选的订阅
+      const selectedItems = [];
+      const unselectedItems = [];
+      
+      // 优先添加已勾选的订阅
+      form.subscriptions.forEach(selectedName => {
+        const item = filtered.find(item => item[0] === selectedName);
+        if (item) {
+          selectedItems.push(item);
+        }
+      });
+      
+      // 添加未勾选的订阅
+      filtered.forEach(item => {
+        if (!form.subscriptions.includes(item[0])) {
+          unselectedItems.push(item);
+        }
+      });
+      
+      // 合并：已勾选的在前，未勾选的在后
+      filteredSubsSelectList.value = [...selectedItems, ...unselectedItems];
     } else {
       filteredSubsSelectList.value = [];
     }
@@ -1218,12 +1241,13 @@ const urlValidator = (val: string): Promise<boolean> => {
       }
     });
     form.subscriptions.splice(0, form.subscriptions.length, ...newSubscriptions);
+    console.log("更新后的 form.subscriptions:", form.subscriptions);
   };
   watch([tag, form.subscriptions, subsSelectList], () => {
     const selected = toRaw(form.subscriptions) || []
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
     // 1. group 中不包含 selected 中的任何元素, subCheckbox 为 false, subCheckboxIndeterminate 为 false
-    // 2. group 中包含 selected 中的任何元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true
+    // 2. group 中包含 selected 中的任意元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true
     // 3. group 中包含 selected 中的所有元素, subCheckbox 为 true, subCheckboxIndeterminate 为 false
     if (group.every(item => selected.includes(item))) {
       // console.log('group 中包含 selected 中的所有元素')
