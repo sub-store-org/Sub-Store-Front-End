@@ -1,6 +1,6 @@
 {
   "name": "sub-store-front-end",
-  "version": "2.15.45",
+  "version": "2.15.47",
   "private": true,
   "scripts": {
     "dev": "vite --host",
