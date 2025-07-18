@@ -473,7 +473,7 @@ const upload = async() => {
   }
 }
 
-const sync = async (query: "download" | "upload", options?: { keep?: string[], encode?: 'base64' | 'plain' }) => {
+const sync = async (query: "download" | "upload", options?: { keep?: string[], encode?: 'base64' | 'plaintext' }) => {
   switch (query) {
     case "download":
       downloadIsLoading.value = true;
@@ -513,7 +513,9 @@ const uploadBtn = () => {
     content: '若选择明文, 将不会保留 GitHub Token. 若选择 Base64 编码, 将完整保留数据(后端版本必须 >= 2.19.85)',
     footerDirection: 'vertical',
     onCancel: () => {
-      sync('upload');
+      sync('upload', {
+        encode: 'plaintext'
+      });
     },
     cancelText: '明文(将不会保留 GitHub Token)',
     okText: 'Base64 编码上传',
