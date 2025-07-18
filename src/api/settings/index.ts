@@ -16,10 +16,10 @@ export function useSettingsApi() {
         data,
       });
     },
-    syncSettings: (query: 'download' | 'upload'): AxiosPromise<MyAxiosRes> => {
+    syncSettings: (query: 'download' | 'upload', options?: { keep?: string[] }): AxiosPromise<MyAxiosRes> => {
       return request({
-        url: '/api/utils/backup?action=' + query,
-        method: 'get',
+        url: `/api/utils/backup?action=${encodeURIComponent(query)}${options?.keep ? `&keep=${encodeURIComponent(options.keep.join(','))}` : ''}`,
+        method: 'get'
       });
     },
     restoreSettings: (data: StoragePostData): AxiosPromise<MyAxiosRes> => {

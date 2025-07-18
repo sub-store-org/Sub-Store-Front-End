@@ -102,7 +102,7 @@
             size="small"
             :disabled="syncIsDisabled"
             :loading="downloadIsLoading"
-            @click="sync('download')"
+            @click="downloadBtn"
           >
             <font-awesome-icon
               v-if="!downloadIsLoading"
@@ -473,7 +473,7 @@ const upload = async() => {
   }
 }
 
-const sync = async (query: "download" | "upload") => {
+const sync = async (query: "download" | "upload", options?: { keep?: string[] }) => {
   switch (query) {
     case "download":
       downloadIsLoading.value = true;
@@ -483,7 +483,7 @@ const sync = async (query: "download" | "upload") => {
       break;
   }
 
-  const res = await useSettingsApi().syncSettings(query);
+  const res = await useSettingsApi().syncSettings(query, options);
 
   if (res?.data?.status === "success") {
     switch (query) {
@@ -506,6 +506,27 @@ const sync = async (query: "download" | "upload") => {
   downloadIsLoading.value = false;
   uploadIsLoading.value = false;
 };
+
+const downloadBtn = () => {
+  Dialog({
+            title: '请选择',
+            content: '若想保留本地当前已设置的 GitHub Token, 请选择保留(后端版本必须 >= 2.19.83)',
+            footerDirection: 'vertical',
+            onCancel: () => {
+              sync('download');
+            },
+            okText: '保留当前 Token, 覆盖其他数据',
+            cancelText: '覆盖(需重新设置 Token)',
+            onOk: () => {
+              sync('download', {
+                keep: ['settings.gistToken']
+              });
+            },
+            popClass: "auto-dialog",
+            closeOnPopstate: true,
+            lockScroll: false,
+          });
+}
 const proxyTips = () => {
   Dialog({
       title: '通过代理/节点/策略进行下载',
