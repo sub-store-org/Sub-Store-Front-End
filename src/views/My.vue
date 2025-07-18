@@ -88,7 +88,7 @@
             :disabled="syncIsDisabled"
             size="small"
             :loading="uploadIsLoading"
-            @click="sync('upload')"
+            @click="uploadBtn"
           >
             <font-awesome-icon
               icon="fa-solid fa-cloud-arrow-up"
@@ -473,7 +473,7 @@ const upload = async() => {
   }
 }
 
-const sync = async (query: "download" | "upload", options?: { keep?: string[] }) => {
+const sync = async (query: "download" | "upload", options?: { keep?: string[], encode?: 'base64' | 'plain' }) => {
   switch (query) {
     case "download":
       downloadIsLoading.value = true;
@@ -507,25 +507,45 @@ const sync = async (query: "download" | "upload", options?: { keep?: string[] })
   uploadIsLoading.value = false;
 };
 
+const uploadBtn = () => {
+  Dialog({
+    title: '请选择',
+    content: '若选择明文, 将不会保留 GitHub Token. 若选择 Base64 编码, 将完整保留数据(后端版本必须 >= 2.19.85)',
+    footerDirection: 'vertical',
+    onCancel: () => {
+      sync('upload');
+    },
+    cancelText: '明文(将不会保留 GitHub Token)',
+    okText: 'Base64 编码上传',
+    onOk: () => {
+      sync('upload', {
+        encode: 'base64'
+      });
+    },
+    popClass: "auto-dialog",
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+}
 const downloadBtn = () => {
   Dialog({
-            title: '请选择',
-            content: '若想保留本地当前已设置的 GitHub Token, 请选择保留(后端版本必须 >= 2.19.83)',
-            footerDirection: 'vertical',
-            onCancel: () => {
-              sync('download');
-            },
-            okText: '保留当前 Token, 覆盖其他数据',
-            cancelText: '覆盖(需重新设置 Token)',
-            onOk: () => {
-              sync('download', {
-                keep: ['settings.gistToken']
-              });
-            },
-            popClass: "auto-dialog",
-            closeOnPopstate: true,
-            lockScroll: false,
-          });
+    title: '请选择',
+    content: '若想保留本地当前已设置的 GitHub Token, 请选择保留(后端版本必须 >= 2.19.83)',
+    footerDirection: 'vertical',
+    onCancel: () => {
+      sync('download');
+    },
+    okText: '保留当前 Token, 覆盖其他数据',
+    cancelText: '覆盖(可能需重新设置 Token)',
+    onOk: () => {
+      sync('download', {
+        keep: ['settings.gistToken']
+      });
+    },
+    popClass: "auto-dialog",
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
 }
 const proxyTips = () => {
   Dialog({
