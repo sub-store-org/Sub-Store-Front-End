@@ -51,7 +51,8 @@
         </div>
         <div v-if="storageType === 'manual'" class="actions">
           <!-- <input type="file" @change="uploadFile" /> -->
-          <input type="file" ref="fileInput" accept="application/json,text/json,.json" @change="fileChange" style="display: none">
+          <!-- accept="application/json,text/json,.json"  -->
+          <input type="file" ref="fileInput" @change="fileChange" style="display: none">
           <nut-button
             class="upload-btn"
             plain
