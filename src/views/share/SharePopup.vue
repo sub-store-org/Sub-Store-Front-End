@@ -5,7 +5,7 @@
     pop-class="share-popup"
     position="center"
     :style="{
-      width: `90%`,
+      width:'88vw',
       padding: '20px 12px 0 12px',
       backgroundColor: 'var(--background-color)',
     }"

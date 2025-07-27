@@ -419,8 +419,10 @@ function checkNeedConfiguration() {
     // overflow: hidden;
     flex: 1;
     display: flex;
+    align-items: center;
     flex-direction: column;
     overflow: auto;
+    width: 100%;
   }
 
   overflow-y: auto;
