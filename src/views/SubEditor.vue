@@ -640,6 +640,7 @@ const form = reactive<any>({
   passThroughUA: false,
   icon: "",
   isIconColor: true,
+  subscriptions: [],
   process: [
     {
       type: "Quick Setting Operator",
