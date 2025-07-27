@@ -1382,6 +1382,7 @@ const handleEditGlobalClick = () => {
   display: flex;
   justify-content: space-between;
   bottom: 0;
+  left: 0;
   width: 100%;
   padding: 8px var(--safe-area-side) calc(v-bind("padding") + 8px)
     var(--safe-area-side);
@@ -1396,7 +1397,6 @@ const handleEditGlobalClick = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-
     svg {
       margin-right: 4px;
     }
