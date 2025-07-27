@@ -485,7 +485,11 @@
       onCancel: () => {},
       onOk: async () => {
         try {
-            const res = await useSettingsApi().restoreSettings({ content: JSON.stringify({}) });
+            const res = await useSettingsApi().restoreSettings({ content: JSON.stringify({
+              settings: {
+                istabBar2: false
+              }
+            }) });
             if (res?.data?.status === "success") {
               await initStores(false, true, true);
               showNotify({
