@@ -174,6 +174,18 @@
             :left-icon="iconKey"
           />
           <nut-input
+            v-if="storageType !== 'manual'"
+            class="input"
+            v-model="githubProxyInput"
+            :disabled="!isEditing"
+            :placeholder="$t(`myPage.placeholder.githubProxy`)"
+            type="text"
+            input-align="left"
+            :left-icon="icongithubProxy"
+            right-icon="tips"
+            @click-right-icon="githubProxyTips"
+          />
+          <nut-input
             class="input"
             v-model="proxyInput"
             :disabled="!isEditing"
@@ -275,6 +287,7 @@ import avatar from "@/assets/icons/avatar.svg?url";
 import iconKey from "@/assets/icons/key-solid.png";
 import iconUser from "@/assets/icons/user-solid.png";
 import iconProxy from "@/assets/icons/proxy.svg";
+import icongithubProxy from "@/assets/icons/githubProxy.svg";
 import iconUA from "@/assets/icons/user-agent.svg";
 import iconMax from "@/assets/icons/max.svg";
 import iconTimeout from "@/assets/icons/timeout.svg";
@@ -298,7 +311,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, syncPlatform } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, syncPlatform, githubProxy } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -330,6 +343,7 @@ const onClickAbout = () => {
 const syncPlatformInput = ref("");
 const userInput = ref("");
 const tokenInput = ref("");
+const githubProxyInput = ref("");
 const uaInput = ref("");
 const proxyInput = ref("");
 const timeoutInput = ref("");
@@ -347,6 +361,7 @@ const toggleEditMode = async () => {
       syncPlatform: syncPlatformInput.value,
       githubUser: userInput.value,
       gistToken: tokenInput.value,
+      githubProxy: githubProxyInput.value,
       defaultUserAgent: uaInput.value,
       defaultProxy: proxyInput.value,
       defaultTimeout: timeoutInput.value,
@@ -357,6 +372,7 @@ const toggleEditMode = async () => {
     syncPlatformInput.value = syncPlatform.value;
     userInput.value = githubUser.value;
     tokenInput.value = gistToken.value;
+    githubProxyInput.value = githubProxy.value;
     uaInput.value = defaultUserAgent.value;
     proxyInput.value = defaultProxy.value;
     timeoutInput.value = defaultTimeout.value;
@@ -400,6 +416,7 @@ const toggleSyncPlatform = () => {
 const setDisplayInfo = () => {
   syncPlatformInput.value = syncPlatform.value || "";
   userInput.value = githubUser.value || "";
+  githubProxyInput.value = githubProxy.value || "";
   tokenInput.value = gistToken.value
     ? `${gistToken.value.slice(0, 6)}************`
     : "";
@@ -550,6 +567,18 @@ const downloadBtn = () => {
     lockScroll: false,
   });
 }
+const githubProxyTips = () => {
+  Dialog({
+      title: '请填写完整 GitHub 加速代理地址',
+      content: '后端需 >= 2.19.97\n\n1. 仅用于上传/下载 Gist 和获取 GitHub 头像\n\n2. 请填写完整 如 https://a.com\n\n3. 需支持代理 https://api.github.com\n\n测试方式:\n浏览器打开\nhttps://a.com/https://api.github.com/users/xream\n有正常的响应\n\n3. 使用此方式时, 自行注意安全隐私问题',
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
 const proxyTips = () => {
   Dialog({
       title: '通过代理/节点/策略进行下载',
