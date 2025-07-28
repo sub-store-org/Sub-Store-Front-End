@@ -613,8 +613,9 @@ const padding = bottomSafeArea.value + "px";
     }
   };
   const selectedSubs = computed(() => {
-    if(!Array.isArray(form.subscriptions) || form.subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
-    return `: ${form.subscriptions.map((name) => {
+    const subscriptions = form.subscriptions || [];
+    if(!Array.isArray(subscriptions) || subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
+    return `: ${subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
       return sub?.displayName || sub?.["display-name"] || sub.name;
     }).join(', ')}`
@@ -640,7 +641,6 @@ const form = reactive<any>({
   passThroughUA: false,
   icon: "",
   isIconColor: true,
-  subscriptions: [],
   process: [
     {
       type: "Quick Setting Operator",
@@ -1147,6 +1147,10 @@ const urlValidator = (val: string): Promise<boolean> => {
   //   console.log(`${!v} -> ${v}`)
   // };
   const subCheckboxClick = () => {
+    // 确保 form.subscriptions 存在
+    if (!form.subscriptions) {
+      form.subscriptions = [];
+    }
     // const selected = toRaw(form.subscriptions) || []
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
     if (subCheckboxIndeterminate.value) {
@@ -1189,6 +1193,11 @@ const urlValidator = (val: string): Promise<boolean> => {
       const selectedItems = [];
       const unselectedItems = [];
       
+      // 确保 form.subscriptions 存在
+      if (!form.subscriptions) {
+        form.subscriptions = [];
+      }
+      
       // 优先添加已勾选的订阅
       form.subscriptions.forEach(selectedName => {
         const item = filtered.find(item => item[0] === selectedName);
@@ -1228,6 +1237,11 @@ const urlValidator = (val: string): Promise<boolean> => {
     
     const newSubscriptions = [];
     
+    // 确保 form.subscriptions 存在
+    if (!form.subscriptions) {
+      form.subscriptions = [];
+    }
+    
     // 先按新顺序添加当前过滤列表中已选中的订阅
     newFilteredOrder.forEach(name => {
       if (form.subscriptions.includes(name)) {
@@ -1245,7 +1259,7 @@ const urlValidator = (val: string): Promise<boolean> => {
     console.log("更新后的 form.subscriptions:", form.subscriptions);
   };
   watch([tag, form.subscriptions, subsSelectList], () => {
-    const selected = toRaw(form.subscriptions) || []
+    const selected = toRaw(form.subscriptions || []) || []
     const group = subsSelectList.value.filter(item => shouldShowElement(item[3])).map(item => item[0]) || []
     // 1. group 中不包含 selected 中的任何元素, subCheckbox 为 false, subCheckboxIndeterminate 为 false
     // 2. group 中包含 selected 中的任意元素, subCheckbox 为 true, subCheckboxIndeterminate 为 true

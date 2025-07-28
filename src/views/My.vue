@@ -316,7 +316,7 @@ const onClickAPISetting = () => {
 };
 
 const onClickShareManage = () => {
-  router.push(`/share/manage`);
+  router.push(`/shares`);
 };
 const onClickMore = () => {
   router.push(`/settings/more`);

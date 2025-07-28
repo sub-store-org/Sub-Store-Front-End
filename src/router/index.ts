@@ -118,7 +118,7 @@ const router = createRouter({
           },
         },
         {
-          path: '/share/manage',
+          path: '/shares',
           component: ShareManage,
           meta: {
             title: 'shareManage',
