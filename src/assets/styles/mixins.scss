@@ -1,0 +1,56 @@
+// 响应式容器宽度 mixin
+@mixin responsive-container-width {
+  width: 100%;
+  
+  @media screen and (min-width: 600px) {
+    max-width: 85%;
+  }
+  
+  @media screen and (min-width: 768px) {
+    max-width: 630px;
+  }
+  
+  @media screen and (min-width: 900px) {
+    max-width: 700px;
+  }
+  
+  @media screen and (min-width: 1200px) {
+    max-width: 900px;
+  }
+}
+
+// 居中固定定位容器 mixin
+@mixin centered-fixed-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  @include responsive-container-width;
+}
+
+// 弹窗居中 mixin
+@mixin popup-centered {
+  @media screen and (min-width: 600px) {
+    left: auto !important;
+    right: auto !important;
+    inset-inline: 0 !important;
+    margin-inline: auto !important;
+    @include responsive-container-width;
+  }
+}
+
+@mixin tabbar-responsive {
+  @include centered-fixed-container;
+  border-radius: 20px;
+}
+
+// 响应式断点变量
+$breakpoint-sm: 600px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 900px;
+$breakpoint-xl: 1200px;
+
+// 容器最大宽度变量
+$container-width-sm: 85%;
+$container-width-md: 630px;
+$container-width-lg: 700px;
+$container-width-xl: 900px;

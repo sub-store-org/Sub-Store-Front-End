@@ -41,19 +41,6 @@
     flex: 1;
     padding: 56px 0 v-bind(height) 0;
     overflow: auto;
-    width: 100%;
-    @media screen and (min-width: 600px) {
-      max-width: 85%;
-    }
-    @media screen and (min-width: 768px) {
-      max-width: 630px;
-    }
-    @media screen and (min-width: 900px) {
-      max-width: 700px;
-    }
-    @media screen and (min-width: 1200px) {
-      max-width: 900px;
-    }
   }
 
 </style>

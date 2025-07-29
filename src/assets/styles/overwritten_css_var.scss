@@ -33,6 +33,11 @@
 .nut-popup {
   -webkit-user-select: none;
   user-select: none;
+
+  &.popup-bottom {
+    @include popup-centered;
+  }
+
   .nut-picker-roller {
     @media screen and (min-width: 560px) {
       transition: transform 300ms 0s !important;

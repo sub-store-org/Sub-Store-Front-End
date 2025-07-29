@@ -394,7 +394,6 @@
       }
     }
     .nut-dialog {
-      width: 88vw;
       .nut-dialog__content {
         max-height: 72vh !important;
 

@@ -60,6 +60,9 @@
 <style lang="scss" scoped>
   .tab-bar-wrapper {
     z-index: 101;
+    bottom: 0;
+    @include centered-fixed-container;
+
     .tabbar {
       padding-top: 8px;
       padding-bottom: v-bind('style.paddingBottom');
@@ -67,6 +70,10 @@
       backdrop-filter: blur(var(--tab-bar-blur));
       -webkit-backdrop-filter: blur(var(--tab-bar-blur));
       background: var(--tab-bar-color);
+      @media screen and (min-width: 768px) {
+        border-radius: var(--item-card-radios);
+        overflow: hidden;
+      }
     }
 
     :deep(.tabbar-item) {

@@ -257,12 +257,10 @@ watchEffect(() => {
   padding-top: v-bind(Pwa_top);
 }
 .nav-bar-wrapper {
-  position: fixed;
-  width: 100%;
   top: 0;
   height: v-bind(navBarHeight);
   z-index: 20;
-
+  @include centered-fixed-container;
   nav {
     .nut-navbar {
       padding-top: v-bind(navBartop);
@@ -273,7 +271,10 @@ watchEffect(() => {
       -webkit-backdrop-filter: blur(var(--nav-bar-blur));
       background: var(--nav-bar-color);
       border-bottom: var(--divider-color) solid 1px;
-
+      @media screen and (min-width: 768px) {
+        border-radius: var(--item-card-radios);
+        overflow: hidden;
+      }
       .nut-navbar__title {
         min-width: 53%;
         margin: 0 auto;

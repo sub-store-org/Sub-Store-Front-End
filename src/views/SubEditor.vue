@@ -1404,6 +1404,7 @@ const handleEditGlobalClick = () => {
   z-index: 20;
   background: var(--background-color);
   border-top: 1px solid var(--divider-color);
+  @include centered-fixed-container;
 
   .btn {
     border-radius: 8px;

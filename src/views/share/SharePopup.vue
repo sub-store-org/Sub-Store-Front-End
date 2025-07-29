@@ -5,7 +5,6 @@
     pop-class="share-popup"
     position="center"
     :style="{
-      width:'88vw',
       padding: '20px 12px 0 12px',
       backgroundColor: 'var(--background-color)',
     }"
@@ -595,6 +594,7 @@ defineExpose({ show, hide, close });
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-width: 300px;
     .share-info-form {
       width: 100%;
       .nut-form {
