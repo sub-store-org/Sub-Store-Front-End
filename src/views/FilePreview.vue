@@ -355,7 +355,39 @@ const copyUrl = async () => {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: var(--background-color);
+  .cmviewRef {
+    width: 100%;
+  }
+  @media screen and (min-width: 768px) {
+    .compare-page-header,
+    .compare-page-body,
+    .cmviewRef {
+      width: 85%;
+      max-width: 800px;
+    }
+  }
+  
+  @media screen and (min-width: 900px) {
+    .compare-page-header,
+    .compare-page-body,
+    .cmviewRef {
+      width: 80%;
+      max-width: 900px;
+    }
+  }
+  
+  @media screen and (min-width: 1200px) {
+    .compare-page-header,
+    .compare-page-body,
+    .cmviewRef {
+      width: 75%;
+      max-width: 1000px;
+    }
+  }
 }
 
 .divider,

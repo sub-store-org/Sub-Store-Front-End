@@ -371,6 +371,7 @@
 
 <style lang="scss">
   .artifact-panel {
+    min-width: 350px;
     .include-unsupported-proxy-wrapper {
       flex-direction: row;
       display: flex;
@@ -394,6 +395,7 @@
       }
     }
     .nut-dialog {
+      width: 100%;
       .nut-dialog__content {
         max-height: 72vh !important;
 
