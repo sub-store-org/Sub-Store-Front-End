@@ -570,7 +570,7 @@ const downloadBtn = () => {
 const githubProxyTips = () => {
   Dialog({
       title: '请填写完整 GitHub 加速代理地址',
-      content: '后端需 >= 2.19.97\n\n1. 仅用于上传/下载 Gist 和获取 GitHub 头像\n\n2. 请填写完整 如 https://a.com\n\n3. 需支持代理 https://api.github.com\n\n测试方式:\n浏览器打开\nhttps://a.com/https://api.github.com/users/xream\n有正常的响应\n\n4. 使用此方式时, 自行注意安全隐私问题',
+      content: '后端需 >= 2.19.97\n\n1. 仅用于上传/下载 Gist 和获取 GitHub 头像\n\n2. 请填写完整 如 https://a.com\n\n3. 需支持代理 https://api.github.com/users/* 和 https://api.github.com/gists\n\n测试方式:\n浏览器打开\nhttps://a.com/https://api.github.com/gists?per_page=1&page=1\n和\nhttps://a.com/https://api.github.com/users/xream\n有正常的响应\n\n4. 使用此方式时, 自行注意安全隐私问题',
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
