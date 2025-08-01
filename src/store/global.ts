@@ -65,6 +65,11 @@ export const useGlobalStore = defineStore('globalStore', {
           value:
             "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
         },
+        {
+          text: "lige47/QuanX-icon-rule",
+          value:
+            "https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/ligeicon.json",
+        },
       ],
       customIconCollections: localStorage.getItem("customIconCollections")
         ? JSON.parse(localStorage.getItem("customIconCollections"))
