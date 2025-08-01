@@ -94,7 +94,7 @@ const processUrlApiConfig = async () => {
       .find(i => i[0] === 'magicpath');
 
     if (hasApiParam) {
-      const apiValue = decodeURIComponent(hasApiParam[1]);
+      const apiValue = decodeURIComponent(hasApiParam[1]).replace(/\/$/, ''); // 去除末尾斜杠;
       urlApiValue.value = apiValue;
       urlApiError.value = '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确';
       hasUrlParams = true;

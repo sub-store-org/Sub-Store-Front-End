@@ -25,7 +25,7 @@ export const getHostAPIUrl = (): string => {
     apis.find(api => api.name === current)?.url ||
     import.meta.env.VITE_API_URL ||
     'https://sub.store'
-  );
+  ).replace(/\/$/, ''); // 去除末尾斜杠;
 };
 
 const setHostAPI = (hostAPI: HostAPIStorage) => {
@@ -167,7 +167,7 @@ export const useHostAPI = () => {
 
     // 优先处理api参数
     if (apiUrl) {
-      const url = decodeURIComponent(apiUrl[1]);
+      const url = decodeURIComponent(apiUrl[1]).replace(/\/$/, ''); // 去除末尾斜杠;
       if (!url) return await errorCb?.();
 
       // 检查是否已存在相同URL的API
