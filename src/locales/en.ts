@@ -313,7 +313,7 @@ export default {
           tips: {
             title: "The content of the subscription",
             content:
-              "Subscription content:\n\n1. Multiple single-line proxy protocols/JSON/URI\n\n2. Complete Base64/YAML",
+              "Subscription content:\n\n1. Multiple single-line proxy protocols/JSON5/YAML/URI\n\n2. Complete Base64/YAML",
           },
         },
         icon: {

@@ -332,7 +332,7 @@ export default {
           placeholder: '',
           tips: {
             title: '本地订阅节点',
-            content: '填入订阅内容:\n\n1. 换行输入多个单行的代理协议/JSON/URI\n\n2. 完整 Base64/YAML',
+            content: '填入订阅内容:\n\n1. 换行输入多个单行的代理协议/JSON5/YAML/URI\n\n2. 完整 Base64/YAML',
           },
         },
         icon: {
