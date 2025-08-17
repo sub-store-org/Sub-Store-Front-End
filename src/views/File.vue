@@ -108,36 +108,44 @@
     <!-- 页面内容 -->
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
-      <div v-if="hasFiles">
-        <draggable
-          v-model="files"
-          item-key="name"
-          :scroll-sensitivity="200"
-          :force-fallback="true"
-          :scroll-speed="8"
-          :scroll="true"
-          v-bind="{
-            animation: 200,
-            disabled: false,
-            delay: 200,
-            chosenClass: 'chosensub',
-            handle: 'div',
-          }"
-          @change="changeSort('files', files)"
-          @start="handleDragStart(files)"
-          @end="handleDragEnd(files)"
-        >
-          <template #item="{ element }">
-            <div :key="element.name" class="draggable-item">
-              <FileListItem
-                :file="element"
-                type="file"
-                :disabled="swipeDisabled"
-                @share="handleShare"
-              />
-            </div>
-          </template>
-        </draggable>
+      <div v-if="tags && tags.length > 0" ref="radioWrapperRef" class="radio-wrapper" >
+        <!-- <nut-radiogroup v-model="tag" direction="horizontal"> -->
+          <!-- <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio> -->
+          <span v-for="i in tags" class="tag" :class="{ 'current': i.value === tag }" @click="setTag(i.value)">{{ i.label }}</span>
+        <!-- </nut-radiogroup> -->
+      </div>
+      <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
+        <div v-if="hasFiles">
+          <draggable
+            v-model="files"
+            item-key="name"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('files', files)"
+            @start="handleDragStart(files)"
+            @end="handleDragEnd(files)"
+          >
+            <template #item="{ element }">
+              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+                <FileListItem
+                  :file="element"
+                  type="file"
+                  :disabled="swipeDisabled"
+                  @share="handleShare"
+                />
+              </div>
+            </template>
+          </draggable>
+        </div>
       </div>
     </div>
     <!-- 没有数据 -->
@@ -194,7 +202,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw, onMounted } from "vue";
+import { ref, toRaw, onMounted, computed, watch, nextTick } from "vue";
 import draggable from "vuedraggable";
 import SharePopup from "./share/SharePopup.vue";
 
@@ -234,9 +242,6 @@ const editFile = () => {
   addSubBtnIsVisible.value = true;
 };
 
-onMounted(() => {
-  methodStore.registerMethod("addFile", editFile);
-});
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subApi = useSubsApi();
@@ -263,6 +268,69 @@ const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
+const hasUntagged = ref(false);
+const getTag = () => {
+    return localStorage.getItem('file-tag') || 'all';
+  };
+const tag = ref(getTag());
+const tags = computed(() => {
+  if(!hasFiles.value) return [];
+  const set = new Set();
+  files.value.forEach(sub => {
+    
+    if (Array.isArray(sub.tag) && sub.tag.length > 0) {
+      sub.tag.forEach(i => {
+        set.add(i);
+      });
+    } else {
+      hasUntagged.value = true;
+    }
+  });
+
+  let tags: any[] = Array.from(set);
+  if(tags.length === 0) return [];
+  tags = tags.map(i => ({ label: i, value: i }));
+  
+  const result = [{ label: t("specificWord.all"), value: "all" }, ...tags];
+  if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" });
+
+  if (!result.find(i => i.value === tag.value)) {
+    tag.value = 'all';
+  }
+  return result;
+});
+const radioWrapperRef = ref(null);
+const radioWrapperHeight = ref(0);
+
+// 更新标签栏高度
+const updateRadioWrapperHeight = () => {
+  nextTick(() => {
+    if (radioWrapperRef.value) {
+      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
+    } else {
+      radioWrapperHeight.value = 0;
+    }
+  });
+};
+const isPWA = ref(
+  (window.matchMedia("(display-mode: standalone)").matches &&
+    !/Android/.test(navigator.userAgent)) ||
+    false
+);
+const navBarHeight = computed(() => {
+  return isPWA.value ? `${44 + 32 + bottomSafeArea.value}px` : `${44 + 12 + bottomSafeArea.value}px`;
+});
+
+watch(tag, () => {
+  updateRadioWrapperHeight();
+});
+
+watch(() => tags.value, () => {
+  updateRadioWrapperHeight();
+}, { deep: true, immediate: true });
+onMounted(() => {
+  methodStore.registerMethod("addFile", editFile);
+});
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
   touchStartX.value = Math.abs(event.touches[0].clientX);
@@ -401,6 +469,30 @@ const importTips = () => {
       closeOnPopstate: true,
       lockScroll: false,
     });
+};
+const scrollToTop = () => {
+  const scrollPosition = 0;
+  
+  window.scrollTo({
+    top: scrollPosition,
+    behavior: "smooth"
+  });
+};
+
+const setTag = (current) => {
+  tag.value = current;
+  if (current === 'all') {
+    localStorage.removeItem('file-tag');
+  } else {
+    localStorage.setItem('file-tag', current);
+  }
+  // 增加滚动到顶部
+  scrollToTop();
+};
+const shouldShowElement = (element) => {
+  if(tag.value === 'all') return true;
+  if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
+  return element.tag.includes(tag.value);
 };
 </script>
 
@@ -595,5 +687,37 @@ const importTips = () => {
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
+  .radio-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    padding: 10px;
+    top: v-bind(navBarHeight);
+    z-index: 10;
+    backdrop-filter: blur(var(--nav-bar-blur));
+    -webkit-backdrop-filter: blur(var(--nav-bar-blur));
+    background: var(--nav-bar-color);
+    @include centered-fixed-container;
+      @media screen and (min-width: 768px) {
+        border-radius: var(--item-card-radios);
+        overflow: hidden;
+      }
+    .tag {
+      font-size: 12px;
+      color: var(--second-text-color);
+      margin: 0px 5px;
+      padding: 7.5px 2.5px 4px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      border-bottom: 1px solid transparent;
+    }
+    .current {
+      border-bottom: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+  }
 }
 </style>

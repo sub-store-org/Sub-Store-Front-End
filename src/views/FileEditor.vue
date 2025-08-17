@@ -77,6 +77,23 @@
               <nut-switch v-model="form.download" />
             </div>
           </nut-form-item>
+        <!-- tag -->
+        <nut-form-item
+          :label="$t(`editorPage.subConfig.basic.tag.label`)"
+          prop="tag"
+        >
+          <nut-input
+            class="nut-input-text"
+            v-model.trim="form.tag"
+            :border="false"
+            :placeholder="$t(`editorPage.subConfig.basic.tag.placeholder`)"
+            type="text"
+            input-align="right"
+            right-icon="rect-right"
+            @click-right-icon="showTagPopup('tag')"
+          >
+          </nut-input>
+        </nut-form-item>
           <!-- icon -->
           <nut-form-item :label="$t(`editorPage.subConfig.basic.icon.label`)" prop="icon">
             <nut-input
@@ -399,6 +416,13 @@
       <p>{{ t(`editorPage.subConfig.sourceNamePicker.emptyTips`) }}</p>
     </div>
   </nut-picker>
+  <tag-popup
+    v-model:visible="tagPopupVisible"
+    ref="tagPopupRef"
+    :currentTag="currentTag"
+    @setTag="setTagValue"
+    type="file">
+  </tag-popup>
 </template>
 
 <script lang="ts" setup>
@@ -416,6 +440,7 @@ import ActionBlock from "@/views/editor/ActionBlock.vue";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
+import TagPopup from "@/components/TagPopup.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
 import { initStores } from "@/utils/initApp";
@@ -467,6 +492,41 @@ const actionsChecked = reactive([]);
 const actionsList = reactive([]);
 const isget = ref(false);
 const fileInput = ref(null);
+const hasUntagged = ref(false);
+const tags = computed(() => {
+  if(!subsStore.files || subsStore.files.length === 0) return []
+  const set = new Set()
+  subsStore.files.forEach(file => {
+    if (Array.isArray(file.tag) && file.tag.length > 0) {
+      file.tag.forEach(i => {
+        set.add(i)
+      });
+    } else {
+      hasUntagged.value = true
+    }
+  })
+
+  let tags: any[] = Array.from(set)
+  if(tags.length === 0) return []
+  tags = tags.map(i => ({ label: i, value: i }));
+  const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
+  if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
+  return result
+});
+const tag = ref('all');
+const tagPopupVisible = ref(false);
+const tagType = ref('tag');
+const tagPopupRef = ref(null);
+const currentTag = computed(() => {
+  return form.tag
+})
+const showTagPopup = (type:string) => {
+  tagType.value = type || 'tag'
+  tagPopupVisible.value = true
+};
+const setTagValue = (tag: any) => {
+  form.tag = tag;      
+};
 const form = reactive<any>({
   name: "",
   displayName: "",
@@ -548,6 +608,9 @@ watchEffect(() => {
     form.subInfoUrl = sourceData.subInfoUrl;
     form.subInfoUserAgent = sourceData.subInfoUserAgent;
     form.proxy = sourceData.proxy;
+    form.tag = Array.isArray(sourceData.tag)
+    ? sourceData.tag.join(", ")
+    : sourceData.tag;
     form.ua = sourceData.ua;
     form.mergeSources = sourceData.mergeSources;
     form.content = sourceData.content;
@@ -670,6 +733,14 @@ const compare = () => {
     if (data.ignoreFailedRemoteFile === "disabled"){
       data.ignoreFailedRemoteFile = false;
     }
+    data.tag = [
+      ...new Set(
+        (data.tag || "")
+          .split(",")
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length)
+      ),
+    ];
 
     // 过滤掉预览开关关闭的操作
     actionsChecked.forEach((item) => {
@@ -729,6 +800,14 @@ const submit = () => {
     Toast.loading("...", { id: "submits", cover: true, duration: 1500 });
     // 如果验证成功，开始保存/修改
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    data.tag = [
+      ...new Set(
+        (data.tag || "")
+          .split(",")
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length)
+      ),
+    ];
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
     if (data.ignoreFailedRemoteFile === "disabled"){
