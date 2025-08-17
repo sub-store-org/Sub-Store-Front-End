@@ -47,9 +47,15 @@
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
+            <span v-for="i in tag" :key="i" class="tag">
+              <nut-tag>{{ i }}</nut-tag>
+            </span>
           </h3>
           <h3 v-else class="sub-item-title" style="color: var(--primary-text-color); font-size: 16px">
             {{ displayName || name }}
+            <span v-for="i in tag" :key="i" class="tag">
+              <nut-tag>{{ i }}</nut-tag>
+            </span>
           </h3>
 
           <!-- onClickCopyLink 拷贝 -->
@@ -289,6 +295,7 @@
     props[props.type].displayName || props[props.type]['display-name'];
 
   const name = props[props.type].name;
+  const tag = props[props.type].tag;
   const remark = props[props.type].remark;
   const remarkText = computed(() => {
     if (remark) {
@@ -587,6 +594,10 @@
           overflow: hidden;
           font-size: 16px;
           color: var(--primary-text-color);
+          vertical-align: middle;
+        }
+        .tag {
+          margin: 0 2px;
         }
         .compare-sub-link,
         .share-sub-link,
