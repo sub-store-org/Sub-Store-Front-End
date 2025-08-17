@@ -85,7 +85,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 const subsStore = useSubsStore();
-const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
+const { hasSubs, hasCollections, subs, collections, hasFiles, files } = storeToRefs(subsStore);
 const hasUntagged = ref(false);
 const props = defineProps({
   visible: {
@@ -95,6 +95,10 @@ const props = defineProps({
   currentTag: {
     type: String,
     default: '',
+  },
+  type: {
+    type: String,
+    default: 'subCol',
   },
 });
 const isVisible = ref(props.visible);
@@ -135,27 +139,40 @@ const allTagsList = computed(() => {
   return allTags.value.filter(i => i.label.indexOf(keyword.value) !== -1)
 })
 const getTags = () => {
-  if(!hasSubs.value && !hasCollections.value) return []
-  // 从 subs 和 collections 中获取所有的 tag, 去重
+  if(props.type === 'file' && !hasFiles.value) return []
+  if(props.type === 'subCol' && !hasSubs.value && !hasCollections.value) return []
   const set = new Set()
-  subs.value.forEach(sub => {
-    if (Array.isArray(sub.tag) && sub.tag.length > 0) {
-      sub.tag.forEach(i => {
-        set.add(i)
-      });
-    } else {
-      hasUntagged.value = true
-    }
-  })
-  collections.value.forEach(col => {
-    if (Array.isArray(col.tag) && col.tag.length > 0) {
-      col.tag.forEach(i => {
-        set.add(i)
-      });
-    } else {
-      hasUntagged.value = true
-    }
-  })
+  if (props.type === 'subCol') {
+    // 从 subs 和 collections 中获取所有的 tag, 去重
+    subs.value.forEach(sub => {
+      if (Array.isArray(sub.tag) && sub.tag.length > 0) {
+        sub.tag.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
+    collections.value.forEach(col => {
+      if (Array.isArray(col.tag) && col.tag.length > 0) {
+        col.tag.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
+  } else if (props.type === 'file') {
+    files.value.forEach(file => {
+      if (Array.isArray(file.tag) && file.tag.length > 0) {
+        file.tag.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
+  }
 
   let tags: any[] = Array.from(set)
   if(tags.length === 0) return []

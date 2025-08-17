@@ -569,7 +569,7 @@ const shouldShowElement = (element) => {
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
   if(tag.value === 'remote') return element.source === 'remote';
   if(tag.value === 'local') return element.source === 'local';
-  return element.tag.includes(tag.value);
+  return element.tag?.includes(tag.value);
 };
 const upload = async() => {
   try {
