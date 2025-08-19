@@ -164,6 +164,27 @@
       >
       </nut-picker>
     </nut-cell-group>
+    <nut-cell-group>
+      <nut-cell
+          class="cell-item"
+          :title="$t(`moreSettingPage.gistUpload.title`)"
+          :desc="gistUploadName"
+          @click="()=>{showGistUploadPicker=true}"
+          is-link
+        >
+      </nut-cell>
+      <nut-picker
+        v-model="gistUploadValue"
+        v-model:visible="showGistUploadPicker"
+        :columns="[
+        { text: $t(`moreSettingPage.gistUpload.base64`), value: 'base64' },
+        { text: $t(`moreSettingPage.gistUpload.plaintext`), value: 'plaintext' }
+      ]"
+        :title="$t(`moreSettingPage.gistUpload.title`)"
+        @confirm="gistUploadConfirm"
+      >
+      </nut-picker>
+    </nut-cell-group>
 
     <nut-cell-group>
       <nut-cell :title="$t(`themeSettingPage.auto`)" class="cell-item">
@@ -265,8 +286,8 @@
     // subProgressStyle,
   } = storeToRefs(globalStore);
   // 外观设置
-  const { changeAppearanceSetting } = settingsStore;
-  const { appearanceSetting } = storeToRefs(settingsStore);
+  const { changeAppearanceSetting, changeSettings } = settingsStore;
+  const { appearanceSetting, gistUpload } = storeToRefs(settingsStore);
   const { showNotify } = useAppNotifyStore();
 
   const InputHostApi = ref('');
@@ -287,6 +308,7 @@
   // const isEditing = ref(false);
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
+  const gistUploadValue = ref(['base64']);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
@@ -304,6 +326,16 @@
       subProgressStyle: selectedValue[0]
     }
     changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const showGistUploadPicker = ref(false);
+
+  const gistUploadName = computed(() => {
+    return t(`moreSettingPage.gistUpload.${gistUploadValue.value}`)
+  })
+  const gistUploadConfirm = ({ selectedValue }) => {
+    changeSettings({
+      gistUpload: selectedValue[0]
+    });
   };
   const setSimpleMode = (isSimpleMode: boolean) => {
     // globalStore.setSimpleMode(isSimpleMode);
@@ -610,6 +642,7 @@
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
+    gistUploadValue.value = [gistUpload.value];
     // SimpleSwitch.value = isSimpleMode.value;
     // LeftRight.value = isLeftRight.value;
     // awIconColor.value = isIconColor.value;

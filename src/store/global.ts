@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore('globalStore', {
   state: (): GlobalStoreState => {
     return {
       subProgressStyle: localStorage.getItem('subProgressStyle') || 'hidden',
+      gistUpload: localStorage.getItem('gistUpload') || 'base64',
       isLoading: true,
       isFlowFetching: true,
       fetchResult: false,
@@ -85,6 +86,14 @@ export const useGlobalStore = defineStore('globalStore', {
         localStorage.removeItem('subProgressStyle');
       }
       this.subProgressStyle = style;
+    },
+    setGistUpload(style: string) {
+      if (style && style !== 'base64') {
+        localStorage.setItem('gistUpload', style);
+      } else {
+        localStorage.removeItem('gistUpload');
+      }
+      this.gistUpload = style;
     },
     setBottomSafeArea(height: number) {
       this.bottomSafeArea = height;

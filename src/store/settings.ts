@@ -45,6 +45,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar2: false,
         subProgressStyle: "hidden",
       },
+      gistUpload: "base64",
       avatarUrl: "",
       artifactStore: "",
       artifactStoreStatus: "",
@@ -89,6 +90,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
         this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
+        this.gistUpload = res.data.data?.gistUpload ?? "base64";
       } else {
         showNotify({
           title: `获取配置失败`,
@@ -96,7 +98,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         });
       }
     },
-    async editGistSettings(data: SettingsPostData) {
+    async changeSettings(data: SettingsPostData) {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.setSettings(data);
       if (res?.data?.status === "success" && res?.data?.data) {
@@ -111,6 +113,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
         this.artifactStoreStatus = res.data.data.artifactStoreStatus || "";
+        this.gistUpload = res.data.data.gistUpload || "";
         showNotify({ type: "success", title: t(`myPage.notify.save.succeed`) });
       } else {
         showNotify({
@@ -133,6 +136,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar,
         istabBar2,
         subProgressStyle,
+        gistUpload,
       } = globalStore;
       const data = {
         isSimpleMode: isSimpleMode ?? false,
@@ -145,6 +149,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar: istabBar ?? false,
         istabBar2: istabBar2 ?? false,
         subProgressStyle: subProgressStyle ?? "hidden",
+        gistUpload: gistUpload ?? "base64",
       };
       const list = Object.keys(data) as (keyof SettingsPostData)[];
       // 判断是否有本地持久化的外观设置

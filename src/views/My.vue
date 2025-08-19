@@ -311,7 +311,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, syncPlatform, githubProxy } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, syncPlatform, githubProxy, gistUpload } =
   storeToRefs(settingsStore);
 
 const displayAvatar = computed(() => {
@@ -357,7 +357,7 @@ const fileInput = ref(null);
 const toggleEditMode = async () => {
   isEditLoading.value = true;
   if (isEditing.value) {
-    await settingsStore.editGistSettings({
+    await settingsStore.changeSettings({
       syncPlatform: syncPlatformInput.value,
       githubUser: userInput.value,
       gistToken: tokenInput.value,
@@ -526,26 +526,28 @@ const sync = async (query: "download" | "upload", options?: { keep?: string[], e
 };
 
 const uploadBtn = () => {
-  Dialog({
-    title: '请选择',
-    content: '若选择明文, 将不会保留 GitHub Token. 若选择 Base64 编码, 将完整保留数据(后端版本必须 >= 2.19.85)',
-    footerDirection: 'vertical',
-    onCancel: () => {
-      sync('upload', {
-        encode: 'plaintext'
-      });
-    },
-    cancelText: '明文(将不会保留 GitHub Token)',
-    okText: 'Base64 编码上传',
-    onOk: () => {
-      sync('upload', {
-        encode: 'base64'
-      });
-    },
-    popClass: "auto-dialog",
-    closeOnPopstate: true,
-    lockScroll: false,
-  });
+  const encode = gistUpload.value || 'base64';
+  sync('upload', { encode });
+  // Dialog({
+  //   title: '请选择',
+  //   content: '若选择明文, 将不会保留 GitHub Token. 若选择 Base64 编码, 将完整保留数据(后端版本必须 >= 2.19.85)',
+  //   footerDirection: 'vertical',
+  //   onCancel: () => {
+  //     sync('upload', {
+  //       encode: 'plaintext'
+  //     });
+  //   },
+  //   cancelText: '明文(将不会保留 GitHub Token)',
+  //   okText: 'Base64 编码上传',
+  //   onOk: () => {
+  //     sync('upload', {
+  //       encode: 'base64'
+  //     });
+  //   },
+  //   popClass: "auto-dialog",
+  //   closeOnPopstate: true,
+  //   lockScroll: false,
+  // });
 }
 const downloadBtn = () => {
   Dialog({

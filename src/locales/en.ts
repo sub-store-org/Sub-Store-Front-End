@@ -906,6 +906,11 @@ export default {
     },
   },
   moreSettingPage: {
+    gistUpload: {
+      title: 'Gist Upload',
+      base64: 'Base64 Encoded',
+      plaintext: 'Plaintext(w/o GitHub Token)',
+    },
     subProgress: {
       title: "Subscription Progress Style",
       hidden: "Hidden",

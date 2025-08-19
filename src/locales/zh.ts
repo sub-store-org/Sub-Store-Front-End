@@ -895,6 +895,11 @@ export default {
     },
   },
   moreSettingPage: {
+    gistUpload: {
+      title: 'Gist 上传',
+      base64: 'Base64 编码',
+      plaintext: '明文(不带 GitHub Token)',
+    },
     subProgress: {
       title: '订阅进度样式',
       hidden: '不显示',
