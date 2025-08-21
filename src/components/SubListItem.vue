@@ -400,7 +400,7 @@ const collectionDetail = computed(() => {
   } else {
     const displayNameList = nameList.map((name) => {
       const sub = subsStore.getOneSub(name);
-      return sub?.displayName || sub?.["display-name"] || sub.name;
+      return sub?.displayName || sub?.["display-name"] || sub?.name;
     });
     if (nameList.length === 0) {
       return `${t("subPage.collectionItem.containTag")}: ${subTags.join(", ")}`;

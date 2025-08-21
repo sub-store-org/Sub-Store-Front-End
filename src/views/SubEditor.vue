@@ -617,7 +617,7 @@ const padding = bottomSafeArea.value + "px";
     if(!Array.isArray(subscriptions) || subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
     return `: ${subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
-      return sub?.displayName || sub?.["display-name"] || sub.name;
+      return sub?.displayName || sub?.["display-name"] || sub?.name;
     }).join(', ')}`
   });
   const compareTableIsVisible = ref(false);
