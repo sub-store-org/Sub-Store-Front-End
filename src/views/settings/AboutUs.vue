@@ -137,6 +137,7 @@
     :deep(.nut-cell__value) {
       font-weight: normal;
       color: var(--primary-color);
+      cursor: pointer;
     }
 
     .bclass {
