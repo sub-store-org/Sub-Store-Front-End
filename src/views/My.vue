@@ -463,7 +463,23 @@ const fileChange = async (event) => {
           type: "success",
           title: t(`myPage.notify.restore.succeed`),
         });
-        window.location.reload()
+
+        if ("serviceWorker" in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (let registration of registrations) {
+            await registration.unregister();
+          }
+        }
+        if ("caches" in window) {
+          const cacheNames = await caches.keys();
+          for (let cacheName of cacheNames) {
+            await caches.delete(cacheName);
+          }
+        }
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         throw new Error('restore failed')
       }
@@ -517,7 +533,22 @@ const sync = async (query: "download" | "upload", options?: { keep?: string[], e
       title: t(`myPage.notify.${query}.succeed`),
     });
     if (query === "download") {
-      window.location.reload()
+      if ("serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+          await registration.unregister();
+        }
+      }
+      if ("caches" in window) {
+        const cacheNames = await caches.keys();
+        for (let cacheName of cacheNames) {
+          await caches.delete(cacheName);
+        }
+      }
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   }
 
