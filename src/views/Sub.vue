@@ -262,22 +262,12 @@ import SubListItem from "@/components/SubListItem.vue";
 import { useBackend } from "@/hooks/useBackend";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
+import { useSystemStore } from "@/store/system";
 import { useMethodStore } from '@/store/methodStore';
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
-
-
-
-
-
-
-
-
-
-
-
 const { env } = useBackend();
 const { showNotify } = useAppNotifyStore();
 const subsApi = useSubsApi();
@@ -291,6 +281,7 @@ const addSubBtnIsVisible = ref(false);
 const methodStore = useMethodStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
 const { appearanceSetting } = storeToRefs(settingsStore);
@@ -301,6 +292,7 @@ const {
   bottomSafeArea,
   // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
+const { navBarHeight } = storeToRefs(systemStore);
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
@@ -308,6 +300,9 @@ const sortFailed = ref(false);
 const hasUntagged = ref(false);
 const hasLocal = ref(false);
 const hasRemote = ref(false);
+const tagNavBarHeight = computed(() => {
+  return navBarHeight.value;
+});
 const getTag = () => {
     return localStorage.getItem('sub-tag') || 'all';
   };
@@ -434,14 +429,6 @@ const updateRadioWrapperHeight = () => {
     }
   });
 };
-const isPWA = ref(
-  (window.matchMedia("(display-mode: standalone)").matches &&
-    !/Android/.test(navigator.userAgent)) ||
-    false
-);
-const navBarHeight = computed(() => {
-  return isPWA.value ? `${44 + 32 + bottomSafeArea.value}px` : `${44 + 12 + bottomSafeArea.value}px`;
-});
 
 watch(tag, () => {
   updateRadioWrapperHeight();
@@ -829,7 +816,7 @@ const importTips = () => {
     flex-wrap: wrap;
     position: fixed;
     padding: 10px;
-    top: v-bind(navBarHeight);
+    top: v-bind(tagNavBarHeight);
     z-index: 10;
     backdrop-filter: blur(var(--nav-bar-blur));
     -webkit-backdrop-filter: blur(var(--nav-bar-blur));

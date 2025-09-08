@@ -96,6 +96,7 @@ import { computed, ref, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
+import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
 import { Toast } from "@nutui/nutui";
@@ -111,49 +112,21 @@ const router = useRouter();
 const route = useRoute();
 const methodStore = useMethodStore()
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
-// const { isSimpleMode, showFloatingRefreshButton } = storeToRefs(globalStore);
-const isLandscape = ref(false);
-const isSmall = ref(false);
-const screenWidth = ref(window.innerWidth);
-const screenHeight = ref(window.innerHeight);
-
-const handleResize = () => {
-  screenWidth.value = window.innerWidth;
-  screenHeight.value = window.innerHeight;
-};
+// 从systemStore获取状态
+const { isPWA, isLandscape, isSmall } = storeToRefs(systemStore);
 
 onMounted(() => {
-  window.addEventListener("resize", handleResize);
-});
-const isPWA = ref(
-  (window.matchMedia("(display-mode: standalone)").matches &&
-    !/Android/.test(navigator.userAgent)) ||
-    false
-);
-
-// isPWA.value = true;
-// isSmall.value = true;
-
-const navBarHeight = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "78px" : "95px") : "56px";
+  systemStore.initSystemState();
 });
 
-const navBartop = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "38px" : "55px") : "0px";
-});
-
-const navBartopRight = computed(() => {
-  return isPWA.value && !isLandscape.value ? (isSmall.value ? "52px" : "65px") : "15px";
-});
-
-const Pwa_top = computed(() => {
-  return isPWA.value ? (isSmall.value ? "20px" : "45px") : "45px";
-});
+// 使用systemStore中的计算属性
+const { navBarHeight, navBartop, navBartopRight, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
 
 const isNeedBack = computed(() => {
   return route.meta.needNavBack ?? false;
@@ -245,11 +218,6 @@ const refresh = async () => {
     }, 1000);
   }
 };
-watchEffect(() => {
-  handleResize();
-  isSmall.value = screenHeight.value < 750 || /iPad/.test(navigator.userAgent);
-  isLandscape.value = screenWidth.value > screenHeight.value;
-});
 </script>
 
 <style lang="scss">

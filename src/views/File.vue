@@ -215,6 +215,7 @@ import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
+import { useSystemStore } from "@/store/system";
 import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
@@ -253,9 +254,10 @@ const restoreIsLoading = ref(false);
 const addSubBtnIsVisible = ref(false);
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
-
+const { navBarHeight } = storeToRefs(systemStore);
 const { hasFiles, files } = storeToRefs(subsStore);
 const {
   // isSimpleMode,
@@ -312,13 +314,9 @@ const updateRadioWrapperHeight = () => {
     }
   });
 };
-const isPWA = ref(
-  (window.matchMedia("(display-mode: standalone)").matches &&
-    !/Android/.test(navigator.userAgent)) ||
-    false
-);
-const navBarHeight = computed(() => {
-  return isPWA.value ? `${44 + 32 + bottomSafeArea.value}px` : `${44 + 12 + bottomSafeArea.value}px`;
+
+const tagNavBarHeight = computed(() => {
+  return navBarHeight.value;
 });
 
 watch(tag, () => {
@@ -694,7 +692,7 @@ const shouldShowElement = (element) => {
     flex-wrap: wrap;
     position: fixed;
     padding: 10px;
-    top: v-bind(navBarHeight);
+    top: v-bind(tagNavBarHeight);
     z-index: 10;
     backdrop-filter: blur(var(--nav-bar-blur));
     -webkit-backdrop-filter: blur(var(--nav-bar-blur));
