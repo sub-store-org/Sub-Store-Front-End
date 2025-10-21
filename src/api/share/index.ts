@@ -11,10 +11,11 @@ export function useShareApi() {
         data,
       });
     },
-    deleteShare: (token: string): AxiosPromise<MyAxiosRes> => {
+    deleteShare: (token: string, type: string, name: string): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/token/${encodeURIComponent(token)}`,
         method: "delete",
+        params: { type, name },
       });
     },
     getShares: (type?: string, name?: string): AxiosPromise<MyAxiosRes> => {

@@ -565,7 +565,7 @@ const handleCreateShare = async () => {
 };
 
 const confirmUpdateShare = async () => {
-  await subsStore.deleteShare(props.data?.token, false);
+  await subsStore.deleteShare(props.data?.token, props.data?.type, props.data?.name, false);
   await handleCreateShare();
 };
 

@@ -247,7 +247,7 @@ const swipeController = () => {
 };
 
 const onDeleteConfirm = async () => {
-  await subsStore.deleteShare(token.value);
+  await subsStore.deleteShare(token.value, type.value, name.value);
 };
 
 const onClickEdit = () => {

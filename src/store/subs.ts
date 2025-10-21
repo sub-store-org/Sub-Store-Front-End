@@ -376,11 +376,11 @@ export const useSubsStore = defineStore('subsStore', {
         console.log('fetchShareData err', err);
       });
     },
-    async deleteShare(token: string, isShowNotify: boolean = true) {
+    async deleteShare(token: string, type: string, name: string, isShowNotify: boolean = true) {
       try {
         const { showNotify } = useAppNotifyStore();
 
-        const { data } = await shareApi.deleteShare(token);
+        const { data } = await shareApi.deleteShare(token, type, name);
         if (data.status === "success") {
           await this.fetchShareData();
           isShowNotify && showNotify({
@@ -392,11 +392,11 @@ export const useSubsStore = defineStore('subsStore', {
         console.log('deleteShare error', error);
       }
     },
-    async updateShare(token: string, data: ShareToken) {
+    async updateShare(token: string, type: string, name:string, data: ShareToken) {
       const { showNotify } = useAppNotifyStore();
       try {
-        await shareApi.deleteShare(token);
-        await shareApi.createShare(data); 
+        await shareApi.deleteShare(token, type, name);
+        await shareApi.createShare(data);
         await this.fetchShareData();
       } catch (error) {
         console.log('updateShare error', error);
