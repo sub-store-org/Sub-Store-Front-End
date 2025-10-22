@@ -447,7 +447,7 @@ const flow = computed(() => {
         firstLine: t("subPage.subItem.noFlow"),
         secondLine: ``,
       };
-    } else if (target.status === "success") {
+    } else if (target.status === "success" && target.data?.usage) {
       let {
         planName,
         appUrl,
