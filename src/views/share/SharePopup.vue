@@ -550,6 +550,12 @@ const handleCreateShare = async () => {
   if (res?.data?.status === "success") {
     isCreateShareLinkSuccess.value = true;
     const { token } = res.data.data;
+    if (!secretPath.value.startsWith('/')) {
+      Toast.fail(t('sharePage.magicPathErrorNotify'));
+      throw new Error(
+        t("sharePage.magicPathErrorNotify"),
+      );
+    }
     const shareUrl = `${host.value.replace(new RegExp(`${secretPath.value}$`), "")}/share/${typeMap[form.type]}/${encodeURIComponent(
       props.data.name,
     )}?token=${encodeURIComponent(token)}`;

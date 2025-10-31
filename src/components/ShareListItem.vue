@@ -83,10 +83,10 @@
           </div>
         </div>
         <p v-if="!appearanceSetting.isSimpleMode" class="sub-item-remark">
-          <span>创建时间：{{ createTime }}</span>
+          <span>{{ t(`sharePage.createTimeLabel`) }}{{ createTime }}</span>
         </p>
         <p class="sub-item-remark">
-          <span>到期时间：{{ expiresTime }}</span>
+          <span>{{ t(`sharePage.expiredLabel`) }}{{ expiresTime }}</span>
         </p>
 
         <!-- 分享备注 -->
@@ -345,6 +345,12 @@ const secretPath = computed(() => {
 const getShareUrl = () => {
   try {
     const { type, name, token } = props.data;
+    if (!secretPath.value.startsWith('/')) {
+      Toast.fail(t('sharePage.magicPathErrorNotify'));
+      throw new Error(
+        t("sharePage.magicPathErrorNotify"),
+      );
+    }
     const shareUrl = `${host.value.replace(
       new RegExp(`${secretPath.value}$`),
       "",

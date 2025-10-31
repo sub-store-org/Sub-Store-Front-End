@@ -769,6 +769,9 @@ export default {
     noOriginalTips: "跳转失败, 检查源数据是否已删除",
     leftTime: "剩余",
     expired: "已过期",
+    expiredLabel: "过期时间：",
+    createTimeLabel: "创建时间：",
+    magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH 必须以 / 开头，当前分享链接异常，请检查运行环境",
     createShare: {
       expiresValue: {
         label: "有效期时长",

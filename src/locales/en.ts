@@ -779,6 +779,9 @@ export default {
     noOriginalTips: "Failed to jump, check if the source data has been deleted.",
     leftTime: "Remaining time",
     expired: "Expired",
+    expiredLabel: "Expiration Time: ",
+    createTimeLabel: "Creation Time: ",
+    magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH should start with /, please check the configuration!",
     createShare: {
       expiresValue: {
         label: "Valid for",
