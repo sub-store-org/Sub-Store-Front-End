@@ -351,6 +351,7 @@ export default {
         ua: {
           label: 'User-Agent',
           placeholder: '下载时使用的 UA，不填使用默认',
+          placeholderDisabled: '透传时禁用自定义 UA',
         },
         subUserinfo: {
           label: '订阅流量信息',

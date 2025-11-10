@@ -333,6 +333,7 @@ export default {
         ua: {
           label: "User-Agent",
           placeholder: "The User-Agent for downloading resource(s)",
+          placeholderDisabled: 'Disable custom UA when passing through',
         },
         subUserinfo: {
           label: "Subscription-Userinfo",

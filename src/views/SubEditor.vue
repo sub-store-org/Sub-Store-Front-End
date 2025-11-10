@@ -215,7 +215,7 @@
             v-if="form.source === 'remote'"
           >
             <div class="switch-wrapper">
-              <nut-switch v-model="form.passThroughUA" />
+              <nut-switch v-model="form.passThroughUA" @change="handlePassThroughUAChange"/>
             </div>
           </nut-form-item>
           <nut-form-item
@@ -227,10 +227,11 @@
               :border="false"
               class="nut-input-text"
               v-model.trim="form.ua"
-              :placeholder="$t(`editorPage.subConfig.basic.ua.placeholder`)"
+              :placeholder="userAgentPlaceholder"
               type="text"
               input-align="right"
               left-icon="tips"
+              :readonly="passThroughUAOn"
               @click-left-icon="uaTips"
             />
           </nut-form-item>
@@ -904,6 +905,28 @@ const compare = () => {
       Toast.hide("compare");
     }
   });
+};
+
+const passThroughUAOn = computed(() => {
+  return form.source === "remote" && form.passThroughUA;
+});
+
+const userAgentPlaceholder = computed(() => {
+  return passThroughUAOn.value
+    ? t(`editorPage.subConfig.basic.ua.placeholderDisabled`)
+    : t(`editorPage.subConfig.basic.ua.placeholder`);
+});
+
+const handlePassThroughUAChange = (val) => {
+  if (val) {
+    form._savedUA = form.ua;
+    form.ua = "";
+  } else {
+    if (form._savedUA !== undefined) {
+      form.ua = form._savedUA;
+      form._savedUA = undefined;
+    }
+  }
 };
 
 const submit = () => {
