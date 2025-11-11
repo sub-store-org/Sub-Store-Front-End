@@ -40,6 +40,7 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID}} # Required
           vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
           working-directory: dist
+          vercel-version: '48.9.0'
       - name: zip
         run: |
           zip -r dist.zip dist
