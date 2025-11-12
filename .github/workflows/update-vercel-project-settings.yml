@@ -1,0 +1,16 @@
+# 该 workflow 用于更新 Vercel 项目的 Node.js 版本
+name: Update Vercel project settings
+on:
+  workflow_dispatch:
+
+jobs:
+  update-nodejs-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Vercel project Node.js version
+        run: |
+          curl --request PATCH \
+          --url https://api.vercel.com/v9/projects/${{ secrets.PROJECT_ID }} \
+          --header 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' \
+          --header 'Content-Type: application/json' \
+          --data '{ "nodeVersion":"22.x"}'
