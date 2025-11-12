@@ -340,7 +340,8 @@ export default {
           placeholder: "Value or URL(use response content)",
         },
         passThroughUA: {
-          label: 'Pass Through Request User-Agent'
+          label: 'Pass Through Request User-Agent',
+          warning: 'Pass Through Request User-Agent and Custom UA cannot be enabled at the same time',
         },
         proxy: {
           label: "Proxy/Policy",

@@ -532,6 +532,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
+import { toast } from "vue3-toastify/index";
 const cmStore = useCodeStore();
 const isDis = ref(true)
 const { t } = useI18n();
@@ -718,6 +719,14 @@ watchEffect(() => {
       form.content = sourceData.content;
       cmStore.setEditCode('SubEditer', sourceData.content);
       form.ua = sourceData.ua;
+      form._savedUA = sourceData._savedUA;
+      if(form.passThroughUA && form.ua){
+        showNotify({
+          type: "warning",
+          title: t(`editorPage.subConfig.basic.passThroughUA.warning`),
+          duration: 65535,
+        });
+      }
       break;
   }
 
