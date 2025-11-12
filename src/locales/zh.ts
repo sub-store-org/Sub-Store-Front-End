@@ -358,7 +358,8 @@ export default {
           placeholder: '填写值或链接(使用响应内容)',
         },
         passThroughUA: {
-          label: '透传请求的 User-Agent'
+          label: '透传请求的 User-Agent',
+          warning: '透传请求的 User-Agent 和 自定义 UA 不可同时启用',
         },
         proxy: {
           label: '代理/策略',
