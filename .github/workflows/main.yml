@@ -1,5 +1,6 @@
 name: build
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -35,10 +36,11 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
           # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
-          vercel-args: "--prod" # Optional
+          vercel-args: "--prod --debug" # Optional
           vercel-org-id: ${{ secrets.ORG_ID}} # Required
           vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
           working-directory: dist
+          vercel-version: '48.9.0'
       - name: zip
         run: |
           zip -r dist.zip dist
