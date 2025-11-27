@@ -148,6 +148,25 @@ export const useHostAPI = () => {
       return false; // 没有URL参数，返回false
     }
 
+    // 处理 concurrency 参数
+    const concurrency = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'concurrency');
+    if (concurrency) {
+      const value = parseInt(concurrency[1], 10);
+      if (!isNaN(value)) {
+        if (value >= 1) {
+          console.log(`设置并发数 ${value}`)
+          localStorage.setItem('concurrency', value.toString());
+        } else {
+          console.log(`清除并发数设置`)
+          localStorage.removeItem('concurrency');
+        }
+      }
+    }
+
     // 处理api参数
     const apiUrl = query
       .slice(1)

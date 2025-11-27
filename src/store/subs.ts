@@ -309,7 +309,7 @@ export const useSubsStore = defineStore('subsStore', {
 
       await executeAsyncTasks(
         flowsUrlList.map((item, index) => () =>  asyncGetFlow(item, index)),
-        { concurrency: 3 }
+        { concurrency: localStorage.getItem('concurrency') ? parseInt(localStorage.getItem('concurrency') as string, 10) : 3 }
       )
   
       // const batches = [];
