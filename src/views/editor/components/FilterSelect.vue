@@ -72,6 +72,7 @@
         'hysteria2',
         'juicity',
         'mieru',
+        'sudoku',
         'anytls',
         'wireguard',
         'ssh',

@@ -478,6 +478,7 @@ export default {
             "Hysteria 2",
             "Juicity",
             "mieru",
+            "sudoku",
             "AnyTLS",
             "WireGuard",
             "SSH",
