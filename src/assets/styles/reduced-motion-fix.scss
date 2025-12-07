@@ -1,0 +1,40 @@
+/**
+ * 修复 modern-css-reset 在 prefers-reduced-motion 时的问题
+ * 
+ * 问题：modern-css-reset 将动画/过渡时间设置为 0.01ms，这会导致：
+ * 1. Notify 通知极快闪现
+ * 2. 代码编辑器 cmView 滚动不跟手
+ * 详见：https://github.com/sub-store-org/Sub-Store/issues/486
+ * 解决方案：让动画和过渡完全禁用，针对性处理Notify和代码编辑器样式
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* 需要保持动画的元素：添加 .keep-motion 类或使用特定前缀 */
+  .keep-motion,
+  .keep-motion *,
+  [class^="Toastify"],
+  [class*=" Toastify"],
+  [class^="nut-toast"],
+  [class^="nut-overlay"] {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.5s !important;
+  }
+
+  // NutUI Toast.loading 动画
+  .nut-toast-loading .nut-toast-icon-wrapper {
+    animation: rotation 1s linear infinite !important;
+  }
+
+  .cmviewRef,
+  .cm-scroller {
+    scroll-behavior: auto !important;
+  }
+}
