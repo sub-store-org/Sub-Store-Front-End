@@ -307,8 +307,19 @@ export const useSubsStore = defineStore('subsStore', {
       //   waitTime: 0,
       // });
 
+      const flowTasks = [] as Array<() => Promise<void>>;
+
+      flowsUrlList.forEach((item, index) => {
+        const [url, , noFlow] = item;
+        if (noFlow) {
+          this.flows[url] = { status:'noFlow' };
+          return;
+        }
+        flowTasks.push(() => asyncGetFlow(item, index));
+      });
+
       await executeAsyncTasks(
-        flowsUrlList.map((item, index) => () =>  asyncGetFlow(item, index)),
+        flowTasks,
         { concurrency: localStorage.getItem('concurrency') ? parseInt(localStorage.getItem('concurrency') as string, 10) : 3 }
       )
   
