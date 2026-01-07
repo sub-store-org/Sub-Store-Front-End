@@ -186,7 +186,7 @@ const getjsjson = (res) => {
   // if (props.isJS) return false;
   try {
     const jsRegex =
-      /(?:function|var|let|const|if|else|return|try|catch|finally|typeof|delete|async|await)\s/;
+      /(?:function|var|let|const|if|else|return|try|catch|finally|typeof|delete|async|await|Error:)\s/;
     if (jsRegex.test(res.slice(0, 4000))) {
       setHJ();
       console.log("---setHJ");

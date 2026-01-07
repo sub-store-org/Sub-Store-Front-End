@@ -90,8 +90,18 @@ watchEffect(async () => {
       processedData.value = response.data
       cmStore.setEditCode('filePreview', processedData.value || '')
     } catch (error) {
-      console.error('Error fetching URL:', error)
-      cmStore.setEditCode('filePreview', `Error: ${error.message}`)
+      let data = error.response?.data
+      if (data) {
+        try {
+          data = JSON.stringify(JSON.parse(error.response?.data), null, 2)
+        } catch (e) {
+          
+        }
+      }
+      console.error('Error fetching URL:', error, data)
+      cmStore.setEditCode('filePreview', `Error: ${
+      error.response ? `${error.response.status} ${error.response.statusText}\n\n${data}` : error.message
+      }`)
       showNotify({ title: `加载失败: ${error.message}` })
     }
   }
