@@ -681,6 +681,12 @@ watchEffect(() => {
   }
 
   const sourceData: any = toRaw(sub.value) || toRaw(collection.value);
+  if (!sourceData) {
+    return;
+  }
+  if (!Array.isArray(sourceData.process)) {
+    sourceData.process = [];
+  }
   const newProcess = JSON.parse(JSON.stringify(sourceData.process));
   form.mergeSources = sourceData.mergeSources;
   let ignoreFailedRemoteSub = sourceData.ignoreFailedRemoteSub;
@@ -708,8 +714,9 @@ watchEffect(() => {
 
   switch (editType) {
     case "collections":
-      form.subscriptions = [];
-      form.subscriptions.push(...sourceData.subscriptions);
+      form.subscriptions = Array.isArray(sourceData.subscriptions)
+        ? [...sourceData.subscriptions]
+        : [];
       console.log('form.subscriptions ==>', form.subscriptions);
       break;
     case "subs":
