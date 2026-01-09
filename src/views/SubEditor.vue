@@ -1218,8 +1218,7 @@ const urlValidator = (val: string): Promise<boolean> => {
 
   const updateFilteredSubsList = () => {
     if (subsSelectList.value && subsSelectList.value.length > 0) {
-      const filtered = subsSelectList.value.filter(item => shouldShowElement(item[3]));
-      
+      // 不再过滤，保留所有订阅，用 v-show 控制显示
       // 分离已勾选和未勾选的订阅
       const selectedItems = [];
       const unselectedItems = [];
@@ -1229,16 +1228,16 @@ const urlValidator = (val: string): Promise<boolean> => {
         form.subscriptions = [];
       }
       
-      // 优先添加已勾选的订阅
+      // 优先添加已勾选的订阅（按 form.subscriptions 的顺序）
       form.subscriptions.forEach(selectedName => {
-        const item = filtered.find(item => item[0] === selectedName);
+        const item = subsSelectList.value.find(item => item[0] === selectedName);
         if (item) {
           selectedItems.push(item);
         }
       });
       
       // 添加未勾选的订阅
-      filtered.forEach(item => {
+      subsSelectList.value.forEach(item => {
         if (!form.subscriptions.includes(item[0])) {
           unselectedItems.push(item);
         }
@@ -1250,7 +1249,8 @@ const urlValidator = (val: string): Promise<boolean> => {
       filteredSubsSelectList.value = [];
     }
   };
-  watch([tag, subsSelectList, () => subsStore.subs], () => {
+  // 只在 subsSelectList 或 subsStore.subs 变化时更新列表，不监听 tag
+  watch([subsSelectList, () => subsStore.subs], () => {
     updateFilteredSubsList();
   }, { immediate: true, deep: true });
   const isDragging = ref(false);
@@ -1264,7 +1264,10 @@ const urlValidator = (val: string): Promise<boolean> => {
     console.log("结束拖拽");
     isDragging.value = false;
   
-    const newFilteredOrder = filteredSubsSelectList.value.map(item => item[0]);
+    // 获取当前过滤视图中可见的订阅顺序
+    const visibleOrder = filteredSubsSelectList.value
+      .filter(item => shouldShowElement(item[3]))
+      .map(item => item[0]);
     
     const newSubscriptions = [];
     
@@ -1274,7 +1277,7 @@ const urlValidator = (val: string): Promise<boolean> => {
     }
     
     // 先按新顺序添加当前过滤列表中已选中的订阅
-    newFilteredOrder.forEach(name => {
+    visibleOrder.forEach(name => {
       if (form.subscriptions.includes(name)) {
         newSubscriptions.push(name);
       }
@@ -1282,7 +1285,7 @@ const urlValidator = (val: string): Promise<boolean> => {
     
     // 添加不在当前过滤列表中但已选中的订阅（保持原有顺序）
     form.subscriptions.forEach(name => {
-      if (!newFilteredOrder.includes(name)) {
+      if (!visibleOrder.includes(name)) {
         newSubscriptions.push(name);
       }
     });
