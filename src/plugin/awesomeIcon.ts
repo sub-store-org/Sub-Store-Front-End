@@ -35,6 +35,8 @@ import {
   faShareNodes,
   faLink,
   faSquareArrowUpRight,
+  faMaximize,
+  faMinimize,
   faBars
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -73,3 +75,5 @@ library.add(faLink);
 library.add(faSquareArrowUpRight);
 library.add(faBars);
 library.add(faEllipsis);
+library.add(faMaximize);
+library.add(faMinimize);

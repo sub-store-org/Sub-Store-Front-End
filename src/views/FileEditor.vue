@@ -262,7 +262,7 @@
             /> -->
 
               <button class="cimg-button" @click="isDis = false">
-                <img src="" />
+                <font-awesome-icon icon="fa-solid fa-maximize" />
                 {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
                 <!-- 测试 后续再改效果 -->
               </button>
@@ -273,6 +273,7 @@
                 style="display: none"
               />
               <button class="cimg-button" @click="upload">
+              <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
                 {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
               </button>
               <div
@@ -388,7 +389,7 @@
 
   <div v-else style="width: 100%; height: 95vh">
     <button class="cimg-button" @click="isDis = true">
-      <img src="" />
+      <font-awesome-icon icon="fa-solid fa-minimize" />
       {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEditCancel`) }}
     </button>
     <cmView :isReadOnly="false" id="FileEditer" />
