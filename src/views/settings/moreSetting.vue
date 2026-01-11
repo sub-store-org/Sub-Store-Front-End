@@ -1,256 +1,152 @@
 <template>
   <div class="page-wrapper">
-    <p class="More-title">
+    <!-- <p class="More-title">
       {{ $t(`themeSettingPage.themeSettingTitle`) }}
-    </p>
+    </p> -->
 
     <nut-cell-group>
       <nut-cell :title="$t(`moreSettingPage.simple`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="SimpleSwitch"
-            size="mini"
-            @change="setSimpleMode"
-          />
+          <nut-switch class="my-switch" v-model="SimpleSwitch" size="mini" @change="setSimpleMode" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isSimpleReicon`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awSimpleReicon"
-            size="mini"
-            @change="setSimpleReicon"
-          />
+          <nut-switch class="my-switch" v-model="awSimpleReicon" size="mini" @change="setSimpleReicon" />
         </template>
       </nut-cell>
-      <nut-cell
-        :title="$t(`moreSettingPage.isSimpleShowRemarks`)"
-        class="cell-item"
-      >
+      <nut-cell :title="$t(`moreSettingPage.isSimpleShowRemarks`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awSimpleShowRemark"
-            size="mini"
-            @change="setSimpleShowRemark"
-          />
+          <nut-switch class="my-switch" v-model="awSimpleShowRemark" size="mini" @change="setSimpleShowRemark" />
         </template>
       </nut-cell>
-      <nut-cell :title="$t(`moreSettingPage.islr`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="LeftRight"
-            size="mini"
-            @change="setLeftRight"
-          />
-        </template>
-      </nut-cell>
-
+    </nut-cell-group>
+    <nut-cell-group>
       <nut-cell :title="$t(`moreSettingPage.isDefaultIcon`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awIsDefaultIcon"
-            size="mini"
-            @change="setIsDefaultIcon"
-          />
+          <nut-switch class="my-switch" v-model="awIsDefaultIcon" size="mini" @change="setIsDefaultIcon" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isShowIcon`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awIsShowIcon"
-            size="mini"
-            @change="setIsShowIcon"
-          />
+          <nut-switch class="my-switch" v-model="awIsShowIcon" size="mini" @change="setIsShowIcon" />
         </template>
       </nut-cell>
-      <nut-cell
-        :title="$t(`moreSettingPage.isSubItemMenuFold`)"
-        class="cell-item"
-      >
+    </nut-cell-group>
+    <nut-cell-group>
+
+      <nut-cell :title="$t(`moreSettingPage.islr`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awIsSubItemMenuFold"
-            size="mini"
-            @change="setIsSubItemMenuFold"
-          />
+          <nut-switch class="my-switch" v-model="LeftRight" size="mini" @change="setLeftRight" />
+        </template>
+      </nut-cell>
+
+
+      <nut-cell :title="$t(`moreSettingPage.isSubItemMenuFold`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="awIsSubItemMenuFold" size="mini" @change="setIsSubItemMenuFold" />
+        </template>
+      </nut-cell>
+
+
+
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.subProgress.title`)" :desc="subProgressStyleName"
+        @click="()=>{showSubProgressPicker=true}" is-link>
+      </nut-cell>
+      <nut-picker v-model="subProgressStyleValue" v-model:visible="showSubProgressPicker" :columns="[
+        { text: $t(`moreSettingPage.subProgress.hidden`), value: 'hidden' },
+        { text: $t(`moreSettingPage.subProgress.background`), value: 'background' }
+      ]" :title="$t(`moreSettingPage.subProgress.title`)" @confirm="subProgressStyleConfirm">
+      </nut-picker>
+
+
+      <nut-cell :title="$t(`moreSettingPage.displayPreviewInWebPage`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="awDisplayPreviewInWebPage" size="mini"
+            @change="setDisplayPreviewInWebPage" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.isEditorCommon`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awEditorCommon"
-            size="mini"
-            @change="setEditorCommon"
-          />
+          <nut-switch class="my-switch" v-model="awEditorCommon" size="mini" @change="setEditorCommon" />
         </template>
       </nut-cell>
+    </nut-cell-group>
 
+    <nut-cell-group v-if="shareBtnVisible">
+      <nut-cell :title="$t(`moreSettingPage.invalidShareFakeNode`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="invalidShareFakeNode" size="mini"
+            @change="setInvalidShareFakeNode" />
+        </template>
+      </nut-cell>
+    </nut-cell-group>
+
+    <nut-cell-group>
       <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awShowFloatingRefreshButton"
-            size="mini"
-            @change="setShowFloatingRefreshButton"
-          />
+          <nut-switch class="my-switch" v-model="awShowFloatingRefreshButton" size="mini"
+            @change="setShowFloatingRefreshButton" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awShowFloatingAddButton"
-            size="mini"
-            @change="setShowFloatingAddButton"
-          />
+          <nut-switch class="my-switch" v-model="awShowFloatingAddButton" size="mini"
+            @change="setShowFloatingAddButton" />
         </template>
       </nut-cell>
-      <nut-cell :title="$t(`moreSettingPage.displayPreviewInWebPage`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awDisplayPreviewInWebPage"
-            size="mini"
-            @change="setDisplayPreviewInWebPage"
-          />
-        </template>
-      </nut-cell>
-
       <nut-cell :title="$t(`moreSettingPage.tabBar2`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awtabBar2"
-            size="mini"
-            @change="settabBar2"
-          />
+          <nut-switch class="my-switch" v-model="awtabBar2" size="mini" @change="settabBar2" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.tabBar`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="awtabBar"
-            size="mini"
-            @change="settabBar"
-          />
+          <nut-switch class="my-switch" v-model="awtabBar" size="mini" @change="settabBar" />
         </template>
       </nut-cell>
-      <nut-cell
-          class="cell-item"
-          :title="$t(`moreSettingPage.subProgress.title`)"
-          :desc="subProgressStyleName"
-          @click="()=>{showSubProgressPicker=true}"
-          is-link
-        >
-      </nut-cell>
-      <nut-picker
-        v-model="subProgressStyleValue"
-        v-model:visible="showSubProgressPicker"
-        :columns="[
-        { text: $t(`moreSettingPage.subProgress.hidden`), value: 'hidden' },
-        { text: $t(`moreSettingPage.subProgress.background`), value: 'background' }
-      ]"
-        :title="$t(`moreSettingPage.subProgress.title`)"
-        @confirm="subProgressStyleConfirm"
-      >
-      </nut-picker>
     </nut-cell-group>
     <nut-cell-group>
-      <nut-cell
-          class="cell-item"
-          :title="$t(`moreSettingPage.gistUpload.title`)"
-          :desc="gistUploadName"
-          @click="()=>{showGistUploadPicker=true}"
-          is-link
-        >
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.gistUpload.title`)" :desc="gistUploadName"
+        @click="()=>{showGistUploadPicker=true}" is-link>
       </nut-cell>
-      <nut-picker
-        v-model="gistUploadValue"
-        v-model:visible="showGistUploadPicker"
-        :columns="[
+      <nut-picker v-model="gistUploadValue" v-model:visible="showGistUploadPicker" :columns="[
         { text: $t(`moreSettingPage.gistUpload.base64`), value: 'base64' },
         { text: $t(`moreSettingPage.gistUpload.plaintext`), value: 'plaintext' }
-      ]"
-        :title="$t(`moreSettingPage.gistUpload.title`)"
-        @confirm="gistUploadConfirm"
-      >
+      ]" :title="$t(`moreSettingPage.gistUpload.title`)" @confirm="gistUploadConfirm">
       </nut-picker>
     </nut-cell-group>
 
     <nut-cell-group>
       <nut-cell :title="$t(`themeSettingPage.auto`)" class="cell-item">
         <template v-slot:link>
-          <nut-switch
-            class="my-switch"
-            v-model="autoSwitch"
-            size="mini"
-            @change="autoSwitchIsChange"
-          />
+          <nut-switch class="my-switch" v-model="autoSwitch" size="mini" @change="autoSwitchIsChange" />
         </template>
       </nut-cell>
 
       <template v-if="theme.auto">
-        <nut-cell
-          class="cell-item"
-          :title="$t(`themeSettingPage.dark`)"
-          :desc="themeDes.darkDes"
-          @click="openPicker('dark')"
-          is-link
-        >
+        <nut-cell class="cell-item" :title="$t(`themeSettingPage.dark`)" :desc="themeDes.darkDes"
+          @click="openPicker('dark')" is-link>
         </nut-cell>
 
-        <nut-cell
-          class="cell-item"
-          :title="$t(`themeSettingPage.light`)"
-          :desc="themeDes.lightDes"
-          @click="openPicker('light')"
-          is-link
-        >
+        <nut-cell class="cell-item" :title="$t(`themeSettingPage.light`)" :desc="themeDes.lightDes"
+          @click="openPicker('light')" is-link>
         </nut-cell>
       </template>
 
-      <nut-cell
-        v-else
-        class="cell-item"
-        :title="$t(`themeSettingPage.themeSettingTitle`)"
-        :desc="themeDes.nameDes"
-        @click="openPicker('name')"
-        is-link
-      />
+      <nut-cell v-else class="cell-item" :title="$t(`themeSettingPage.themeSettingTitle`)" :desc="themeDes.nameDes"
+        @click="openPicker('name')" is-link />
     </nut-cell-group>
-    <nut-picker
-      v-model="selectedValue"
-      v-model:visible="showThemePicker"
-      :columns="pickerColumn"
-      :title="$t(`themeSettingPage.themePicker.title`)"
-      :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
-      :ok-text="$t(`themeSettingPage.themePicker.confirm`)"
-      @confirm="confirm"
-    />
+    <nut-picker v-model="selectedValue" v-model:visible="showThemePicker" :columns="pickerColumn"
+      :title="$t(`themeSettingPage.themePicker.title`)" :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
+      :ok-text="$t(`themeSettingPage.themePicker.confirm`)" @confirm="confirm" />
     <nut-cell-group>
-      <nut-cell
-          :title="$t(`moreSettingPage.clearFrontEndData.label`)"
-          class="change-themes"
-          @click.stop="clearFrontEndData"
-          is-link
-        ></nut-cell>
-      <nut-cell
-          :title="$t(`moreSettingPage.clearData.label`)"
-          class="change-themes"
-          @click.stop="clearData"
-          is-link
-        ></nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.clearFrontEndData.label`)" class="change-themes"
+        @click.stop="clearFrontEndData" is-link></nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.clearData.label`)" class="change-themes" @click.stop="clearData"
+        is-link></nut-cell>
     </nut-cell-group>
-  
+
   </div>
 </template>
 
@@ -266,6 +162,7 @@
   import { useI18n } from 'vue-i18n';
   import { useAppNotifyStore } from "@/store/appNotify";
   import { useSettingsApi } from "@/api/settings";
+  import { useBackend } from "@/hooks/useBackend";
   // import { Dialog } from '@nutui/nutui';
 
   const { t } = useI18n();
@@ -289,7 +186,7 @@
   const { changeAppearanceSetting, changeSettings } = settingsStore;
   const { appearanceSetting, gistUpload } = storeToRefs(settingsStore);
   const { showNotify } = useAppNotifyStore();
-
+  const { icon, env } = useBackend();
   const InputHostApi = ref('');
   const autoSwitchSync = ref(false);
   const SimpleSwitch = ref(false);
@@ -303,6 +200,7 @@
   const awShowFloatingRefreshButton = ref(false);
   const awShowFloatingAddButton = ref(true);
   const awDisplayPreviewInWebPage = ref(true);
+  const invalidShareFakeNode = ref(false);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
   // const isEditing = ref(false);
@@ -315,7 +213,9 @@
   const showThemePicker = ref(false);
   // const isEditLoading = ref(false);
   const showSubProgressPicker = ref(false);
-
+  const shareBtnVisible = computed(() => {
+    return env.value?.feature?.share;
+  });
   const subProgressStyleName = computed(() => {
     return t(`moreSettingPage.subProgress.${subProgressStyleValue.value}`)
   })
@@ -430,6 +330,13 @@
     const data = {
       ...appearanceSetting.value,
       displayPreviewInWebPage: displayPreviewInWebPage
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const setInvalidShareFakeNode = (invalidShareFakeNode: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      invalidShareFakeNode: invalidShareFakeNode
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -639,6 +546,7 @@
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
     awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
     awDisplayPreviewInWebPage.value = appearanceSetting.value.displayPreviewInWebPage;
+    invalidShareFakeNode.value = appearanceSetting.value.invalidShareFakeNode;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];

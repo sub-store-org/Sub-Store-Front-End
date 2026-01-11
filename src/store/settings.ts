@@ -41,6 +41,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         showFloatingRefreshButton: false,
         showFloatingAddButton: false,
         displayPreviewInWebPage: true,
+        invalidShareFakeNode: false,
         istabBar: false,
         istabBar2: false,
         subProgressStyle: "hidden",
@@ -87,6 +88,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.isSubItemMenuFold = res.data.data.appearanceSetting?.isSubItemMenuFold ?? true;
         this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
         this.appearanceSetting.showFloatingAddButton = res.data.data.appearanceSetting?.showFloatingAddButton ?? false;
+        this.appearanceSetting.invalidShareFakeNode = res.data.data.appearanceSetting?.invalidShareFakeNode ?? false;
         this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
         this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";

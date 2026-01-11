@@ -229,6 +229,7 @@
                 input-align="left"
                 rows="3"
                 :autosize="{ maxHeight: 140 }"
+                :readonly="!isUpdateShare"
               />
             </nut-form-item>
             <nut-form-item
@@ -245,6 +246,7 @@
                 rows="1"
                 :autosize="{ maxHeight: 140 }"
                 max-length="100"
+                :readonly="!isUpdateShare"
               />
             </nut-form-item>
             <div v-if="shareUrlVisible" class="qrcode-wrapper">

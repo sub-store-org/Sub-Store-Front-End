@@ -955,6 +955,7 @@ export default {
     showFloatingRefreshButton: "Show floating refresh button",
     showFloatingAddButton: "Show floating add button",
     displayPreviewInWebPage: 'Display preview in web page',
+    invalidShareFakeNode: "Invalid share returns fake info(to prevent caching)",
     tabBar: 'Hide "Sync" Page',
     tabBar2: 'Hide "File" Page',
     auto2: "MoreSetting Key",
