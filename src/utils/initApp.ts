@@ -41,7 +41,7 @@ export const initStores = async (
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
           reject(new Error('Backend connection timeout'));
-        }, 3000); // 3秒超时
+        }, localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
       });
 
       // 尝试获取环境信息
