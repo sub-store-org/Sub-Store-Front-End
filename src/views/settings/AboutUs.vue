@@ -6,21 +6,22 @@
         <nut-cell-group :title="$t(`aboutUsPage.projectInfo.title`)">
           <nut-cell
             class="cell-item"
-            :desc="$t(`aboutUsPage.projectInfo.link`)"
-            url="https://github.com/sub-store-org/Sub-Store-Front-End"
           >
             <template v-slot:title>
-              <span
-                >{{ $t(`aboutUsPage.projectInfo.fe`) }}
-                <b class="bclass">v{{ version }}</b></span
-              >
+              <span>
+                {{ $t(`aboutUsPage.projectInfo.fe`) }}
+                <b class="bclass">v{{ version }} </b>
+              </span>
+            </template>
+            <template v-slot:link>
+              <a target="_blank" href="https://github.com/sub-store-org/Sub-Store-Front-End">{{ $t(`aboutUsPage.projectInfo.link`)  }}</a>
+              &nbsp;&nbsp;
+              <a target="_blank" href="https://github.com/sub-store-org/Sub-Store-Front-End/releases">{{ $t(`aboutUsPage.changelogs.title`)  }}</a>
             </template>
           </nut-cell>
 
           <nut-cell
             class="cell-item"
-            :desc="$t(`aboutUsPage.projectInfo.link`)"
-            :url="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'"
           >
             <template v-slot:title>
               <span
@@ -29,15 +30,35 @@
                 <b v-else class="bclass">v{{ env.version }}</b>
               </span>
             </template>
+            <template v-slot:link>
+              <a target="_blank" :href="env.backend === 'Node' ? 'https://github.com/sub-store-org/Sub-Store/releases' : 'https://github.com/sub-store-org/Sub-Store/tree/master/config'">{{ $t(`aboutUsPage.projectInfo.link`)  }}</a>
+              &nbsp;&nbsp;
+              <a target="_blank" href="https://github.com/sub-store-org/Sub-Store/releases">{{ $t(`aboutUsPage.changelogs.title`)  }}</a>
+            </template>
           </nut-cell>
 
           <nut-cell
             class="cell-item"
-            :desc="$t(`aboutUsPage.projectInfo.link`)"
-            url="https://github.com/sub-store-org"
           >
             <template v-slot:title>
               <span>{{ $t(`aboutUsPage.projectInfo.team`) }}</span>
+            </template>
+            <template v-slot:link>
+              <a target="_blank" href="https://github.com/sub-store-org">{{ $t(`aboutUsPage.projectInfo.link`)  }}</a>
+              &nbsp;&nbsp;
+              <a target="_blank" href="https://t.me/cool_scripts">Telegram</a>
+            </template>
+          </nut-cell>
+          <nut-cell
+            class="cell-item"
+          >
+            <template v-slot:title>
+              <span>{{ $t(`aboutUsPage.projectInfo.scriptTutorial`) }}</span>
+            </template>
+            <template v-slot:link>
+              <a target="_blank" href="https://github.com/sub-store-org/Sub-Store/wiki">{{ $t(`aboutUsPage.projectInfo.link`)  }}</a>
+              &nbsp;&nbsp;
+              <a target="_blank" href="https://t.me/zhetengsha/214">Telegram</a>
             </template>
           </nut-cell>
         </nut-cell-group>
@@ -81,44 +102,21 @@
       </div>
     </div>
 
-    <div class="changelog-wrapper">
-      <h1 class="block-title">{{ $t(`aboutUsPage.changelogs.title`) }}</h1>
-      <div class="block-content">
-        <nut-collapse
-          v-model:active="active"
-          icon="rect-right"
-          rotate="90"
-          accordion
-        >
-          <nut-collapse-item
-            v-for="changelog in changelogs"
-            :key="changelog.htmlContent"
-            :name="changelog.date.format('YYYY-MM-DD')"
-          >
-            <template #mTitle>
-              <h2 class="changelog-title">
-                {{ changelog.date.format('YYYY-MM-DD') }}
-              </h2>
-            </template>
-            <div class="changelog-content" v-html="changelog.htmlContent" />
-          </nut-collapse-item>
-        </nut-collapse>
-      </div>
-    </div>
+  
   </div>
 </template>
 
 <script lang="ts" setup>
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
-  import { useChangelogs } from '@/hooks/useChangelogs';
+  // import { useChangelogs } from '@/hooks/useChangelogs';
   import { ref } from 'vue';
 
   const globalStore = useGlobalStore();
   const { env } = storeToRefs(globalStore);
 
-  const changelogs = useChangelogs();
-  const active = ref(changelogs[0].date.format('YYYY-MM-DD'));
+  // const changelogs = useChangelogs();
+  // const active = ref(changelogs[0].date.format('YYYY-MM-DD'));
 
   const version = import.meta.env.PACKAGE_VERSION
 </script>
@@ -167,6 +165,10 @@
       margin: 0 var(--safe-area-side);
       border-radius: var(--item-card-radios);
       overflow: hidden;
+      a {
+        color: var(--primary-color);
+        font-weight: normal;
+      }
     }
 
     .about-wrapper {

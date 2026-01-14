@@ -985,7 +985,8 @@ export default {
       be: "Back-End",
       module: "Module",
       team: "Project Team",
-      link: "View on Github",
+      scriptTutorial: 'Scripts & Tutorials',
+      link: "GitHub",
     },
     changelogs: {
       title: "Changelogs",

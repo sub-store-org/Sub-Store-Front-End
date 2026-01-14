@@ -975,7 +975,8 @@ export default {
       be: '后端',
       module: '模块',
       team: '项目组',
-      link: '在 GitHub 上查看',
+      scriptTutorial: '脚本教程',
+      link: 'GitHub',
     },
     changelogs: {
       title: '更新日志',
