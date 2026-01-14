@@ -32,10 +32,6 @@ export const useGlobalStore = defineStore('globalStore', {
       defaultIconCollection: localStorage.getItem('defaultIconCollection') || '',
       defaultIconCollections: [
         {
-          text: "cc63/ICON",
-          value: "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
-        },
-        {
           text: "Koolson/QureColor",
           value:
             "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
@@ -65,6 +61,10 @@ export const useGlobalStore = defineStore('globalStore', {
           text: "Twoandz9/TheMagic-Icons",
           value:
             "https://raw.githubusercontent.com/Twoandz9/TheMagic-Icons/main/TheRaw.json",
+        },
+        {
+          text: "cc63/ICON",
+          value: "https://raw.githubusercontent.com/cc63/ICON/main/icons.json",
         },
         {
           text: "lige47/QuanX-icon-rule",

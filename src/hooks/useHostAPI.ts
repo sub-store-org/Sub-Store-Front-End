@@ -173,7 +173,7 @@ export const useHostAPI = () => {
       .map(i => i.split('='))
       .find(i => i[0] === 'timeout');
     if (timeout) {
-      const value = parseInt(timeout[1], 10);
+      const value = Number(timeout[1]);
       if (!isNaN(value)) {
         if (value > 0) {
           console.log(`设置超时 ${value}`)
