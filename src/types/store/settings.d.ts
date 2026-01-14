@@ -17,6 +17,9 @@ interface SettingsPostData {
   defaultUserAgent?: string;
   defaultTimeout?: string;
   cacheThreshold?: string;
+  resourceCacheTtl?: string;
+  headersCacheTtl?: string;
+  scriptCacheTtl?: string;
   theme?: {
     auto: boolean;
     name?: CustomTheme;
