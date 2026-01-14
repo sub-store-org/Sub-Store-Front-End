@@ -326,50 +326,9 @@ const handleLinkValueChange = () => {
     }
   }
 };
-
-let placeholders =
-  sourceType !== "file"
-    ? t(`// Example:
-// Script Operator
-// 1. backend version(>2.14.88):
-$server.name = 'prefix-' + $server.name
-$server.ecn = true
-$server['test-url'] = 'http://1.0.0.1/generate_204'
-// 2. operator function
-function operator(proxies, targetPlatform, context) {
-  // if ($options) {
-  //   const { headers, url, path } = $options?._req || {}
-  //   const ua = headers?.['user-agent'] || headers?.['User-Agent']
-  //   console.log(ua)
-  //   $options._res = {
-  //     headers: {
-  //       'X-Custom': '1'
-  //     }
-  //   }
-  // }
-  return proxies.map( proxy => {
-    // Change proxy information here
-
-    return proxy;
-  });
-}
-
-// Script Filter
-// 1. backend version(>2.14.119):
-const port = Number($server.port)
-return [80].includes(port)
-
-// 2. filter function
-function filter(proxies, targetPlatform) {
-  return proxies.map( proxy => {
-    // Return true if the current proxy is selected
-
-    return true;
-  });
-}
-`)
-    : t(`// Example:
-// backend version(>2.14.148):
+let placeholders
+if(sourceType === "file") {
+  placeholders = `// Example:
 // $files: ['0', '1']
 // $content: '0\\n1'
 
@@ -406,13 +365,62 @@ let clashMetaProxies = await produceArtifact({
 // yaml.proxies.unshift(...clashMetaProxies)
 // $content = ProxyUtils.yaml.dump(yaml)
 
+// https://clashparty.org/docs/guide/urlscheme#profile-update-interval
+// if ($options){
+//   $options._res = {
+//     headers: {
+//       'profile-update-interval': 24
+//     }
+//   }
+// } 
+
+
 // JSON
 $content = JSON.stringify({}, null, 2)
 
 // { $content, $files, $options } will be passed to the next operator
 // $content is the final content of the file
-`);
+`
+} else if (type === 'Script Operator') {
+  placeholders = `// Example:
+// Script Operator
+// 1. shortcut script
+$server.name = 'prefix-' + $server.name
+$server.ecn = true
+$server['test-url'] = 'http://1.0.0.1/generate_204'
+// 2. operator function
+function operator(proxies, targetPlatform, context) {
+  // if ($options) {
+  //   const { headers, url, path } = $options?._req || {}
+  //   const ua = headers?.['user-agent'] || headers?.['User-Agent']
+  //   console.log(ua)
+  //   $options._res = {
+  //     headers: {
+  //       'X-Custom': '1'
+  //     }
+  //   }
+  // }
+  return proxies.map(proxy => {
+    // Change proxy information here
 
+    return proxy;
+  });
+}`
+} else {
+  placeholders = `// Script Filter
+// 1. shortcut script
+const port = Number($server.port)
+return [80].includes(port)
+
+// 2. filter function
+function filter(proxies, targetPlatform) {
+  return proxies.map( proxy => {
+    // Return true if the current proxy is selected
+
+    return true;
+  });
+}`
+}
 onMounted(() => {
   const item = form.process.find((item) => item.id === id);
   if (item) {
