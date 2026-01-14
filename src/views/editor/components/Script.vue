@@ -396,7 +396,8 @@ function operator(proxies, targetPlatform, context) {
   //   console.log(ua)
   //   $options._res = {
   //     headers: {
-  //       'X-Custom': '1'
+  //       'X-Custom': 'new',
+  //       'X-Powered-By': undefined, // removeHeader
   //     }
   //   }
   // }
