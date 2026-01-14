@@ -594,6 +594,11 @@ export default {
       defaultProxy: '请输入默认代理/策略',
       defaultTimeout: '默认超时(单位: 毫秒, 默认: 8000)',
       cacheThreshold: '缓存阈值(单位: KB, 默认: 1024)',
+      resourceCacheTtl: '资源缓存(单位: 秒, 默认: 3600)',
+      headersCacheTtl: '响应头缓存(单位: 秒, 默认: 60)',
+      scriptCacheTtl: '脚本缓存(单位: 秒, 默认: 172800)',
+      concurrency: '并发数(默认: 3)',
+      apiCheckTimeout: 'API 检测超时(单位: 毫秒, 默认: 3000)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noGithubProxy: '未配置 GitHub 加速代理',
@@ -631,7 +636,10 @@ export default {
       save: '保存',
       clear: '清空',
     },
-    config: '配置',
+    requestConfig: "请求配置",
+    cacheConfig: "缓存配置",
+    frontEndConfig: "前端配置",
+    githubConfig: 'GitHub 配置',
     storage: {
       gist: {
         label: 'Gist 同步',
