@@ -424,7 +424,7 @@ export default {
       nodeActions: {
         'Script Operator': {
           label: '脚本操作',
-          options: ['链接', '脚本'],
+          options: ['远程链接', '本地内容'],
           des: ['类型', '内容'],
           placeholder: '1. 完整远程脚本链接 2. 类似 /api/file/name 的内部文件调用路径 3. 本地文件的绝对路径. 除了脚本本身的参数外, 支持叠加参数: noCache 不使用缓存, insecure 不验证服务器证书. 例: http://a.com#a=1&b=2#noCache&insecure',
           openEditorBtn: '打开脚本编辑器',
@@ -554,7 +554,7 @@ export default {
         },
         'Script Filter': {
           label: '脚本过滤',
-          options: ['链接', '脚本'],
+          options: ['远程链接', '本地内容'],
           des: ['类型', '内容'],
           placeholder: '1. 完整远程脚本链接 2. 类似 /api/file/name 的内部文件调用路径 3. 本地文件的绝对路径. 除了脚本本身的参数外, 支持叠加参数: noCache 不使用缓存, insecure 不验证服务器证书. 例: http://a.com#a=1&b=2#noCache&insecure',
           openEditorBtn: '打开脚本编辑器',

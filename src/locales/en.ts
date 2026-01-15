@@ -536,7 +536,7 @@ export default {
         },
         "Script Filter": {
           label: "Script Filter",
-          options: ["Link", "Script"],
+          options: ["Remote Link", "Local Content"],
           des: ["Type", "Content"],
           placeholder:
             "Input Script Link or Internal File like /api/file/name. In addition to the parameters of the script itself, there is support for additional parameters: noCache - do not use cache, insecure - do not verify the server certificate. For example: http://a.com#a=1&b=2#noCache&insecure",
@@ -557,7 +557,7 @@ export default {
         },
         "Script Operator": {
           label: "Script Operator",
-          options: ["Link", "Script"],
+          options: ["Remote Link", "Local Content"],
           des: ["Type", "Content"],
           placeholder:
             "Input Script Link or Internal File like /api/file/name. In addition to the parameters of the script itself, there is support for additional parameters: noCache - do not use cache, insecure - do not verify the server certificate. For example: http://a.com#a=1&b=2#noCache&insecure",
