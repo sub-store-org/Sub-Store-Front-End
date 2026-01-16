@@ -349,7 +349,7 @@ const pasteNav = async () => {
   } catch (e) {
     showNotify({
       type: "warning",
-      title: "获取剪贴板失败: 非Https",
+      title: "获取剪贴板失败: 本地/HTTPS 环境下可用(或手动配置权限)"
     });
   }
 };
