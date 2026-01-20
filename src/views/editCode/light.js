@@ -31,6 +31,7 @@ const config = {
     regexp: '#7f99b8',
     
 };
+
 const  lightCodeTheme = EditorView.theme({
     '&': {
         color: config.foreground,
@@ -43,8 +44,8 @@ const  lightCodeTheme = EditorView.theme({
     '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
     '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
     '.cm-searchMatch': {
-        backgroundColor: config.dropdownBackground,
-        outline: `1px solid ${config.dropdownBorder}`
+        backgroundColor: '#ffff0054',
+        outline: `1px solid #87a6cc`
     },
     '.cm-searchMatch.cm-searchMatch-selected': {
         backgroundColor: config.selection
