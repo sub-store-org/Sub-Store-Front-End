@@ -54,22 +54,38 @@
                 <nut-icon v-if="collapsedElements.includes(element.id)" name="rect-right" size="12px"></nut-icon>
               </span>
               <div class="input-wrapper">
-                <input
-                  ref="customNameInput"
+                <nut-input
+                  :id="`action-input-${element.id}`"
                   @click.stop
                   v-model="findEditItemById(element).customName"
                   class="custom-name-input"
                   type="text"
-                  :disabled="!findEditItemById(element).isEditing"
-                  :placeholder="findEditItemById(element).defualtName"
-                />
-                <div
+                  :readonly="!findEditItemById(element).isEditing"
+                  :placeholder="findEditItemById(element).defaultName"
+                  @blur="saveEditName(element)"
+                  @keyup.enter="saveEditName(element)"
+                  @click="toggleInput(element)"
+                >
+                  <!-- <template #button>
+                    <div class="list-group-item-icons">
+                      <template v-if="!findEditItemById(element).isEditing">
+                        <font-awesome-icon icon="fa-solid fa-pen-to-square" @click.stop="toggleEditName(element)" />
+                      </template>
+                      <template v-else>
+                        <font-awesome-icon icon="fa-solid fa-floppy-disk" @click.stop="saveEditName(element)" />
+                        <font-awesome-icon icon="fa-solid fa-ban" @click.stop="exitEditName(element)" />
+                      </template>
+                      <font-awesome-icon icon="fa-solid fa-circle-question" @click.stop="pop(element.type, element.tipsDes)" />
+                    </div>
+                  </template> -->
+                </nut-input>
+                <!-- <div
                   v-if="!findEditItemById(element).isEditing"
                   class="input-overlay"
                   @click="toggleElementCollapsed(element.id)"
-                ></div>
+                ></div> -->
               </div>
-              <div class="list-group-item-icons">
+              <!-- <div class="list-group-item-icons">
                 <template v-if="!findEditItemById(element).isEditing">
                   <font-awesome-icon icon="fa-solid fa-pen-to-square" @click.stop="toggleEditName(element)" />
                 </template>
@@ -78,16 +94,19 @@
                   <font-awesome-icon icon="fa-solid fa-ban" @click.stop="exitEditName(element)" />
                 </template>
                 <font-awesome-icon icon="fa-solid fa-circle-question" @click.stop="pop(element.type, element.tipsDes)" />
-              </div>
+              </div> -->
             </div>
             <div class="right">
+              <div class="list-group-item-icons icon-button__input">
+                <template v-if="!findEditItemById(element).isEditing">
+                  <font-awesome-icon icon="fa-solid fa-pen-to-square" @click.stop="toggleEditName(element)" />
+                </template>
+                <template v-else>
+                  <font-awesome-icon icon="fa-solid fa-floppy-disk" @click.stop="saveEditName(element)" />
+                  <font-awesome-icon icon="fa-solid fa-ban" @click.stop="exitEditName(element)" />
+                </template>
+              </div>
               <div class="action-switch">
-                <!-- <nut-switch
-                  v-model="element.enabled"
-                  class="my-switch"
-                  :active-text="t(`editorPage.subConfig.actions.enable`)"
-                  :inactive-text="t(`editorPage.subConfig.actions.disable`)"
-                /> -->
                 <nut-checkbox
                   v-model="element.enabled"
                   class="my-switch"
@@ -103,7 +122,10 @@
                   {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
                 </span>
               </div>
-              <div class="copy">
+              <div class="icon-button">
+                <font-awesome-icon icon="fa-solid fa-circle-question" @click.stop="pop(element.type, element.tipsDes)" />
+              </div>
+              <div class="icon-button">
                 <font-awesome-icon icon="fa-solid fa-clone" @click="copyItem(element)"></font-awesome-icon>
               </div>
               <div class="delete">
@@ -234,6 +256,13 @@ const setCollapsed = (v) => {
   } else {
     localStorage.removeItem('actions-block-collapsed')
     collapsedElements.value = [];
+  }
+};
+const toggleInput = (e) => {
+  if (findEditItemById(e).isEditing) {
+    return;
+  } else {
+    toggleElementCollapsed(e.id);
   }
 };
 const toggleElementCollapsed = (id) => {
@@ -383,13 +412,11 @@ const pop = (type: string, tipsDes: string) => {
 };
 
 // 操作名称自定义
-const customNameInput = ref(null);
-
 const findNameByType = (type) => items.find((item) => item.value === type).text;
 const generateEditNameItem = (element) => {
   const { tipsDes, component, ...values } = element;
   return {
-    defualtName: findNameByType(values.type),
+    defaultName: findNameByType(values.type),
     oldCustomName: values.customName,
     isEditing: false,
     ...values,
@@ -469,7 +496,11 @@ const toggleEditName = (element) => {
   });
   editItem.isEditing = true;
   nextTick(() => {
-    customNameInput.value.focus();
+    const inputWrapper = document.getElementById(`action-input-${element.id}`);
+    const inputEl = inputWrapper?.querySelector('input');
+    if (inputEl) {
+      inputEl.focus();
+    }
   });
 };
 
@@ -529,23 +560,37 @@ defineExpose({ exitAllEditName });
     margin-bottom: 12px;
     color: var(--comment-text-color);
     border-bottom: 1px solid var(--divider-color);
+    width: 100%;
 
     .input-wrapper {
       position: relative;
-      display: inline-block;
-      width: 60px;
+      display: flex;
+      align-items: center;
+      flex: 1;
       margin-right: 2px;
-
       .custom-name-input {
-        width: 60px;
         font-size: 12px;
         font-weight: bold;
         background: transparent;
-        // color: var(--second-text-color);
+        color: var(--second-text-color);
         padding: 0;
         border: none;
         outline: none;
         text-overflow: ellipsis;
+        :deep(.nut-input) {
+          width: 100%;
+          color: var(--second-text-color);
+          text-overflow: ellipsis;
+
+        }
+        &.nut-input-readonly,
+        &.nut-input-disabled {
+          :deep(.input-text) {
+            cursor: pointer;
+            color: var(--second-text-color);
+            text-overflow: ellipsis;
+          }
+        }
       }
 
       .input-overlay {
@@ -556,6 +601,7 @@ defineExpose({ exitAllEditName });
         height: 100%;
         cursor: pointer;
         background: transparent;
+        z-index: 1;
       }
     }
 
@@ -579,7 +625,8 @@ defineExpose({ exitAllEditName });
       font-weight: bold;
       display: flex;
       align-items: center;
-
+      flex: 1;
+      padding-right: 5px;
       .collapsed, .name {
         cursor: pointer;
       }
@@ -596,6 +643,7 @@ defineExpose({ exitAllEditName });
     .right {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
       .action-switch {
         display: flex;
         align-items: center;
@@ -639,10 +687,12 @@ defineExpose({ exitAllEditName });
           }
         }
       }
-
-      .copy {
+      .icon-button {
         padding: 0 8px;
         cursor: pointer;
+        &__input {
+          padding-right: 20px;
+        }
       }
       .delete {
         padding: 0 8px;
