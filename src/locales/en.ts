@@ -531,6 +531,10 @@ export default {
             placeholder:
               "The connector between the node name and the sequence number",
           },
+          field: {
+            des: 'Deduplication Field(supports multi-field concatenation and lodash get syntax)',
+            placeholder: 'Field for deduplication, e.g. node name, please enter name',
+          },
           tipsTitle: "Handle Duplicate Tips",
           tipsDes: "Node deduplication operation instructions",
         },
