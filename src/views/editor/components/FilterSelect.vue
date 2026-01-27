@@ -74,6 +74,7 @@
         'mieru',
         'sudoku',
         'anytls',
+        'trust-tunnel',
         'wireguard',
         'ssh',
         'external',

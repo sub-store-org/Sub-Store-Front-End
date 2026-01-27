@@ -496,6 +496,7 @@ export default {
             'mieru',
             'sudoku',
             'AnyTLS',
+            'TrustTunnel',
             'WireGuard',
             'SSH',
             'External Proxy Program',
