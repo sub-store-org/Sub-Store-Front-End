@@ -495,6 +495,7 @@ export default {
             'Juicity',
             'mieru',
             'sudoku',
+            'MASQUE',
             'AnyTLS',
             'TrustTunnel',
             'WireGuard',

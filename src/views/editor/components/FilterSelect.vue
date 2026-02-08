@@ -73,6 +73,7 @@
         'juicity',
         'mieru',
         'sudoku',
+        'masque',
         'anytls',
         'trust-tunnel',
         'wireguard',
