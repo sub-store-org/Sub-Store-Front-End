@@ -229,10 +229,11 @@
                 input-align="left"
                 rows="3"
                 :autosize="{ maxHeight: 140 }"
-                :readonly="!isUpdateShare"
+                readonly
               />
             </nut-form-item>
             <nut-form-item
+              v-if="isUpdateShare ? true : form.remark"
               :label="$t(`sharePage.createShare.remark.label`)"
               prop="remark"
             >
@@ -393,6 +394,7 @@ watchEffect(() => {
     form.name = props.data?.name;
     form.displayName = props.data?.displayName;
     form.type = props.data?.type;
+    form.token = props.data?.token;
   } else {
     form.expiresValue = "";
     form.expiresUnit = "day";
@@ -513,6 +515,7 @@ const handleUpdateShare = async () => {
       console.log("form", form);
       console.log("props.data", props.data);
       isUpdateShare.value = true;
+      form.shareUrl = ''
     },
     onCancel: () => {
       console.log("取消");

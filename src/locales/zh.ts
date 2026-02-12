@@ -29,8 +29,8 @@ export default {
       expiresValuePlaceholder: '请输入有效期时长',
       expiresValueRegex: '请输入0.01-99999.99范围内的数字',
       expiresUnit: '有效期单位',
-      token: '自定义Token',
-      tokenPlaceholder: '默认后端随机Token',
+      token: '自定义 Token',
+      tokenPlaceholder: '默认后端随机 Token',
       remark: '备注',
       remarkPlaceholder: '请输入备注',
       shareUrl: '分享链接',
@@ -793,15 +793,15 @@ export default {
       expiresValue: {
         label: "有效期时长",
         placeholder: "请输入有效期时长",
-        regex: "请输入0.01-99999.99范围内的数字",
+        regex: "请输入 0.01-99999.99 范围内的数字",
         empty: "有效期时长不可为空",
       },
       expiresUnit: {
         label: "有效期单位",
       },
       token: {
-        label: "自定义Token",
-        placeholder: "默认后端随机Token"
+        label: "自定义 Token",
+        placeholder: "默认后端随机 Token"
       },
       remark: {
         label: "备注",
