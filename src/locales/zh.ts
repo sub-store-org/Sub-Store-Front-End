@@ -120,7 +120,7 @@ export default {
     },
     url: {
       label: '链接',
-      placeholder: '支持换行混写三种格式: 1. 完整远程链接 2. 类似 /api/file/name 的内部文件调用路径 3. 本地文件的绝对路径. 支持参数: noCache 不使用缓存; insecure 不验证服务器证书. 例: http://a.com#noCache&insecure',
+      placeholder: '支持换行混写三种格式: 1. 完整远程链接 2. 类似 /api/file/name 的内部文件调用路径 3. 本地文件的绝对路径. 支持参数: noCache 不使用缓存; insecure 不验证服务器证书; headers 自定义请求头(单行 JSON 字符串). 例: http://a.com#noCache&insecure&headers={"User-Agent":"clash.meta","X-Custom-Key":"test"}',
       isEmpty: '链接不能为空',
       isIllegal: '链接格式非法',
     },
@@ -318,7 +318,7 @@ export default {
             fullScreenEditCancel: '取消全屏',
             label: '使用说明',
             title: '订阅链接',
-            content: '支持使用换行混写三种格式:\n1. 完整远程链接\n2. 类似 /api/file/name 的内部文件调用路径\n3. 本地文件的绝对路径\n\n支持以下参数\n\ninsecure: 不验证服务器证书\ncacheKey: 设置乐观缓存的名称 开启后也可自行在持久化缓存中管理(适合经常拉取失败的订阅)\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowUrl: 自定义查询流量的 URL(优先响应体, 也支持响应头)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
+            content: '支持使用换行混写三种格式:\n1. 完整远程链接\n2. 类似 /api/file/name 的内部文件调用路径\n3. 本地文件的绝对路径\n\n支持以下参数\n\nheaders: 自定义请求响应头(单行 JSON 字符串)\ninsecure: 不验证服务器证书\ncacheKey: 设置乐观缓存的名称 开启后也可自行在持久化缓存中管理(适合经常拉取失败的订阅)\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowUrl: 自定义查询流量的 URL(优先响应体, 也支持响应头)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
           },
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
