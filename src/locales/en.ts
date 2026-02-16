@@ -94,7 +94,7 @@ export default {
     url: {
       label: "URL",
       placeholder:
-        "Supports mixing three types of formats with line breaks: 1. Full remote URL 2. Internal file reference like /api/file/name 3. Absolute path for local file. Supported parameters: noCache - do not use cache; insecure - do not verify the server certificate. For example: http://a.com#noCache&insecure",
+        'Supports mixing three types of formats with line breaks: 1. Full remote URL 2. Internal file reference like /api/file/name 3. Absolute path for local file. Supported parameters: noCache - do not use cache; insecure - do not verify the server certificate; headers - custom request headers (single-line JSON string). For example: http://a.com#noCache&insecure',
       isEmpty: "URL cannot be empty",
       isIllegal: "Invalid URL",
     },
@@ -298,7 +298,7 @@ export default {
             label: "Usage",
             title: "Subscription URL(s)",
             content:
-              "Supports mixing three types of formats with line breaks:\n1. Full remote URL\n2. Internal file reference like /api/file/name 3.\nAbsolute path for local file\n\nSupported parameters:\n\ninsecure: https requests will not verify the server certificate\ncacheKey: Setting the name of the optimistic cache. Its value can be managed in the persistent store(suitable for subscriptions that often fail to fetch).\n\nvalidCheck: error will be reported when expired or there is no remaining traffic\n\nflowUserAgent: the User-Agent for fetching subscription usage info\n\nflowUrl: the URL for fetching subscription usage info(using the content of the response body or response headers)\n\nshowRemaining: show remaining traffic instead of usage\n\nnoFlow: do not query for flow\n\nhideExpire: hide expiration time\n\nnoCache: do not use cache\n\nresetDay: the day when monthly data usage resets\n\nstartDate: subscription start date\n\ncycleDays: reset cycle (in days).\n\nFor example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nor http://a.com?token=1#resetDay=15",
+              "Supports mixing three types of formats with line breaks:\n1. Full remote URL\n2. Internal file reference like /api/file/name 3.\nAbsolute path for local file\n\nSupported parameters:\n\nheaders: Custom request headers(single-line JSON string)\ninsecure: https requests will not verify the server certificate\ncacheKey: Setting the name of the optimistic cache. Its value can be managed in the persistent store(suitable for subscriptions that often fail to fetch).\n\nvalidCheck: error will be reported when expired or there is no remaining traffic\n\nflowUserAgent: the User-Agent for fetching subscription usage info\n\nflowUrl: the URL for fetching subscription usage info(using the content of the response body or response headers)\n\nshowRemaining: show remaining traffic instead of usage\n\nnoFlow: do not query for flow\n\nhideExpire: hide expiration time\n\nnoCache: do not use cache\n\nresetDay: the day when monthly data usage resets\n\nstartDate: subscription start date\n\ncycleDays: reset cycle (in days).\n\nFor example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nor http://a.com?token=1#resetDay=15",
           },
           isEmpty: "URL cannot be empty",
           isIllegal: "Invalid URL",
