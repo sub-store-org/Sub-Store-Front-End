@@ -85,7 +85,7 @@
                   <font-awesome-icon icon="fa-solid fa-angles-right" />
                 </button>
               </div>
-              <span v-if="!appearanceSetting.isSimpleMode">
+              <span class="switch-label" v-if="!appearanceSetting.isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
               </span>
               <span @click.stop>
@@ -645,12 +645,7 @@ watch(isSyncOpen, async () => {
     }
 
     .sub-item-detail {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
       word-wrap: break-word;
-      word-break: break-all;
-      // overflow: hidden;
       // margin-top: 3.5px;
       font-size: 12px;
 
@@ -674,6 +669,9 @@ watch(isSyncOpen, async () => {
             // line-height: 2.8;
             color: var(--comment-text-color);
           }
+          .switch-label {
+            flex-shrink: 0;
+          }
 
           .my-switch {
             height: 22px;
@@ -689,7 +687,11 @@ watch(isSyncOpen, async () => {
       }
 
       p {
-        display: block;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        word-break: break-all;
         line-height: 1.8;
       }
 

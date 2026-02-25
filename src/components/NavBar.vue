@@ -99,7 +99,7 @@ import { useGlobalStore } from "@/store/global";
 import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
-import { Toast } from "@nutui/nutui";
+import { Toast, Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -143,18 +143,19 @@ const currentTitleWhetherAsk = computed(() => {
 });
 const onClickNavbarIcon = () => {
   const metaTitle = route.meta.title;
-  const toastContent =
+  const content =
     t(`navBar.pagesTitle.askWhat.${metaTitle}.content`) || "";
-  const toastTitle = t(`navBar.pagesTitle.askWhat.${metaTitle}.title`) || "";
-  Toast.text(toastContent, {
-    title: toastTitle,
-    duration: 0,
-    cover: true,
-    "close-on-click-overlay": true,
-    "bg-color": "rgba(0, 0, 0, 0.8)",
-    "cover-color": "rgba(0, 0, 0, 0.2)",
-    "text-align-center": false,
-  });
+  const title = t(`navBar.pagesTitle.askWhat.${metaTitle}.title`) || "";
+    Dialog({
+      title: title,
+      content: content,
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
 };
 
 const changeLang = (type: string) => {
