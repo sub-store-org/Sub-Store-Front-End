@@ -3,6 +3,7 @@ import clash from '@/assets/icons/clash.png';
 import quanx from '@/assets/icons/quanx.png';
 import loon from '@/assets/icons/loon.png';
 import stash from '@/assets/icons/stash.png';
+import egern from '@/assets/icons/egern.png';
 import node from '@/assets/icons/node.svg?url';
 
 import { useGlobalStore } from '@/store/global';
@@ -18,6 +19,8 @@ export const useBackend = () => {
     switch (env.value.backend) {
       case 'Surge':
         return surge;
+      case 'Egern':
+        return egern;
       case 'Clash':
         return clash;
       case 'QX':
