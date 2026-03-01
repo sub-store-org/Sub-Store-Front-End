@@ -1106,7 +1106,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   const uaTips = () => {
     Dialog({
         title: '默认使用配置中的全局 UA',
-        content: '可尝试设置为 clash-verge/v1.5.1 等客户端的 User-Agent 让机场后端下发更多协议',
+        content: '可尝试设置为 clash-verge/v2.4.6, v2rayNG 等客户端的 User-Agent 让机场后端下发更多协议(可根据实际情况改成最新版本号)',
         popClass: 'auto-dialog',
         okText: 'OK',
         noCancelBtn: true,
