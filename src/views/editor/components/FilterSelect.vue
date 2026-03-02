@@ -75,7 +75,7 @@
         'sudoku',
         'masque',
         'anytls',
-        'trust-tunnel',
+        'trusttunnel',
         'wireguard',
         'ssh',
         'external',
