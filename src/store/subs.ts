@@ -380,7 +380,6 @@ export const useSubsStore = defineStore('subsStore', {
     async fetchShareData() {
       Promise.all([shareApi.getShares()]).then((res) => {
         if ("data" in res[0].data) {
-          console.log('res[0].data.data', res[0].data.data);
           this.shares = res[0].data.data;
         }
       }).catch((err) => {

@@ -25,5 +25,12 @@ export function useShareApi() {
         params: { type, name },
       });
     },
+    sortShares: (data: string[]): AxiosPromise<MyAxiosRes> => {
+      return request({
+        url: `/api/sort/tokens`,
+        method: "post",
+        data,
+      });
+    },
   };
 }
