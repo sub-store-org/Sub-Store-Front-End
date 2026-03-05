@@ -66,20 +66,36 @@
               <nut-icon v-else name="rect-right" size="12px"></nut-icon>
             </div>
           </div>
-          <div v-if="!isFold('sub')" class="draggable-list">
-            <div
-              v-for="(item, index) in subShareData"
-              :key="index"
-              class="draggable-item"
-            >
-              <ShareListItem
-                :data="item"
-                :key="index"
-                :disabled="swipeDisabled"
-                @detail="handleShareDetail"
-              />
-            </div>
-          </div>
+          <draggable
+            v-if="!isFold('sub')"
+            v-model="subShareData"
+            item-key="token"
+            class="draggable-list"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('sub', subShareData)"
+            @start="handleDragStart(subShareData)"
+            @end="handleDragEnd"
+          >
+            <template #item="{ element }">
+              <div :key="element.token" class="draggable-item">
+                <ShareListItem
+                  :data="element"
+                  :disabled="swipeDisabled"
+                  @detail="handleShareDetail"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
         <!-- 组合订阅 -->
         <div v-if="collectionShareDataCount > 0" class="share-data">
@@ -100,20 +116,36 @@
               <nut-icon v-else name="rect-right" size="12px"></nut-icon>
             </div>
           </div>
-          <div v-if="!isFold('col')" class="draggable-list">
-            <div
-              v-for="(item, index) in collectionShareData"
-              :key="index"
-              class="draggable-item"
-            >
-              <ShareListItem
-                :data="item"
-                :key="index"
-                :disabled="swipeDisabled"
-                @detail="handleShareDetail"
-              />
-            </div>
-          </div>
+          <draggable
+            v-if="!isFold('col')"
+            v-model="collectionShareData"
+            item-key="token"
+            class="draggable-list"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('col', collectionShareData)"
+            @start="handleDragStart(collectionShareData)"
+            @end="handleDragEnd"
+          >
+            <template #item="{ element }">
+              <div :key="element.token" class="draggable-item">
+                <ShareListItem
+                  :data="element"
+                  :disabled="swipeDisabled"
+                  @detail="handleShareDetail"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
         <!-- 文件 -->
         <div v-if="fileShareDataCount > 0" class="share-data">
@@ -130,20 +162,36 @@
               <nut-icon v-else name="rect-right" size="12px"></nut-icon>
             </div>
           </div>
-          <div v-if="!isFold('file')" class="draggable-list">
-            <div
-              v-for="(item, index) in fileShareData"
-              :key="index"
-              class="draggable-item"
-            >
-              <ShareListItem
-                :data="item"
-                :key="index"
-                :disabled="swipeDisabled"
-                @detail="handleShareDetail"
-              />
-            </div>
-          </div>
+          <draggable
+            v-if="!isFold('file')"
+            v-model="fileShareData"
+            item-key="token"
+            class="draggable-list"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scroll-speed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
+            @change="changeSort('file', fileShareData)"
+            @start="handleDragStart(fileShareData)"
+            @end="handleDragEnd"
+          >
+            <template #item="{ element }">
+              <div :key="element.token" class="draggable-item">
+                <ShareListItem
+                  :data="element"
+                  :disabled="swipeDisabled"
+                  @detail="handleShareDetail"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
       </div>
     </div>
@@ -202,12 +250,15 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { computed, onMounted, ref, toRaw } from "vue";
+import { computed, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import draggable from "vuedraggable";
 import ShareListItem from "@/components/ShareListItem.vue";
+import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
@@ -222,6 +273,8 @@ const { currentUrl: host } = useHostAPI();
 
 const { env } = useBackend();
 const { t } = useI18n();
+const shareApi = useShareApi();
+const { showNotify } = useAppNotifyStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
@@ -282,29 +335,59 @@ const addShare = () => {
   });
 };
 
-const subShareData = computed(() => {
-  return shares.value.filter((item) => item.type === "sub");
-});
+const subShareData = ref([]);
+const collectionShareData = ref([]);
+const fileShareData = ref([]);
 
-const subShareDataCount = computed(() => {
-  return subShareData.value.length;
-});
+const subShareDataCount = computed(() => subShareData.value.length);
+const collectionShareDataCount = computed(() => collectionShareData.value.length);
+const fileShareDataCount = computed(() => fileShareData.value.length);
 
-const fileShareData = computed(() => {
-  return shares.value.filter((item) => item.type === "file");
-});
+watch(
+  () => shares.value,
+  (val) => {
+    subShareData.value = [...val.filter((item) => item.type === "sub")];
+    collectionShareData.value = [...val.filter((item) => item.type === "col")];
+    fileShareData.value = [...val.filter((item) => item.type === "file")];
+  },
+  { immediate: true, deep: true }
+);
 
-const fileShareDataCount = computed(() => {
-  return fileShareData.value.length;
-});
+const sortFailed = ref(false);
+let dragData: any = null;
 
-const collectionShareData = computed(() => {
-  return shares.value.filter((item) => item.type === "col");
-});
+const changeSort = async (type: string, dataValue: any[]) => {
+  try {
+    const keySortArray = dataValue.map((item) => `${item.type}-${item.name}-${item.token}`);
+    const sortRes = await shareApi.sortShares(
+      JSON.parse(JSON.stringify(toRaw(keySortArray)))
+    );
+    if (sortRes?.data?.status !== "success") {
+      sortFailed.value = true;
+      showNotify({
+        title: t("notify.sortsub.failed"),
+        type: "danger",
+        content: JSON.stringify(sortRes),
+      });
+    }
+  } catch (error) {
+    sortFailed.value = true;
+  }
+};
 
-const collectionShareDataCount = computed(() => {
-  return collectionShareData.value.length;
-});
+const handleDragStart = (dataValue: any) => {
+  swipeDisabled.value = true;
+  dragData = dataValue;
+};
+
+const handleDragEnd = () => {
+  if (sortFailed.value) {
+    subsStore.fetchShareData();
+    sortFailed.value = false;
+  }
+  dragData = null;
+  swipeDisabled.value = false;
+};
 
 const init = async () => {
   await subsStore.fetchShareData();
