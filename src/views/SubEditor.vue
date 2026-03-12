@@ -1117,7 +1117,7 @@ const urlValidator = (val: string): Promise<boolean> => {
   const subUserinfoTips = () => {
     Dialog({
         title: '手动设置订阅流量信息',
-        content: '若填写链接, 则使用链接的响应体内容/响应头 subscription-userinfo 作为值.\n\n此项值的格式为:\n\nupload=1024; download=10240; total=102400; expire=4115721600; reset_day=14; plan_name=VIP1; app_url=http://a.com\n\n1. app_url, 订阅将有一个可点击跳转的按钮\n\n2. plan_name, hover 时将显示套餐名称\n\n3. reset_day, 流量重置剩余天数(若要设置周期性重置, 可查看订阅链接中的参数说明)\n\n⚠️ 注意: 手动设置的订阅流量信息会附加到订阅自己的流量信息之前. 若包含不合法的内容, 订阅将无法正常使用\n\n例如: http://官网.com 应编码为 http%3A%2F%2F%E5%AE%98%E7%BD%91.com',
+        content: '若填写链接, 则使用链接的响应体内容/响应头 subscription-userinfo 作为值.\n\n此项值的格式为:\n\nupload=1024; download=10240; total=102400; expire=4115721600; reset_day=14; reset_hour=8; last_update=2026-03-13 12:38; plan_name=VIP1; app_url=http://a.com\n\n1. app_url, 订阅将有一个可点击跳转的按钮\n\n2. plan_name, hover 时将显示套餐名称\n\n3. reset_hour, 距下次流量重置的小时数 (优先于 reset_day 显示)\n   - 小于 24 小时显示为 "Nh 后重置"\n   - 大于等于 24 小时显示为 "N天后重置"\n\n4. reset_day, 每月流量重置日 (无 reset_hour 时显示, 格式: "每月N日重置")\n\n5. last_update, 流量信息最后更新时间, 格式: YYYY-MM-DD HH:mm\n\n⚠️ 注意: 手动设置的订阅流量信息会附加到订阅自己的流量信息之前. 若包含不合法的内容, 订阅将无法正常使用\n\n例如: http://官网.com 应编码为 http%3A%2F%2F%E5%AE%98%E7%BD%91.com',
         popClass: 'auto-dialog',
         okText: 'OK',
         noCancelBtn: true,
