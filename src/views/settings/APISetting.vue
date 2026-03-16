@@ -100,11 +100,11 @@
               <template v-else-if="inputType === 'host'">
                 <span class="preview-protocol">http://</span>
                 <span class="preview-host">{{ parsedHost }}</span>
-                <span class="preview-path">/{{ parsedPath }}</span>
+                <span class="preview-path">{{ (parsedPath && parsedPath !== '/') ? `/${parsedPath}` : '' }}</span>
               </template>
               <template v-else>
-                <span class="preview-origin">{{ currentOrigin }}/</span>
-                <span class="preview-path">{{ parsedPath }}</span>
+                <span class="preview-origin">{{ currentOrigin }}</span>
+                <span class="preview-path">{{ (parsedPath && parsedPath !== '/') ? `/${parsedPath}` : '' }}</span>
               </template>
             </div>
             <div class="preview-type">
@@ -362,12 +362,12 @@ watchEffect(() => {
       parsedPath.value = '';
     }
 
-    previewUrl.value = `http://${parsedHost.value}/${parsedPath.value}`;
+    previewUrl.value = `http://${parsedHost.value}${(parsedPath.value && parsedPath.value !== '/') ? `/${parsedPath.value}` : ''}`;
   } else {
     inputType.value = 'path';
     parsedPath.value = input.replace(/^\/+/, '');
     parsedHost.value = '';
-    previewUrl.value = `${currentOrigin.value}/${parsedPath.value}`;
+    previewUrl.value = `${currentOrigin.value}${(parsedPath.value && parsedPath.value !== '/') ? `/${parsedPath.value}` : ''}`;
   }
 });
 
