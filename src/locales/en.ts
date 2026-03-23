@@ -482,6 +482,7 @@ export default {
             "MASQUE",
             "AnyTLS",
             'TrustTunnel',
+            'Tailscale',
             "WireGuard",
             "SSH",
             "External Proxy Program",
