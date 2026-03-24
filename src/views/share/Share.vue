@@ -50,7 +50,23 @@
     <!-- 页面内容 -->
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
-      <div v-if="hasShares">
+      <div
+        v-if="hasShares"
+        class="share-page-content"
+        :style="isSelectionMode ? { paddingBottom: `${bottomSafeArea + 96}px` } : undefined"
+      >
+        <div class="share-toolbar">
+          <nut-button plain size="small" type="primary" @click="toggleSelectionMode">
+            {{
+              isSelectionMode
+                ? $t(`sharePage.selectMode.cancel`)
+                : $t(`sharePage.selectMode.enter`)
+            }}
+          </nut-button>
+          <span v-if="isSelectionMode" class="share-toolbar-selected">
+            {{ $t(`sharePage.selectMode.selectedCount`, { count: selectedShareCount }) }}
+          </span>
+        </div>
         <!-- 单条订阅 -->
         <div v-if="subShareDataCount > 0" class="share-data">
           <div class="sticky-title-wrappers">
@@ -77,7 +93,7 @@
             :scroll="true"
             v-bind="{
               animation: 200,
-              disabled: false,
+              disabled: isSelectionMode,
               delay: 200,
               chosenClass: 'chosensub',
               handle: 'div',
@@ -88,7 +104,27 @@
           >
             <template #item="{ element }">
               <div :key="element.token" class="draggable-item">
+                <div
+                  v-if="isSelectionMode"
+                  class="share-select-item"
+                  :class="{ selected: isShareSelected(element) }"
+                  @click.stop="toggleShareSelection(element)"
+                >
+                  <nut-checkbox
+                    :model-value="isShareSelected(element)"
+                    class="share-select-checkbox"
+                    @click.stop="toggleShareSelection(element)"
+                  />
+                  <div class="share-select-item-content">
+                    <ShareListItem
+                      :data="element"
+                      :disabled="true"
+                      @detail="handleShareDetail"
+                    />
+                  </div>
+                </div>
                 <ShareListItem
+                  v-else
                   :data="element"
                   :disabled="swipeDisabled"
                   @detail="handleShareDetail"
@@ -127,7 +163,7 @@
             :scroll="true"
             v-bind="{
               animation: 200,
-              disabled: false,
+              disabled: isSelectionMode,
               delay: 200,
               chosenClass: 'chosensub',
               handle: 'div',
@@ -138,7 +174,27 @@
           >
             <template #item="{ element }">
               <div :key="element.token" class="draggable-item">
+                <div
+                  v-if="isSelectionMode"
+                  class="share-select-item"
+                  :class="{ selected: isShareSelected(element) }"
+                  @click.stop="toggleShareSelection(element)"
+                >
+                  <nut-checkbox
+                    :model-value="isShareSelected(element)"
+                    class="share-select-checkbox"
+                    @click.stop="toggleShareSelection(element)"
+                  />
+                  <div class="share-select-item-content">
+                    <ShareListItem
+                      :data="element"
+                      :disabled="true"
+                      @detail="handleShareDetail"
+                    />
+                  </div>
+                </div>
                 <ShareListItem
+                  v-else
                   :data="element"
                   :disabled="swipeDisabled"
                   @detail="handleShareDetail"
@@ -173,7 +229,7 @@
             :scroll="true"
             v-bind="{
               animation: 200,
-              disabled: false,
+              disabled: isSelectionMode,
               delay: 200,
               chosenClass: 'chosensub',
               handle: 'div',
@@ -184,7 +240,27 @@
           >
             <template #item="{ element }">
               <div :key="element.token" class="draggable-item">
+                <div
+                  v-if="isSelectionMode"
+                  class="share-select-item"
+                  :class="{ selected: isShareSelected(element) }"
+                  @click.stop="toggleShareSelection(element)"
+                >
+                  <nut-checkbox
+                    :model-value="isShareSelected(element)"
+                    class="share-select-checkbox"
+                    @click.stop="toggleShareSelection(element)"
+                  />
+                  <div class="share-select-item-content">
+                    <ShareListItem
+                      :data="element"
+                      :disabled="true"
+                      @detail="handleShareDetail"
+                    />
+                  </div>
+                </div>
                 <ShareListItem
+                  v-else
                   :data="element"
                   :disabled="swipeDisabled"
                   @detail="handleShareDetail"
@@ -245,6 +321,31 @@
       :type="shareDataType"
       action="edit"
     />
+    <div
+      v-if="hasShares && isSelectionMode"
+      class="share-selection-actions"
+      :style="{ bottom: `${bottomSafeArea + 12}px` }"
+    >
+      <div class="share-selection-summary">
+        {{ $t(`sharePage.selectMode.selectedCount`, { count: selectedShareCount }) }}
+      </div>
+      <nut-button plain size="small" type="primary" @click="toggleSelectAllShares">
+        {{
+          isAllSharesSelected
+            ? $t(`sharePage.selectMode.clearAll`)
+            : $t(`sharePage.selectMode.selectAll`)
+        }}
+      </nut-button>
+      <nut-button
+        size="small"
+        type="danger"
+        :disabled="selectedShareCount === 0 || isDeletingSelectedShares"
+        :loading="isDeletingSelectedShares"
+        @click="confirmDeleteSelectedShares"
+      >
+        {{ $t(`sharePage.selectMode.delete`) }}
+      </nut-button>
+    </div>
   </div>
 </template>
 
@@ -338,10 +439,76 @@ const addShare = () => {
 const subShareData = ref([]);
 const collectionShareData = ref([]);
 const fileShareData = ref([]);
+const isSelectionMode = ref(false);
+const selectedShareKeys = ref<string[]>([]);
+const isDeletingSelectedShares = ref(false);
 
 const subShareDataCount = computed(() => subShareData.value.length);
 const collectionShareDataCount = computed(() => collectionShareData.value.length);
 const fileShareDataCount = computed(() => fileShareData.value.length);
+const allShareData = computed(() => [
+  ...subShareData.value,
+  ...collectionShareData.value,
+  ...fileShareData.value,
+]);
+const selectedShareKeySet = computed(() => new Set(selectedShareKeys.value));
+const selectedShares = computed(() =>
+  allShareData.value.filter((item) =>
+    selectedShareKeySet.value.has(getShareSelectionKey(item)),
+  ),
+);
+const selectedShareCount = computed(() => selectedShares.value.length);
+const isAllSharesSelected = computed(
+  () =>
+    allShareData.value.length > 0
+    && selectedShareCount.value === allShareData.value.length,
+);
+
+function getShareSelectionKey(item: Share) {
+  return `${item.type || ""}-${item.name || ""}-${item.token || ""}`;
+}
+
+function clearSelectedShares() {
+  selectedShareKeys.value = [];
+}
+
+function exitSelectionMode() {
+  clearSelectedShares();
+  isSelectionMode.value = false;
+}
+
+function toggleSelectionMode() {
+  if (isSelectionMode.value) {
+    exitSelectionMode();
+    return;
+  }
+  isSelectionMode.value = true;
+}
+
+function isShareSelected(item: Share) {
+  return selectedShareKeySet.value.has(getShareSelectionKey(item));
+}
+
+function toggleShareSelection(item: Share) {
+  const selectionKey = getShareSelectionKey(item);
+  if (selectedShareKeySet.value.has(selectionKey)) {
+    selectedShareKeys.value = selectedShareKeys.value.filter(
+      (key) => key !== selectionKey,
+    );
+    return;
+  }
+  selectedShareKeys.value = [...selectedShareKeys.value, selectionKey];
+}
+
+function toggleSelectAllShares() {
+  if (isAllSharesSelected.value) {
+    clearSelectedShares();
+    return;
+  }
+  selectedShareKeys.value = allShareData.value.map((item) =>
+    getShareSelectionKey(item),
+  );
+}
 
 watch(
   () => shares.value,
@@ -351,6 +518,20 @@ watch(
     fileShareData.value = [...val.filter((item) => item.type === "file")];
   },
   { immediate: true, deep: true }
+);
+
+watch(
+  allShareData,
+  (val) => {
+    const validKeys = new Set(val.map((item) => getShareSelectionKey(item)));
+    selectedShareKeys.value = selectedShareKeys.value.filter((item) =>
+      validKeys.has(item),
+    );
+    if (!val.length) {
+      exitSelectionMode();
+    }
+  },
+  { immediate: true, deep: true },
 );
 
 const sortFailed = ref(false);
@@ -401,6 +582,71 @@ const init = async () => {
 onMounted(() => {
   init();
 });
+
+const deleteSelectedShares = async () => {
+  if (selectedShareCount.value === 0 || isDeletingSelectedShares.value) {
+    return;
+  }
+  isDeletingSelectedShares.value = true;
+  const deleteTargets = [...selectedShares.value];
+  const results = await Promise.all(
+    deleteTargets.map(async (item) => {
+      if (!item.token || !item.type || !item.name) {
+        return false;
+      }
+      try {
+        const { data } = await shareApi.deleteShare(item.token, item.type, item.name);
+        return data?.status === "success";
+      } catch (error) {
+        console.log("batch deleteShare error", error);
+        return false;
+      }
+    }),
+  );
+
+  await subsStore.fetchShareData();
+
+  const successCount = results.filter(Boolean).length;
+  const failedCount = results.length - successCount;
+
+  if (failedCount === 0) {
+    showNotify({
+      type: "danger",
+      title: t("sharePage.batchDelete.succeedNotify"),
+    });
+    exitSelectionMode();
+  } else {
+    showNotify({
+      type: "danger",
+      title: t("sharePage.batchDelete.failNotify"),
+      content: t("sharePage.batchDelete.result", {
+        success: successCount,
+        failed: failedCount,
+      }),
+    });
+  }
+
+  isDeletingSelectedShares.value = false;
+};
+
+const confirmDeleteSelectedShares = () => {
+  if (selectedShareCount.value === 0 || isDeletingSelectedShares.value) {
+    return;
+  }
+  Dialog({
+    title: t("sharePage.batchDelete.title"),
+    content: t("sharePage.batchDelete.desc", {
+      count: selectedShareCount.value,
+    }),
+    onOk: deleteSelectedShares,
+    onCancel: () => {},
+    popClass: "auto-dialog",
+    cancelText: t("sharePage.deleteShare.btn.cancel"),
+    okText: t("sharePage.deleteShare.btn.confirm"),
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+};
 
 const shareData = ref(null);
 const shareDataType = ref(null);
@@ -596,5 +842,64 @@ const handleShareDetail = (detail: Share) => {
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
+}
+
+.share-page-content {
+  width: 100%;
+}
+
+.share-toolbar {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.share-toolbar-selected {
+  color: var(--comment-text-color);
+  font-size: 14px;
+}
+
+.share-select-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--item-card-radios);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &.selected {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+}
+
+.share-select-checkbox {
+  flex-shrink: 0;
+}
+
+.share-select-item-content {
+  min-width: 0;
+  flex: 1;
+  pointer-events: none;
+}
+
+.share-selection-actions {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--popup-color);
+  box-shadow: 0 8px 24px #0003;
+}
+
+.share-selection-summary {
+  flex: 1;
+  min-width: 0;
+  color: var(--primary-text-color);
+  font-weight: bold;
 }
 </style>

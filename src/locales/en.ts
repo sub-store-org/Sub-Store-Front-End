@@ -862,6 +862,21 @@ export default {
         cancel: "Cancel",
       },
     },
+    selectMode: {
+      enter: "Select",
+      cancel: "Cancel",
+      selectedCount: "{count} selected",
+      selectAll: "Select All",
+      clearAll: "Clear All",
+      delete: "Delete",
+    },
+    batchDelete: {
+      title: "Delete Selected Shares",
+      desc: "Are you sure you want to delete the selected {count} share(s)? Deletion is not recoverable!",
+      succeedNotify: "Selected shares deleted successfully!",
+      failNotify: "Failed to delete selected shares",
+      result: "Deleted {success}, failed {failed}",
+    },
   },
   // 图标仓库页
   iconCollectionPage: {

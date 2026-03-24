@@ -851,6 +851,21 @@ export default {
         cancel: "取消",
       },
     },
+    selectMode: {
+      enter: "多选",
+      cancel: "取消多选",
+      selectedCount: "已选 {count} 项",
+      selectAll: "全选",
+      clearAll: "取消全选",
+      delete: "删除",
+    },
+    batchDelete: {
+      title: "批量删除分享",
+      desc: "是否确认删除选中的 {count} 项分享？删除后不可恢复！",
+      succeedNotify: "批量删除分享成功！",
+      failNotify: "批量删除分享失败",
+      result: "成功删除 {success} 项，失败 {failed} 项",
+    },
   },
   // 图标仓库页
   iconCollectionPage: {
