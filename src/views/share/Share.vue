@@ -337,6 +337,15 @@
         }}
       </nut-button>
       <nut-button
+        plain
+        size="small"
+        type="primary"
+        :disabled="expiredShareCount === 0"
+        @click="selectExpiredShares"
+      >
+        {{ $t(`sharePage.selectMode.selectExpired`) }}
+      </nut-button>
+      <nut-button
         size="small"
         type="danger"
         :disabled="selectedShareCount === 0 || isDeletingSelectedShares"
@@ -457,7 +466,11 @@ const selectedShares = computed(() =>
     selectedShareKeySet.value.has(getShareSelectionKey(item)),
   ),
 );
+const expiredShares = computed(() =>
+  allShareData.value.filter((item) => isShareExpired(item)),
+);
 const selectedShareCount = computed(() => selectedShares.value.length);
+const expiredShareCount = computed(() => expiredShares.value.length);
 const isAllSharesSelected = computed(
   () =>
     allShareData.value.length > 0
@@ -506,6 +519,19 @@ function toggleSelectAllShares() {
     return;
   }
   selectedShareKeys.value = allShareData.value.map((item) =>
+    getShareSelectionKey(item),
+  );
+}
+
+function isShareExpired(item: Share) {
+  return typeof item.exp === "number" && item.exp <= Date.now();
+}
+
+function selectExpiredShares() {
+  if (expiredShareCount.value === 0) {
+    return;
+  }
+  selectedShareKeys.value = expiredShares.value.map((item) =>
     getShareSelectionKey(item),
   );
 }
@@ -865,11 +891,7 @@ const handleShareDetail = (detail: Share) => {
   align-items: center;
   gap: 10px;
   border-radius: var(--item-card-radios);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-
-  &.selected {
-    box-shadow: 0 0 0 2px var(--primary-color);
-  }
+  transition: transform 0.2s ease;
 }
 
 .share-select-checkbox {
@@ -888,6 +910,7 @@ const handleShareDetail = (detail: Share) => {
   right: 12px;
   z-index: 1000;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 12px;

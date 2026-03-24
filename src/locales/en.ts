@@ -867,6 +867,7 @@ export default {
       cancel: "Cancel",
       selectedCount: "{count} selected",
       selectAll: "Select All",
+      selectExpired: "Select Expired",
       clearAll: "Clear All",
       delete: "Delete",
     },
