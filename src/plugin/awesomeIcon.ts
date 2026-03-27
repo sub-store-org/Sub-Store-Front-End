@@ -19,6 +19,7 @@ import {
   faFloppyDisk,
   faGrip,
   faLanguage,
+  faListCheck,
   faToggleOn,
   faToggleOff,
   faLocationArrow,
@@ -45,6 +46,7 @@ library.add(faFileExport);
 library.add(faToggleOn);
 library.add(faToggleOff);
 library.add(faLanguage);
+library.add(faListCheck);
 library.add(faCheck);
 library.add(faPlus);
 library.add(faArrowUpRightFromSquare);

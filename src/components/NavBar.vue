@@ -352,7 +352,7 @@ const refresh = async () => {
 }
 
 .icon-back::before {
-  color: var(--primary-text-color);
+  color: var(--icon-nav-bar-right);
   content: "\e6c9";
 }
 

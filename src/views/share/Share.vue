@@ -2,6 +2,23 @@
   <div
     style="overflow: hidden; -webkit-user-select: none; user-select: none"
   >
+    <Teleport to="body">
+      <div v-if="hasShares" class="share-nav-action-layer">
+        <button
+          type="button"
+          class="share-top-selection-toggle"
+          :style="{ top: shareTopSelectionOffset }"
+          :aria-label="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
+          :title="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
+          @click="toggleSelectionMode"
+        >
+          <font-awesome-icon
+            :icon="isSelectionMode ? 'fa-solid fa-xmark' : 'fa-solid fa-list-check'"
+          />
+        </button>
+      </div>
+    </Teleport>
+
     <!-- 浮动按钮 -->
     <Teleport to="body">
       <div v-if="hasShares" class="drag-btn-wrapper">
@@ -55,18 +72,6 @@
         class="share-page-content"
         :style="isSelectionMode ? { paddingBottom: `${bottomSafeArea + 96}px` } : undefined"
       >
-        <div class="share-toolbar">
-          <nut-button plain size="small" type="primary" @click="toggleSelectionMode">
-            {{
-              isSelectionMode
-                ? $t(`sharePage.selectMode.cancel`)
-                : $t(`sharePage.selectMode.enter`)
-            }}
-          </nut-button>
-          <span v-if="isSelectionMode" class="share-toolbar-selected">
-            {{ $t(`sharePage.selectMode.selectedCount`, { count: selectedShareCount }) }}
-          </span>
-        </div>
         <!-- 单条订阅 -->
         <div v-if="subShareDataCount > 0" class="share-data">
           <div class="sticky-title-wrappers">
@@ -372,6 +377,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useSystemStore } from "@/store/system";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 
@@ -387,6 +393,7 @@ const shareApi = useShareApi();
 const { showNotify } = useAppNotifyStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
 
@@ -396,7 +403,13 @@ const {
   fetchResult,
   bottomSafeArea,
 } = storeToRefs(globalStore);
+const { navBartop } = storeToRefs(systemStore);
 const swipeDisabled = ref(false);
+
+const shareTopSelectionOffset = computed(() => {
+  const navBarTop = Number.parseFloat(navBartop.value || "0");
+  return `${navBarTop + 28}px`;
+});
 
 const refresh = () => {
   initStores(true, true, true);
@@ -874,16 +887,37 @@ const handleShareDetail = (detail: Share) => {
   width: 100%;
 }
 
-.share-toolbar {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.share-nav-action-layer {
+  @include centered-fixed-container;
+  top: 0;
+  z-index: 21;
+  pointer-events: none;
 }
 
-.share-toolbar-selected {
-  color: var(--comment-text-color);
-  font-size: 14px;
+.share-top-selection-toggle {
+  position: absolute;
+  left: 46px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-nav-bar-right);
+  cursor: pointer;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-top-selection-toggle svg {
+  width: 17px;
+  height: 17px;
+}
+
+.share-top-selection-toggle:focus {
+  outline: none;
 }
 
 .share-select-item {
@@ -905,10 +939,11 @@ const handleShareDetail = (detail: Share) => {
 }
 
 .share-selection-actions {
-  position: fixed;
-  left: 12px;
-  right: 12px;
+  @include centered-fixed-container;
+  width: calc(100% - 1.5rem);
+  max-width: calc(100% - 1.5rem);
   z-index: 1000;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -917,6 +952,22 @@ const handleShareDetail = (detail: Share) => {
   border-radius: 16px;
   background: var(--popup-color);
   box-shadow: 0 8px 24px #0003;
+
+  @media screen and (min-width: 600px) {
+    max-width: calc(85% - 1.5rem);
+  }
+
+  @media screen and (min-width: 768px) {
+    max-width: calc(#{$container-width-md} - 1.5rem);
+  }
+
+  @media screen and (min-width: 900px) {
+    max-width: calc(#{$container-width-lg} - 1.5rem);
+  }
+
+  @media screen and (min-width: 1200px) {
+    max-width: calc(#{$container-width-xl} - 1.5rem);
+  }
 }
 
 .share-selection-summary {
