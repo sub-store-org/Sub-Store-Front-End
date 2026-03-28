@@ -226,7 +226,7 @@ export default {
         cancel: '取消',
         desc: '部分功能需使用参数 请查看文档',
         title: '订阅链接参数',
-        content: '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true" 包含官方/商店版/未续费订阅不支持的协议',
+        content: 'https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E',
       }
     },
   },
@@ -753,7 +753,7 @@ export default {
         label: '包含官方/商店版/未续费订阅不支持的协议',
         tips: {
           title: '包含官方/商店版未续费订阅不支持的协议',
-          content: 'sing-box: +ShadowsocksR\nQuantumult X: +VLESS'
+          content: 'https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E'
         }
       },
       pop: {

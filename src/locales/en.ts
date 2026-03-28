@@ -203,7 +203,7 @@ export default {
         desc: "Some functions require parameters. Please check the document.",
         title: "Subscription Link Parameters",
         content:
-          '"target=SurgeMac"\n+ ShadowsocksR/External Proxy Program\n\n"includeUnsupportedProxy=true"\nIncludes protocols not supported by the official/store version',
+          'https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E',
       },
     },
   },
@@ -756,7 +756,7 @@ export default {
         tips: {
           title:
             "Includes protocols not supported by the official/store/unrenewed subscription version",
-          content: "sing-box: +ShadowsocksR\nQuantumult X: +VLESS",
+          content: "https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E",
         },
       },
       platform: {

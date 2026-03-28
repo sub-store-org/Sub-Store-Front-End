@@ -183,24 +183,35 @@
   const isFold = ref(getFoldState());
 
   const item = ['DEFAULT', 'ENABLED', 'DISABLED'];
+  const createDefaultQuickArgs = () => ({
+    useless: 'DISABLED',
+    udp: 'DEFAULT',
+    scert: 'DEFAULT',
+    tfo: 'DEFAULT',
+    'vmess aead': 'DEFAULT',
+  });
 
   const form = inject<Sub | Collection>('form');
+  if (!Array.isArray(form.process)) {
+    form.process = [];
+  }
   const quick = form.process.find(
     item => item.type === 'Quick Setting Operator'
-  );
+  ) || (() => {
+    const item = {
+      type: 'Quick Setting Operator',
+      args: createDefaultQuickArgs(),
+    };
+    form.process.unshift(item);
+    return item;
+  })();
   const toggleFold = () => {
     isFold.value = !isFold.value;
     setFoldState(isFold.value)
   };
   watchEffect(() => {
     if (!quick.args) {
-      quick.args = {
-        useless: 'DISABLED',
-        udp: 'DEFAULT',
-        scert: 'DEFAULT',
-        tfo: 'DEFAULT',
-        'vmess aead': 'DEFAULT',
-      };
+      quick.args = createDefaultQuickArgs();
     }
   });
 </script>
