@@ -23,6 +23,9 @@
         <div class="sub-item-title-wrapper">
           <h3 class="sub-item-title">
             {{ displayName }}
+            <span v-for="item in tag" :key="item" class="tag">
+              <nut-tag>{{ item }}</nut-tag>
+            </span>
           </h3>
           <div class="title-right-wrapper" v-if="!appearanceSetting.isSimpleMode">
             <button
@@ -39,6 +42,12 @@
               @click.stop="onClickCopyLink"
             >
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
+            </button>
+            <button
+              class="copy-sub-link"
+              @click.stop="onClickEdit"
+            >
+              <font-awesome-icon icon="fa-solid fa-pen-nib" />
             </button>
             <button
               class="copy-sub-link"
@@ -59,6 +68,7 @@
             <p>{{ detail.secondLine }}</p>
             <div class="task-switch">
               <div v-if="appearanceSetting.isSimpleMode">
+                <div class="simple-actions">
                 <button
                   v-if="!appearanceSetting.isShowIcon && artifact.url"
                   class="copy-sub-link"
@@ -77,6 +87,12 @@
                   ></font-awesome-icon>
                 </button>
                 <button
+                  class="copy-sub-link"
+                  @click.stop="onClickEdit"
+                >
+                  <font-awesome-icon icon="fa-solid fa-pen-nib" />
+                </button>
+                <button
                     class="copy-sub-link"
                     @click.stop="swipeController"
                     v-if="!isMobile()"
@@ -84,6 +100,7 @@
                   >
                   <font-awesome-icon icon="fa-solid fa-angles-right" />
                 </button>
+                </div>
               </div>
               <span class="switch-label" v-if="!appearanceSetting.isSimpleMode">
                 {{ $t(`syncPage.syncSwitcher`) }}
@@ -98,6 +115,12 @@
             </div>
           </div>
         </div>
+        <p
+          v-if="remark && (!appearanceSetting.isSimpleMode || appearanceSetting.isSimpleShowRemark)"
+          class="sub-item-remark"
+        >
+          <span>{{ remarkText }}</span>
+        </p>
       </div>
     </div>
 
@@ -239,6 +262,14 @@ const displayName = computed(() => {
     artifact.value["display-name"] ||
     artifact.value.name
   );
+});
+const tag = computed(() => artifact.value?.tag || []);
+const remark = computed(() => artifact.value?.remark || "");
+const remarkText = computed(() => {
+  if (remark.value) {
+    return remark.value;
+  }
+  return "";
 });
 
 const isInit = ref(false);
@@ -641,6 +672,12 @@ watch(isSyncOpen, async () => {
         overflow: hidden;
         font-size: 16px;
         color: var(--primary-text-color);
+
+        .tag {
+          margin-left: 4px;
+          display: inline-flex;
+          vertical-align: middle;
+        }
       }
     }
 
@@ -652,19 +689,30 @@ watch(isSyncOpen, async () => {
       .second-line-wrapper {
         width: 100%;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        align-items: flex-start;
+
+        > p {
+          flex: 1 1 auto;
+          min-width: 0;
+          padding-right: 8px;
+        }
 
         .task-switch {
-          flex: 1;
+          flex: 0 0 auto;
           display: flex;
           align-items: center;
-
           flex-direction: row;
           justify-content: flex-end; // ios 14
+          margin-left: auto;
+
+          .simple-actions {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+          }
 
           span {
-            margin-right: 8px;
+            margin-right: 6px;
             font-weight: normal;
             // line-height: 2.8;
             color: var(--comment-text-color);
@@ -696,6 +744,18 @@ watch(isSyncOpen, async () => {
       }
 
       color: var(--comment-text-color);
+    }
+
+    .sub-item-remark {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      word-break: break-all;
+      line-height: 1.8;
+      font-size: 12px;
+      color: var(--comment-text-color);
+      margin-top: 2px;
     }
   }
 }
@@ -732,7 +792,7 @@ watch(isSyncOpen, async () => {
 .copy-sub-link {
   background-color: transparent;
   border: none;
-  padding: 0 12px;
+  padding: 0 8px;
   cursor: pointer;
   display: inline-flex;
   justify-content: center;

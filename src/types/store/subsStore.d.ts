@@ -61,9 +61,11 @@ interface Collection {
 interface Artifacts {
   name: string;
   displayName?: string;
+  remark?: string;
   type: string;
   source: string;
   platform: string;
+  tag?: string[];
   sync:boolean;
   updated:number;
   url:string;

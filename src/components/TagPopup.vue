@@ -76,16 +76,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, nextTick } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useSubsStore } from "@/store/subs";
+import { useArtifactsStore } from "@/store/artifacts";
 import draggable from "vuedraggable";
 
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 const subsStore = useSubsStore();
+const artifactsStore = useArtifactsStore();
 const { hasSubs, hasCollections, subs, collections, hasFiles, files } = storeToRefs(subsStore);
+const { artifacts } = storeToRefs(artifactsStore);
 const hasUntagged = ref(false);
 const props = defineProps({
   visible: {
@@ -139,7 +142,9 @@ const allTagsList = computed(() => {
   return allTags.value.filter(i => i.label.indexOf(keyword.value) !== -1)
 })
 const getTags = () => {
+  hasUntagged.value = false;
   if(props.type === 'file' && !hasFiles.value) return []
+  if(props.type === 'artifact' && artifacts.value.length === 0) return []
   if(props.type === 'subCol' && !hasSubs.value && !hasCollections.value) return []
   const set = new Set()
   if (props.type === 'subCol') {
@@ -166,6 +171,16 @@ const getTags = () => {
     files.value.forEach(file => {
       if (Array.isArray(file.tag) && file.tag.length > 0) {
         file.tag.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
+  } else if (props.type === 'artifact') {
+    artifacts.value.forEach(artifact => {
+      if (Array.isArray(artifact.tag) && artifact.tag.length > 0) {
+        artifact.tag.forEach(i => {
           set.add(i)
         });
       } else {

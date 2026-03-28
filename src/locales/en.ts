@@ -38,6 +38,7 @@ export default {
       editScript: "Script Edit",
       subEditor: "Subscription Editor",
       fileEditor: "File Editor",
+      syncEditor: "Sync Editor",
       preview: 'Preview',
       shareManage: "Share Manage",
       iconCollection: "Icon Collection",

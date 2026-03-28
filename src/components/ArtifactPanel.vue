@@ -299,12 +299,15 @@
         cover: true,
         id: 'add-artifact-loading',
       });
+      let isSuccess = false;
       if (isEditMode.value) {
-        await artifactsStore.editArtifact(name, data);
+        isSuccess = await artifactsStore.editArtifact(name, data);
       } else {
-        await artifactsStore.createArtifact(data);
+        isSuccess = await artifactsStore.createArtifact(data);
       }
-      closePanel();
+      if (isSuccess) {
+        closePanel();
+      }
       Toast.hide('add-artifact-loading');
     });
   };

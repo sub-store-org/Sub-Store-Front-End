@@ -38,113 +38,101 @@
       </div>
     </Teleport>
 
-    <ArtifactPanel
-      v-if="isEditPanelVisible"
-      :name="editTargetName"
-      @close="closeArtifactPanel"
-    />
-
-    <!--有数据-->
-    <div v-if="artifacts.length > 0" class="subs-list-wrapper">
-      <div class="sticky-title-wrapper sync-title">
-        <p class="list-title">{{ $t(`syncPage.title`) }}</p>
-        <div class="actions-wrapper">
-          <nut-button
-            class="upload-all-btn btn"
-            type="info"
-            plain
-            :disabled="uploadAllIsDisabled"
-            size="small"
-            :loading="uploadAllIsLoading"
-            @click="uploadAll"
-          >
-            <font-awesome-icon
-              icon="fa-solid fa-cloud-arrow-up"
-              v-if="!uploadAllIsLoading"
-            />
-          </nut-button>
-          <nut-button
-            v-if="syncPlatform !== 'gitlab'"
-            class="upload-all-btn btn"
-            type="info"
-            plain
-            size="small"
-            :loading="downloadAllIsLoading"
-            @click="downloadAll"
-          >
-            <font-awesome-icon
-              icon="fa-solid fa-cloud-arrow-down"
-              v-if="!downloadAllIsLoading"
-            />
-          </nut-button>
-          <nut-button
-            class="preview-btn btn"
-            type="info"
-            plain
-            size="small"
-            @click="preview"
-          >
-            <font-awesome-icon icon="fa-solid fa-eye" />
-          </nut-button>
-        </div>
+    <div class="subs-list-wrapper">
+      <div
+        v-if="artifacts.length > 0 && tags.length > 0"
+        ref="radioWrapperRef"
+        class="radio-wrapper"
+      >
+        <span
+          v-for="item in tags"
+          :key="item.value"
+          class="tag"
+          :class="{ current: item.value === tag }"
+          @click="setTag(item.value)"
+        >
+          {{ item.label }}
+        </span>
       </div>
 
-      <draggable
-        v-model="artifacts"
-        @change="changeArtifacts"
-        @start="handleDragStart"
-        @end="handleDragEnd"
-        itemKey="name"
-        :scroll-sensitivity="200"
-        :force-fallback="true"
-        :scrollSpeed="8"
-        :scroll="true"
-        v-bind="{
-          animation: 200,
-          disabled: false,
-          delay: 200,
-          chosenClass: 'chosensub',
-          handle: 'div',
-        }"
-      >
-        <template #item="{ element }">
-          <div :key="element.name" class="draggable-itemsync">
-            <ArtifactsListItem
-              :name="element.name"
-              @edit="onClickEdit"
-              :disabled="swipeDisabled"
-              Í
-            />
+      <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
+        <div class="sticky-title-wrapper sync-title">
+          <p class="list-title">{{ $t(`syncPage.title`) }}</p>
+          <div class="actions-wrapper">
+            <nut-button
+              v-if="artifacts.length > 0"
+              class="upload-all-btn btn"
+              type="info"
+              plain
+              :disabled="uploadAllIsDisabled"
+              size="small"
+              :loading="uploadAllIsLoading"
+              @click="uploadAll"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-cloud-arrow-up"
+                v-if="!uploadAllIsLoading"
+              />
+            </nut-button>
+            <nut-button
+              v-if="syncPlatform !== 'gitlab'"
+              class="upload-all-btn btn"
+              type="info"
+              plain
+              size="small"
+              :loading="downloadAllIsLoading"
+              @click="downloadAll"
+            >
+              <font-awesome-icon
+                icon="fa-solid fa-cloud-arrow-down"
+                v-if="!downloadAllIsLoading"
+              />
+            </nut-button>
+            <nut-button
+              class="preview-btn btn"
+              type="info"
+              plain
+              size="small"
+              @click="preview"
+            >
+              <font-awesome-icon icon="fa-solid fa-eye" />
+            </nut-button>
           </div>
-        </template>
-      </draggable>
-    </div>
-    <div v-else class="subs-list-wrapper">
-      <div class="sticky-title-wrapper sync-title">
-        <p class="list-title">{{ $t(`syncPage.title`) }}</p>
-        <div class="actions-wrapper">
-          <nut-button
-            class="upload-all-btn btn"
-            type="info"
-            plain
-            size="small"
-            :loading="downloadAllIsLoading"
-            @click="downloadAll"
+        </div>
+
+        <div v-if="artifacts.length > 0">
+          <draggable
+            v-model="artifacts"
+            @change="changeArtifacts"
+            @start="handleDragStart"
+            @end="handleDragEnd"
+            itemKey="name"
+            :scroll-sensitivity="200"
+            :force-fallback="true"
+            :scrollSpeed="8"
+            :scroll="true"
+            v-bind="{
+              animation: 200,
+              disabled: false,
+              delay: 200,
+              chosenClass: 'chosensub',
+              handle: 'div',
+            }"
           >
-            <font-awesome-icon
-              icon="fa-solid fa-cloud-arrow-down"
-              v-if="!downloadAllIsLoading"
-            />
-          </nut-button>
-          <nut-button
-            class="preview-btn btn"
-            type="info"
-            plain
-            size="small"
-            @click="preview"
-          >
-            <font-awesome-icon icon="fa-solid fa-eye" />
-          </nut-button>
+            <template #item="{ element }">
+              <div
+                v-show="shouldShowElement(element)"
+                :key="element.name"
+                class="draggable-itemsync"
+              >
+                <ArtifactsListItem
+                  :name="element.name"
+                  @edit="onClickEdit"
+                  :disabled="swipeDisabled"
+                />
+              </div>
+            </template>
+          </draggable>
         </div>
       </div>
     </div>
@@ -202,11 +190,9 @@ import ArtifactsListItem from "@/components/ArtifactsListItem.vue";
 import { useArtifactsStore } from "@/store/artifacts";
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/store/global";
-import { ref, computed, toRaw, onMounted } from "vue";
+import { ref, computed, toRaw, onMounted, watch, nextTick } from "vue";
 import { initStores } from "@/utils/initApp";
 import { useSettingsStore } from "@/store/settings";
-// import { useI18n } from 'vue-i18n';
-import ArtifactPanel from "@/components/ArtifactPanel.vue";
 import { useMethodStore } from '@/store/methodStore';
 import draggable from "vuedraggable";
 import { useSubsApi } from "@/api/subs";
@@ -215,13 +201,16 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
 import { Dialog } from "@nutui/nutui";
 import { isMobile } from "@/utils/isMobile";
+import { useRouter } from "vue-router";
+import { useSystemStore } from "@/store/system";
 
 const { env } = useBackend();
 const subsApi = useSubsApi();
-// const { t } = useI18n();
+const router = useRouter();
 const globalStore = useGlobalStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
+const systemStore = useSystemStore();
 const methodStore = useMethodStore();
 
 const {
@@ -232,6 +221,7 @@ const {
   // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
+const { navBarHeight } = storeToRefs(systemStore);
 const {
   appearanceSetting,
   artifactStore: artifactStoreUrl,
@@ -240,12 +230,65 @@ const {
 } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const swipeDisabled = ref(false);
-const isEditPanelVisible = ref(false);
 const sortFailed = ref(false);
-const editTargetName = ref("");
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const { t } = useI18n();
+const radioWrapperRef = ref(null);
+const radioWrapperHeight = ref(0);
+const tagNavBarHeight = computed(() => navBarHeight.value);
+const getTag = () => {
+  return localStorage.getItem("artifact-tag") || "all";
+};
+const tag = ref(getTag());
+const tags = computed(() => {
+  if (artifacts.value.length === 0) return [];
+
+  let hasUntagged = false;
+  const set = new Set<string>();
+  artifacts.value.forEach(artifact => {
+    if (Array.isArray(artifact.tag) && artifact.tag.length > 0) {
+      artifact.tag.forEach(item => {
+        set.add(item);
+      });
+    } else {
+      hasUntagged = true;
+    }
+  });
+
+  const customTags = Array.from(set).map((item: string) => ({
+    label: item,
+    value: item,
+  }));
+  const result = [{ label: t("specificWord.all"), value: "all" }, ...customTags];
+  if (customTags.length > 0 && hasUntagged) {
+    result.push({ label: t("specificWord.untagged"), value: "untagged" });
+  }
+
+  if (!result.find(item => item.value === tag.value)) {
+    tag.value = "all";
+  }
+
+  return result;
+});
+
+const updateRadioWrapperHeight = () => {
+  nextTick(() => {
+    radioWrapperHeight.value = radioWrapperRef.value?.offsetHeight || 0;
+  });
+};
+
+watch(tag, () => {
+  updateRadioWrapperHeight();
+});
+
+watch(
+  () => tags.value,
+  () => {
+    updateRadioWrapperHeight();
+  },
+  { deep: true, immediate: true }
+);
 
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
@@ -350,8 +393,7 @@ const preview = () => {
 };
 
 const onClickEdit = (artifact: Artifact) => {
-  editTargetName.value = artifact.name;
-  isEditPanelVisible.value = true;
+  router.push(`/edit/sync/${artifact.name}`);
 };
 
 const as = ref(false);
@@ -368,17 +410,12 @@ const enTa = () => {
 
 const onclickAddArtifact = () => {
   if (as.value) return;
-  isEditPanelVisible.value = true;
+  router.push("/edit/sync/UNTITLED");
 };
 
 onMounted(() => {
   methodStore.registerMethod("addSync", onclickAddArtifact);
 });
-
-const closeArtifactPanel = () => {
-  editTargetName.value = "";
-  isEditPanelVisible.value = false;
-};
 
 // const sortArtifacts = (newCollections: any) => {
 //   artifacts.value = newCollections;
@@ -430,19 +467,90 @@ const handleDragEnd = () => {
   }
   swipeDisabled.value = false;
 };
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
+const setTag = (current: string) => {
+  tag.value = current;
+  if (current === "all") {
+    localStorage.removeItem("artifact-tag");
+  } else {
+    localStorage.setItem("artifact-tag", current);
+  }
+  scrollToTop();
+};
+
+const shouldShowElement = (element: Artifact) => {
+  if (tag.value === "all") return true;
+  if (tag.value === "untagged") {
+    return !Array.isArray(element.tag) || element.tag.length === 0;
+  }
+  return element.tag?.includes(tag.value);
+};
 </script>
 
 <style lang="scss" scoped>
+.list-title {
+  padding-left: 8px;
+  font-weight: bold;
+}
+
 .sync-title {
   display: flex;
   justify-content: space-between;
-  // align-items: center;
 
   .actions-wrapper {
     margin-right: 16px;
 
     .btn:not(:last-child) {
       margin-right: 8px;
+    }
+  }
+}
+
+.subs-list-wrapper {
+  width: calc(100% - 1.5rem);
+  margin-left: auto;
+  margin-right: auto;
+
+  .radio-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    padding: 10px;
+    top: v-bind(tagNavBarHeight);
+    z-index: 10;
+    backdrop-filter: blur(var(--nav-bar-blur));
+    -webkit-backdrop-filter: blur(var(--nav-bar-blur));
+    background: var(--nav-bar-color);
+    @include centered-fixed-container;
+
+    @media screen and (min-width: 768px) {
+      border-radius: var(--item-card-radios);
+      overflow: hidden;
+    }
+
+    .tag {
+      font-size: 12px;
+      color: var(--second-text-color);
+      margin: 0 5px;
+      padding: 7.5px 2.5px 4px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .current {
+      border-bottom: 1px solid var(--primary-color);
+      color: var(--primary-color);
     }
   }
 }
@@ -467,8 +575,7 @@ const handleDragEnd = () => {
 }
 
 .draggable-itemsync {
-  margin-top: 4px;
+  margin-top: 12px;
   margin-bottom: 12px;
-  // overflow: hidden;
 }
 </style>

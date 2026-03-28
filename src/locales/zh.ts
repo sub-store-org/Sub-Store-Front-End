@@ -66,6 +66,7 @@ export default {
       editScript: '脚本编辑',
       subEditor: '订阅编辑',
       fileEditor: '文件编辑',
+      syncEditor: '同步编辑',
       preview: '预览',
       shareManage: '分享管理',
       iconCollection: '图标仓库',

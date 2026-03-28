@@ -19,6 +19,7 @@ import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
 
 import Sync from '@/views/Sync.vue';
+import SyncEditor from '@/views/SyncEditor.vue';
 
 import ShareManage from '@/views/share/Share.vue';
 
@@ -158,6 +159,15 @@ const router = createRouter({
           component: SubEditor,
           meta: {
             title: 'subEditor',
+            needTabBar: false,
+            needNavBack: true,
+          },
+        },
+        {
+          path: '/edit/sync/:id',
+          component: SyncEditor,
+          meta: {
+            title: 'syncEditor',
             needTabBar: false,
             needNavBack: true,
           },

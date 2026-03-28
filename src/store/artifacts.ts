@@ -29,7 +29,9 @@ export const useArtifactsStore = defineStore('artifactsStore', {
           title: t('syncPage.addArtForm.succeedNotify'),
           type: 'success',
         });
+        return true;
       }
+      return false;
     },
     async editArtifact(name: string, data: Artifact) {
       const { showNotify } = useAppNotifyStore();
@@ -41,7 +43,9 @@ export const useArtifactsStore = defineStore('artifactsStore', {
           title: t('syncPage.editArtForm.succeedNotify'),
           type: 'success',
         });
+        return true;
       }
+      return false;
     },
     async deleteArtifact(name: string) {
       const { showNotify } = useAppNotifyStore();
