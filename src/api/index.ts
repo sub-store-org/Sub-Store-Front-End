@@ -28,28 +28,27 @@ service.interceptors.response.use(
     if (e.config.url.startsWith('/api/sub/flow') || e.config.url.startsWith('https://api.github.com/'))
       return Promise.resolve(e.response);
 
-    if (appNotifyStore) {
-      // 如果是网络错误，则提示网络错误
-      if (e.response.status === 0) {
-        appNotifyStore.showNotify({
-          title: '网络错误或后端异常，无法连接后端服务\n',
-          content: 'code: ' + e.response.status + ' msg: ' + e.message,
-          ...notifyConfig,
-        });
-        return Promise.reject(e.response);
-      } else {
-        let content = 'type: ' + e.response.data.error?.type;
-        if (e.response.data.error?.details)
-          content += '\n' + e.response.data.error.details;
-        appNotifyStore.showNotify({
-          title: e.response.data.error?.message,
-          content,
-          ...notifyConfig,
-        });
-        return Promise.resolve(e.response);
-      }
-    } else {
+    if (!appNotifyStore)
       appNotifyStore = useAppNotifyStore();
+
+    // 如果是网络错误，则提示网络错误
+    if (e.response.status === 0) {
+      appNotifyStore.showNotify({
+        title: '网络错误或后端异常，无法连接后端服务\n',
+        content: 'code: ' + e.response.status + ' msg: ' + e.message,
+        ...notifyConfig,
+      });
+      return Promise.reject(e.response);
+    } else {
+      let content = 'type: ' + e.response.data.error?.type;
+      if (e.response.data.error?.details)
+        content += '\n' + e.response.data.error.details;
+      appNotifyStore.showNotify({
+        title: e.response.data.error?.message,
+        content,
+        ...notifyConfig,
+      });
+      return Promise.resolve(e.response);
     }
   }
 );
