@@ -112,13 +112,17 @@
         </Teleport>
       </nut-form-item>
       <template v-if="sourceInput && ['subscription', 'collection'].includes(editPanelData.type)">
-        <div class="include-unsupported-proxy-wrapper">
-          <div class="label" @click="includeUnsupportedProxyTips">
-            <p>{{ $t(`syncPage.addArtForm.includeUnsupportedProxy.label`) }}</p>
-            <nut-icon name="tips"></nut-icon>
+        <nut-form-item class="include-unsupported-proxy-wrapper">
+          <template #label>
+            <div class="label" @click="includeUnsupportedProxyTips">
+              <p>{{ $t(`syncPage.addArtForm.includeUnsupportedProxy.label`) }}</p>
+              <nut-icon name="tips"></nut-icon>
+            </div>
+          </template>
+          <div class="switch-wrapper">
+            <nut-switch v-model="editPanelData.includeUnsupportedProxy"/>
           </div>
-          <nut-switch v-model="editPanelData.includeUnsupportedProxy"/>
-        </div>
+        </nut-form-item>
 
         <nut-form-item :label="$t(`syncPage.addArtForm.platform.label`)">
           <nut-radiogroup
@@ -377,17 +381,21 @@
     min-width: 350px;
     .include-unsupported-proxy-wrapper {
       flex-direction: row;
-      display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 14px;
-      padding: 0 8px 0 8px;
+
+      :deep(.nut-form-item__label) {
+        width: auto;
+      }
+
       .label {
         color: var(--comment-text-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
         p {
+          margin: 0;
           text-align: left;
           padding-right: 20px;
         }
@@ -395,6 +403,11 @@
           flex-shrink: 0;
           margin-right: 6px;
         }
+      }
+
+      .switch-wrapper {
+        display: flex;
+        justify-content: flex-end;
       }
     }
     .nut-dialog {
