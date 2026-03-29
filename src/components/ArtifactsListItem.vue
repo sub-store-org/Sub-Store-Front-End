@@ -493,7 +493,7 @@ const detail = computed(() => {
     ? sourceSub.value?.displayName ||
       sourceSub.value?.["display-name"] ||
       sourceSub.value?.name
-    : t("specificWord.unknownSource");
+    : (artifact.value.source ?`${artifact.value.source}(🚫)` : t("specificWord.unknownSource"));
   const type = transferText("type") || "";
   if (appearanceSetting.value.isSimpleMode) {
     return {

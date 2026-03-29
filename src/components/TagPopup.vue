@@ -80,6 +80,7 @@ import { ref, watch, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useSubsStore } from "@/store/subs";
 import { useArtifactsStore } from "@/store/artifacts";
+import { normalizeTagArray } from "@/utils/shareTags";
 import draggable from "vuedraggable";
 
 import { useI18n } from "vue-i18n";
@@ -87,7 +88,7 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const subsStore = useSubsStore();
 const artifactsStore = useArtifactsStore();
-const { hasSubs, hasCollections, subs, collections, hasFiles, files } = storeToRefs(subsStore);
+const { hasSubs, hasCollections, subs, collections, hasFiles, files, shares } = storeToRefs(subsStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const hasUntagged = ref(false);
 const props = defineProps({
@@ -143,9 +144,22 @@ const allTagsList = computed(() => {
 })
 const getTags = () => {
   hasUntagged.value = false;
-  if(props.type === 'file' && !hasFiles.value) return []
-  if(props.type === 'artifact' && artifacts.value.length === 0) return []
-  if(props.type === 'subCol' && !hasSubs.value && !hasCollections.value) return []
+  if(props.type === 'file' && !hasFiles.value) {
+    allTags.value = []
+    return []
+  }
+  if(props.type === 'artifact' && artifacts.value.length === 0) {
+    allTags.value = []
+    return []
+  }
+  if(props.type === 'share' && shares.value.length === 0) {
+    allTags.value = []
+    return []
+  }
+  if(props.type === 'subCol' && !hasSubs.value && !hasCollections.value) {
+    allTags.value = []
+    return []
+  }
   const set = new Set()
   if (props.type === 'subCol') {
     // 从 subs 和 collections 中获取所有的 tag, 去重
@@ -187,10 +201,24 @@ const getTags = () => {
         hasUntagged.value = true
       }
     })
+  } else if (props.type === 'share') {
+    shares.value.forEach(share => {
+      const tags = normalizeTagArray(share.tag)
+      if (tags.length > 0) {
+        tags.forEach(i => {
+          set.add(i)
+        });
+      } else {
+        hasUntagged.value = true
+      }
+    })
   }
 
   let tags: any[] = Array.from(set)
-  if(tags.length === 0) return []
+  if(tags.length === 0) {
+    allTags.value = []
+    return []
+  }
   tags = tags.map(i => ({ label: i, value: i }));
   
   let result = [...tags]
@@ -199,7 +227,7 @@ const getTags = () => {
     tag.value = 'all'
   }
   // 判断是否包含传入的tags，增加isActive样式
-  const currentTagList = props.currentTag.split(',').map(i => i.trim())
+  const currentTagList = normalizeTagArray(props.currentTag)
   result.forEach(i => {
     i.isActive = currentTagList.includes(i.value)
   })

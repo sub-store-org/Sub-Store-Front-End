@@ -620,7 +620,7 @@ const padding = bottomSafeArea.value + "px";
     return `: ${subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
       if(!sub) form.subscriptions = form.subscriptions.filter((n) => n !== name);
-      return sub?.displayName || sub?.["display-name"] || sub?.name;
+      return sub?.displayName || sub?.["display-name"] || sub?.name || `${name}(🚫)`;
     }).join(', ')}`
   });
   const compareTableIsVisible = ref(false);

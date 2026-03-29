@@ -40,8 +40,8 @@
           <!-- 分享订阅、文件名 -->
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
             {{ displayName || name }}
-            <span class="tag">
-              <nut-tag>{{ leftTime }}</nut-tag>
+            <span v-for="item in shareTags" :key="item" class="tag">
+              <nut-tag>{{ item }}</nut-tag>
             </span>
           </h3>
           <h3
@@ -50,8 +50,8 @@
             style="color: var(--primary-text-color); font-size: 16px"
           >
             {{ displayName || name }}
-            <span class="tag">
-              <nut-tag>{{ leftTime }}</nut-tag>
+            <span v-for="item in shareTags" :key="item" class="tag">
+              <nut-tag>{{ item }}</nut-tag>
             </span>
           </h3>
 
@@ -86,7 +86,7 @@
           <span>{{ t(`sharePage.createTimeLabel`) }}{{ createTime }}</span>
         </p>
         <p class="sub-item-remark">
-          <span>{{ t(`sharePage.expiredLabel`) }}{{ expiresTime }}</span>
+          <span>{{ expiresTime }}{{ expiresTime ? " · " : "" }}{{ leftTime }}</span>
         </p>
 
         <!-- 分享备注 -->
@@ -141,6 +141,7 @@ import { useHostAPI } from "@/hooks/useHostAPI";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { normalizeTagArray } from "@/utils/shareTags";
 import { isMobile } from "@/utils/isMobile";
 import { useRouter } from "vue-router";
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -182,6 +183,9 @@ const type = computed(() => {
 });
 const token = computed(() => {
   return props?.data?.token;
+});
+const shareTags = computed(() => {
+  return normalizeTagArray(props?.data?.tag);
 });
 const expiresTime = computed(() => {
   return props?.data?.exp ? dayjs(props?.data?.exp).format("YYYY-MM-DD") : "";
@@ -456,6 +460,9 @@ const onClickPreviews = () => {
         font-size: 16px;
         color: var(--primary-text-color);
       }
+      .tag {
+        margin: 0 2px;
+      }
       .share-sub-link,
       .copy-sub-link,
       .refresh-sub-flow {
@@ -516,7 +523,6 @@ const onClickPreviews = () => {
         line-height: 1.5;
       }
     }
-
     .sub-item-detail-isSimple {
       display: -webkit-box;
       -webkit-box-orient: vertical;

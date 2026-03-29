@@ -320,7 +320,7 @@
     } else {
       const displayNameList = nameList.map(name => {
         const sub = subsStore.getOneSub(name);
-        return sub?.displayName || sub?.['display-name'] || sub.name;
+        return sub?.displayName || sub?.['display-name'] || sub.name || `${name}(🚫)`;
       });
       return `${t('subPage.collectionItem.contain')}：${displayNameList.join(
         '、'

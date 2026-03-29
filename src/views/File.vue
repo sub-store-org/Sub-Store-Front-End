@@ -691,7 +691,7 @@ const shouldShowElement = (element) => {
     display: flex;
     flex-wrap: wrap;
     position: fixed;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     top: v-bind(tagNavBarHeight);
     z-index: 10;
     backdrop-filter: blur(var(--nav-bar-blur));

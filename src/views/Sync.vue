@@ -501,6 +501,7 @@ const shouldShowElement = (element: Artifact) => {
 }
 
 .sync-title {
+  margin-top: 0px;
   display: flex;
   justify-content: space-between;
 

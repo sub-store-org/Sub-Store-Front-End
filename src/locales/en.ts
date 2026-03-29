@@ -796,10 +796,10 @@ export default {
   sharePage: {
     title: "Share",
     noOriginalTips: "Failed to jump, check if the source data has been deleted.",
-    leftTime: "Remaining time",
+    leftTime: "Remaining: ",
     expired: "Expired",
-    expiredLabel: "Expiration Time: ",
-    createTimeLabel: "Creation Time: ",
+    expiredLabel: "Expires: ",
+    createTimeLabel: "Created: ",
     magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH should start with /, please check the configuration!",
     createShare: {
       expiresValue: {

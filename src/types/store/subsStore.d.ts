@@ -93,6 +93,7 @@ interface Share {
   name?: string;
   displayName?: string | null;
   remark?: string | null;
+  tag?: string[];
   token?: string | null;
   expiresIn?: string | null;
   exp?: number | null;

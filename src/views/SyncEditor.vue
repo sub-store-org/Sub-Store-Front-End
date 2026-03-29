@@ -120,7 +120,7 @@
           <nut-input
             :border="false"
             input-align="right"
-            class="nut-input-text"
+            class="nut-input-text source-input"
             :placeholder="$t(`syncPage.addArtForm.source.placeholder`)"
             v-model="sourceInput"
             readonly
@@ -334,7 +334,9 @@ const displaySourceName = computed(() => {
   const typeObj = sourceOptions.value.find(item => item.value === form.type);
   return (
     typeObj?.children?.find(item => item.value === form.source)?.text ??
-    t("specificWord.unknown")
+    (form.source
+      ? `${form.source}(🚫)`
+      : t("specificWord.unknownSource"))
   );
 });
 
@@ -539,8 +541,15 @@ const submit = () => {
     width: auto;
   }
 
+  .source-input {
+    :deep(.input-text) {
+      cursor: pointer;
+    }
+  }
+
   :deep(.nut-input-text) {
     .nut-input-inner {
+
       .nut-input-right-icon {
         margin-left: 10px;
       }

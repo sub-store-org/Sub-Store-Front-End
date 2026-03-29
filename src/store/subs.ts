@@ -4,12 +4,20 @@ import { useShareApi } from '@/api/share';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
+import { normalizeTagArray } from '@/utils/shareTags';
 import { defineStore } from 'pinia';
 
 const { t } = i18n.global;
 const subsApi = useSubsApi();
 const filesApi = useFilesApi();
 const shareApi = useShareApi();
+
+const normalizeShare = (share: Share): Share => {
+  return {
+    ...share,
+    tag: normalizeTagArray(share?.tag),
+  };
+};
 // class TaskProcessor {
 //   #fulfilledIndexes; // 已完成任务的索引集合
 //   #results; // 所有任务的执行结果
@@ -253,7 +261,7 @@ export const useSubsStore = defineStore('subsStore', {
           this.files = res[2].data.data;
         }
         if ('data' in res[3].data) {
-          this.shares = res[3].data.data;
+          this.shares = res[3].data.data.map(normalizeShare);
         }
       }).catch((err) => {
         console.log('fetchSubsData err', err);
@@ -380,7 +388,7 @@ export const useSubsStore = defineStore('subsStore', {
     async fetchShareData() {
       Promise.all([shareApi.getShares()]).then((res) => {
         if ("data" in res[0].data) {
-          this.shares = res[0].data.data;
+          this.shares = res[0].data.data.map(normalizeShare);
         }
       }).catch((err) => {
         console.log('fetchShareData err', err);

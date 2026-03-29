@@ -99,6 +99,20 @@
               />
             </nut-form-item>
             <nut-form-item
+              :label="$t(`editorPage.subConfig.basic.tag.label`)"
+              prop="tag"
+            >
+              <nut-input
+                v-model.trim="form.tag"
+                :border="false"
+                :placeholder="$t(`editorPage.subConfig.basic.tag.placeholder`)"
+                type="text"
+                input-align="left"
+                right-icon="rect-right"
+                @click-right-icon="showTagPopup"
+              />
+            </nut-form-item>
+            <nut-form-item
               v-if="shareUrlVisible"
               :label="$t(`sharePage.createShare.shareUrl.label`)"
               prop="shareUrl"
@@ -250,6 +264,22 @@
                 :readonly="!isUpdateShare"
               />
             </nut-form-item>
+            <nut-form-item
+              v-if="isUpdateShare ? true : form.tag"
+              :label="$t(`editorPage.subConfig.basic.tag.label`)"
+              prop="tag"
+            >
+              <nut-input
+                v-model.trim="form.tag"
+                :border="false"
+                :placeholder="$t(`editorPage.subConfig.basic.tag.placeholder`)"
+                type="text"
+                input-align="left"
+                :readonly="!isUpdateShare"
+                :right-icon="isUpdateShare ? 'rect-right' : undefined"
+                @click-right-icon="showTagPopup"
+              />
+            </nut-form-item>
             <div v-if="shareUrlVisible" class="qrcode-wrapper">
               <nut-image
                 :src="shareUrlQrCode"
@@ -291,6 +321,12 @@
         </template>
       </div>
     </div>
+    <TagPopup
+      v-model:visible="tagPopupVisible"
+      :currentTag="currentTag"
+      type="share"
+      @setTag="setTagValue"
+    />
   </nut-popup>
 </template>
 
@@ -302,11 +338,13 @@ import { computed, reactive, ref, watch, watchEffect } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 
+import TagPopup from "@/components/TagPopup.vue";
 import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useSubsStore } from "@/store/subs";
+import { normalizeTagArray, stringifyTagInput } from "@/utils/shareTags";
 
 const props = defineProps({
   data: {
@@ -341,6 +379,7 @@ const form = reactive({
   token: "",
   name: "",
   displayName: "",
+  tag: "",
   type: "",
   shareUrl: "",
 });
@@ -393,6 +432,7 @@ watchEffect(() => {
     form.shareUrl = props.data?.shareUrl;
     form.name = props.data?.name;
     form.displayName = props.data?.displayName;
+    form.tag = stringifyTagInput(props.data?.tag);
     form.type = props.data?.type;
     form.token = props.data?.token;
   } else {
@@ -404,6 +444,7 @@ watchEffect(() => {
     form.shareUrl = "";
     form.name = props.data?.name;
     form.displayName = props.data?.displayName;
+    form.tag = stringifyTagInput(props.data?.tag);
     form.type = props.data?.type;
   }
 });
@@ -444,6 +485,8 @@ const shareUrlVisible = computed(() => {
 });
 
 const isUpdateShare = ref(false);
+const tagPopupVisible = ref(false);
+const currentTag = computed(() => form.tag || "");
 
 const resetFormData = () => {
   form.expiresValue = "";
@@ -453,9 +496,19 @@ const resetFormData = () => {
   form.token = "";
   form.shareUrl = "";
   form.name = "";
+  form.tag = "";
   form.type = "";
   isCreateShareLinkSuccess.value = false;
   isUpdateShare.value = false;
+};
+const showTagPopup = () => {
+  if (!isUpdateShare && props.action === "edit") {
+    return;
+  }
+  tagPopupVisible.value = true;
+};
+const setTagValue = (tag: string) => {
+  form.tag = tag;
 };
 const clearToken = () => {
   form.token = "";
@@ -502,26 +555,28 @@ const secretPath = computed(() => {
 });
 
 const handleUpdateShare = async () => {
-  Dialog({
-    title: t("sharePage.updateShare.title"),
-    content: t("sharePage.updateShare.tips"),
-    popClass: "auto-dialog",
-    okText: t("sharePage.updateShare.confirm"),
-    cancelText: t("sharePage.updateShare.cancel"),
-    noCancelBtn: false,
-    closeOnPopstate: true,
-    lockScroll: false,
-    onOk: async () => {
-      console.log("form", form);
-      console.log("props.data", props.data);
-      isUpdateShare.value = true;
-      form.shareUrl = ''
-    },
-    onCancel: () => {
-      console.log("取消");
-      isUpdateShare.value = false;
-    },
-  });
+  isUpdateShare.value = true;
+  form.shareUrl = ''
+  // Dialog({
+  //   title: t("sharePage.updateShare.title"),
+  //   content: t("sharePage.updateShare.tips"),
+  //   popClass: "auto-dialog",
+  //   okText: t("sharePage.updateShare.confirm"),
+  //   cancelText: t("sharePage.updateShare.cancel"),
+  //   noCancelBtn: false,
+  //   closeOnPopstate: true,
+  //   lockScroll: false,
+  //   onOk: async () => {
+  //     console.log("form", form);
+  //     console.log("props.data", props.data);
+  //     isUpdateShare.value = true;
+  //     form.shareUrl = ''
+  //   },
+  //   onCancel: () => {
+  //     console.log("取消");
+  //     isUpdateShare.value = false;
+  //   },
+  // });
 };
 
 const handleCreateShare = async () => {
@@ -543,6 +598,7 @@ const handleCreateShare = async () => {
       name: form.name,
       displayName: form.displayName || "",
       remark: form.remark || "",
+      tag: normalizeTagArray(form.tag),
     },
     options: {
       expiresIn: genExpiresIn(form.expiresValue, form.expiresUnit),

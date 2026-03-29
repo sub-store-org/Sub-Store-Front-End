@@ -68,9 +68,27 @@
     <!-- 有数据 -->
     <div class="subs-list-wrapper">
       <div
+        v-if="hasShares && showTagBar"
+        ref="radioWrapperRef"
+        class="radio-wrapper"
+      >
+        <span
+          v-for="item in tagOptions"
+          :key="item.value"
+          class="tag"
+          :class="{ current: item.value === tag }"
+          @click="setTag(item.value)"
+        >
+          {{ item.label }}
+        </span>
+      </div>
+      <div
         v-if="hasShares"
         class="share-page-content"
-        :style="isSelectionMode ? { paddingBottom: `${bottomSafeArea + 96}px` } : undefined"
+        :style="{
+          paddingTop: `${radioWrapperHeight}px`,
+          ...(isSelectionMode ? { paddingBottom: `${bottomSafeArea + 96}px` } : {}),
+        }"
       >
         <!-- 单条订阅 -->
         <div v-if="subShareDataCount > 0" class="share-data">
@@ -108,7 +126,11 @@
             @end="handleDragEnd"
           >
             <template #item="{ element }">
-              <div :key="element.token" class="draggable-item">
+              <div
+                v-show="shouldShowShare(element)"
+                :key="element.token"
+                class="draggable-item"
+              >
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
@@ -178,7 +200,11 @@
             @end="handleDragEnd"
           >
             <template #item="{ element }">
-              <div :key="element.token" class="draggable-item">
+              <div
+                v-show="shouldShowShare(element)"
+                :key="element.token"
+                class="draggable-item"
+              >
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
@@ -244,7 +270,11 @@
             @end="handleDragEnd"
           >
             <template #item="{ element }">
-              <div :key="element.token" class="draggable-item">
+              <div
+                v-show="shouldShowShare(element)"
+                :key="element.token"
+                class="draggable-item"
+              >
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
@@ -365,7 +395,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { computed, onMounted, ref, toRaw, watch } from "vue";
+import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import draggable from "vuedraggable";
@@ -378,6 +408,15 @@ import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { useSystemStore } from "@/store/system";
+import {
+  ALL_SHARE_TAG,
+  UNTAGGED_SHARE_TAG,
+  buildShareTagOptions,
+  countSharesByTagFilter,
+  groupSharesByType,
+  resolveShareTagFilter,
+  shareMatchesTagFilter,
+} from "@/utils/shareTags";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 
@@ -403,7 +442,7 @@ const {
   fetchResult,
   bottomSafeArea,
 } = storeToRefs(globalStore);
-const { navBartop } = storeToRefs(systemStore);
+const { navBartop, navBarHeight } = storeToRefs(systemStore);
 const swipeDisabled = ref(false);
 
 const shareTopSelectionOffset = computed(() => {
@@ -458,21 +497,75 @@ const addShare = () => {
   });
 };
 
-const subShareData = ref([]);
-const collectionShareData = ref([]);
-const fileShareData = ref([]);
+const getTag = () => {
+  return localStorage.getItem("share-tag") || ALL_SHARE_TAG;
+};
+const tag = ref(getTag());
+const radioWrapperRef = ref(null);
+const radioWrapperHeight = ref(0);
+const tagNavBarHeight = computed(() => {
+  return navBarHeight.value;
+});
+const tagOptions = computed(() => {
+  const options = buildShareTagOptions(shares.value, {
+    all: t("specificWord.all"),
+    untagged: t("specificWord.untagged"),
+  });
+  const resolvedTag = resolveShareTagFilter(tag.value, options);
+  if (resolvedTag !== tag.value) {
+    tag.value = resolvedTag;
+    if (resolvedTag === ALL_SHARE_TAG) {
+      localStorage.removeItem("share-tag");
+    }
+  }
+  return options;
+});
+const showTagBar = computed(() => {
+  return tagOptions.value.length > 0;
+});
+const updateRadioWrapperHeight = () => {
+  nextTick(() => {
+    if (radioWrapperRef.value) {
+      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
+    } else {
+      radioWrapperHeight.value = 0;
+    }
+  });
+};
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+const setTag = (current: string) => {
+  tag.value = current;
+  if (current === ALL_SHARE_TAG) {
+    localStorage.removeItem("share-tag");
+  } else {
+    localStorage.setItem("share-tag", current);
+  }
+  scrollToTop();
+};
+const shouldShowShare = (share: Share) => {
+  return shareMatchesTagFilter(share, tag.value);
+};
+
+const subShareData = ref<Share[]>([]);
+const collectionShareData = ref<Share[]>([]);
+const fileShareData = ref<Share[]>([]);
 const isSelectionMode = ref(false);
 const selectedShareKeys = ref<string[]>([]);
 const isDeletingSelectedShares = ref(false);
 
-const subShareDataCount = computed(() => subShareData.value.length);
-const collectionShareDataCount = computed(() => collectionShareData.value.length);
-const fileShareDataCount = computed(() => fileShareData.value.length);
+const subShareDataCount = computed(() => countSharesByTagFilter(subShareData.value, tag.value));
+const collectionShareDataCount = computed(() => countSharesByTagFilter(collectionShareData.value, tag.value));
+const fileShareDataCount = computed(() => countSharesByTagFilter(fileShareData.value, tag.value));
 const allShareData = computed(() => [
   ...subShareData.value,
   ...collectionShareData.value,
   ...fileShareData.value,
-]);
+].filter((item) => shouldShowShare(item)));
 const selectedShareKeySet = computed(() => new Set(selectedShareKeys.value));
 const selectedShares = computed(() =>
   allShareData.value.filter((item) =>
@@ -552,12 +645,21 @@ function selectExpiredShares() {
 watch(
   () => shares.value,
   (val) => {
-    subShareData.value = [...val.filter((item) => item.type === "sub")];
-    collectionShareData.value = [...val.filter((item) => item.type === "col")];
-    fileShareData.value = [...val.filter((item) => item.type === "file")];
+    const groupedShares = groupSharesByType(val);
+    subShareData.value = [...groupedShares.sub];
+    collectionShareData.value = [...groupedShares.col];
+    fileShareData.value = [...groupedShares.file];
   },
   { immediate: true, deep: true }
 );
+
+watch(tag, () => {
+  updateRadioWrapperHeight();
+});
+
+watch(() => tagOptions.value, () => {
+  updateRadioWrapperHeight();
+}, { deep: true, immediate: true });
 
 watch(
   allShareData,
@@ -837,7 +939,7 @@ const handleShareDetail = (detail: Share) => {
 }
 
 .sticky-title-wrappers {
-  margin-top: var(--safe-area-side);
+  // margin-top: var(--safe-area-side);
   // backdrop-filter: blur(var(--sticky-title-blur));
   // -webkit-backdrop-filter: blur(var(--sticky-title-blur));
   color: var(--comment-text-color);
@@ -881,6 +983,42 @@ const handleShareDetail = (detail: Share) => {
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
+
+  .radio-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    padding: 10px;
+    top: v-bind(tagNavBarHeight);
+    z-index: 10;
+    backdrop-filter: blur(var(--nav-bar-blur));
+    -webkit-backdrop-filter: blur(var(--nav-bar-blur));
+    background: var(--nav-bar-color);
+    @include centered-fixed-container;
+
+    @media screen and (min-width: 768px) {
+      border-radius: var(--item-card-radios);
+      overflow: hidden;
+    }
+
+    .tag {
+      font-size: 12px;
+      color: var(--second-text-color);
+      margin: 0 5px;
+      padding: 7.5px 2.5px 4px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .current {
+      border-bottom: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+  }
 }
 
 .share-page-content {
