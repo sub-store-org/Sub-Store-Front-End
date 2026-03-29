@@ -974,6 +974,11 @@ export default {
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
+    createItemPosition: {
+      title: '新创建的项目',
+      top: '在最上面',
+      bottom: '在最下面',
+    },
     showFloatingAddButton: '显示悬浮添加按钮',
     displayPreviewInWebPage: '在网页中预览',
     invalidShareFakeNode: '无效分享返回假节点(防客户端缓存)',

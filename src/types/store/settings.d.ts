@@ -1,3 +1,5 @@
+type CreateItemPosition = 'top' | 'bottom';
+
 type SettingsStoreState = SettingsBase & SettingsPostData;
 
 interface SettingsBase {
@@ -39,6 +41,7 @@ interface SettingsPostData {
     isSubItemMenuFold?: boolean; // 订阅项菜单折叠
     showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
     showFloatingAddButton?: boolean; // 显示悬浮添加按钮
+    createItemPosition?: CreateItemPosition; // 新建条目插入位置
     displayPreviewInWebPage?: boolean; // 在网页中预览
     invalidShareFakeNode?: boolean; // 无效分享返回假节点(防客户端缓存)
     istabBar?: boolean; // 隐藏 "Gist 同步" 页

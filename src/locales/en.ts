@@ -985,6 +985,11 @@ export default {
     isSimpleReicon: "Show items refresh button",
     isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
+    createItemPosition: {
+      title: "Newly created items",
+      top: "At the top",
+      bottom: "At the bottom",
+    },
     showFloatingAddButton: "Show floating add button",
     displayPreviewInWebPage: 'Display preview in web page',
     invalidShareFakeNode: "Invalid share returns fake info(to prevent caching)",

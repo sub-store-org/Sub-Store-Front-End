@@ -83,16 +83,24 @@
     </nut-cell-group>
 
     <nut-cell-group>
-      <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch class="my-switch" v-model="awShowFloatingRefreshButton" size="mini"
-            @change="setShowFloatingRefreshButton" />
-        </template>
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.createItemPosition.title`)" :desc="createItemPositionName"
+        @click="()=>{showCreateItemPositionPicker=true}" is-link>
       </nut-cell>
+      <nut-picker v-model="createItemPositionValue" v-model:visible="showCreateItemPositionPicker" :columns="[
+        { text: $t(`moreSettingPage.createItemPosition.top`), value: 'top' },
+        { text: $t(`moreSettingPage.createItemPosition.bottom`), value: 'bottom' }
+      ]" :title="$t(`moreSettingPage.createItemPosition.title`)" @confirm="createItemPositionConfirm">
+      </nut-picker>
       <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch class="my-switch" v-model="awShowFloatingAddButton" size="mini"
             @change="setShowFloatingAddButton" />
+        </template>
+      </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.showFloatingRefreshButton`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="awShowFloatingRefreshButton" size="mini"
+            @change="setShowFloatingRefreshButton" />
         </template>
       </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.tabBar2`)" class="cell-item">
@@ -199,6 +207,7 @@
   const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
   const awShowFloatingAddButton = ref(true);
+  const createItemPositionValue = ref<CreateItemPosition[]>(['bottom']);
   const awDisplayPreviewInWebPage = ref(true);
   const invalidShareFakeNode = ref(false);
   const awtabBar = ref(true);
@@ -213,6 +222,7 @@
   const showThemePicker = ref(false);
   // const isEditLoading = ref(false);
   const showSubProgressPicker = ref(false);
+  const showCreateItemPositionPicker = ref(false);
   const shareBtnVisible = computed(() => {
     return env.value?.feature?.share;
   });
@@ -236,6 +246,16 @@
     changeSettings({
       gistUpload: selectedValue[0]
     });
+  };
+  const createItemPositionName = computed(() => {
+    return t(`moreSettingPage.createItemPosition.${createItemPositionValue.value[0]}`);
+  });
+  const createItemPositionConfirm = ({ selectedValue }) => {
+    const data = {
+      ...appearanceSetting.value,
+      createItemPosition: selectedValue[0]
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
   };
   const setSimpleMode = (isSimpleMode: boolean) => {
     // globalStore.setSimpleMode(isSimpleMode);
@@ -545,6 +565,7 @@
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
     awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
+    createItemPositionValue.value = [appearanceSetting.value.createItemPosition || 'bottom'];
     awDisplayPreviewInWebPage.value = appearanceSetting.value.displayPreviewInWebPage;
     invalidShareFakeNode.value = appearanceSetting.value.invalidShareFakeNode;
     awtabBar.value = appearanceSetting.value.istabBar;

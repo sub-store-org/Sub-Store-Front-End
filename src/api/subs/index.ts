@@ -43,7 +43,7 @@ export function useSubsApi() {
     },
     createSub: (
       type: string,
-      data: Sub | Collection
+      data: Sub | Collection,
     ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/${type}`,

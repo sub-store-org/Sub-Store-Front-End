@@ -43,6 +43,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
         showFloatingAddButton: false,
+        createItemPosition: "bottom",
         displayPreviewInWebPage: true,
         invalidShareFakeNode: false,
         istabBar: false,
@@ -91,6 +92,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.isSubItemMenuFold = res.data.data.appearanceSetting?.isSubItemMenuFold ?? true;
         this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
         this.appearanceSetting.showFloatingAddButton = res.data.data.appearanceSetting?.showFloatingAddButton ?? false;
+        this.appearanceSetting.createItemPosition = res.data.data.appearanceSetting?.createItemPosition ?? "bottom";
         this.appearanceSetting.invalidShareFakeNode = res.data.data.appearanceSetting?.invalidShareFakeNode ?? false;
         this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
