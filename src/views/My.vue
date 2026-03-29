@@ -410,14 +410,15 @@
         </div>
       </div>
 
-      <nut-cell-group>
+      <nut-cell-group v-if="shareBtnVisible">
         <nut-cell
-          v-if="shareBtnVisible"
           :title="$t(`moreSettingPage.shareManageTitle`)"
           class="right-icon"
           @click.stop="onClickShareManage"
           is-link
         ></nut-cell>
+      </nut-cell-group>
+      <nut-cell-group>
         <nut-cell
           :title="$t(`apiSettingPage.apiSettingTitle`)"
           class="right-icon"
