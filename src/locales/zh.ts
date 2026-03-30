@@ -4,6 +4,8 @@ export default {
     singleSub: '单条订阅',
     collectionSub: '组合订阅',
     file: '文件',
+    syncConfig: '同步配置',
+    share: '分享',
     unknownType: '未知类型',
     unknownSource: '未知来源',
     unknown: '未知',
@@ -69,6 +71,7 @@ export default {
       syncEditor: '同步编辑',
       preview: '预览',
       shareManage: '分享管理',
+      archive: '已归档',
       iconCollection: '图标仓库',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
@@ -715,6 +718,7 @@ export default {
     deleteArt: {
       title: '删除同步配置',
       desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置进行过同步, 将尝试原文件名和编码后的文件名对应的文件',
+      archiveExtra: '⚠️ 若当前同步配置进行过同步, 仍会继续尝试删除原文件名和编码后的文件名对应的文件',
       succeedNotify: '删除同步配置成功！',
       btn: {
         confirm: '确认删除',
@@ -871,6 +875,58 @@ export default {
       result: "成功删除 {success} 项，失败 {failed} 项",
     },
   },
+  archivePage: {
+    empty: {
+      title: '还没有已归档内容',
+      desc: '归档的项目会显示在这里',
+      btn: '返回首页',
+    },
+    liveDelete: {
+      title: '删除',
+      desc: '新版后端支持归档\n是否继续处理 {displayName}？',
+      batchDesc:
+        '新版后端支持归档\n是否继续处理选中的 {count} 项{type}？',
+      succeedNotify: '已归档',
+      btn: {
+        archive: '归档',
+        permanent: '彻底删除',
+      },
+    },
+    entry: {
+      archivedAt: '归档: {time}',
+      restore: '恢复',
+      delete: '彻底删除',
+    },
+    selectMode: {
+      enter: '多选',
+      cancel: '取消多选',
+      selectedCount: '已选 {count} 项',
+      selectAll: '全选',
+      selectTypeAll: '全选{type}',
+      clearAll: '取消全选',
+      clearTypeAll: '取消{type}全选',
+      restore: '恢复',
+      delete: '彻底删除',
+    },
+    restore: {
+      succeedNotify: '恢复成功！',
+      failNotify: '批量恢复部分失败',
+      result: '成功恢复 {success} 项，失败 {failed} 项',
+    },
+    delete: {
+      title: '彻底删除',
+      desc: '是否确认彻底删除 {displayName}？删除后不可恢复！',
+      batchTitle: '批量彻底删除',
+      batchDesc: '是否确认彻底删除选中的 {count} 项已归档内容？删除后不可恢复！',
+      succeedNotify: '彻底删除成功！',
+      failNotify: '批量彻底删除部分失败',
+      result: '成功删除 {success} 项，失败 {failed} 项',
+      btn: {
+        confirm: '彻底删除',
+        cancel: '取消',
+      },
+    },
+  },
   // 图标仓库页
   iconCollectionPage: {
     iconCollection: '图标仓库',
@@ -947,6 +1003,7 @@ export default {
     },
     moreSettingTitle: '更多设置',
     shareManageTitle: '分享管理',
+    archiveTitle: '已归档',
     clearData: {
       label: '清除后端数据',
       title: '清除后端数据',

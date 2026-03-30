@@ -47,17 +47,27 @@ export const useArtifactsStore = defineStore('artifactsStore', {
       }
       return false;
     },
-    async deleteArtifact(name: string) {
+    async deleteArtifact(
+      name: string,
+      mode?: DeleteMode,
+      isShowNotify: boolean = true,
+    ) {
       const { showNotify } = useAppNotifyStore();
 
-      const { data } = await artifactsApi.deleteArtifact(name);
+      const { data } = await artifactsApi.deleteArtifact(name, mode);
       if (data.status === 'success') {
         await this.fetchArtifactsData();
-        showNotify({
-          title: t('syncPage.deleteArt.succeedNotify'),
-          type: 'success',
+        isShowNotify && showNotify({
+          title:
+            mode === 'archive'
+              ? t('archivePage.liveDelete.succeedNotify')
+              : t('syncPage.deleteArt.succeedNotify'),
+          type: mode === 'archive' ? 'success' : 'danger',
         });
+        return true;
       }
+
+      return false;
     },
     async restoreArtifacts() {
       const { showNotify } = useAppNotifyStore();

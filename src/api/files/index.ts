@@ -41,10 +41,14 @@ export function useFilesApi() {
         data,
       });
     },
-    deleteFile: (name: string): AxiosPromise<MyAxiosRes> => {
+    deleteFile: (
+      name: string,
+      mode?: DeleteMode,
+    ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/file/${encodeURIComponent(name)}`,
         method: 'delete',
+        params: mode ? { mode } : undefined,
       });
     },
   };

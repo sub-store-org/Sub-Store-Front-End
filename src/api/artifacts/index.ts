@@ -35,10 +35,14 @@ export function useArtifactsApi() {
         data,
       });
     },
-    deleteArtifact: (name: string): AxiosPromise<MyAxiosRes> => {
+    deleteArtifact: (
+      name: string,
+      mode?: DeleteMode,
+    ): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/artifact/${encodeURIComponent(name)}`,
         method: 'delete',
+        params: mode ? { mode } : undefined,
       });
     },
     syncAllArtifact: (): AxiosPromise<MyAxiosRes> => {

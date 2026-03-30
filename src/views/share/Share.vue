@@ -457,6 +457,7 @@ import {
 } from "@/utils/shareTags";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
+import { openManagedDeleteDialog } from "@/utils/archive";
 
 import SharePopup from "./SharePopup.vue";
 import { Dialog } from "@nutui/nutui";
@@ -473,6 +474,9 @@ const router = useRouter();
 const { currentUrl: host } = useHostAPI();
 
 const { env } = useBackend();
+const isArchiveEnabled = computed(() => {
+  return env.value?.feature?.archive;
+});
 const { t } = useI18n();
 const shareApi = useShareApi();
 const { showNotify } = useAppNotifyStore();
@@ -823,7 +827,7 @@ onMounted(() => {
   init();
 });
 
-const deleteSelectedShares = async () => {
+const deleteSelectedShares = async (mode: DeleteMode = "permanent") => {
   if (selectedShareCount.value === 0 || isDeletingSelectedShares.value) {
     return;
   }
@@ -835,7 +839,7 @@ const deleteSelectedShares = async () => {
         return false;
       }
       try {
-        const { data } = await shareApi.deleteShare(item.token, item.type, item.name);
+        const { data } = await shareApi.deleteShare(item.token, item.type, item.name, mode);
         return data?.status === "success";
       } catch (error) {
         console.log("batch deleteShare error", error);
@@ -851,8 +855,11 @@ const deleteSelectedShares = async () => {
 
   if (failedCount === 0) {
     showNotify({
-      type: "danger",
-      title: t("sharePage.batchDelete.succeedNotify"),
+      type: mode === "archive" ? "success" : "danger",
+      title:
+        mode === "archive"
+          ? t("archivePage.liveDelete.succeedNotify")
+          : t("sharePage.batchDelete.succeedNotify"),
     });
     exitSelectionMode();
   } else {
@@ -873,18 +880,23 @@ const confirmDeleteSelectedShares = () => {
   if (selectedShareCount.value === 0 || isDeletingSelectedShares.value) {
     return;
   }
-  Dialog({
-    title: t("sharePage.batchDelete.title"),
-    content: t("sharePage.batchDelete.desc", {
+  openManagedDeleteDialog({
+    enabled: isArchiveEnabled.value,
+    managedTitle: t("archivePage.liveDelete.title"),
+    managedContent: t("archivePage.liveDelete.batchDesc", {
+      count: selectedShareCount.value,
+      type: t("specificWord.share"),
+    }),
+    managedCancelText: t("archivePage.liveDelete.btn.archive"),
+    managedOkText: t("archivePage.liveDelete.btn.permanent"),
+    legacyTitle: t("sharePage.batchDelete.title"),
+    legacyContent: t("sharePage.batchDelete.desc", {
       count: selectedShareCount.value,
     }),
-    onOk: deleteSelectedShares,
-    onCancel: () => {},
-    popClass: "auto-dialog",
-    cancelText: t("sharePage.deleteShare.btn.cancel"),
-    okText: t("sharePage.deleteShare.btn.confirm"),
-    closeOnPopstate: true,
-    lockScroll: false,
+    legacyCancelText: t("sharePage.deleteShare.btn.cancel"),
+    legacyOkText: t("sharePage.deleteShare.btn.confirm"),
+    onArchive: () => deleteSelectedShares("archive"),
+    onPermanent: () => deleteSelectedShares("permanent"),
   });
 };
 

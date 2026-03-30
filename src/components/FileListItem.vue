@@ -46,13 +46,13 @@
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ displayName || name }}
+            {{ displayName }}
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
           </h3>
           <h3 v-else class="sub-item-title" style="color: var(--primary-text-color); font-size: 16px">
-            {{ displayName || name }}
+            {{ displayName }}
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -238,12 +238,13 @@
   import { useSubsStore } from '@/store/subs';
   import { getString } from '@/utils/flowTransfer';
   import { isMobile } from '@/utils/isMobile';
+  import { openManagedDeleteDialog } from '@/utils/archive';
   import FilePreview from '@/views/FilePreview.vue';
   import { Dialog, Toast } from '@nutui/nutui';
   import { useClipboard } from '@vueuse/core';
   import dayjs from 'dayjs';
   import { storeToRefs } from 'pinia';
-  import { computed, createVNode, ref, toRaw } from 'vue';
+  import { computed, ref, toRaw } from 'vue';
   import useV3Clipboard from 'vue-clipboard3';
   import { useI18n } from 'vue-i18n';
   import { useRouter, useRoute } from 'vue-router';
@@ -256,6 +257,9 @@
 
   const { t } = useI18n();
   const { env } = useBackend();
+  const isArchiveEnabled = computed(() => {
+    return env.value?.feature?.archive;
+  });
 
   const props = defineProps<{
     type: 'sub' | 'collection' | 'file';
@@ -292,7 +296,7 @@
   } = storeToRefs(globalStore);
 
   const displayName =
-    props[props.type].displayName || props[props.type]['display-name'];
+    props[props.type].displayName || props[props.type]['display-name'] || props[props.type].name;
 
   const name = props[props.type].name;
   const tag = props[props.type].tag;
@@ -469,9 +473,16 @@
     }
   };
 
-  const onDeleteConfirm = async () => {
-    await subsStore.deleteFile(name);
+  const onDeleteConfirm = async (mode: DeleteMode = 'permanent') => {
+    await subsStore.deleteFile(name, mode);
     // Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
+  };
+
+  const closeExpandedMenu = () => {
+    swipe.value.close();
+    swipeIsOpen.value = false;
+    if (moreAction.value) moreAction.value.style.transform = 'rotate(0deg)';
+    document.removeEventListener('click', handleGlobalClick);
   };
 
 
@@ -484,6 +495,7 @@
     await subsStore.fetchSubsData();
     Toast.hide('copyConfig');
     showNotify({ title: t('subPage.copyConfigNotify.succeed') });
+    closeExpandedMenu();
   };
 
   const onClickEdit = () => {
@@ -491,21 +503,18 @@
   };
 
   const onClickDelete = () => {
-    Dialog({
-      title: t('subPage.deleteSub.title'),
-      content: createVNode(
-        'span',
-        {},
-        t('subPage.deleteSub.desc', { displayName })
-      ),
-      onCancel: () => {},
-      onOk: onDeleteConfirm,
-      onOpened: () => {},
-      popClass: 'auto-dialog',
-      cancelText: t('subPage.deleteSub.btn.cancel'),
-      okText: t('subPage.deleteSub.btn.confirm'),
-      closeOnPopstate: true,
-      lockScroll: false,
+    openManagedDeleteDialog({
+      enabled: isArchiveEnabled.value,
+      managedTitle: t('archivePage.liveDelete.title'),
+      managedContent: t('archivePage.liveDelete.desc', { displayName }),
+      managedCancelText: t('archivePage.liveDelete.btn.archive'),
+      managedOkText: t('archivePage.liveDelete.btn.permanent'),
+      legacyTitle: t('subPage.deleteSub.title'),
+      legacyContent: t('subPage.deleteSub.desc', { displayName }),
+      legacyCancelText: t('subPage.deleteSub.btn.cancel'),
+      legacyOkText: t('subPage.deleteSub.btn.confirm'),
+      onArchive: () => onDeleteConfirm('archive'),
+      onPermanent: () => onDeleteConfirm('permanent'),
     });
   };
 

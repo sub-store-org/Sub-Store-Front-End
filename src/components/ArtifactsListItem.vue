@@ -193,52 +193,33 @@
 </template>
 
 <script lang="ts" setup>
-import logoIcon from "@/assets/icons/logo.png";
-import logoRedIcon from "@/assets/icons/logo-red.png";
-import singboxIcon from "@/assets/icons/sing-box.png";
-import clashIcon from "@/assets/icons/clash.png";
-import egernIcon from "@/assets/icons/egern.png";
-import clashMetaIcon from "@/assets/icons/clashmeta.png";
-import loonIcon from "@/assets/icons/loon.png";
-import quanxIcon from "@/assets/icons/quanx.png";
-import shadowRocketIcon from "@/assets/icons/shadowrocket.png";
-import surfboardIcon from "@/assets/icons/surfboard.png";
-import stashIcon from "@/assets/icons/stash.png";
-import surgeIcon from "@/assets/icons/surge.png";
-import surgeMacIcon from "@/assets/icons/surgeformac_text.png";
-import v2rayIcon from "@/assets/icons/v2ray.png";
-import singboxColorIcon from "@/assets/icons/sing-box_color.png";
-import clashColorIcon from "@/assets/icons/clash_color.png";
-import egernColorIcon from "@/assets/icons/egern_color.png";
-import clashMetaColorIcon from "@/assets/icons/clashmeta_color.png";
-import loonColorIcon from "@/assets/icons/loon_color.png";
-import quanxColorIcon from "@/assets/icons/quanx_color.png";
-import shadowRocketColorIcon from "@/assets/icons/shadowrocket_color.png";
-import surfboardColorIcon from "@/assets/icons/surfboard_color.png";
-import stashColorIcon from "@/assets/icons/stash_color.png";
-import surgeColorIcon from "@/assets/icons/surge_color.png";
-import surgeMacColorIcon from "@/assets/icons/surgeformac_text_color.png";
-import v2rayColorIcon from "@/assets/icons/v2ray_color.png";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { butifyDate } from "@/utils/butifyDate";
+import { resolveArtifactIcon } from "@/utils/artifactIcon";
 import { isMobile } from "@/utils/isMobile";
 import { Dialog, Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { computed, createVNode, ref, toRaw, watch, watchEffect } from "vue";
+import { computed, ref, toRaw, watch, watchEffect } from "vue";
 import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 import { useGlobalStore } from "@/store/global";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { useBackend } from "@/hooks/useBackend";
+import { openManagedDeleteDialog } from "@/utils/archive";
 const globalStore = useGlobalStore();
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const { currentUrl: host } = useHostAPI();
+const { env } = useBackend();
+const isArchiveEnabled = computed(() => {
+  return env.value?.feature?.archive;
+});
 
 const props = defineProps<{
   name: string;
@@ -295,46 +276,11 @@ const isIconColor = computed(() => {
 });
 
 const icon = computed(() => {
-  const icon = artifact.value.icon;
-  if (icon) {
-    return icon;
-  }
-  let platform = String(artifact.value.platform);
-  if (["file"].includes(artifact.value.type)) {
-    if (sourceSub.value?.icon) {
-      return sourceSub.value.icon;
-    } else {
-      platform = "";
-    }
-  }
-  switch (platform) {
-    case "Surge":
-      return isIconColor ? surgeColorIcon : surgeIcon;
-    case "SurgeMac":
-      return isIconColor ? surgeMacColorIcon : surgeMacIcon;
-    case "QX":
-      return isIconColor ? quanxColorIcon : quanxIcon;
-    case "Loon":
-      return isIconColor ? loonColorIcon : loonIcon;
-    case "Egern":
-      return isIconColor ? egernColorIcon : egernIcon;
-    case "Clash":
-      return isIconColor ? clashColorIcon : clashIcon;
-    case "ClashMeta":
-      return isIconColor ? clashMetaColorIcon : clashMetaIcon;
-    case "Stash":
-      return isIconColor ? stashColorIcon : stashIcon;
-    case "ShadowRocket":
-      return isIconColor ? shadowRocketColorIcon : shadowRocketIcon;
-    case "V2Ray":
-      return isIconColor ? v2rayColorIcon : v2rayIcon;
-    case "sing-box":
-      return isIconColor ? singboxColorIcon : singboxIcon;
-    case "Surfboard":
-      return isIconColor ? surfboardColorIcon : surfboardIcon;
-    default:
-      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
-  }
+  return resolveArtifactIcon({
+    artifact: artifact.value,
+    isDefaultIcon: appearanceSetting.value.isDefaultIcon,
+    sourceIcon: sourceSub.value?.icon,
+  });
 });
 
 
@@ -550,7 +496,7 @@ const onClickCopyLink = async () => {
   showNotify({ title: t("syncPage.copyNotify.succeed"), type: "success" });
 };
 
-const onDeleteConfirm = async () => {
+const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
   const shouldShowToast = artifact.value.updated
   if (shouldShowToast) {
     Toast.loading("正在删除...", {
@@ -559,7 +505,7 @@ const onDeleteConfirm = async () => {
     });
   }
 
-  await artifactsStore.deleteArtifact(artifact.value.name);
+  await artifactsStore.deleteArtifact(artifact.value.name, mode);
 
   if (shouldShowToast) {
     Toast.hide("delete-toast");
@@ -581,21 +527,21 @@ const onClickEdit = () => {
 };
 
 const onClickDelete = () => {
-  Dialog({
-    title: t("syncPage.deleteArt.title"),
-    content: createVNode(
-      "span",
-      {},
-      t("syncPage.deleteArt.desc", { displayName: displayName.value })
-    ),
-    onCancel: () => {},
-    onOk: onDeleteConfirm,
-    onOpened: () => {},
-    popClass: "auto-dialog",
-    cancelText: t("syncPage.deleteArt.btn.cancel"),
-    okText: t("syncPage.deleteArt.btn.confirm"),
-    closeOnPopstate: true,
-    lockScroll: false,
+  openManagedDeleteDialog({
+    enabled: isArchiveEnabled.value,
+    managedTitle: t("archivePage.liveDelete.title"),
+    managedContent: [
+      t("archivePage.liveDelete.desc", { displayName: displayName.value }),
+      t("syncPage.deleteArt.archiveExtra"),
+    ].join("\n\n"),
+    managedCancelText: t("archivePage.liveDelete.btn.archive"),
+    managedOkText: t("archivePage.liveDelete.btn.permanent"),
+    legacyTitle: t("syncPage.deleteArt.title"),
+    legacyContent: t("syncPage.deleteArt.desc", { displayName: displayName.value }),
+    legacyCancelText: t("syncPage.deleteArt.btn.cancel"),
+    legacyOkText: t("syncPage.deleteArt.btn.confirm"),
+    onArchive: () => onDeleteConfirm("archive"),
+    onPermanent: () => onDeleteConfirm("permanent"),
   });
 };
 

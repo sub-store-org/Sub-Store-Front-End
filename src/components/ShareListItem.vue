@@ -141,6 +141,7 @@ import { useHostAPI } from "@/hooks/useHostAPI";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { openManagedDeleteDialog } from "@/utils/archive";
 import { normalizeTagArray } from "@/utils/shareTags";
 import { isMobile } from "@/utils/isMobile";
 import { useRouter } from "vue-router";
@@ -157,6 +158,9 @@ const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 const { t } = useI18n();
 const { env } = useBackend();
+const isArchiveEnabled = computed(() => {
+  return env.value?.feature?.archive;
+});
 const scrollTop = 0;
 const filePreviewIsVisible = ref(false);
 usePopupRoute(filePreviewIsVisible);
@@ -250,8 +254,8 @@ const swipeController = () => {
   }
 };
 
-const onDeleteConfirm = async () => {
-  await subsStore.deleteShare(token.value, type.value, name.value);
+const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
+  await subsStore.deleteShare(token.value, type.value, name.value, mode);
 };
 
 const onClickEdit = () => {
@@ -305,21 +309,22 @@ const onClickShareLink = async () => {
 
 const onClickDelete = () => {
   swipeController();
-  Dialog({
-    title: t("sharePage.deleteShare.title"),
-    content: createVNode(
-      "span",
-      {},
-      t("sharePage.deleteShare.desc", { displayName: name.value }),
-    ),
-    onCancel: () => {},
-    onOk: onDeleteConfirm,
-    onOpened: () => swipe.value.close(),
-    popClass: "auto-dialog",
-    cancelText: t("sharePage.deleteShare.btn.cancel"),
-    okText: t("sharePage.deleteShare.btn.confirm"),
-    closeOnPopstate: true,
-    lockScroll: false,
+  openManagedDeleteDialog({
+    enabled: isArchiveEnabled.value,
+    managedTitle: t("archivePage.liveDelete.title"),
+    managedContent: t("archivePage.liveDelete.desc", {
+      displayName: displayName.value || name.value,
+    }),
+    managedCancelText: t("archivePage.liveDelete.btn.archive"),
+    managedOkText: t("archivePage.liveDelete.btn.permanent"),
+    legacyTitle: t("sharePage.deleteShare.title"),
+    legacyContent: t("sharePage.deleteShare.desc", {
+      displayName: name.value,
+    }),
+    legacyCancelText: t("sharePage.deleteShare.btn.cancel"),
+    legacyOkText: t("sharePage.deleteShare.btn.confirm"),
+    onArchive: () => onDeleteConfirm("archive"),
+    onPermanent: () => onDeleteConfirm("permanent"),
   });
 };
 

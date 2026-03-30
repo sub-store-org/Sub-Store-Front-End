@@ -27,6 +27,7 @@ import {
   faPenNib,
   faPenToSquare,
   faPlus,
+  faReply,
   faTrashCan,
   faEraser,
   faT,
@@ -49,6 +50,7 @@ library.add(faLanguage);
 library.add(faListCheck);
 library.add(faCheck);
 library.add(faPlus);
+library.add(faReply);
 library.add(faArrowUpRightFromSquare);
 library.add(faTrashCan);
 library.add(faPenNib);

@@ -417,6 +417,21 @@
           @click.stop="onClickShareManage"
           is-link
         ></nut-cell>
+        <nut-cell
+          v-if="archiveVisible"
+          :title="$t(`moreSettingPage.archiveTitle`)"
+          class="right-icon"
+          @click.stop="onClickArchive"
+          is-link
+        ></nut-cell>
+      </nut-cell-group>
+      <nut-cell-group v-else-if="archiveVisible">
+        <nut-cell
+          :title="$t(`moreSettingPage.archiveTitle`)"
+          class="right-icon"
+          @click.stop="onClickArchive"
+          is-link
+        ></nut-cell>
       </nut-cell-group>
       <nut-cell-group>
         <nut-cell
@@ -506,6 +521,9 @@ const { icon, env } = useBackend();
 const shareBtnVisible = computed(() => {
   return env.value?.feature?.share;
 });
+const archiveVisible = computed(() => {
+  return env.value?.feature?.archive;
+});
 
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
@@ -513,6 +531,9 @@ const onClickAPISetting = () => {
 
 const onClickShareManage = () => {
   router.push(`/shares`);
+};
+const onClickArchive = () => {
+  router.push(`/archives`);
 };
 const onClickMore = () => {
   router.push(`/settings/more`);

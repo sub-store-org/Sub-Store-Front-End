@@ -22,6 +22,7 @@ import Sync from '@/views/Sync.vue';
 import SyncEditor from '@/views/SyncEditor.vue';
 
 import ShareManage from '@/views/share/Share.vue';
+import Archive from '@/views/archive/Archive.vue';
 
 // import themeSetting from '@/views/themeSetting.vue';
 import moreSetting from '@/views/settings/moreSetting.vue';
@@ -123,6 +124,15 @@ const router = createRouter({
           component: ShareManage,
           meta: {
             title: 'shareManage',
+            needTabBar: false,
+            needNavBack: true,
+          },
+        },
+        {
+          path: '/archives',
+          component: Archive,
+          meta: {
+            title: 'archive',
             needTabBar: false,
             needNavBack: true,
           },

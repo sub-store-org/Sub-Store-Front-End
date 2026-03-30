@@ -55,7 +55,7 @@
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
           <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ displayName || name }}
+            {{ displayName }}
             <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span> -->
@@ -68,7 +68,7 @@
             class="sub-item-title"
             style="color: var(--primary-text-color); font-size: 16px"
           >
-            {{ displayName || name }}
+            {{ displayName }}
             <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span> -->
@@ -322,6 +322,7 @@ import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { getString } from "@/utils/flowTransfer";
 import { isMobile } from "@/utils/isMobile";
+import { openManagedDeleteDialog } from "@/utils/archive";
 import CompareTable from "@/views/CompareTable.vue";
 
 const props = defineProps<{
@@ -370,7 +371,7 @@ const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 
 const displayName =
-  props[props.type].displayName || props[props.type]["display-name"];
+  props[props.type].displayName || props[props.type]["display-name"] || props[props.type].name;
 
 const name = props[props.type].name;
 const tag = props[props.type].tag;
@@ -659,8 +660,12 @@ const handleGlobalClick = (event) => {
   document.removeEventListener('click', handleGlobalClick);
 };
 
-const onDeleteConfirm = async () => {
-  await subsStore.deleteSub(props.type, name);
+const isArchiveEnabled = computed(() => {
+  return env.value?.feature?.archive;
+});
+
+const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
+  await subsStore.deleteSub(props.type, name, mode);
   // Notify.danger(t('subPage.deleteSub.succeedNotify'), { duration: 1500 });
 };
 
@@ -738,6 +743,15 @@ const openPreviewPanel = () => {
 const shareBtnVisible = computed(() => {
   return env.value?.feature?.share;
 });
+
+const closeExpandedMenu = () => {
+  swipe.value.close();
+  swipeIsOpen.value = false;
+  itemMenuVisible.value = false;
+  if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
+  document.removeEventListener("click", handleGlobalClick);
+};
+
 const onClickShareLink = async () => {
   const type = props.type;
   const data = props.type === "sub" ? props.sub : props.collection;
@@ -761,6 +775,7 @@ const onClickCopyConfig = async () => {
   await subsStore.fetchSubsData();
   Toast.hide("copyConfig");
   showNotify({ title: t("subPage.copyConfigNotify.succeed") });
+  closeExpandedMenu();
 };
 // const onClickExport = async () => {
 //   swipeController()
@@ -788,20 +803,18 @@ const onClickEdit = () => {
 };
 
 const onClickDelete = () => {
-  Dialog({
-    title: t("subPage.deleteSub.title"),
-    content: createVNode(
-      "span",
-      {},
-      t("subPage.deleteSub.desc", { displayName }),
-    ),
-    onCancel: () => {},
-    onOk: onDeleteConfirm,
-    popClass: "auto-dialog",
-    cancelText: t("subPage.deleteSub.btn.cancel"),
-    okText: t("subPage.deleteSub.btn.confirm"),
-    closeOnPopstate: true,
-    lockScroll: false,
+  openManagedDeleteDialog({
+    enabled: isArchiveEnabled.value,
+    managedTitle: t("archivePage.liveDelete.title"),
+    managedContent: t("archivePage.liveDelete.desc", { displayName }),
+    managedCancelText: t("archivePage.liveDelete.btn.archive"),
+    managedOkText: t("archivePage.liveDelete.btn.permanent"),
+    legacyTitle: t("subPage.deleteSub.title"),
+    legacyContent: t("subPage.deleteSub.desc", { displayName }),
+    legacyCancelText: t("subPage.deleteSub.btn.cancel"),
+    legacyOkText: t("subPage.deleteSub.btn.confirm"),
+    onArchive: () => onDeleteConfirm("archive"),
+    onPermanent: () => onDeleteConfirm("permanent"),
   });
 };
 

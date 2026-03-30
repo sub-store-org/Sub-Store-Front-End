@@ -4,6 +4,8 @@ export default {
     singleSub: "Single",
     collectionSub: "Collection",
     file: "File",
+    syncConfig: "Sync Configuration",
+    share: "Share",
     unknownType: "Unknown Type",
     unknownSource: "Unknown Source",
     unknown: "Unknown",
@@ -41,6 +43,7 @@ export default {
       syncEditor: "Sync Editor",
       preview: 'Preview',
       shareManage: "Share Manage",
+      archive: "Archived",
       iconCollection: "Icon Collection",
       themeSetting: "Theme Setting",
       moreSetting: "More Setting",
@@ -720,6 +723,7 @@ export default {
     deleteArt: {
       title: "Delete Sync Configuration",
       desc: "Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been synced before, an attempt will be made to delete gist files with the original filename and the encoded filename.",
+      archiveExtra: "⚠️ If this sync configuration has been synced before, the original filename and encoded filename will still be removed from gist when possible.",
       succeedNotify: "Successfully deleted!",
       btn: {
         confirm: "Delete",
@@ -882,6 +886,58 @@ export default {
       result: "Deleted {success}, failed {failed}",
     },
   },
+  archivePage: {
+    empty: {
+      title: "No archived items yet",
+      desc: "Archived items will appear here",
+      btn: "Back Home",
+    },
+    liveDelete: {
+      title: "Delete",
+      desc: 'This backend supports archiving.\nContinue with {displayName}?',
+      batchDesc:
+        'This backend supports archiving.\nContinue with the selected {count} {type} item(s)?',
+      succeedNotify: "Archived",
+      btn: {
+        archive: "Archive",
+        permanent: "Delete permanently",
+      },
+    },
+    entry: {
+      archivedAt: "Archived: {time}",
+      restore: "Restore",
+      delete: "Delete permanently",
+    },
+    selectMode: {
+      enter: "Select",
+      cancel: "Cancel",
+      selectedCount: "{count} selected",
+      selectAll: "Select All",
+      selectTypeAll: "Select all {type}",
+      clearAll: "Clear All",
+      clearTypeAll: "Clear all {type}",
+      restore: "Restore",
+      delete: "Delete permanently",
+    },
+    restore: {
+      succeedNotify: "Restored successfully!",
+      failNotify: "Some selected items failed to restore",
+      result: "Restored {success}, failed {failed}",
+    },
+    delete: {
+      title: "Delete Permanently",
+      desc: "Are you sure you want to permanently delete {displayName}? This cannot be undone.",
+      batchTitle: "Delete Selected Archives",
+      batchDesc: "Are you sure you want to permanently delete the selected {count} archived item(s)? This cannot be undone.",
+      succeedNotify: "Deleted permanently!",
+      failNotify: "Some selected items failed to delete permanently",
+      result: "Deleted {success}, failed {failed}",
+      btn: {
+        confirm: "Delete permanently",
+        cancel: "Cancel",
+      },
+    },
+  },
   // 图标仓库页
   iconCollectionPage: {
     iconCollection: "Icon Collection",
@@ -958,6 +1014,7 @@ export default {
     },
     moreSettingTitle: "More Setting",
     shareManageTitle: 'Share Management',
+    archiveTitle: 'Archived',
     clearData: {
       label: "Clear Backend Data",
       title: "Clear Backend Data",
