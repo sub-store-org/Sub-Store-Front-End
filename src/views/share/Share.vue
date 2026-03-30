@@ -496,8 +496,9 @@ const { navBartop, navBarHeight } = storeToRefs(systemStore);
 const swipeDisabled = ref(false);
 
 const shareTopSelectionOffset = computed(() => {
-  const navBarTop = Number.parseFloat(navBartop.value || "0");
-  return `${navBarTop + 28}px`;
+  const navBarHeightNum = Number.parseFloat(navBarHeight.value || "56");
+  const navBarTopNum = Number.parseFloat(navBartop.value || "0");
+  return `${(navBarHeightNum + navBarTopNum) / 2}px`;
 });
 
 const refresh = () => {
