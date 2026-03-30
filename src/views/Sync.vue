@@ -102,7 +102,7 @@
 
         <div v-if="artifacts.length > 0">
           <draggable
-            v-model="artifacts"
+            v-model="filteredArtifacts"
             @change="changeArtifacts"
             @start="handleDragStart"
             @end="handleDragEnd"
@@ -121,7 +121,6 @@
           >
             <template #item="{ element }">
               <div
-                v-show="shouldShowElement(element)"
                 :key="element.name"
                 class="draggable-itemsync"
               >
@@ -190,7 +189,7 @@ import ArtifactsListItem from "@/components/ArtifactsListItem.vue";
 import { useArtifactsStore } from "@/store/artifacts";
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "@/store/global";
-import { ref, computed, toRaw, onMounted, watch, nextTick } from "vue";
+import { ref, computed, toRaw, onMounted, watch } from "vue";
 import { initStores } from "@/utils/initApp";
 import { useSettingsStore } from "@/store/settings";
 import { useMethodStore } from '@/store/methodStore';
@@ -199,6 +198,8 @@ import { useSubsApi } from "@/api/subs";
 import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
+import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { Dialog } from "@nutui/nutui";
 import { isMobile } from "@/utils/isMobile";
 import { useRouter } from "vue-router";
@@ -234,13 +235,11 @@ const sortFailed = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const { t } = useI18n();
-const radioWrapperRef = ref(null);
-const radioWrapperHeight = ref(0);
-const tagNavBarHeight = computed(() => navBarHeight.value);
 const getTag = () => {
   return localStorage.getItem("artifact-tag") || "all";
 };
 const tag = ref(getTag());
+const tagNavBarHeight = computed(() => navBarHeight.value);
 const tags = computed(() => {
   if (artifacts.value.length === 0) return [];
 
@@ -271,24 +270,10 @@ const tags = computed(() => {
 
   return result;
 });
-
-const updateRadioWrapperHeight = () => {
-  nextTick(() => {
-    radioWrapperHeight.value = radioWrapperRef.value?.offsetHeight || 0;
-  });
-};
-
-watch(tag, () => {
-  updateRadioWrapperHeight();
-});
-
-watch(
+const { tagBarRef: radioWrapperRef, tagBarHeight: radioWrapperHeight } = useTagBarHeight([
+  tag,
   () => tags.value,
-  () => {
-    updateRadioWrapperHeight();
-  },
-  { deep: true, immediate: true }
-);
+]);
 
 const onTouchStart = (event: TouchEvent) => {
   touchStartY.value = Math.abs(event.touches[0].clientY);
@@ -492,6 +477,7 @@ const shouldShowElement = (element: Artifact) => {
   }
   return element.tag?.includes(tag.value);
 };
+const filteredArtifacts = useFilteredDraggableList(artifacts, shouldShowElement);
 </script>
 
 <style lang="scss" scoped>

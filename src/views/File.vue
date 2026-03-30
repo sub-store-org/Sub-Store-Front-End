@@ -117,7 +117,7 @@
       <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
         <div v-if="hasFiles">
           <draggable
-            v-model="files"
+            v-model="filteredFiles"
             item-key="name"
             :scroll-sensitivity="200"
             :force-fallback="true"
@@ -135,7 +135,7 @@
             @end="handleDragEnd(files)"
           >
             <template #item="{ element }">
-              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+              <div :key="element.name" class="draggable-item">
                 <FileListItem
                   :file="element"
                   type="file"
@@ -202,7 +202,7 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { ref, toRaw, onMounted, computed, watch, nextTick } from "vue";
+import { ref, toRaw, onMounted, computed, watch } from "vue";
 import draggable from "vuedraggable";
 import SharePopup from "./share/SharePopup.vue";
 
@@ -220,6 +220,8 @@ import { useMethodStore } from '@/store/methodStore';
 import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
+import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { isMobile } from "@/utils/isMobile";
 
 import { useRouter } from "vue-router";
@@ -301,31 +303,15 @@ const tags = computed(() => {
   }
   return result;
 });
-const radioWrapperRef = ref(null);
-const radioWrapperHeight = ref(0);
-
-// 更新标签栏高度
-const updateRadioWrapperHeight = () => {
-  nextTick(() => {
-    if (radioWrapperRef.value) {
-      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
-    } else {
-      radioWrapperHeight.value = 0;
-    }
-  });
-};
+const { tagBarRef: radioWrapperRef, tagBarHeight: radioWrapperHeight } = useTagBarHeight([
+  tag,
+  () => tags.value,
+]);
 
 const tagNavBarHeight = computed(() => {
   return navBarHeight.value;
 });
 
-watch(tag, () => {
-  updateRadioWrapperHeight();
-});
-
-watch(() => tags.value, () => {
-  updateRadioWrapperHeight();
-}, { deep: true, immediate: true });
 onMounted(() => {
   methodStore.registerMethod("addFile", editFile);
 });
@@ -492,6 +478,7 @@ const shouldShowElement = (element) => {
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
   return element.tag?.includes(tag.value);
 };
+const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
 </script>
 
 <style lang="scss" scoped>

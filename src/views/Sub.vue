@@ -123,7 +123,7 @@
 
           <draggable
             v-if="!isFold('sub')"
-            v-model="subs"
+            v-model="filteredSubs"
             item-key="name"
             :scroll-sensitivity="200"
             :force-fallback="true"
@@ -141,7 +141,7 @@
             @end="handleDragEnd(subs)"
           >
             <template #item="{ element }">
-              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+              <div :key="element.name" class="draggable-item">
                 <SubListItem
                   :sub="element"
                   type="sub"
@@ -163,7 +163,7 @@
 
           <draggable
             v-if="!isFold('col')"
-            v-model="collections"
+            v-model="filteredCollections"
             item-key="name"
             :scroll-sensitivity="200"
             :force-fallback="true"
@@ -181,7 +181,7 @@
             @end="handleDragEnd(collections)"
           >
             <template #item="{ element }">
-              <div v-show="shouldShowElement(element)" :key="element.name" class="draggable-item">
+              <div :key="element.name" class="draggable-item">
                 <SubListItem
                   :collection="element"
                   type="collection"
@@ -251,7 +251,7 @@
 <script lang="ts" setup>
 import { Dialog } from '@nutui/nutui';
 import { storeToRefs } from "pinia";
-import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
+import { computed, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from 'vue-router';
 import draggable from "vuedraggable";
@@ -260,6 +260,8 @@ import SharePopup from "./share/SharePopup.vue";
 import { useSubsApi } from "@/api/subs";
 import SubListItem from "@/components/SubListItem.vue";
 import { useBackend } from "@/hooks/useBackend";
+import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSystemStore } from "@/store/system";
@@ -416,27 +418,10 @@ const addSub = () => {
 };
 
 const route = useRoute();
-const radioWrapperRef = ref(null);
-const radioWrapperHeight = ref(0);
-
-// 更新标签栏高度
-const updateRadioWrapperHeight = () => {
-  nextTick(() => {
-    if (radioWrapperRef.value) {
-      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
-    } else {
-      radioWrapperHeight.value = 0;
-    }
-  });
-};
-
-watch(tag, () => {
-  updateRadioWrapperHeight();
-});
-
-watch(() => tags.value, () => {
-  updateRadioWrapperHeight();
-}, { deep: true, immediate: true });
+const { tagBarRef: radioWrapperRef, tagBarHeight: radioWrapperHeight } = useTagBarHeight([
+  tag,
+  () => tags.value,
+]);
 
 onMounted(() => {
   methodStore.registerMethod("addSub", addSub);
@@ -558,6 +543,8 @@ const shouldShowElement = (element) => {
   if(tag.value === 'local') return element.source === 'local';
   return element.tag?.includes(tag.value);
 };
+const filteredSubs = useFilteredDraggableList(subs, shouldShowElement);
+const filteredCollections = useFilteredDraggableList(collections, shouldShowElement);
 const upload = async() => {
   try {
     fileInput.value.click();

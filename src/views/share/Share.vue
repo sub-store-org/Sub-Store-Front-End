@@ -107,7 +107,7 @@
           </div>
           <draggable
             v-if="!isFold('sub')"
-            v-model="subShareData"
+            v-model="filteredSubShareData"
             item-key="token"
             class="draggable-list"
             :scroll-sensitivity="200"
@@ -127,7 +127,6 @@
           >
             <template #item="{ element }">
               <div
-                v-show="shouldShowShare(element)"
                 :key="element.token"
                 class="draggable-item"
               >
@@ -181,7 +180,7 @@
           </div>
           <draggable
             v-if="!isFold('col')"
-            v-model="collectionShareData"
+            v-model="filteredCollectionShareData"
             item-key="token"
             class="draggable-list"
             :scroll-sensitivity="200"
@@ -201,7 +200,6 @@
           >
             <template #item="{ element }">
               <div
-                v-show="shouldShowShare(element)"
                 :key="element.token"
                 class="draggable-item"
               >
@@ -251,7 +249,7 @@
           </div>
           <draggable
             v-if="!isFold('file')"
-            v-model="fileShareData"
+            v-model="filteredFileShareData"
             item-key="token"
             class="draggable-list"
             :scroll-sensitivity="200"
@@ -271,7 +269,6 @@
           >
             <template #item="{ element }">
               <div
-                v-show="shouldShowShare(element)"
                 :key="element.token"
                 class="draggable-item"
               >
@@ -395,14 +392,16 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
+import { computed, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import draggable from "vuedraggable";
 import ShareListItem from "@/components/ShareListItem.vue";
 import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
+import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
@@ -501,8 +500,6 @@ const getTag = () => {
   return localStorage.getItem("share-tag") || ALL_SHARE_TAG;
 };
 const tag = ref(getTag());
-const radioWrapperRef = ref(null);
-const radioWrapperHeight = ref(0);
 const tagNavBarHeight = computed(() => {
   return navBarHeight.value;
 });
@@ -523,15 +520,10 @@ const tagOptions = computed(() => {
 const showTagBar = computed(() => {
   return tagOptions.value.length > 0;
 });
-const updateRadioWrapperHeight = () => {
-  nextTick(() => {
-    if (radioWrapperRef.value) {
-      radioWrapperHeight.value = radioWrapperRef.value.offsetHeight;
-    } else {
-      radioWrapperHeight.value = 0;
-    }
-  });
-};
+const { tagBarRef: radioWrapperRef, tagBarHeight: radioWrapperHeight } = useTagBarHeight([
+  tag,
+  () => tagOptions.value,
+]);
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
@@ -554,6 +546,9 @@ const shouldShowShare = (share: Share) => {
 const subShareData = ref<Share[]>([]);
 const collectionShareData = ref<Share[]>([]);
 const fileShareData = ref<Share[]>([]);
+const filteredSubShareData = useFilteredDraggableList(subShareData, shouldShowShare);
+const filteredCollectionShareData = useFilteredDraggableList(collectionShareData, shouldShowShare);
+const filteredFileShareData = useFilteredDraggableList(fileShareData, shouldShowShare);
 const isSelectionMode = ref(false);
 const selectedShareKeys = ref<string[]>([]);
 const isDeletingSelectedShares = ref(false);
@@ -652,14 +647,6 @@ watch(
   },
   { immediate: true, deep: true }
 );
-
-watch(tag, () => {
-  updateRadioWrapperHeight();
-});
-
-watch(() => tagOptions.value, () => {
-  updateRadioWrapperHeight();
-}, { deep: true, immediate: true });
 
 watch(
   allShareData,
