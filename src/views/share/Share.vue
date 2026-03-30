@@ -94,15 +94,28 @@
         <div v-if="subShareDataCount > 0" class="share-data">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('sub')">
-              <p>
-                {{ `${$t(`specificWord.singleSub`)}(${subShareDataCount})` }}
-              </p>
-              <nut-icon
-                v-if="!isFold('sub')"
-                name="rect-down"
-                size="12px"
-              ></nut-icon>
-              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              <div class="list-title-main">
+                <p>
+                  {{ `${$t(`specificWord.singleSub`)}(${subShareDataCount})` }}
+                </p>
+                <nut-icon
+                  v-if="!isFold('sub')"
+                  name="rect-down"
+                  size="12px"
+                ></nut-icon>
+                <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              </div>
+              <button
+                v-if="isSelectionMode"
+                type="button"
+                class="share-type-selection-toggle"
+                :class="{ active: isShareTypeAllSelected('sub') }"
+                :aria-label="getShareTypeSelectionA11yLabel('sub')"
+                :title="getShareTypeSelectionA11yLabel('sub')"
+                @click.stop="toggleShareTypeSelection('sub')"
+              >
+                {{ getShareTypeSelectionButtonLabel('sub') }}
+              </button>
             </div>
           </div>
           <draggable
@@ -163,19 +176,32 @@
         <div v-if="collectionShareDataCount > 0" class="share-data">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('col')">
-              <p>
-                {{
-                  `${$t(
-                    `specificWord.collectionSub`,
-                  )}(${collectionShareDataCount})`
-                }}
-              </p>
-              <nut-icon
-                v-if="!isFold('col')"
-                name="rect-down"
-                size="12px"
-              ></nut-icon>
-              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              <div class="list-title-main">
+                <p>
+                  {{
+                    `${$t(
+                      `specificWord.collectionSub`,
+                    )}(${collectionShareDataCount})`
+                  }}
+                </p>
+                <nut-icon
+                  v-if="!isFold('col')"
+                  name="rect-down"
+                  size="12px"
+                ></nut-icon>
+                <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              </div>
+              <button
+                v-if="isSelectionMode"
+                type="button"
+                class="share-type-selection-toggle"
+                :class="{ active: isShareTypeAllSelected('col') }"
+                :aria-label="getShareTypeSelectionA11yLabel('col')"
+                :title="getShareTypeSelectionA11yLabel('col')"
+                @click.stop="toggleShareTypeSelection('col')"
+              >
+                {{ getShareTypeSelectionButtonLabel('col') }}
+              </button>
             </div>
           </div>
           <draggable
@@ -236,15 +262,28 @@
         <div v-if="fileShareDataCount > 0" class="share-data">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('file')">
-              <p>
-                {{ `${$t(`specificWord.file`)}(${fileShareDataCount})` }}
-              </p>
-              <nut-icon
-                v-if="!isFold('file')"
-                name="rect-down"
-                size="12px"
-              ></nut-icon>
-              <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              <div class="list-title-main">
+                <p>
+                  {{ `${$t(`specificWord.file`)}(${fileShareDataCount})` }}
+                </p>
+                <nut-icon
+                  v-if="!isFold('file')"
+                  name="rect-down"
+                  size="12px"
+                ></nut-icon>
+                <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+              </div>
+              <button
+                v-if="isSelectionMode"
+                type="button"
+                class="share-type-selection-toggle"
+                :class="{ active: isShareTypeAllSelected('file') }"
+                :aria-label="getShareTypeSelectionA11yLabel('file')"
+                :title="getShareTypeSelectionA11yLabel('file')"
+                @click.stop="toggleShareTypeSelection('file')"
+              >
+                {{ getShareTypeSelectionButtonLabel('file') }}
+              </button>
             </div>
           </div>
           <draggable
@@ -422,6 +461,14 @@ import { isMobile } from "@/utils/isMobile";
 import SharePopup from "./SharePopup.vue";
 import { Dialog } from "@nutui/nutui";
 
+type ShareGroupKey = "sub" | "col" | "file";
+
+const shareTypeLabelKeyMap: Record<ShareGroupKey, "singleSub" | "collectionSub" | "file"> = {
+  sub: "singleSub",
+  col: "collectionSub",
+  file: "file",
+};
+
 const router = useRouter();
 const { currentUrl: host } = useHostAPI();
 
@@ -465,17 +512,17 @@ const enTa = () => {
   }, 100);
 };
 
-const fold = ref({
+const fold = ref<Record<ShareGroupKey, boolean>>({
   sub: false,
   col: false,
   file: false,
 });
 
-const isFold = (key) => {
+const isFold = (key: ShareGroupKey) => {
   return fold.value?.[key];
 };
 
-const toggleFold = (key) => {
+const toggleFold = (key: ShareGroupKey) => {
   fold.value[key] = !fold.value[key];
 };
 
@@ -578,8 +625,52 @@ const isAllSharesSelected = computed(
     && selectedShareCount.value === allShareData.value.length,
 );
 
+function getShareTypeLabel(type: ShareGroupKey) {
+  return t(`specificWord.${shareTypeLabelKeyMap[type]}`);
+}
+
 function getShareSelectionKey(item: Share) {
   return `${item.type || ""}-${item.name || ""}-${item.token || ""}`;
+}
+
+function getVisibleSharesByType(type: ShareGroupKey) {
+  const sharesByType: Record<ShareGroupKey, Share[]> = {
+    sub: subShareData.value,
+    col: collectionShareData.value,
+    file: fileShareData.value,
+  };
+  return sharesByType[type].filter((item) => shouldShowShare(item));
+}
+
+function getVisibleShareKeysByType(type: ShareGroupKey) {
+  return getVisibleSharesByType(type).map((item) => getShareSelectionKey(item));
+}
+
+function getSelectedShareCountByType(type: ShareGroupKey) {
+  const selectedKeys = selectedShareKeySet.value;
+  return getVisibleShareKeysByType(type).filter((key) => selectedKeys.has(key)).length;
+}
+
+function isShareTypeAllSelected(type: ShareGroupKey) {
+  const visibleShares = getVisibleSharesByType(type);
+  return visibleShares.length > 0
+    && getSelectedShareCountByType(type) === visibleShares.length;
+}
+
+function getShareTypeSelectionButtonLabel(type: ShareGroupKey) {
+  return isShareTypeAllSelected(type)
+    ? t("sharePage.selectMode.clearAll")
+    : t("sharePage.selectMode.selectAll");
+}
+
+function getShareTypeSelectionA11yLabel(type: ShareGroupKey) {
+  return isShareTypeAllSelected(type)
+    ? t("sharePage.selectMode.clearTypeAll", {
+      type: getShareTypeLabel(type),
+    })
+    : t("sharePage.selectMode.selectTypeAll", {
+      type: getShareTypeLabel(type),
+    });
 }
 
 function clearSelectedShares() {
@@ -622,6 +713,27 @@ function toggleSelectAllShares() {
   selectedShareKeys.value = allShareData.value.map((item) =>
     getShareSelectionKey(item),
   );
+}
+
+function toggleShareTypeSelection(type: ShareGroupKey) {
+  const typeKeys = getVisibleShareKeysByType(type);
+  if (typeKeys.length === 0) {
+    return;
+  }
+
+  if (isShareTypeAllSelected(type)) {
+    const typeKeySet = new Set(typeKeys);
+    selectedShareKeys.value = selectedShareKeys.value.filter((key) =>
+      !typeKeySet.has(key),
+    );
+    return;
+  }
+
+  const nextSelectedKeySet = new Set(selectedShareKeys.value);
+  typeKeys.forEach((key) => {
+    nextSelectedKeySet.add(key);
+  });
+  selectedShareKeys.value = Array.from(nextSelectedKeySet);
 }
 
 function isShareExpired(item: Share) {
@@ -907,10 +1019,12 @@ const handleShareDetail = (detail: Share) => {
   -webkit-user-select: none;
   user-select: none;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  gap: 12px;
   cursor: pointer;
   padding-left: 8px;
+  padding-right: 8px;
   font-weight: bold;
   //padding-left: var(--safe-area-side);
   p {
@@ -922,6 +1036,31 @@ const handleShareDetail = (detail: Share) => {
     height: 12px;
     opacity: 0.6;
     margin-top: 3px;
+  }
+}
+
+.list-title-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.share-type-selection-toggle {
+  flex-shrink: 0;
+  border: 1px solid var(--primary-color);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--primary-color);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 4px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &.active {
+    background: var(--primary-color);
+    color: #fff;
   }
 }
 

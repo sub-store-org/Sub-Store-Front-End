@@ -868,8 +868,10 @@ export default {
       cancel: "Cancel",
       selectedCount: "{count} selected",
       selectAll: "Select All",
+      selectTypeAll: "Select all {type}",
       selectExpired: "Select Expired",
       clearAll: "Clear All",
+      clearTypeAll: "Clear all {type}",
       delete: "Delete",
     },
     batchDelete: {

@@ -857,8 +857,10 @@ export default {
       cancel: "取消多选",
       selectedCount: "已选 {count} 项",
       selectAll: "全选",
+      selectTypeAll: "全选{type}",
       selectExpired: "选中过期项",
       clearAll: "取消全选",
+      clearTypeAll: "取消{type}全选",
       delete: "删除",
     },
     batchDelete: {
