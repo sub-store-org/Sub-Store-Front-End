@@ -55,7 +55,7 @@
         </span>
       </div>
 
-      <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
+      <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight ? radioWrapperHeight : (radioWrapperHeight+10)}px` }">
         <div class="sticky-title-wrapper sync-title">
           <p class="list-title">{{ $t(`syncPage.title`) }}</p>
           <div class="actions-wrapper">
