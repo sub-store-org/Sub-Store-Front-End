@@ -1,151 +1,126 @@
 <template>
-  <!-- 滚动内容 -->
-  <nut-swipe
-    ref="swipe"
-    class="sub-item-swipe"
-    :disabled="props.disabled"
-    @close="setIsMoveClose()"
-    @open="setIsMoveOpen()"
-    @click="onClickPreviews()"
+  <div
+    class="sub-item-wrapper"
+    :class="{ disabled: props.disabled }"
+    :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+    data-testid="share-card"
+    @click="onClickPreviews"
   >
     <div
-      class="sub-item-wrapper"
-      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      class="sub-img-wrappers"
+      :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
+      @click.stop="onClickEdit"
     >
-      <div
-        class="sub-img-wrappers"
-        :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
-        @click.stop="onClickEdit"
-      >
-        <div v-if="appearanceSetting.isShowIcon">
-          <div v-if="isIconColor">
-            <nut-avatar
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-              :url="shareIcon"
-              bg-color=""
-            />
-          </div>
-          <div v-else>
-            <nut-avatar
-              class="sub-item-customer-icon"
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-              :url="shareIcon"
-              bg-color=""
-            />
-          </div>
+      <div v-if="appearanceSetting.isShowIcon">
+        <div v-if="isIconColor">
+          <nut-avatar
+            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+            :url="shareIcon"
+            bg-color=""
+          />
         </div>
-      </div>
-      <div class="sub-item-content">
-        <div class="sub-item-title-wrapper">
-          <!-- 分享订阅、文件名 -->
-          <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ displayName || name }}
-            <span v-for="item in shareTags" :key="item" class="tag">
-              <nut-tag>{{ item }}</nut-tag>
-            </span>
-          </h3>
-          <h3
-            v-else
-            class="sub-item-title"
-            style="color: var(--primary-text-color); font-size: 16px"
-          >
-            {{ displayName || name }}
-            <span v-for="item in shareTags" :key="item" class="tag">
-              <nut-tag>{{ item }}</nut-tag>
-            </span>
-          </h3>
-
-          <!-- 快捷操作按钮 -->
-          <div
-            style="position: relative"
-            :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
-          >
-            <!-- 查看 -->
-            <button class="copy-sub-link" @click.stop="onClickShareLink">
-              <font-awesome-icon icon="fa-solid fa-link" />
-            </button>
-            <button class="copy-sub-link" @click.stop="onClickCopyLink">
-              <font-awesome-icon icon="fa-solid fa-clone" />
-            </button>
-            <!-- 编辑 -->
-            <button class="refresh-sub-flow" @click.stop="onClickEdit">
-              <font-awesome-icon icon="fa-solid fa-pen-nib" />
-            </button>
-
-            <button
-              v-if="!isMobile()"
-              ref="moreAction"
-              class="copy-sub-link"
-              @click.stop="swipeController"
-            >
-              <font-awesome-icon icon="fa-solid fa-angles-right" />
-            </button>
-          </div>
+        <div v-else>
+          <nut-avatar
+            class="sub-item-customer-icon"
+            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+            :url="shareIcon"
+            bg-color=""
+          />
         </div>
-        <p v-if="!appearanceSetting.isSimpleMode" class="sub-item-remark">
-          <span>{{ t(`sharePage.createTimeLabel`) }}{{ createTime }}</span>
-        </p>
-        <p class="sub-item-remark">
-          <span>{{ expiresTime }}{{ expiresTime ? " · " : "" }}{{ leftTime }}</span>
-        </p>
-
-        <!-- 分享备注 -->
-        <p v-if="remark && (appearanceSetting.isSimpleMode ? appearanceSetting.isSimpleShowRemark : true)" class="sub-item-remark">
-          <span>{{ remark }}</span>
-        </p>
       </div>
     </div>
-    <!-- 加入判断 开启拖动不显示 -->
-    <template v-if="appearanceSetting.isLeftRight" #left>
-      <!-- del -->
-      <div class="sub-item-swipe-btn-wrapper">
-        <nut-button
-          shape="square"
-          type="danger"
-          class="sub-item-swipe-btn"
-          @click="onClickDelete"
+    <div class="sub-item-content">
+      <div class="sub-item-title-wrapper">
+        <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
+          {{ displayName || name }}
+          <span v-for="item in shareTags" :key="item" class="tag">
+            <nut-tag>{{ item }}</nut-tag>
+          </span>
+        </h3>
+        <h3
+          v-else
+          class="sub-item-title"
+          style="color: var(--primary-text-color); font-size: 16px"
         >
-          <font-awesome-icon icon="fa-solid fa-trash-can" />
-        </nut-button>
-      </div>
-    </template>
+          {{ displayName || name }}
+          <span v-for="item in shareTags" :key="item" class="tag">
+            <nut-tag>{{ item }}</nut-tag>
+          </span>
+        </h3>
 
-    <template v-else #right>
-      <div class="sub-item-swipe-btn-wrapper">
-        <nut-button
-          shape="square"
-          type="danger"
-          class="sub-item-swipe-btn"
-          @click="onClickDelete"
+        <div
+          class="share-item-actions"
+          :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
         >
-          <font-awesome-icon icon="fa-solid fa-trash-can" />
-        </nut-button>
+          <button
+            class="copy-sub-link"
+            :disabled="props.disabled"
+            @click.stop="onClickShareLink"
+          >
+            <font-awesome-icon icon="fa-solid fa-link" />
+          </button>
+          <button
+            class="copy-sub-link"
+            :disabled="props.disabled"
+            @click.stop="onClickCopyLink"
+          >
+            <font-awesome-icon icon="fa-solid fa-clone" />
+          </button>
+          <button
+            class="refresh-sub-flow"
+            :disabled="props.disabled"
+            @click.stop="onClickEdit"
+          >
+            <font-awesome-icon icon="fa-solid fa-pen-nib" />
+          </button>
+          <button
+            class="share-sub-link share-danger-action"
+            data-testid="share-delete-button"
+            :aria-label="t('sharePage.selectMode.delete')"
+            :title="t('sharePage.selectMode.delete')"
+            :disabled="props.disabled"
+            @click.stop="onClickDelete"
+          >
+            <font-awesome-icon icon="fa-solid fa-trash-can" />
+          </button>
+        </div>
       </div>
-    </template>
-  </nut-swipe>
+      <p v-if="!appearanceSetting.isSimpleMode" class="sub-item-remark">
+        <span>{{ t(`sharePage.createTimeLabel`) }}{{ createTime }}</span>
+      </p>
+      <p class="sub-item-remark">
+        <span>{{ expiresTime }}{{ expiresTime ? " · " : "" }}{{ leftTime }}</span>
+      </p>
+
+      <p
+        v-if="remark && (appearanceSetting.isSimpleMode ? appearanceSetting.isSimpleShowRemark : true)"
+        class="sub-item-remark"
+      >
+        <span>{{ remark }}</span>
+      </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useClipboard } from "@vueuse/core";
-import useV3Clipboard from "vue-clipboard3";
 import { Dialog, Toast } from "@nutui/nutui";
 import dayjs from "dayjs";
 import { storeToRefs } from "pinia";
-import { computed, createVNode, ref } from "vue";
+import { computed, createVNode } from "vue";
 import { useI18n } from "vue-i18n";
+import useV3Clipboard from "vue-clipboard3";
+import { useRouter } from "vue-router";
 import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
 import PreviewPanel from "@/components/PreviewPanel.vue";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
-import { usePopupRoute } from "@/hooks/usePopupRoute";
+import { useAppNotifyStore } from "@/store/appNotify";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { openManagedDeleteDialog } from "@/utils/archive";
 import { normalizeTagArray } from "@/utils/shareTags";
-import { isMobile } from "@/utils/isMobile";
-import { useRouter } from "vue-router";
-import { useAppNotifyStore } from "@/store/appNotify";
 
 const { showNotify } = useAppNotifyStore();
 const router = useRouter();
@@ -161,12 +136,6 @@ const { env } = useBackend();
 const isArchiveEnabled = computed(() => {
   return env.value?.feature?.archive;
 });
-const scrollTop = 0;
-const filePreviewIsVisible = ref(false);
-usePopupRoute(filePreviewIsVisible);
-const moreAction = ref();
-const swipe = ref();
-const swipeIsOpen = ref(false);
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
@@ -194,12 +163,11 @@ const shareTags = computed(() => {
 const expiresTime = computed(() => {
   return props?.data?.exp ? dayjs(props?.data?.exp).format("YYYY-MM-DD") : "";
 });
-const createTime = computed(() =>{
+const createTime = computed(() => {
   return props?.data?.createdAt
     ? dayjs(props?.data?.createdAt).format("YYYY-MM-DD")
     : "";
-})
-// 判断是否过期
+});
 const leftTime = computed(() => {
   return props?.data?.exp
     ? dayjs(props?.data?.exp).diff(dayjs(), "second") > 0
@@ -236,31 +204,16 @@ const isIconColor = computed(() => {
     default:
       return true;
   }
-})
-
-const swipeController = () => {
-  if (swipeIsOpen.value) {
-    swipe.value.close();
-    swipeIsOpen.value = false;
-    if (moreAction.value) moreAction.value.style.transform = "rotate(0deg)";
-  } else {
-    if (appearanceSetting.value.isLeftRight) {
-      swipe.value.open("right");
-    } else {
-      swipe.value.open("left");
-      swipeIsOpen.value = true;
-      if (moreAction.value) moreAction.value.style.transform = "rotate(180deg)";
-    }
-  }
-};
+});
 
 const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
   await subsStore.deleteShare(token.value, type.value, name.value, mode);
 };
 
 const onClickEdit = () => {
-  console.log("props", props);
-  console.log('${host.value}', host.value);
+  if (props.disabled) {
+    return;
+  }
   emit("detail", props.data);
 };
 
@@ -276,8 +229,10 @@ const getOneShareOrigin = async (keyName: string) => {
 };
 
 const onClickCopyLink = async () => {
+  if (props.disabled) {
+    return;
+  }
   const url = getShareUrl();
-  console.log('url', url);
   if (isSupported) {
     await copy(url);
   } else {
@@ -287,6 +242,9 @@ const onClickCopyLink = async () => {
 };
 
 const onClickShareLink = async () => {
+  if (props.disabled) {
+    return;
+  }
   try {
     const keyName = encodeURIComponent(name.value);
     const item = await getOneShareOrigin(name.value);
@@ -308,7 +266,9 @@ const onClickShareLink = async () => {
 };
 
 const onClickDelete = () => {
-  swipeController();
+  if (props.disabled) {
+    return;
+  }
   openManagedDeleteDialog({
     enabled: isArchiveEnabled.value,
     managedTitle: t("archivePage.liveDelete.title"),
@@ -328,25 +288,6 @@ const onClickDelete = () => {
   });
 };
 
-const ismove = ref(false);
-
-// 增加延迟防止打开时 触发不了
-const setTimeoutTF = () => {
-  setTimeout(() => {
-    ismove.value = false;
-  }, 200);
-};
-
-const setIsMoveOpen = () => {
-  ismove.value = true;
-  setTimeoutTF();
-};
-
-const setIsMoveClose = () => {
-  ismove.value = true;
-  setTimeoutTF();
-};
-
 const secretPath = computed(() => {
   return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
 });
@@ -354,8 +295,8 @@ const secretPath = computed(() => {
 const getShareUrl = () => {
   try {
     const { type, name, token } = props.data;
-    if (!secretPath.value.startsWith('/')) {
-      Toast.fail(t('sharePage.magicPathErrorNotify'));
+    if (!secretPath.value.startsWith("/")) {
+      Toast.fail(t("sharePage.magicPathErrorNotify"));
       throw new Error(
         t("sharePage.magicPathErrorNotify"),
       );
@@ -372,18 +313,12 @@ const getShareUrl = () => {
     return "";
   }
 };
+
 const onClickPreviews = () => {
-  console.log('name', name.value);
-  console.log('props', props.data);
-  if (type.value === "file") {
+  if (props.disabled || type.value === "file") {
     return;
   }
-  if (ismove.value) {
-    return false;
-  }
-  swipeController();
   const url = getShareUrl();
-  console.log('url', url);
 
   Dialog({
     title: t("subPage.previewTitle"),
@@ -394,15 +329,14 @@ const onClickPreviews = () => {
       url,
       general: t("subPage.panel.general"),
       notify: t("subPage.copyNotify.succeed"),
-      tipsTitle: t(`subPage.panel.tips.title`),
+      tipsTitle: t("subPage.panel.tips.title"),
       tipsContent: `${t("subPage.panel.tips.content")}\n${t(
         "syncPage.addArtForm.includeUnsupportedProxy.tips.content",
       )}`,
-      desc: t(`subPage.panel.tips.desc`),
-      tipsOkText: t(`subPage.panel.tips.ok`),
-      tipsCancelText: t(`subPage.panel.tips.cancel`),
+      desc: t("subPage.panel.tips.desc"),
+      tipsOkText: t("subPage.panel.tips.ok"),
+      tipsCancelText: t("subPage.panel.tips.cancel"),
     }),
-    onOpened: () => swipe.value.close(),
     popClass: "auto-dialog",
     // @ts-ignore
     closeOnClickOverlay: true,
@@ -433,6 +367,10 @@ const onClickPreviews = () => {
   background: var(--card-color);
   cursor: pointer;
 
+  &.disabled {
+    cursor: default;
+  }
+
   :deep(.nut-avatar) {
     flex-shrink: 0;
     width: 56px;
@@ -447,6 +385,7 @@ const onClickPreviews = () => {
   }
 
   > .sub-item-content {
+    min-width: 0;
     flex: 1;
     line-height: 1.6;
 
@@ -456,6 +395,8 @@ const onClickPreviews = () => {
       align-items: center;
 
       .sub-item-title {
+        flex: 1;
+        min-width: 0;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
@@ -465,9 +406,18 @@ const onClickPreviews = () => {
         font-size: 16px;
         color: var(--primary-text-color);
       }
+
       .tag {
         margin: 0 2px;
       }
+
+      .share-item-actions {
+        position: relative;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+      }
+
       .share-sub-link,
       .copy-sub-link,
       .refresh-sub-flow {
@@ -484,15 +434,21 @@ const onClickPreviews = () => {
           height: 16px;
           color: var(--comment-text-color);
         }
+
+        &:disabled {
+          cursor: default;
+          opacity: 0.45;
+        }
+      }
+
+      .share-danger-action {
+        :deep(svg) {
+          color: var(--danger-color);
+        }
       }
 
       button {
         white-space: nowrap;
-      }
-
-      div {
-        display: flex;
-        align-items: center;
       }
     }
 
@@ -512,6 +468,7 @@ const onClickPreviews = () => {
         line-height: 1.8;
       }
     }
+
     .sub-item-remark {
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -528,6 +485,7 @@ const onClickPreviews = () => {
         line-height: 1.5;
       }
     }
+
     .sub-item-detail-isSimple {
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -536,38 +494,8 @@ const onClickPreviews = () => {
       word-break: break-all;
       overflow: hidden;
       font-size: 12px;
-      // margin-top: 3.5px;
       max-width: 80%;
       color: var(--comment-text-color);
-    }
-  }
-}
-
-.sub-item-swipe {
-  :deep(.nut-swipe__left) {
-    .sub-item-swipe-btn-wrapper {
-      padding-left: 24px;
-    }
-  }
-
-  :deep(.nut-swipe__right),
-  :deep(.nut-swipe__left) {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    .sub-item-swipe-btn-wrapper {
-      padding-left: 14px;
-
-      &:last-child {
-        padding-right: 14px;
-      }
-
-      .sub-item-swipe-btn {
-        border-radius: 50%;
-        height: 46px;
-        width: 44px;
-      }
     }
   }
 }
