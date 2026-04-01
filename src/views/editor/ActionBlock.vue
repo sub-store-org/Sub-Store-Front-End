@@ -804,17 +804,23 @@ defineExpose({ exitAllEditName });
   background-color: var(--divider-color);
   color: var(--second-text-color);
   padding: 9px 15px;
-  // margin: 8px;
   border-radius: 18px;
   border: none;
   font-weight: normal;
-  // box-shadow: 0 1px 40px var(--background-color);
   cursor: pointer;
+  display: flex;
+  flex: 1 1 132px;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 0;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .horizontal-button-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 15px;
   background-color: var(--card-color);
   margin: 10px;

@@ -1,6 +1,10 @@
 <template>
   <Teleport to="#app" :disabled="!!url">
-    <div class="compare-page-wrapper" :style="{ height: url ? 'calc(100vh - 80px)' : '100vh' }">
+    <div
+      class="compare-page-wrapper"
+      :class="{ 'compare-page-wrapper-overlay': !url }"
+      :style="{ height: url ? 'calc(100vh - 80px)' : '100vh' }"
+    >
       <header class="compare-page-header">
         <template v-if="url">
           <h1>
@@ -398,6 +402,12 @@ const copyUrl = async () => {
       max-width: 1000px;
     }
   }
+}
+
+.compare-page-wrapper-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
 }
 
 .divider,

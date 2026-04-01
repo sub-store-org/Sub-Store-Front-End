@@ -129,6 +129,10 @@ const params = reactive({
 
 const paramsArguments = ref([]);
 
+const hasArguments = (args) => {
+  return !!args && typeof args === "object" && Object.keys(args).length > 0;
+};
+
 const parseUrlParams = (urlStr) => {
   let $arguments = {} as any;
   let otherArguments = {} as any;
@@ -432,7 +436,7 @@ onMounted(() => {
         id,
         item.args.content ? item.args.content : placeholders,
       );
-      if (item.args.arguments) {
+      if (hasArguments(item.args.arguments)) {
         params.arguments = item.args.arguments;
         paramsArguments.value = Object.entries(params.arguments).map(
           ([key, value]) => ({ key, value }),
