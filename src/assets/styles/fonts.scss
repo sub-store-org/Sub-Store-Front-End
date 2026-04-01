@@ -2,8 +2,8 @@
   font-family: 'My Roboto';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/roboto-light.eot');
-  src: url('../fonts/roboto-light.eot?#iefix') format('embedded-opentype'),
+  font-display: swap;
+  src: url('../fonts/roboto-light.woff2') format('woff2'),
     url('../fonts/roboto-light.woff') format('woff');
 }
 
@@ -11,22 +11,22 @@
   font-family: 'My Roboto';
   font-style: normal;
   font-weight: bold;
-  src: url('../fonts/roboto-bold.eot');
-  src: url('../fonts/roboto-bold.eot?#iefix') format('embedded-opentype'),
+  font-display: swap;
+  src: url('../fonts/roboto-bold.woff2') format('woff2'),
     url('../fonts/roboto-bold.woff') format('woff');
 }
 
 @font-face {
   font-family: 'JB';
-  src: url('../fonts/jetbrainsmononl-regular.eot');
-  src: url('../fonts/jetbrainsmononl-regular.eot?#iefix')
-      format('embedded-opentype'),
+  font-display: swap;
+  src: url('../fonts/jetbrainsmononl-regular.woff2') format('woff2'),
     url('../fonts/jetbrainsmononl-regular.woff') format('woff');
 }
 
 @font-face {
   font-family: nutui-iconfont;
-  src:url(../fonts/3x_static_iconfont.ttf)format("woff2"),
+  font-display: block;
+  src: url(../fonts/3x_static_iconfont.woff2) format("woff2"),
       url(../fonts/3x_static_iconfont.woff) format("woff"),
       url(../fonts/3x_static_iconfont.ttf) format("truetype")
 }.nutui-iconfont {

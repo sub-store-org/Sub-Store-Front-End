@@ -1072,7 +1072,11 @@ export default {
   },
   magicPath: {
     title: '后端连接配置',
-    description: '检测到您需要配置自定义后端，请输入后端路径或地址<br><br>支持三种格式：<br>• 路径前缀（/path）<br>• 主机+路径（host:port/path）<br>• 完整URL（http(s)://host:port/path）',
+    description: '检测到您需要配置自定义后端，请输入后端路径或地址',
+    descriptionFormatsLabel: '支持三种格式：',
+    descriptionFormatPath: '路径前缀（/path）',
+    descriptionFormatHost: '主机+路径（host:port/path）',
+    descriptionFormatUrl: '完整URL（http(s)://host:port/path）',
     placeholder: '请输入后端路径或地址',
     connect: '连接',
     skip: '跳过',

@@ -1082,7 +1082,11 @@ export default {
   },
   magicPath: {
     title: "Backend Connection Configuration",
-    description: "Custom backend configuration needed. Please enter the backend path or address<br><br>Supports three formats:<br>• Path prefix (/path)<br>• Host+path (host:port/path)<br>• Full URL (http(s)://host:port/path)",
+    description: "Custom backend configuration needed. Please enter the backend path or address",
+    descriptionFormatsLabel: "Supports three formats:",
+    descriptionFormatPath: "Path prefix (/path)",
+    descriptionFormatHost: "Host+path (host:port/path)",
+    descriptionFormatUrl: "Full URL (http(s)://host:port/path)",
     placeholder: "Please enter backend path or address",
     connect: "Connect",
     skip: "Skip",

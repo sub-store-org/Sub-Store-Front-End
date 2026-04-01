@@ -14,7 +14,15 @@
   >
     <div class="magic-path-container">
       <div class="title">{{ $t('magicPath.title') }}</div>
-      <div class="description" v-html="$t('magicPath.description')"></div>
+      <div class="description">
+        <p>{{ $t('magicPath.description') }}</p>
+        <p>{{ $t('magicPath.descriptionFormatsLabel') }}</p>
+        <ul>
+          <li>{{ $t('magicPath.descriptionFormatPath') }}</li>
+          <li>{{ $t('magicPath.descriptionFormatHost') }}</li>
+          <li>{{ $t('magicPath.descriptionFormatUrl') }}</li>
+        </ul>
+      </div>
 
       <!-- 显示URL参数错误信息 - 仅在非URL参数指定API的情况下显示 -->
       <div v-if="props.urlApiError && !props.urlApiValue" class="url-api-error">
@@ -377,18 +385,23 @@ watchEffect(() => {
   .description {
     font-size: 14px;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
     color: var(--second-text-color);
 
-    :deep(br) {
-      display: block;
-      content: "";
-      margin-top: 8px;
+    p {
+      margin: 0 0 4px;
     }
 
-    :deep(a) {
-      color: var(--primary-color);
-      text-decoration: none;
+    ul {
+      list-style: disc;
+      display: inline-block;
+      text-align: left;
+      margin: 4px 0 0;
+      padding-left: 1.4em;
+    }
+
+    li {
+      margin: 2px 0;
     }
   }
 
@@ -520,7 +533,7 @@ watchEffect(() => {
   .info {
     font-size: 12px;
     color: var(--comment-text-color);
-    text-align: center;
+    text-align: left;
     background-color: var(--card-color);
     padding: 10px;
     border-radius: 8px;
