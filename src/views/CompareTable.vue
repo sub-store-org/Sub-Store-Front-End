@@ -225,10 +225,13 @@
     </div>
 
     <NodeInfoPanel
+      :key="nodeInfoPanelKey"
       :ipApi="ipApi"
+      :ip-api-status="ipApiStatus"
       :nodeInfo="nodeInfo"
       v-if="nodeInfoIsVisible"
       @close="closeNodeInfoPanel"
+      @retry="retryLoadIpApi"
     />
   </Teleport>
 </template>
@@ -237,11 +240,9 @@
   import { useSubsApi } from '@/api/subs';
   import NodeInfoPanel from '@/components/NodeInfoPanel.vue';
   import { useSubsStore } from '@/store/subs';
-  import { Toast } from '@nutui/nutui';
   import { computed, ref, toRaw } from 'vue';
-  import { useI18n } from 'vue-i18n';
 
-  const { t } = useI18n();
+  const { getSubInfo } = useSubsApi();
   const subsStore = useSubsStore();
   const { compareData, name } = defineProps<{
     compareData: any;
@@ -257,8 +258,11 @@
   const isProcessedVisible = ref(true);
 
   const nodeInfoIsVisible = ref(false);
+  const nodeInfoPanelKey = ref(0);
   const ipApi = ref<IpApiData>(null);
+  const ipApiStatus = ref<NodeInfoIpApiStatus>('idle');
   const nodeInfo = ref<NodeInfo>(null);
+  const currentIpApiRequestId = ref(0);
 
   const displayName = computed(() => {
     const sub = subsStore.getOneSub(name) || subsStore.getOneCollection(name);
@@ -330,25 +334,62 @@
     emit('closeCompare');
   };
 
-  const closeNodeInfoPanel = () => {
-    nodeInfoIsVisible.value = false;
+  const invalidateIpApiRequest = () => {
+    currentIpApiRequestId.value += 1;
   };
 
-  const openNodeInfoPanel = async val => {
-    Toast.loading(t('comparePage.nodeInfo.loading'), {
-      cover: true,
-      id: 'nodeInfoLoading',
-    });
-    const nodeData = toRaw(val);
-    const res = await useSubsApi().getSubInfo(nodeData);
-    if (res?.data?.status === 'success') {
-      ipApi.value = res.data.data;
-      nodeInfo.value = nodeData;
-      nodeInfoIsVisible.value = true;
-    } else {
-      Toast.fail(t('comparePage.nodeInfo.loadFailed'));
+  const resetIpApiState = (status: NodeInfoIpApiStatus = 'idle') => {
+    ipApi.value = null;
+    ipApiStatus.value = status;
+  };
+
+  const loadIpApi = async (nodeData: NodeInfo) => {
+    invalidateIpApiRequest();
+    const requestId = currentIpApiRequestId.value;
+    resetIpApiState('loading');
+
+    try {
+      const res = await getSubInfo(nodeData);
+      if (requestId !== currentIpApiRequestId.value || !nodeInfoIsVisible.value) {
+        return;
+      }
+
+      if (res?.data?.status === 'success') {
+        ipApi.value = res.data.data;
+        ipApiStatus.value = 'success';
+      } else {
+        ipApiStatus.value = 'error';
+      }
+    } catch (error) {
+      if (requestId !== currentIpApiRequestId.value || !nodeInfoIsVisible.value) {
+        return;
+      }
+
+      ipApiStatus.value = 'error';
     }
-    Toast.hide('nodeInfoLoading');
+  };
+
+  const closeNodeInfoPanel = () => {
+    invalidateIpApiRequest();
+    nodeInfoIsVisible.value = false;
+    nodeInfo.value = null;
+    resetIpApiState();
+  };
+
+  const openNodeInfoPanel = (val: NodeInfo) => {
+    const nodeData = toRaw(val);
+    nodeInfo.value = nodeData;
+    nodeInfoIsVisible.value = true;
+    nodeInfoPanelKey.value += 1;
+    void loadIpApi(nodeData);
+  };
+
+  const retryLoadIpApi = () => {
+    if (!nodeInfo.value) {
+      return;
+    }
+
+    void loadIpApi(toRaw(nodeInfo.value));
   };
 </script>
 

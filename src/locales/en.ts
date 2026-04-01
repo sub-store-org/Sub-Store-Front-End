@@ -693,6 +693,9 @@ export default {
       loadFailed: "Get Node Info Failed",
       ipApi: {
         title: "IP-API",
+        loading: "Loading IP API details...",
+        loadFailed: "Failed to load IP API details",
+        retry: "Retry",
       },
       node: {
         title: "Node Info",

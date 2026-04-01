@@ -688,6 +688,9 @@ export default {
       loadFailed: '获取节点信息失败',
       ipApi: {
         title: 'IP API',
+        loading: '正在获取 IP API 信息...',
+        loadFailed: 'IP API 获取失败',
+        retry: '重试',
       },
       node: {
         title: '节点信息',
