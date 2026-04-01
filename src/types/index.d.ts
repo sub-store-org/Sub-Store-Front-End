@@ -53,6 +53,8 @@ interface IpApiResponse {
   data: IpApiData;
 }
 
+type NodeInfoIpApiStatus = 'idle' | 'loading' | 'success' | 'error';
+
 interface NodeInfo {
   name: string;
   server: string;

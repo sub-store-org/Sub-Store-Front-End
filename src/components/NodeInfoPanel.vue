@@ -5,8 +5,8 @@
         <ul class="info-ul">
           <li>
             <strong class="node-name">
-              <nut-tag class="type-tag">{{ nodeInfo.type }} </nut-tag
-              >{{ nodeInfo.name }}</strong
+              <nut-tag class="type-tag">{{ props.nodeInfo.type }} </nut-tag
+              >{{ props.nodeInfo.name }}</strong
             >
           </li>
           <li v-for="(value, key) in displayNodeInfo" :key="key">
@@ -17,28 +17,49 @@
         </ul>
       </nut-tabpane>
       <nut-tabpane :title="$t('comparePage.nodeInfo.ipApi.title')">
-        <ul class="info-ul">
+        <ul v-if="hasIpApiData" class="info-ul">
           <li>
-            <strong class="node-name">{{ nodeInfo.name }}</strong>
+            <strong class="node-name">{{ props.nodeInfo.name }}</strong>
           </li>
-          <li>IP: {{ ipApi.info.query }}</li>
+          <li>IP: {{ props.ipApi.info.query }}</li>
           <li>Region : {{ city }}</li>
-          <li>ISP : {{ ipApi.info.isp }}</li>
-          <li>Org: {{ ipApi.info.org }}</li>
-          <li>Timezone : {{ ipApi.info.timezone }}</li>
+          <li>ISP : {{ props.ipApi.info.isp }}</li>
+          <li>Org: {{ props.ipApi.info.org }}</li>
+          <li>Timezone : {{ props.ipApi.info.timezone }}</li>
           <li>
             Location :
-            {{ 'lon ' + ipApi.info.lon + ' - lat ' + ipApi.info.lat }}
+            {{ 'lon ' + props.ipApi.info.lon + ' - lat ' + props.ipApi.info.lat }}
           </li>
         </ul>
+        <div v-else-if="props.ipApiStatus === 'error'" class="ip-api-state">
+          <strong class="node-name">{{ props.nodeInfo.name }}</strong>
+          <nut-empty image="error" class="ip-api-empty">
+            <template #description>
+              <h3>{{ $t('comparePage.nodeInfo.ipApi.loadFailed') }}</h3>
+              <p>{{ $t('comparePage.nodeInfo.ipApi.loadFailedDesc') }}</p>
+            </template>
+          </nut-empty>
+          <nut-button
+            icon="refresh"
+            type="primary"
+            class="ip-api-retry-btn"
+            @click="retryLoadIpApi"
+          >
+            {{ $t('comparePage.nodeInfo.ipApi.retry') }}
+          </nut-button>
+        </div>
+        <div v-else class="ip-api-state ip-api-loading">
+          <strong class="node-name">{{ props.nodeInfo.name }}</strong>
+          <p class="state-title">{{ $t('comparePage.nodeInfo.ipApi.loading') }}</p>
+        </div>
       </nut-tabpane>
       <nut-tabpane title="JSON">
         <div class="input-wrapper">
-          <nut-textarea :model-value="JSON.stringify(nodeInfo, null, 2)" :rows="15" readonly/>
+          <nut-textarea :model-value="JSON.stringify(props.nodeInfo, null, 2)" :rows="15" readonly/>
         </div>
       </nut-tabpane>
     </nut-tabs>
-    <img v-if="qrcode && currentTab < 1" :src="qrcode" alt="QR Code" class="qrcode" />
+    <img v-if="showQrCode && qrcode" :src="qrcode" alt="QR Code" class="qrcode" />
   </div>
   <!-- lock-scroll -->
   <nut-overlay
@@ -52,28 +73,34 @@
   import { useQRCode } from '@vueuse/integrations/useQRCode';
   import { computed, ref } from 'vue';
 
-  const emit = defineEmits(['close']);
-  const { ipApi, nodeInfo } = defineProps<{
-    ipApi: IpApiData;
+  const emit = defineEmits(['close', 'retry']);
+  const props = defineProps<{
+    ipApi: IpApiData | null;
+    ipApiStatus: NodeInfoIpApiStatus;
     nodeInfo: NodeInfo;
   }>();
 
   const overlayVisible = ref(true);
   const currentTab = ref(0);
 
-  const qrcode = useQRCode(ipApi.shareUrl);
-  const info = ipApi.info;
+  const hasIpApiData = computed(() => {
+    return props.ipApiStatus === 'success' && Boolean(props.ipApi);
+  });
+
+  const qrcode = useQRCode(computed(() => {
+    return hasIpApiData.value ? props.ipApi?.shareUrl || '' : '';
+  }));
 
   const displayNodeInfo = computed(() => {
     const result = {};
-    Object.keys(nodeInfo).forEach(key => {
+    Object.keys(props.nodeInfo).forEach(key => {
       switch (key) {
         case 'id':
         case 'type':
         case 'name':
           break;
         default:
-          result[key] = nodeInfo[key];
+          result[key] = props.nodeInfo[key];
           break;
       }
     });
@@ -81,10 +108,24 @@
   });
 
   const city = computed(() => {
-    return ipApi.info.city === ipApi.info.country
+    const info = props.ipApi?.info;
+    if (!info) {
+      return '';
+    }
+
+    return info.city === info.country
       ? info.city
       : info.country + ' - ' + info.city;
   });
+
+  const showQrCode = computed(() => {
+    return hasIpApiData.value && currentTab.value === 0;
+  });
+
+  const retryLoadIpApi = () => {
+    emit('retry');
+  };
+
   const closePanel = () => {
     emit('close');
   };
@@ -123,6 +164,33 @@
       margin-bottom: 8px;
       color: var(--comment-text-color);
     }
+  }
+
+  .ip-api-state {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .ip-api-loading {
+    color: var(--comment-text-color);
+  }
+
+  .state-title {
+    margin-top: 16px;
+    color: var(--comment-text-color);
+  }
+
+  .ip-api-empty {
+    padding: 16px 0 8px;
+  }
+
+  .ip-api-retry-btn {
+    margin-top: 8px;
   }
 
   .input-wrapper {
