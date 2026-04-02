@@ -478,7 +478,9 @@
     v-if="compareTableIsVisible"
     :name="configName"
     :compareData="compareData"
+    :showRefresh="true"
     @closeCompare="closeCompare"
+    @refresh="refreshCompare"
   />
   <icon-popup
     v-model:visible="iconPopupVisible"
@@ -845,30 +847,16 @@ const fileChange = async (event) => {
     console.error(e);
   }
 };
-const compare = () => {
-  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
-    // 如果验证失败
-    if (!valid) {
-      Dialog({
-        title: t(`editorPage.subConfig.pop.errorTitle`),
-        content: errors[0].message,
-        popClass: "auto-dialog",
-        noCancelBtn: true,
-        okText: t(`editorPage.subConfig.pop.errorBtn`),
-        // @ts-ignore
-        closeOnClickOverlay: true,
-      });
-      return;
-    }
-
-    Toast.loading("生成节点对比中...", {
-      id: "compare",
-      cover: true,
-      duration: 1500,
-    });
+const fetchCompareData = async () => {
+  Toast.loading("生成节点对比中...", {
+    id: "compare",
+    cover: true,
+    duration: 1500,
+  });
+  try {
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
-    if (data.ignoreFailedRemoteSub === "disabled"){
+    if (data.ignoreFailedRemoteSub === "disabled") {
       data.ignoreFailedRemoteSub = false;
     }
     data.tag = [
@@ -887,8 +875,6 @@ const compare = () => {
           .filter((item: string) => item.length)
       ),
     ];
-
-    // 过滤掉预览开关关闭的操作
     actionsChecked.forEach((item) => {
       if (!item[1]) {
         const index = data.process.findIndex((i) => i.id === item[0]);
@@ -897,7 +883,6 @@ const compare = () => {
         }
       }
     });
-    // 当前如果已经存在改订阅配置，则更新订阅信息
     if (configName !== "UNTITLED") {
       await subsStore.fetchFlows(ref([data]).value);
     }
@@ -905,23 +890,51 @@ const compare = () => {
     const res = await subsApi.compareSub(type, data);
     if (res?.data?.status === "success") {
       compareData.value = res.data.data;
-
-      scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-
-      globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
-
-      document.querySelector("html").style["overflow-y"] = "hidden";
-      document.querySelector("html").style.height = "100%";
-      document.body.style.height = "100%";
-      document.body.style["overflow-y"] = "hidden";
-      (document.querySelector("#app") as HTMLElement).style["overflow-y"] =
-        "hidden";
-      (document.querySelector("#app") as HTMLElement).style.height = "100%";
-
-      compareTableIsVisible.value = true;
-      Toast.hide("compare");
+    } else {
+      compareData.value = null;
     }
+  } catch (e) {
+    console.error(e);
+    compareData.value = null;
+  }
+  Toast.hide("compare");
+};
+
+const openComparePanel = () => {
+  scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
+
+  document.querySelector("html").style["overflow-y"] = "hidden";
+  document.querySelector("html").style.height = "100%";
+  document.body.style.height = "100%";
+  document.body.style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style.height = "100%";
+
+  compareTableIsVisible.value = true;
+};
+
+const compare = () => {
+  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+    if (!valid) {
+      Dialog({
+        title: t(`editorPage.subConfig.pop.errorTitle`),
+        content: errors[0].message,
+        popClass: "auto-dialog",
+        noCancelBtn: true,
+        okText: t(`editorPage.subConfig.pop.errorBtn`),
+        // @ts-ignore
+        closeOnClickOverlay: true,
+      });
+      return;
+    }
+    await fetchCompareData();
+    openComparePanel();
   });
+};
+
+const refreshCompare = async () => {
+  await fetchCompareData();
 };
 
 const passThroughUAOn = computed(() => {

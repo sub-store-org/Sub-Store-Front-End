@@ -267,6 +267,12 @@ export const useSubsStore = defineStore('subsStore', {
         console.log('fetchSubsData err', err);
       });
     },
+    setOneData(type: string, name: string, data: any) {
+      const index = this[type].findIndex(item => item.name === name);
+      if (index !== -1) {
+        this[type][index] = data;
+      }
+    },
     async updateOneData(type: string, name: string) {
       try {
         let res;

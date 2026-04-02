@@ -398,7 +398,9 @@
     v-if="filePreviewIsVisible"
     :name="configName"
     :previewData="previewData"
+    :showRefresh="true"
     @closePreview="closePreview"
+    @refresh="refreshPreview"
   />
   <icon-popup v-model:visible="iconPopupVisible" ref="iconPopupRef" @setIcon="setIcon">
   </icon-popup>
@@ -728,10 +730,17 @@ const compare = () => {
       return;
     }
 
-    Toast.loading("生成中...", { id: "compare", cover: true, duration: 1500 });
+    await fetchPreviewData();
+    openPreviewPanel();
+  });
+};
+
+const fetchPreviewData = async () => {
+  Toast.loading("生成中...", { id: "compare", cover: true, duration: 1500 });
+  try {
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
-    if (data.ignoreFailedRemoteFile === "disabled"){
+    if (data.ignoreFailedRemoteFile === "disabled") {
       data.ignoreFailedRemoteFile = false;
     }
     data.tag = [
@@ -742,8 +751,6 @@ const compare = () => {
           .filter((item: string) => item.length)
       ),
     ];
-
-    // 过滤掉预览开关关闭的操作
     actionsChecked.forEach((item) => {
       if (!item[1]) {
         const index = data.process.findIndex((i) => i.id === item[0]);
@@ -752,26 +759,35 @@ const compare = () => {
         }
       }
     });
-
     const res = await subsApi.compareSub("file", data);
     if (res?.data?.status === "success") {
       previewData.value = res.data.data;
-
-      scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-
-      globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
-
-      document.querySelector("html").style["overflow-y"] = "hidden";
-      document.querySelector("html").style.height = "100%";
-      document.body.style.height = "100%";
-      document.body.style["overflow-y"] = "hidden";
-      (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "hidden";
-      (document.querySelector("#app") as HTMLElement).style.height = "100%";
-
-      filePreviewIsVisible.value = true;
-      Toast.hide("compare");
+    } else {
+      previewData.value = null;
     }
-  });
+  } catch (e) {
+    console.error(e);
+    previewData.value = null;
+  }
+  Toast.hide("compare");
+};
+
+const openPreviewPanel = () => {
+  scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
+
+  document.querySelector("html").style["overflow-y"] = "hidden";
+  document.querySelector("html").style.height = "100%";
+  document.body.style.height = "100%";
+  document.body.style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style.height = "100%";
+
+  filePreviewIsVisible.value = true;
+};
+
+const refreshPreview = async () => {
+  await fetchPreviewData();
 };
 
 const submit = () => {

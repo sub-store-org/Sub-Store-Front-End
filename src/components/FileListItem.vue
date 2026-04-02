@@ -222,7 +222,9 @@
     v-if="filePreviewIsVisible"
     :name="name"
     :previewData="previewData"
+    :show-refresh="true"
     @closePreview="closePreview"
+    @refresh="refreshPreview"
   />
 </template>
 
@@ -356,28 +358,51 @@
     router.back();
   };
 
-  const previewFile = async () => {
+  const doPreview = async (fileData: any) => {
     Toast.loading('生成中...', { id: 'compare', cover: true, duration: 1500 });
-    const res = await useSubsApi().compareSub(
-      'file',
-      props.file
-    );
+    try {
+      const res = await subsApi.compareSub('file', fileData);
+      if (res?.data?.status === 'success') {
+        previewData.value = res.data.data;
+      } else {
+        previewData.value = null;
+      }
+    } catch (e) {
+      console.error(e);
+      previewData.value = null;
+    }
+    Toast.hide('compare');
+  };
 
-    if (res?.data?.status === 'success') {
-      previewData.value = res.data.data;
+  const openPreviewPanel = () => {
+    scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
 
-      scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+    document.querySelector('html').style['overflow-y'] = 'hidden';
+    document.querySelector('html').style.height = '100%';
+    document.body.style.height = '100%';
+    document.body.style['overflow-y'] = 'hidden';
+    (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
+    (document.querySelector('#app') as HTMLElement).style.height = '100%';
 
-      globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop })
+    filePreviewIsVisible.value = true;
+  };
 
-      document.querySelector('html').style['overflow-y'] = 'hidden';
-      document.querySelector('html').style.height = '100%';
-      document.body.style.height = '100%';
-      document.body.style['overflow-y'] = 'hidden';
-      (document.querySelector('#app') as HTMLElement).style['overflow-y'] = 'hidden';
-      (document.querySelector('#app') as HTMLElement).style.height = '100%';
+  const previewFile = async () => {
+    await doPreview(props.file);
+    openPreviewPanel();
+  };
 
-      filePreviewIsVisible.value = true;
+  const refreshPreview = async () => {
+    try {
+      const fileRes = await filesApi.getWholeFile(name);
+      const latestFile = (fileRes?.data?.status === 'success' ? fileRes.data.data : null) ?? props.file;
+      await doPreview(latestFile);
+      // 同步更新 store，使进入编辑器时数据一致
+      subsStore.setOneData('files', name, latestFile);
+    } catch (e) {
+      console.error(e);
+      previewData.value = null;
       Toast.hide('compare');
     }
   };
