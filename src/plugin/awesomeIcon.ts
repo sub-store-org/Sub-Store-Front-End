@@ -4,6 +4,7 @@ import {
   faAnglesRight,
   faAngleRight,
   faArrowRotateRight,
+  faArrowsRotate,
   faArrowUpRightFromSquare,
   faBan,
   faCheck,
@@ -64,6 +65,7 @@ library.add(faXmark);
 library.add(faLocationArrow);
 library.add(faCode);
 library.add(faArrowRotateRight);
+library.add(faArrowsRotate);
 library.add(faAnglesRight);
 library.add(faAngleRight);
 library.add(faCloudArrowDown);

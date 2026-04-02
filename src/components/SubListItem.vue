@@ -295,7 +295,9 @@
     v-if="compareTableIsVisible"
     :name="name"
     :compare-data="compareData"
+    :show-refresh="true"
     @closeCompare="closeCompare"
+    @refresh="refreshCompare"
   />
 </template>
 
@@ -582,32 +584,60 @@ const openAppUrl = () => {
   }
 };
 
-const compareSub = async () => {
+const fetchCompareData = async (data?: any) => {
   Toast.loading("生成节点对比中...", {
     id: "compare",
     cover: true,
     duration: 1500,
   });
-  const res = await useSubsApi().compareSub(
-    props.type,
-    props.sub ?? props.collection,
-  );
-  if (res?.data?.status === "success") {
-    compareData.value = res.data.data;
+  try {
+    const res = await subsApi.compareSub(
+      props.type,
+      data ?? props.sub ?? props.collection,
+    );
+    if (res?.data?.status === "success") {
+      compareData.value = res.data.data;
+    } else {
+      compareData.value = null;
+    }
+  } catch (e) {
+    console.error(e);
+    compareData.value = null;
+  }
+  Toast.hide("compare");
+};
 
-    scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+const openComparePanel = () => {
+  scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
 
-    globalStore.setSavedPositions(route.path, { left: 0, top: scrollTop });
+  document.querySelector("html").style["overflow-y"] = "hidden";
+  document.querySelector("html").style.height = "100%";
+  document.body.style.height = "100%";
+  document.body.style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style["overflow-y"] = "hidden";
+  (document.querySelector("#app") as HTMLElement).style.height = "100%";
 
-    document.querySelector("html").style["overflow-y"] = "hidden";
-    document.querySelector("html").style.height = "100%";
-    document.body.style.height = "100%";
-    document.body.style["overflow-y"] = "hidden";
-    (document.querySelector("#app") as HTMLElement).style["overflow-y"] =
-      "hidden";
-    (document.querySelector("#app") as HTMLElement).style.height = "100%";
+  compareTableIsVisible.value = true;
+};
 
-    compareTableIsVisible.value = true;
+const compareSub = async () => {
+  await fetchCompareData();
+  openComparePanel();
+};
+
+const refreshCompare = async () => {
+  try {
+    // 重新获取最新订阅/组合订阅信息
+    const type = props.type === 'collection' ? 'collection' : 'sub';
+    const infoRes = await subsApi.getOne(type, name);
+    const latestData = (infoRes?.data?.status === 'success' ? infoRes.data.data : null) ?? (props.sub ?? props.collection);
+    await fetchCompareData(latestData);
+    // 同步更新 store，使进入编辑器时数据一致
+    subsStore.setOneData(props.type === 'collection' ? 'collections' : 'subs', name, latestData);
+  } catch (e) {
+    console.error(e);
+    compareData.value = null;
     Toast.hide("compare");
   }
 };
@@ -904,6 +934,7 @@ const onClickRefresh = async () => {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
+        line-clamp: 1;
         word-wrap: break-word;
         word-break: break-all;
         overflow: hidden;
@@ -961,6 +992,7 @@ const onClickRefresh = async () => {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       word-wrap: break-word;
       word-break: break-all;
       overflow: hidden;
@@ -977,6 +1009,7 @@ const onClickRefresh = async () => {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       word-wrap: break-word;
       word-break: break-all;
       overflow: hidden;
@@ -994,6 +1027,7 @@ const onClickRefresh = async () => {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
+      line-clamp: 1;
       word-wrap: break-word;
       word-break: break-all;
       overflow: hidden;

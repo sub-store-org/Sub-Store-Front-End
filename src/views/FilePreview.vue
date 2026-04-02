@@ -32,9 +32,14 @@
               color="var(--comment-text-color)"
             />
           </button> -->
-          <button @click="clickClose">
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" />
-          </button>
+          <div class="btn-groups">
+            <button v-if="showRefresh" class="btn refresh" @click="emit('refresh')">
+              <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
+            </button>
+            <button class="btn close" @click="clickClose">
+              <font-awesome-icon icon="fa-solid fa-circle-xmark" />
+            </button>
+          </div>
         </template>
       </header>
       <cmView :isReadOnly="false" id="filePreview" />
@@ -60,7 +65,7 @@ import axios from 'axios';
 import { useSubsApi } from "@/api/subs";
 import { useSubsStore } from "@/store/subs";
 import { Toast } from "@nutui/nutui";
-import { computed, ref, toRaw, watchEffect } from "vue";
+import { computed, ref, toRaw, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
 import useV3Clipboard from "vue-clipboard3";
@@ -114,26 +119,30 @@ watchEffect(async () => {
   }
 })
 
-const { previewData, name } = defineProps<{
+const props = defineProps<{
   previewData: any;
   name: string;
-}>();
+  showRefresh?: boolean;
+}>(); 
 
-const emit = defineEmits(["closePreview"]);
+const showRefresh = computed(() => props.showRefresh !== false);
+
+const emit = defineEmits(["closePreview", "refresh"]);
 
 const isOriginalVisible = ref(true);
 const isProcessedVisible = ref(true);
 
 const displayName = computed(() => {
   if(route.query.name) return route.query.name
-  const sub = subsStore.getOneFile(name);
-  return sub?.displayName || sub?.["display-name"] || name;
+  const sub = subsStore.getOneFile(props.name);
+  return sub?.displayName || sub?.["display-name"] || props.name;
 });
 
-const originalData = previewData?.original;
-if(!url) {
-  cmStore.setEditCode('filePreview', previewData?.processed)
-}
+watch(() => props.previewData?.processed, (val) => {
+  if (!url && val != null) {
+    cmStore.setEditCode('filePreview', val)
+  }
+}, { immediate: true });
 
  
 const clickClose = () => {
@@ -203,8 +212,6 @@ const copyUrl = async () => {
   display: grid;
   grid-template-columns: 46% 1fr 1fr 1fr 1fr;
 
-  li {
-  }
   li,
   td {
     display: flex;
@@ -287,14 +294,14 @@ const copyUrl = async () => {
 }
 
 .compare-page-header {
-  padding: var(--safe-area-side);
+  padding: env(safe-area-inset-top) var(--safe-area-side) var(--safe-area-side);
   position: sticky;
   top: 0;
   z-index: 19;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
+  height: var(--compare-header-offset);
   border-bottom: 1px solid;
   color: var(--primary-text-color);
   background: var(--background-color);
@@ -352,6 +359,17 @@ const copyUrl = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: 10px;
+    &:last-child {
+      margin-right: 0;
+    }
+    &.refresh {
+      font-size: 18px;
+    }
+  }
+  .btn-groups {
+    display: flex;
+    align-items: center;
   }
   .copy {
     margin-left: auto;
@@ -359,11 +377,11 @@ const copyUrl = async () => {
 }
 
 .compare-page-wrapper {
+  --compare-header-offset: calc(56px + env(safe-area-inset-top));
   // top: 0;
   // left: 0;
   // position: absolute;
   width: 100%;
-
   height: 100vh;
   z-index: 1000;
   overflow-x: hidden;

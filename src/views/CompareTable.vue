@@ -10,15 +10,21 @@
             {{ displayName }}
           </span>
         </h1>
-        <button @click="clickClose">
-          <font-awesome-icon icon="fa-solid fa-circle-xmark" />
-        </button>
+        <div class="btn-groups">
+          <button v-if="showRefresh" class="btn refresh" @click="emit('refresh')">
+            <font-awesome-icon  icon="fa-solid fa-arrows-rotate" />
+          </button>
+          <button class="btn close" @click="clickClose">
+            <font-awesome-icon icon="fa-solid fa-circle-xmark" />
+          </button>          
+        </div>
+
       </header>
       <div class="compare-page-body">
         <div class="block-wrapper">
           <!--块标题-->
           <div class="sticky-title-wrapperse compare-title">
-            <p>{{ $t(`comparePage.remain.title`) }}({{ remainDesc }}) <small v-if="originalData.length > 0" @click="goToFilterRef">{{ $t(`comparePage.filter.title`) }}({{ filterDesc }})</small></p>
+            <p>{{ $t(`comparePage.remain.title`) }}({{ remainDesc }}) <small v-if="filteredOriginalData.length > 0" @click="goToFilterRef">{{ $t(`comparePage.filter.title`) }}({{ filterDesc }})</small></p>
           </div>
 
           <!--指示器说明-->
@@ -145,7 +151,7 @@
         </div>
 
         <nut-divider
-          v-if="originalData.length > 0"
+          v-if="filteredOriginalData.length > 0"
           class="divider"
           dashed
           hairline
@@ -155,7 +161,7 @@
           >{{ $t(`comparePage.divider`) }}
         </nut-divider>
 
-        <div ref="filterRef" class="block-wrapper" v-if="originalData.length > 0">
+        <div ref="filterRef" class="block-wrapper" v-if="filteredOriginalData.length > 0">
           <!--块标题-->
           <div class="sticky-title-wrapperse compare-title">
             <p>{{ $t(`comparePage.filter.title`) }}({{ filterDesc }})</p>
@@ -170,7 +176,7 @@
 
           <!--表格内容-->
           <table class="compare-table-body">
-            <template v-for="node in originalData" :key="node.id">
+            <template v-for="node in filteredOriginalData" :key="node.id">
               <tr
                 class="compare-table-row original-tr"
                 @click="openNodeInfoPanel(node)"
@@ -244,14 +250,17 @@
 
   const { getSubInfo } = useSubsApi();
   const subsStore = useSubsStore();
-  const { compareData, name } = defineProps<{
+  const props = defineProps<{
     compareData: any;
     name: string;
+    showRefresh?: boolean;
   }>();
+
+  const showRefresh = computed(() => props.showRefresh !== false);
 
   const titleList = ['name', 'udp', 'tfo', 'skip-cert-verify', 'aead'];
 
-  const emit = defineEmits(['closeCompare']);
+  const emit = defineEmits(['closeCompare', 'refresh']);
 
   const filterRef = ref(null);
   const isOriginalVisible = ref(true);
@@ -265,8 +274,8 @@
   const currentIpApiRequestId = ref(0);
 
   const displayName = computed(() => {
-    const sub = subsStore.getOneSub(name) || subsStore.getOneCollection(name);
-    return sub?.displayName || sub?.['display-name'] || name;
+    const sub = subsStore.getOneSub(props.name) || subsStore.getOneCollection(props.name);
+    return sub?.displayName || sub?.['display-name'] || props.name;
   });
 
   const toggleProcessedVisible = () => {
@@ -291,25 +300,31 @@
     }
   };
 
-  const originalData = compareData.original;
-  const processedData = compareData.processed;
+  const processedData = computed(() => props.compareData?.processed || []);
   const data = computed(() => {
+    const original = props.compareData?.original || [];
     const result = [];
-    for (let i = 0; i < processedData.length; i++) {
+    for (let i = 0; i < processedData.value.length; i++) {
       const item = [];
-      item.push(processedData[i]);
-      const id = processedData[i].id;
-      const originalIndex = originalData.findIndex(item => item.id === id);
-      item.push(originalData[originalIndex]);
+      item.push(processedData.value[i]);
+      const id = processedData.value[i].id;
+      const originalItem = original.find(item => item.id === id);
+      item.push(originalItem);
       result.push(item);
-      originalData.splice(originalIndex, 1);
     }
     return result;
   });
 
+  // 被过滤掉的节点：original 中未被 processed 匹配到的
+  const filteredOriginalData = computed(() => {
+    const original = props.compareData?.original || [];
+    const processedIds = new Set(processedData.value.map(item => item.id));
+    return original.filter(item => !processedIds.has(item.id));
+  });
+
   const remainDesc = computed(() => {
-    const remainSize = processedData?.length || 0
-    const filterSize = originalData?.length || 0
+    const remainSize = processedData.value?.length || 0
+    const filterSize = filteredOriginalData.value?.length || 0
     const totalSize = remainSize + filterSize
     if (!remainSize) {
       return 0
@@ -317,8 +332,8 @@
     return filterSize > 0 ? `${remainSize}/${totalSize}` : remainSize
   });
   const filterDesc = computed(() => {
-    const remainSize = processedData?.length || 0
-    const filterSize = originalData?.length || 0
+    const remainSize = processedData.value?.length || 0
+    const filterSize = filteredOriginalData.value?.length || 0
     const totalSize = remainSize + filterSize
     if (!filterSize) {
       return 0
@@ -465,14 +480,14 @@
   .compare-table-head {
     position: sticky;
     z-index: 7;
-    top: 118px;
+    top: calc(var(--compare-header-offset) + 62px);
     border-bottom: 1px solid var(--divider-color);
     font-weight: bold;
     background: var(--background-color);
     color: var(--comment-text-color);
 
     &.filter-table-head {
-      top: 84px;
+      top: calc(var(--compare-header-offset) + 28px);
     }
   }
 
@@ -509,7 +524,7 @@
       padding: 0 var(--safe-area-side);
       z-index: 9;
       margin-top: 0;
-      top: 56px;
+      top: var(--compare-header-offset);
       background: var(--background-color);
       small {
         cursor: pointer;
@@ -522,7 +537,7 @@
       z-index: 8;
       display: flex;
       position: sticky;
-      top: 88px;
+      top: calc(var(--compare-header-offset) + 32px);
       background: var(--background-color);
       color: var(--comment-text-color);
     }
@@ -537,14 +552,14 @@
   }
 
   .compare-page-header {
-    padding: var(--safe-area-side);
+    padding: env(safe-area-inset-top) var(--safe-area-side) var(--safe-area-side);
     position: sticky;
     top: 0;
     z-index: 19;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 56px;
+    height: var(--compare-header-offset);
     border-bottom: 1px solid;
     color: var(--primary-text-color);
     background: var(--background-color);
@@ -558,6 +573,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 40vw;
+      line-height: 58px;
       
       @media screen and (min-width: 768px) {
         max-width: 300px;
@@ -591,7 +607,10 @@
         }
       }
     }
-
+    .btn-groups {
+      display: flex;
+      align-items: center;
+    }
     button {
       cursor: pointer;
       background: none;
@@ -599,10 +618,18 @@
       font-size: 20px;
       padding: 8px;
       color: var(--lowest-text-color);
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+      &.refresh {
+        font-size: 18px;
+      }
     }
   }
 
   .compare-page-wrapper {
+    --compare-header-offset: calc(56px + env(safe-area-inset-top));
     position: fixed;
     inset: 0;
     width: 100%;
