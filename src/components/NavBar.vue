@@ -197,7 +197,9 @@ const setSimpleMode = (isSimpleMode: boolean) => {
 };
 
 const refresh = async () => {
-  if (["/subs", "/sync", "/files"].includes(route.path)) {
+  if (["/preview"].includes(route.path)) {
+    window.location.reload();
+  } else if (["/subs", "/sync", "/files"].includes(route.path)) {
     initStores(true, true, true);
   } else {
     showNotify({ title: i18n_global("globalNotify.refresh.rePwaing"), type: "primary" });
