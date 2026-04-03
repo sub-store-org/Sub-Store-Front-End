@@ -118,11 +118,10 @@ import { Toast } from "@nutui/nutui";
 import { useDebounceFn } from "@vueuse/core";
 import axios from "axios";
 import { storeToRefs } from "pinia";
-import { computed, onMounted, reactive, ref, watch, watchEffect } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useGlobalStore } from "@/store/global";
-import { useSettingsStore } from "@/store/settings";
 
 const props = defineProps({
   visible: {
@@ -133,9 +132,6 @@ const props = defineProps({
 const emit = defineEmits(["update:visible", "setIcon"]);
 const { t } = useI18n();
 const globalStore = useGlobalStore();
-const settingsStore = useSettingsStore();
-const { changeAppearanceSetting } = settingsStore;
-const { appearanceSetting } = storeToRefs(settingsStore);
 const { customIconCollections, defaultIconCollections, defaultIconCollection } =
   storeToRefs(globalStore);
 
@@ -294,7 +290,7 @@ const handleCancel = () => {
   console.log("cancel");
 };
 
-const init = () => {
+const syncIconCollectionState = () => {
   if (defaultIconCollection.value) {
     form.iconCollectionUrl = defaultIconCollection.value;
     defaultIconCollectionValue.value[0] = defaultIconCollection.value;
@@ -302,7 +298,6 @@ const init = () => {
     form.iconCollectionUrl = defaultIconCollections.value[0].value;
     defaultIconCollectionValue.value[0] = defaultIconCollections.value[0].value;
   }
-  refreshIcons();
 };
 
 const clearIconName = () => {
@@ -334,20 +329,18 @@ const handleResetDefault = () => {
   refreshIcons();
 };
 
-onMounted(() => {
-  init();
-});
 const isVisible = ref(props.visible);
 
 watch(
   () => props.visible,
   (newValue) => {
     isVisible.value = newValue;
-    console.log("newValue", newValue);
     if (newValue) {
+      syncIconCollectionState();
       refreshIcons();
     }
   },
+  { immediate: true },
 );
 
 const show = () => {

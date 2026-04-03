@@ -402,7 +402,7 @@
     @closePreview="closePreview"
     @refresh="refreshPreview"
   />
-  <icon-popup v-model:visible="iconPopupVisible" ref="iconPopupRef" @setIcon="setIcon">
+  <icon-popup v-if="iconPopupVisible" v-model:visible="iconPopupVisible" @setIcon="setIcon">
   </icon-popup>
   <!-- 订阅名称 -->
   <nut-picker
@@ -888,7 +888,6 @@ const isIconColor = computed(() => {
   return form.isIconColor;
 });
 const iconPopupVisible = ref(false);
-const iconPopupRef = ref(null);
 const showIconPopup = () => {
   iconPopupVisible.value = true;
 };

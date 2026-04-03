@@ -483,8 +483,8 @@
     @refresh="refreshCompare"
   />
   <icon-popup
+    v-if="iconPopupVisible"
     v-model:visible="iconPopupVisible"
-    ref="iconPopupRef"
     @setIcon="setIcon">
   </icon-popup>
   <tag-popup
@@ -1106,7 +1106,6 @@ const urlValidator = (val: string): Promise<boolean> => {
     }
   })
   const iconPopupVisible = ref(false)
-  const iconPopupRef = ref(null)
   const showIconPopup = () => {
     iconPopupVisible.value = true
   }
