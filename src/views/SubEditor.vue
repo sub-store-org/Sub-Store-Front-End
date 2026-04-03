@@ -360,7 +360,7 @@
                         :class="{ 'sub-item-customer-icon': !element[4], 'icon': true  }"
                         v-if="element[2]"
                         size="32"
-                        :url="element[2]"
+                        :url="rewriteGithubUrl(element[2])"
                         bg-color=""
                       ></nut-avatar>
                       <span class="sub-item">
@@ -535,6 +535,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 const cmStore = useCodeStore();
 const isDis = ref(true)
 const { t } = useI18n();
@@ -548,7 +549,7 @@ const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const {
     bottomSafeArea,
@@ -557,6 +558,12 @@ const {
     // isIconColor 
   } = storeToRefs(globalStore);
 const padding = bottomSafeArea.value + "px";
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
 
   const sub = computed(() => subsStore.getOneSub(configName));
   const collection = computed(() => subsStore.getOneCollection(configName));
@@ -1100,9 +1107,9 @@ const urlValidator = (val: string): Promise<boolean> => {
   // 图标
   const subIcon = computed(() => {
     if (form.icon) {
-      return form.icon
+      return rewriteGithubUrl(form.icon)
     } else {
-      return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon
+      return rewriteGithubUrl(appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon)
     }
   })
   const iconPopupVisible = ref(false)

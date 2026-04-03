@@ -32,13 +32,13 @@
             <nut-avatar
               v-if="props[props.type].icon"
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-              :url="props[props.type].icon"
+              :url="rewriteGithubUrl(props[props.type].icon)"
               bg-color=""
             />
             <nut-avatar
               v-else
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-              :url="icon"
+              :url="rewriteGithubUrl(icon)"
               bg-color=""
             />
           </div>
@@ -46,7 +46,7 @@
             <nut-avatar
               class="sub-item-customer-icon"
               :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-              :url="props[props.type].icon || icon"
+              :url="rewriteGithubUrl(props[props.type].icon || icon)"
               bg-color=""
             />
           </div>
@@ -323,6 +323,7 @@ import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { getString } from "@/utils/flowTransfer";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { isMobile } from "@/utils/isMobile";
 import { openManagedDeleteDialog } from "@/utils/archive";
 import CompareTable from "@/views/CompareTable.vue";
@@ -358,7 +359,7 @@ const globalStore = useGlobalStore();
 const subsStore = useSubsStore();
 const subsApi = useSubsApi();
 const settingsStore = useSettingsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const {
   isFlowFetching,
@@ -390,6 +391,12 @@ const { flows } = storeToRefs(subsStore);
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
 });
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
 
 const isIconColor = computed(() => {
   return props[props.type].isIconColor !== false;

@@ -4,7 +4,7 @@
       <nut-cell-group :title="$t(`apiSettingPage.currentApi.title`)">
         <nut-cell class="cell" center>
           <template #icon>
-            <img :src="env.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_ICON || icon" alt="" class="auto-reverse backend-icon">
+            <img :src="backendIcon" alt="" class="auto-reverse backend-icon">
           </template>
           <template #title>
             <span class="backend-title">{{
@@ -145,7 +145,7 @@
 
 <script setup lang="ts">
 import { Dialog, Toast } from "@nutui/nutui";
-import { ref, onMounted, watchEffect } from 'vue';
+import { computed, ref, onMounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useBackend } from '@/hooks/useBackend';
 import { useHostAPI } from '@/hooks/useHostAPI';
@@ -153,7 +153,10 @@ import axios from 'axios';
 
 import { useClipboard } from '@vueuse/core';
 import useV3Clipboard from 'vue-clipboard3';
+import { storeToRefs } from 'pinia';
 import { useAppNotifyStore } from '@/store/appNotify';
+import { useSettingsStore } from '@/store/settings';
+import { createGithubProxyUrlRewriter } from '@/utils/githubProxy';
 
 const { t } = useI18n();
 const { copy, isSupported } = useClipboard();
@@ -161,8 +164,18 @@ const { toClipboard: copyFallback } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
 const { icon, env, isEnvReady } = useBackend();
+const settingsStore = useSettingsStore();
+const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi }
     = useHostAPI();
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const backendIcon = computed(() => {
+  return githubUrlRewriter.value(
+    env.value?.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_ICON || icon.value,
+  ) || icon.value;
+});
 
 const addForm = ref<HostAPI>({
   name: '',

@@ -120,6 +120,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { openManagedDeleteDialog } from "@/utils/archive";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { normalizeTagArray } from "@/utils/shareTags";
 
 const { showNotify } = useAppNotifyStore();
@@ -138,7 +139,7 @@ const isArchiveEnabled = computed(() => {
 });
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const { currentUrl: host } = useHostAPI();
 
 const name = computed(() => {
@@ -179,18 +180,28 @@ const leftTime = computed(() => {
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
 });
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
 
 const shareIcon = computed(() => {
+  let iconUrl: string;
+
   switch (type.value) {
     case "sub":
-      return subsStore.getOneSub(name.value)?.icon || icon.value;
+      iconUrl = subsStore.getOneSub(name.value)?.icon || icon.value;
+      break;
     case "col":
-      return subsStore.getOneCollection(name.value)?.icon || icon.value;
+      iconUrl = subsStore.getOneCollection(name.value)?.icon || icon.value;
+      break;
     case "file":
-      return subsStore.getOneFile(name.value)?.icon || icon.value;
+      iconUrl = subsStore.getOneFile(name.value)?.icon || icon.value;
+      break;
     default:
-      return icon.value;
+      iconUrl = icon.value;
   }
+
+  return githubUrlRewriter.value(iconUrl) || icon.value;
 });
 
 const isIconColor = computed(() => {

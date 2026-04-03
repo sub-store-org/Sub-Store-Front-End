@@ -1,6 +1,15 @@
 <template>
   <div class="page-wrapper">
     <div class="form-block-wrapper">
+      <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
+        <nut-image
+          :class="{ 'sub-item-customer-icon': !form.isIconColor }"
+          :src="syncIcon"
+          fit="cover"
+          show-loading
+          @click="showIconPopup"
+        />
+      </div>
       <nut-form class="form" :model-value="form" ref="ruleForm">
         <nut-form-item
           :label="$t(`syncPage.addArtForm.name.label`)"
@@ -228,7 +237,10 @@ import IconPopup from "@/views/icon/IconPopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { resolveArtifactIcon } from "@/utils/artifactIcon";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
 import { computed, reactive, ref, toRaw, watch, watchEffect, onMounted } from "vue";
@@ -243,8 +255,10 @@ const configName = route.params.id as string;
 const artifactsStore = useArtifactsStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const settingsStore = useSettingsStore();
 const { showNotify } = useAppNotifyStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const padding = bottomSafeArea.value + "px";
 const isEditMode = computed(() => configName !== "UNTITLED");
@@ -258,6 +272,13 @@ const sourceModel = ref<string[]>([]);
 const tagPopupVisible = ref(false);
 const iconPopupVisible = ref(false);
 
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
+
 const form = reactive<any>({
   name: "",
   displayName: "",
@@ -270,6 +291,15 @@ const form = reactive<any>({
   platform: "Stash",
   sync: false,
   includeUnsupportedProxy: false,
+});
+
+const syncIcon = computed(() => {
+  const icon = resolveArtifactIcon({
+    artifact: form,
+    isDefaultIcon: appearanceSetting.value.isDefaultIcon,
+  });
+
+  return rewriteGithubUrl(icon) || icon;
 });
 
 const sourceOptions = computed(() => {
@@ -538,6 +568,38 @@ const submit = () => {
 }
 
 .form-block-wrapper {
+  position: relative;
+
+  .sticky-title-icon-container {
+    display: flex;
+    justify-content: center;
+
+    .nut-image {
+      cursor: pointer;
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: transparent;
+      padding: 10px;
+
+      :deep(img) {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+      }
+    }
+
+    .sub-item-customer-icon {
+      :deep(img) {
+        & {
+          opacity: 0.8;
+          filter: brightness(var(--img-brightness));
+        }
+      }
+    }
+  }
+
   :deep(.nut-form-item__label) {
     width: auto;
   }

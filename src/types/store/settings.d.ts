@@ -14,6 +14,7 @@ interface SettingsPostData {
   syncPlatform?: string;
   gistToken?: string;
   githubProxy?: string;
+  githubProxyRegex?: string;
   githubUser?: string;
   defaultProxy?: string;
   defaultUserAgent?: string;

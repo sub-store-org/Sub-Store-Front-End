@@ -464,6 +464,7 @@ import { useRoute, useRouter } from "vue-router";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 import clashmetaIcon from '@/assets/icons/clashmeta_color.png';
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 
 const cmStore = useCodeStore();
 const isDis = ref(true);
@@ -480,7 +481,7 @@ const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
 const { subs, collections } = storeToRefs(subsStore);
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const padding = bottomSafeArea.value + "px";
 
 let scrollTop = 0;
@@ -878,12 +879,18 @@ const proxyTips = () => {
 // 图标
 const fileIcon = computed(() => {
   if (form.icon) {
-    return form.icon;
+    return rewriteGithubUrl(form.icon);
   } else {
     if (form.type === 'mihomoProfile') return clashmetaIcon;
-    return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
+    return rewriteGithubUrl(appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon);
   }
 });
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
 const isIconColor = computed(() => {
   return form.isIconColor;
 });

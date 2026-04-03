@@ -15,7 +15,7 @@
         <nut-avatar
           :class="{ 'sub-item-customer-icon': !isIconColor }"
           :size="appearanceSetting.isSimpleMode ? '36' : '48'"
-          :url="icon"
+          :url="displayIcon"
           bg-color=""
         ></nut-avatar>
       </div>
@@ -199,6 +199,7 @@ import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { butifyDate } from "@/utils/butifyDate";
 import { resolveArtifactIcon } from "@/utils/artifactIcon";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { isMobile } from "@/utils/isMobile";
 import { Dialog, Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
@@ -230,7 +231,7 @@ const { showNotify } = useAppNotifyStore();
 const subsStore = useSubsStore();
 const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const artifact = computed(() => {
   return artifacts.value.find((item) => item.name === props.name);
@@ -281,6 +282,12 @@ const icon = computed(() => {
     isDefaultIcon: appearanceSetting.value.isDefaultIcon,
     sourceIcon: sourceSub.value?.icon,
   });
+});
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const displayIcon = computed(() => {
+  return githubUrlRewriter.value(icon.value) || icon.value;
 });
 
 

@@ -15,9 +15,13 @@
       <div class="info">
         <div v-if="storageType === 'manual'" class="avatar-wrapper">
           <nut-avatar
-            :class="{ 'avatar-normal': !githubUser }"
+            :key="avatarDisplayKey"
+            :class="{ 'avatar-fallback': isAvatarFallback }"
             size="72"
-            :icon="displayAvatar"
+            bg-color="var(--card-color)"
+            :url="remoteAvatarUrl"
+            :icon="displayAvatarIcon"
+            @on-error="handleAvatarError"
           />
           <div class="name">
             <p class="title">
@@ -33,9 +37,13 @@
         </div>
         <div v-else class="avatar-wrapper">
           <nut-avatar
-            :class="{ 'avatar-normal': !githubUser }"
+            :key="avatarDisplayKey"
+            :class="{ 'avatar-fallback': isAvatarFallback }"
             size="72"
-            :icon="displayAvatar"
+            bg-color="var(--card-color)"
+            :url="remoteAvatarUrl"
+            :icon="displayAvatarIcon"
+            @on-error="handleAvatarError"
           />
           <div class="name">
             <p class="title">
@@ -183,6 +191,17 @@
             :left-icon="icongithubProxy"
             right-icon="tips"
             @click-right-icon="githubProxyTips"
+          />
+          <nut-input
+            class="input"
+            v-model="githubProxyRegexInput"
+            :disabled="!isGitHubConfigEditing"
+            :placeholder="$t(`myPage.placeholder.githubProxyRegex`)"
+            type="text"
+            input-align="left"
+            :left-icon="icongithubProxy"
+            right-icon="tips"
+            @click-right-icon="githubProxyRegexTips"
           />
           
         </div>
@@ -457,7 +476,7 @@
     </div>
 
     <div class="env-block">
-      <img v-if="icon" :src="env.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_ICON || icon" alt="" class="auto-reverse" />
+      <img v-if="icon" :src="displayBackendIcon" alt="" class="auto-reverse" />
       <a
         v-if="env.hasNewVersion"
         target="_blank"
@@ -493,9 +512,10 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { butifyDate } from "@/utils/butifyDate";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { initStores } from "@/utils/initApp";
 import { storeToRefs } from "pinia";
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
@@ -509,14 +529,88 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, syncPlatform, githubProxy, gistUpload } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, syncPlatform, githubProxy, githubProxyRegex, gistUpload } =
   storeToRefs(settingsStore);
 
-const displayAvatar = computed(() => {
-  return !githubUser.value ? avatar : avatarUrl.value;
+const HTTP_URL_RE = /^https?:\/\//i;
+const avatarLoadFailed = ref(false);
+const avatarRenderNonce = ref(0);
+
+const applyGithubAvatarProxy = (candidateUrl?: string | null) => {
+  const normalizedUrl = candidateUrl?.trim();
+  const proxyBaseUrl = githubProxy.value?.trim().replace(/\/+$/, "");
+
+  if (!normalizedUrl || !proxyBaseUrl || !HTTP_URL_RE.test(normalizedUrl)) {
+    return normalizedUrl || "";
+  }
+
+  if (normalizedUrl.startsWith(`${proxyBaseUrl}/`)) {
+    return normalizedUrl;
+  }
+
+  return `${proxyBaseUrl}/${normalizedUrl}`;
+};
+
+const fallbackGithubAvatarUrl = computed(() => {
+  const normalizedGithubUser = githubUser.value?.trim();
+
+  if (!normalizedGithubUser) {
+    return "";
+  }
+
+  return `https://github.com/${encodeURIComponent(normalizedGithubUser)}.png`;
+});
+
+const remoteAvatarUrl = computed(() => {
+  if (!githubUser.value?.trim() || avatarLoadFailed.value) {
+    return "";
+  }
+
+  return applyGithubAvatarProxy(avatarUrl.value || fallbackGithubAvatarUrl.value);
+});
+
+const displayAvatarIcon = computed(() => {
+  return remoteAvatarUrl.value ? "" : avatar;
+});
+
+const isAvatarFallback = computed(() => {
+  return !remoteAvatarUrl.value;
+});
+
+const avatarDisplayKey = computed(() => {
+  return `${remoteAvatarUrl.value || "fallback"}:${avatarRenderNonce.value}`;
+});
+
+const resetAvatarState = (forceRerender = false) => {
+  avatarLoadFailed.value = false;
+
+  if (forceRerender) {
+    avatarRenderNonce.value += 1;
+  }
+};
+
+const handleAvatarError = () => {
+  if (!remoteAvatarUrl.value) {
+    return;
+  }
+
+  avatarLoadFailed.value = true;
+  avatarRenderNonce.value += 1;
+};
+
+watch([githubUser, githubProxy, githubProxyRegex, avatarUrl], () => {
+  resetAvatarState(true);
 });
 
 const { icon, env } = useBackend();
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const displayBackendIcon = computed(() => {
+  return githubUrlRewriter.value(
+    env.value?.meta?.node?.env?.SUB_STORE_BACKEND_CUSTOM_ICON || icon.value,
+  ) || icon.value;
+});
 
 const shareBtnVisible = computed(() => {
   return env.value?.feature?.share;
@@ -548,6 +642,7 @@ const syncPlatformInput = ref("");
 const userInput = ref("");
 const tokenInput = ref("");
 const githubProxyInput = ref("");
+const githubProxyRegexInput = ref("");
 const uaInput = ref("");
 const proxyInput = ref("");
 const timeoutInput = ref("");
@@ -568,87 +663,107 @@ const fileInput = ref(null);
 
 const toggleEditMode = async (type) => {
   isEditLoading.value = true;
-  if ((type === 'github' && isGitHubConfigEditing.value) || (type === 'request' && isRequestConfigEditing.value) || (type === 'cache' && isCacheConfigEditing.value)) {
-    await settingsStore.changeSettings({
-      syncPlatform: syncPlatformInput.value,
-      githubUser: userInput.value,
-      gistToken: tokenInput.value,
-      githubProxy: githubProxyInput.value,
-      defaultUserAgent: uaInput.value,
-      defaultProxy: proxyInput.value,
-      defaultTimeout: timeoutInput.value,
-      cacheThreshold: cacheThresholdInput.value,
-      resourceCacheTtl: resourceCacheTtlInput.value,
-      headersCacheTtl: headersCacheTtlInput.value,
-      scriptCacheTtl: scriptCacheTtlInput.value,
-    });
-    setDisplayInfo();
-  } else {
-    syncPlatformInput.value = syncPlatform.value;
-    userInput.value = githubUser.value;
-    tokenInput.value = gistToken.value;
-    githubProxyInput.value = githubProxy.value;
-    uaInput.value = defaultUserAgent.value;
-    proxyInput.value = defaultProxy.value;
-    timeoutInput.value = defaultTimeout.value;
-    cacheThresholdInput.value = cacheThreshold.value;
-    resourceCacheTtlInput.value = resourceCacheTtl.value;
-    headersCacheTtlInput.value = headersCacheTtl.value;
-    scriptCacheTtlInput.value = scriptCacheTtl.value;
-  }
-  if (type === 'frontEnd' && isFrontEndConfigEditing.value) {
-    const apiCheckTimeout = Number(apiCheckTimeoutInput.value);
-    if (!isNaN(apiCheckTimeout)) {
-      if (apiCheckTimeout > 0) {
-        console.log(`设置超时 ${apiCheckTimeout}`)
-        localStorage.setItem('timeout', apiCheckTimeout.toString());
-      } else {
+  try {
+    if ((type === 'github' && isGitHubConfigEditing.value) || (type === 'request' && isRequestConfigEditing.value) || (type === 'cache' && isCacheConfigEditing.value)) {
+      const saveSucceeded = await settingsStore.changeSettings({
+        syncPlatform: syncPlatformInput.value,
+        githubUser: userInput.value,
+        gistToken: tokenInput.value,
+        githubProxy: githubProxyInput.value,
+        githubProxyRegex: githubProxyRegexInput.value,
+        defaultUserAgent: uaInput.value,
+        defaultProxy: proxyInput.value,
+        defaultTimeout: timeoutInput.value,
+        cacheThreshold: cacheThresholdInput.value,
+        resourceCacheTtl: resourceCacheTtlInput.value,
+        headersCacheTtl: headersCacheTtlInput.value,
+        scriptCacheTtl: scriptCacheTtlInput.value,
+      });
+
+      if (saveSucceeded && type === 'github') {
+        resetAvatarState(true);
+        await settingsStore.fetchSettings();
+        resetAvatarState(true);
+      }
+
+      if (saveSucceeded) {
+        setDisplayInfo();
+      }
+    } else {
+      syncPlatformInput.value = syncPlatform.value;
+      userInput.value = githubUser.value;
+      tokenInput.value = gistToken.value;
+      githubProxyInput.value = githubProxy.value;
+      githubProxyRegexInput.value = githubProxyRegex.value;
+      uaInput.value = defaultUserAgent.value;
+      proxyInput.value = defaultProxy.value;
+      timeoutInput.value = defaultTimeout.value;
+      cacheThresholdInput.value = cacheThreshold.value;
+      resourceCacheTtlInput.value = resourceCacheTtl.value;
+      headersCacheTtlInput.value = headersCacheTtl.value;
+      scriptCacheTtlInput.value = scriptCacheTtl.value;
+    }
+    if (type === 'frontEnd' && isFrontEndConfigEditing.value) {
+      const apiCheckTimeout = Number(apiCheckTimeoutInput.value);
+      if (!isNaN(apiCheckTimeout)) {
+        if (apiCheckTimeout > 0) {
+          console.log(`设置超时 ${apiCheckTimeout}`)
+          localStorage.setItem('timeout', apiCheckTimeout.toString());
+        } else {
+          console.log(`清除超时设置`)
+          localStorage.removeItem('timeout');
+        }
+      }else {
         console.log(`清除超时设置`)
         localStorage.removeItem('timeout');
       }
-    }else {
-      console.log(`清除超时设置`)
-      localStorage.removeItem('timeout');
-    }
-    const concurrency = parseInt(concurrencyInput.value, 10);
-    if (!isNaN(concurrency)) {
-      if (concurrency >= 1) {
-        console.log(`设置并发数 ${concurrency}`)
-        localStorage.setItem('concurrency', concurrency.toString());
+      const concurrency = parseInt(concurrencyInput.value, 10);
+      if (!isNaN(concurrency)) {
+        if (concurrency >= 1) {
+          console.log(`设置并发数 ${concurrency}`)
+          localStorage.setItem('concurrency', concurrency.toString());
+        } else {
+          console.log(`清除并发数设置`)
+          localStorage.removeItem('concurrency');
+        }
       } else {
         console.log(`清除并发数设置`)
         localStorage.removeItem('concurrency');
       }
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } else {
-      console.log(`清除并发数设置`)
-      localStorage.removeItem('concurrency');
+      const storedTimeout = localStorage.getItem('timeout');
+      if (storedTimeout) {
+        apiCheckTimeoutInput.value = storedTimeout;
+      } else {
+        apiCheckTimeoutInput.value = '';
+      }
+      const storedConcurrency = localStorage.getItem('concurrency');
+      if (storedConcurrency) {
+        concurrencyInput.value = storedConcurrency;
+      } else {
+        concurrencyInput.value = '';
+      }
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  } else {
-    const storedTimeout = localStorage.getItem('timeout');
-    if (storedTimeout) {
-      apiCheckTimeoutInput.value = storedTimeout;
-    } else {
-      apiCheckTimeoutInput.value = '';
+    if (type === 'github' && !isGitHubConfigEditing.value) {
+      isGitHubConfigEditing.value = !isGitHubConfigEditing.value;
+    } else if (type === 'cache' && !isCacheConfigEditing.value) {
+      isCacheConfigEditing.value = !isCacheConfigEditing.value;
+    } else if (type === 'request' && !isRequestConfigEditing.value) {
+      isRequestConfigEditing.value = !isRequestConfigEditing.value;
+    } else if (type === 'frontEnd' && !isFrontEndConfigEditing.value) {
+      isFrontEndConfigEditing.value = !isFrontEndConfigEditing.value;
     }
-    const storedConcurrency = localStorage.getItem('concurrency');
-    if (storedConcurrency) {
-      concurrencyInput.value = storedConcurrency;
-    } else {
-      concurrencyInput.value = '';
-    }
-  }
-  isEditLoading.value = false;
-  if (type === 'github' && !isGitHubConfigEditing.value) {
-    isGitHubConfigEditing.value = !isGitHubConfigEditing.value;
-  } else if (type === 'cache' && !isCacheConfigEditing.value) {
-    isCacheConfigEditing.value = !isCacheConfigEditing.value;
-  } else if (type === 'request' && !isRequestConfigEditing.value) {
-    isRequestConfigEditing.value = !isRequestConfigEditing.value;
-  } else if (type === 'frontEnd' && !isFrontEndConfigEditing.value) {
-    isFrontEndConfigEditing.value = !isFrontEndConfigEditing.value;
+  } catch (e) {
+    showNotify({
+      title: `更新配置失败`,
+      type: "danger",
+    });
+    console.error(e);
+  } finally {
+    isEditLoading.value = false;
   }
 };
 
@@ -695,6 +810,7 @@ const setDisplayInfo = () => {
   syncPlatformInput.value = syncPlatform.value || "";
   userInput.value = githubUser.value || "";
   githubProxyInput.value = githubProxy.value || "";
+  githubProxyRegexInput.value = githubProxyRegex.value || "";
   tokenInput.value = gistToken.value
     ? `${gistToken.value.slice(0, 6)}************`
     : "";
@@ -884,11 +1000,28 @@ const downloadBtn = () => {
 const githubProxyTips = () => {
   Dialog({
       title: '请填写完整 GitHub 加速代理地址',
-      content: '后端需 >= 2.19.97\n\n1. 仅用于上传/下载 Gist 和获取 GitHub 头像\n\n2. 请填写完整 如 https://a.com\n\n3. 需支持代理 https://api.github.com/users/* 和 https://api.github.com/gists\n\n测试方式:\n浏览器打开\nhttps://a.com/https://api.github.com/gists?per_page=1&page=1\n和\nhttps://a.com/https://api.github.com/users/xream\n有正常的响应\n\n4. 使用此方式时, 自行注意安全隐私问题',
+      content: '后端需 >= 2.21.75 才可完整使用下方正则匹配能力\n\n1. 该代理仍用于上传/下载 Gist 和获取 GitHub 头像\n\n2. 请填写完整地址, 如 https://a.com\n\n3. 需支持代理 https://api.github.com/users/* 和 https://api.github.com/gists\n\n4. 若同时配置下方的 GitHub 加速代理匹配正则, 匹配的所有远程资源 URL 会改写为\nhttps://a.com/原始URL\n\n测试方式:\n浏览器打开\nhttps://a.com/https://api.github.com/gists?per_page=1&page=1\n和\nhttps://a.com/https://api.github.com/users/xream\n有正常的响应\n\n5. 使用此方式时, 自行注意安全隐私问题',
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
       noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const githubProxyRegexExample = '^https?:\\/\\/.+\\.(githubusercontent|github)\\.com($|\\/)';
+const githubProxyRegexTips = () => {
+  Dialog({
+      title: '按正则匹配下载链接',
+      content: `后端需 >= 2.21.75\n\n1. 需先配置上方 GitHub 加速代理, 本项才会生效\n\n2. 影响所有远程资源 URL, 不影响上面的 Gist 和头像代理逻辑\n\n3. 默认忽略大小写, 例如\n${githubProxyRegexExample}\n\n4. 会把匹配的下载地址改写为\nhttps://a.com/原始URL\n\n5. 使用此方式时, 自行注意安全隐私问题`,
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      cancelText: '填入示例正则',
+      onCancel: () => {
+        githubProxyRegexInput.value = githubProxyRegexExample;
+        Toast.text('已填入示例正则，请自行保存', { duration: 3000 });
+      },
       closeOnPopstate: true,
       lockScroll: false,
     });
@@ -1123,9 +1256,16 @@ const setTag = (current) => {
         align-items: center;
         max-width: 64%;
 
-        .avatar-normal {
-          :deep(img) {
+        :deep(.nut-avatar) {
+          background: var(--card-color);
+        }
+
+        .avatar-fallback {
+          :deep(img),
+          :deep(.nut-icon__img) {
             width: 72%;
+            height: 72%;
+            object-fit: contain;
           }
         }
 

@@ -51,7 +51,7 @@
           @click="copyIconUrl(icon)"
         >
           <nut-image
-            :src="icon.url"
+            :src="rewriteGithubUrl(icon.url)"
             fit="cover"
             lazy-load
             show-loading
@@ -88,11 +88,12 @@ import useV3Clipboard from "vue-clipboard3";
 import { useI18n } from "vue-i18n";
 
 import { useGlobalStore } from "@/store/global";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { useSettingsStore } from '@/store/settings';
 
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const { changeAppearanceSetting } = settingsStore;
 
 const { defaultIconCollection } = storeToRefs(globalStore);
@@ -175,6 +176,12 @@ const iconData = computed(() => {
     return iconName.includes(keyWord);
   });
 });
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
 const clearIconName = () => {
   form.iconName = "";
 };
@@ -185,7 +192,7 @@ const fetchIcons = async () => {
       id: "icon-collection",
     });
     isLoading.value = true;
-    const { data } = await axios.get(form.iconCollectionUrl);
+    const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl));
     isLoading.value = false;
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";

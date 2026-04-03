@@ -91,6 +91,16 @@ img.auto-reverse {
   filter: brightness(var(--img-brightness));
 }
 
+// Keep editor top preview images aligned with the page theme while they reload.
+.sticky-title-icon-container {
+  .nut-image {
+    .nut-img-loading,
+    .nut-img-error {
+      background-color: var(--background-color);
+    }
+  }
+}
+
 // dialog
 .auto-dialog {
   background-color: var(--dialog-color) !important;

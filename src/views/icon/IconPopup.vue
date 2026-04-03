@@ -86,7 +86,7 @@
         @click="handleIcon(icon)"
       >
         <nut-image
-          :src="icon.url"
+          :src="rewriteGithubUrl(icon.url)"
           fit="cover"
           lazy-load
           show-loading
@@ -122,6 +122,8 @@ import { computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useGlobalStore } from "@/store/global";
+import { useSettingsStore } from "@/store/settings";
+import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 
 const props = defineProps({
   visible: {
@@ -132,8 +134,10 @@ const props = defineProps({
 const emit = defineEmits(["update:visible", "setIcon"]);
 const { t } = useI18n();
 const globalStore = useGlobalStore();
+const settingsStore = useSettingsStore();
 const { customIconCollections, defaultIconCollections, defaultIconCollection } =
   storeToRefs(globalStore);
+const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const form = reactive({
   iconName: "",
@@ -167,6 +171,12 @@ const debouncedSearch = useDebounceFn(performSearch, 500);
 const iconData = computed(() => {
   return searchResult.value;
 });
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const rewriteGithubUrl = (url?: string | null) => {
+  return githubUrlRewriter.value(url);
+};
 
 // 监听 form.iconName 变化以触发搜索
 watch(
@@ -208,7 +218,7 @@ const fetchIcons = async () => {
       id: "icon-collection",
     });
     isLoading.value = true;
-    const { data } = await axios.get(form.iconCollectionUrl);
+    const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl));
     isLoading.value = false;
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";

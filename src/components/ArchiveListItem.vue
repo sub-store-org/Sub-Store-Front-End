@@ -13,7 +13,7 @@
         :class="{ simple: appearanceSetting.isSimpleMode }"
       >
         <img
-          :src="itemIcon"
+          :src="displayItemIcon"
           alt=""
           :style="{
             opacity: isIconColor ? 1 : 0.8,
@@ -106,6 +106,7 @@ import logoRedIcon from '@/assets/icons/logo-red.png';
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from '@/store/subs';
 import { resolveArtifactIcon } from '@/utils/artifactIcon';
+import { createGithubProxyUrlRewriter } from '@/utils/githubProxy';
 import {
   formatArchiveTime,
   getArchiveEntryDisplayName,
@@ -122,7 +123,7 @@ const emit = defineEmits(['restore', 'delete']);
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const displayName = computed(() => getArchiveEntryDisplayName(props.data));
 const remark = computed(() => props.data?.remark || '');
@@ -210,6 +211,12 @@ const itemIcon = computed(() => {
     default:
       return icon.value;
   }
+});
+const githubUrlRewriter = computed(() => {
+  return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
+});
+const displayItemIcon = computed(() => {
+  return githubUrlRewriter.value(itemIcon.value) || itemIcon.value;
 });
 
 const isIconColor = computed(() => {

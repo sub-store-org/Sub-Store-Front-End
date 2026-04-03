@@ -16,6 +16,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       syncPlatform: "",
       gistToken: "",
       githubProxy: "",
+      githubProxyRegex: "",
       githubUser: "",
       defaultUserAgent: "",
       defaultProxy: "",
@@ -66,6 +67,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
         this.githubProxy = res.data.data.githubProxy || "";
+        this.githubProxyRegex = res.data.data.githubProxyRegex || "";
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
@@ -112,6 +114,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
         this.githubProxy = res.data.data.githubProxy || "";
+        this.githubProxyRegex = res.data.data.githubProxyRegex || "";
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
@@ -125,11 +128,13 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.artifactStoreStatus = res.data.data.artifactStoreStatus || "";
         this.gistUpload = res.data.data.gistUpload || "";
         showNotify({ type: "success", title: t(`myPage.notify.save.succeed`) });
+        return true;
       } else {
         showNotify({
           title: `更新配置失败`,
           type: "danger",
         });
+        return false;
       }
     },
     // 备份本地配置到后端（用于兼容外观设置）
