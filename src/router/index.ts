@@ -13,7 +13,6 @@ import File from '@/views/File.vue';
 import FileEditor from '@/views/FileEditor.vue';
 import FilePreview from '@/views/FilePreview.vue';
 // import editScript from '@/views/editCode/editScript.vue';
-import IconCollection from '@/views/icon/IconCollection.vue';
 
 import Sub from '@/views/Sub.vue';
 import SubEditor from '@/views/SubEditor.vue';
@@ -191,15 +190,6 @@ const router = createRouter({
         //     needNavBack: true,
         //   },
         // },
-        {
-          path: '/icon/collection',
-          component: IconCollection,
-          meta: {
-            title: 'iconCollection',
-            needTabBar: true,
-            needNavBack: true,
-          },
-        },
         {
           path: '/settings/more',
           component: moreSetting,

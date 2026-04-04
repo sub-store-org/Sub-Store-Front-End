@@ -17,89 +17,122 @@
     round
     @close="close"
   >
-    <div class="icon-popup-title">
-      {{ $t(`iconCollectionPage.iconCollection`) }}
-    </div>
-    <div class="icon-info-wrapper">
-      <div class="icon-collection-name">
-        <h1>{{ form.iconCollectionName }}</h1>
-        <p>{{ form.iconCollectionDesc }}</p>
-      </div>
-      <div class="icon-collection-action">
-        <div class="action-btn" @click="handleMoreIconCollection">
-          <span>{{ $t(`iconCollectionPage.more`) }}</span>
-          <nut-icon name="rect-right" size="12px"></nut-icon>
+    <div class="icon-popup-content">
+      <div class="icon-popup-top">
+        <div class="icon-popup-title">
+          {{ $t(`iconCollectionPage.iconCollection`) }}
         </div>
-        <div class="action-btn" @click="handleResetDefault">
-          <span>{{ $t(`iconCollectionPage.resetDefaultIconCollection`) }}</span>
-          <!-- <nut-icon name="rect-right" size="12px"></nut-icon> -->
+        <div class="icon-info-wrapper">
+          <div class="icon-collection-name">
+            <h1>{{ form.iconCollectionName }}</h1>
+            <p>{{ form.iconCollectionDesc }}</p>
+          </div>
+          <div class="icon-collection-action">
+            <div class="action-btn" @click="handleMoreIconCollection">
+              <span>{{ $t(`iconCollectionPage.more`) }}</span>
+              <nut-icon name="rect-right" size="12px"></nut-icon>
+            </div>
+            <div class="action-btn" @click="handleResetDefault">
+              <span>{{ $t(`iconCollectionPage.resetDefaultIconCollection`) }}</span>
+              <!-- <nut-icon name="rect-right" size="12px"></nut-icon> -->
+            </div>
+          </div>
+        </div>
+        <div class="switch-wrapper">
+          <div class="switch-item">
+            <nut-switch
+              v-model="showCustomIconCollection"
+              class="my-switch"
+              size="mini"
+            />
+            <span class="label">
+              {{ $t(`iconCollectionPage.useCustomIconCollection`) }}
+            </span>
+          </div>
+        </div>
+        <div class="icon-collection-search-wrapper">
+          <div class="icon-collection-search-content">
+            <nut-form>
+              <nut-form-item>
+                <nut-input
+                  v-model="form.iconName"
+                  :border="false"
+                  text-align="left"
+                  :placeholder="$t(`iconCollectionPage.iconNamePlaceholder`)"
+                  type="text"
+                  clearable
+                  @clear="clearIconName"
+                ></nut-input>
+              </nut-form-item>
+              <nut-form-item v-if="showCustomIconCollection">
+                <nut-input
+                  v-model="form.customIconCollectionUrl"
+                  :border="false"
+                  text-align="left"
+                  :placeholder="$t(`iconCollectionPage.iconCollectionPlaceholder`)"
+                  type="text"
+                  clearable
+                  right-icon="refresh"
+                  @clear="clearCustomIconCollectionUrl"
+                  @click-right-icon="handleAddCustomIconCollection"
+                ></nut-input>
+              </nut-form-item>
+            </nut-form>
+          </div>
+        </div>
+      </div>
+      <div class="icon-list-section">
+        <div v-if="fetchStatus === 'loading'" class="icon-state-wrapper">
+          <div class="icon-state icon-state-loading">
+            <nut-icon name="loading" size="24px" class="loading-icon"></nut-icon>
+            <p class="state-title">{{ $t(`iconCollectionPage.loadingTitle`) }}</p>
+            <p class="state-desc">{{ $t(`iconCollectionPage.loadingDesc`) }}</p>
+          </div>
+        </div>
+        <div v-else-if="fetchStatus === 'error'" class="icon-state-wrapper">
+          <div class="icon-state">
+            <nut-empty image="error" class="icon-empty">
+              <template #description>
+                <h3>{{ $t(`iconCollectionPage.loadFailedTitle`) }}</h3>
+                <p>{{ $t(`iconCollectionPage.loadFailedDesc`) }}</p>
+              </template>
+            </nut-empty>
+            <nut-button
+              icon="refresh"
+              type="primary"
+              class="icon-retry-btn"
+              @click="refreshIcons"
+            >
+              {{ $t(`iconCollectionPage.retryBtn`) }}
+            </nut-button>
+          </div>
+        </div>
+        <div v-else-if="iconData.length" class="icon-list">
+          <div
+            v-for="(icon, index) in iconData"
+            :key="index"
+            class="icon-item"
+            @click="handleIcon(icon)"
+          >
+            <nut-image
+              :src="rewriteGithubUrl(icon.url)"
+              fit="cover"
+              lazy-load
+              show-loading
+            />
+            <p>{{ icon.name }}</p>
+          </div>
+        </div>
+        <div v-else class="icon-state-wrapper">
+          <nut-empty image="empty">
+            <template #description>
+              <h3>{{ $t(`iconCollectionPage.emptyCollectionTitle`) }}</h3>
+              <p>{{ $t(`iconCollectionPage.emptyCollectionDesc`) }}</p>
+            </template>
+          </nut-empty>
         </div>
       </div>
     </div>
-    <div class="switch-wrapper">
-      <div class="switch-item">
-        <nut-switch
-          v-model="showCustomIconCollection"
-          class="my-switch"
-          size="mini"
-        />
-        <span class="label">
-          {{ $t(`iconCollectionPage.useCustomIconCollection`) }}
-        </span>
-      </div>
-    </div>
-    <div class="icon-collection-search-wrapper">
-      <div class="icon-collection-search-content">
-        <nut-form>
-          <nut-form-item>
-            <nut-input
-              v-model="form.iconName"
-              :border="false"
-              text-align="left"
-              :placeholder="$t(`iconCollectionPage.iconNamePlaceholder`)"
-              type="text"
-              clearable
-              @clear="clearIconName"
-            ></nut-input>
-          </nut-form-item>
-          <nut-form-item v-if="showCustomIconCollection">
-            <nut-input
-              v-model="form.customIconCollectionUrl"
-              :border="false"
-              text-align="left"
-              :placeholder="$t(`iconCollectionPage.iconCollectionPlaceholder`)"
-              type="text"
-              clearable
-              right-icon="refresh"
-              @clear="clearCustomIconCollectionUrl"
-              @click-right-icon="handleAddCustomIconCollection"
-            ></nut-input>
-          </nut-form-item>
-        </nut-form>
-      </div>
-    </div>
-    <div class="icon-list">
-      <div
-        v-for="(icon, index) in iconData"
-        :key="index"
-        class="icon-item"
-        @click="handleIcon(icon)"
-      >
-        <nut-image
-          :src="rewriteGithubUrl(icon.url)"
-          fit="cover"
-          lazy-load
-          show-loading
-        />
-        <p>{{ icon.name }}</p>
-      </div>
-    </div>
-    <nut-empty v-if="!isLoading && !iconData.length" image="empty">
-      <template #description>
-        <h3>{{ $t(`iconCollectionPage.emptyCollectionTitle`) }}</h3>
-        <p>{{ $t(`iconCollectionPage.emptyCollectionDesc`) }}</p>
-      </template>
-    </nut-empty>
     <nut-picker
       v-model="defaultIconCollectionValue"
       v-model:visible="showIconCollectionPicker"
@@ -149,7 +182,9 @@ const form = reactive({
   iconItemUrlKey: "",
 });
 
-const isLoading = ref(false);
+type IconCollectionFetchStatus = "idle" | "loading" | "success" | "error";
+
+const fetchStatus = ref<IconCollectionFetchStatus>("idle");
 const iconList = ref([]);
 const searchResult = ref([]);
 
@@ -217,9 +252,8 @@ const fetchIcons = async () => {
       cover: true,
       id: "icon-collection",
     });
-    isLoading.value = true;
+    fetchStatus.value = "loading";
     const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl));
-    isLoading.value = false;
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";
     iconList.value = data[collectionKey];
@@ -259,18 +293,20 @@ const fetchIcons = async () => {
     }
     // 在加载完图标后初始化搜索结果
     searchResult.value = iconList.value;
+    fetchStatus.value = "success";
     Toast.hide("icon-collection");
   } catch (error) {
     Toast.hide("icon-collection");
     iconList.value = [];
-    isLoading.value = false;
+    searchResult.value = [];
+    fetchStatus.value = "error";
     console.error("Error fetching icons:", error);
   }
 };
 
 const handleAddCustomIconCollection = () => {
   form.iconCollectionUrl = form.customIconCollectionUrl;
-  fetchIcons();
+  refreshIcons();
 };
 
 const handleIcon = (icon) => {
@@ -372,6 +408,18 @@ defineExpose({ show, hide, close });
 <style lang="scss" scoped>
 .icon-popup {
   background: var(--background-color);
+
+  .icon-popup-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .icon-popup-top {
+    flex: 0 0 auto;
+  }
+
   .icon-popup-title {
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -454,13 +502,59 @@ defineExpose({ show, hide, close });
       }
     }
   }
+  .icon-list-section {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: 20px;
+  }
+  .icon-state-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 0;
+  }
+  .icon-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .icon-state-loading {
+    color: var(--comment-text-color);
+  }
+  .loading-icon {
+    animation: rotation 1.2s linear infinite;
+  }
+  .state-title {
+    margin: 16px 0 8px;
+    color: var(--comment-text-color);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .state-desc {
+    margin: 0;
+    color: var(--comment-text-color);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .icon-empty {
+    padding: 0 0 8px;
+  }
+  .icon-retry-btn {
+    margin-top: 8px;
+  }
   .icon-list {
     display: flex;
     flex-wrap: wrap;
-    max-height: 60%;
-    overflow-y: scroll;
+    align-content: flex-start;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-top: 20px;
+    padding-bottom: 20px;
     .icon-item {
       text-align: center;
       width: 24%;
@@ -498,6 +592,16 @@ defineExpose({ show, hide, close });
     p {
       color: var(--comment-text-color);
     }
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
