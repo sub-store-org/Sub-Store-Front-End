@@ -66,11 +66,13 @@ export default {
       },
     },
   },
-  // Tab Bar
   tabBar: {
-    sub: "Subscription",
+    sub: "Subs...",
     sync: "Sync",
     my: "Profile",
+    file: "File",
+    share: "Share",
+    archive: "Archived",
   },
   // 404 页
   notFoundPage: {

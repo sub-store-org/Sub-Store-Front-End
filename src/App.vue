@@ -1,6 +1,7 @@
 <template>
   <!-- <GlobalNotify /> -->
   <NavBar />
+  <SideBar v-show="!route.path.startsWith('/preview')" />
   <main class="page-body">
     <router-view />
   </main>
@@ -14,6 +15,7 @@
 
 <script setup lang="ts">
 // import GlobalNotify from '@/components/GlobalNotify.vue';
+import SideBar from "@/components/SideBar.vue";
 import NavBar from "@/components/NavBar.vue";
 import MagicPathDialog from "@/components/MagicPathDialog.vue";
 import { useThemes } from "@/hooks/useThemes";

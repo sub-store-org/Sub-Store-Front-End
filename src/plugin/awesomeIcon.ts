@@ -40,7 +40,9 @@ import {
   faSquareArrowUpRight,
   faMaximize,
   faMinimize,
-  faBars
+  faBars,
+  faBoxArchive,
+  faShare
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faFileImport);
@@ -83,3 +85,5 @@ library.add(faBars);
 library.add(faEllipsis);
 library.add(faMaximize);
 library.add(faMinimize);
+library.add(faBoxArchive);
+library.add(faShare);

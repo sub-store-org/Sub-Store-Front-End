@@ -94,11 +94,13 @@ export default {
       },
     },
   },
-  // 底部标签栏
   tabBar: {
     sub: '订阅',
     sync: '同步',
     my: '我的',
+    file: '文件',
+    share: '分享',
+    archive: '归档',
   },
   // 404 页
   notFoundPage: {

@@ -63,6 +63,10 @@
     bottom: 0;
     @include centered-fixed-container;
 
+    @media screen and (min-width: 768px) {
+      display: none !important;
+    }
+
     .tabbar {
       padding-top: 8px;
       padding-bottom: v-bind('style.paddingBottom');
