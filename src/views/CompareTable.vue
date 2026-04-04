@@ -7,7 +7,7 @@
           <span class="title">{{ $t(`comparePage.title`) }}</span>
           <span class="displayName">
             <font-awesome-icon icon="fa-solid fa-angles-right" />
-            {{ displayName }}
+            <span class="displayNameText">{{ displayName }}</span>
           </span>
         </h1>
         <div class="btn-groups">
@@ -552,14 +552,16 @@
   }
 
   .compare-page-header {
-    padding: env(safe-area-inset-top) var(--safe-area-side) var(--safe-area-side);
+    padding: env(safe-area-inset-top) var(--safe-area-side) 0;
     position: sticky;
     top: 0;
     z-index: 19;
     display: flex;
+    gap: 12px;
     justify-content: space-between;
     align-items: center;
-    height: var(--compare-header-offset);
+    min-height: var(--compare-header-offset);
+    box-sizing: border-box;
     border-bottom: 1px solid;
     color: var(--primary-text-color);
     background: var(--background-color);
@@ -567,42 +569,56 @@
     width: 100%;
     .title {
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .displayName {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 40vw;
-      line-height: 58px;
+      flex: 0 1 40vw;
       
       @media screen and (min-width: 768px) {
-        max-width: 300px;
+        flex-basis: 300px;
       }
       
       @media screen and (min-width: 1024px) {
-        max-width: 400px;
+        flex-basis: 400px;
+      }
+
+      > svg {
+        flex-shrink: 0;
+      }
+
+      .displayNameText {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     h1 {
       display: flex;
       align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      margin: 0;
       font-size: 20px;
       line-height: 1;
       font-weight: 500;
 
       > svg {
-        margin-right: 6px;
         width: 20px;
         height: 20px;
+        flex-shrink: 0;
       }
 
       span {
-        margin-left: 8px;
         font-size: 14px;
         color: var(--second-text-color);
 
         > svg {
-          margin-right: 4px;
           color: var(--comment-text-color);
         }
       }
@@ -610,6 +626,8 @@
     .btn-groups {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
+      gap: 10px;
     }
     button {
       cursor: pointer;
@@ -618,10 +636,7 @@
       font-size: 20px;
       padding: 8px;
       color: var(--lowest-text-color);
-      margin-right: 10px;
-      &:last-child {
-        margin-right: 0;
-      }
+      margin: 0;
       &.refresh {
         font-size: 18px;
       }
@@ -629,7 +644,8 @@
   }
 
   .compare-page-wrapper {
-    --compare-header-offset: calc(56px + env(safe-area-inset-top));
+    --compare-header-height: 56px;
+    --compare-header-offset: calc(var(--compare-header-height) + env(safe-area-inset-top));
     position: fixed;
     inset: 0;
     width: 100%;
