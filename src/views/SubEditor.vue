@@ -1119,9 +1119,6 @@ const urlValidator = (val: string): Promise<boolean> => {
   const setIcon = (icon: any) => {
     form.icon = icon.url
   }
-  const iconTips = () => {
-    router.push(`/icon/collection`);
-  };
   const uaTips = () => {
     Dialog({
         title: '默认使用配置中的全局 UA',

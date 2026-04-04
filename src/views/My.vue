@@ -811,9 +811,7 @@ const setDisplayInfo = () => {
   userInput.value = githubUser.value || "";
   githubProxyInput.value = githubProxy.value || "";
   githubProxyRegexInput.value = githubProxyRegex.value || "";
-  tokenInput.value = gistToken.value
-    ? `${gistToken.value.slice(0, 6)}************`
-    : "";
+  tokenInput.value = gistToken.value || "";
   uaInput.value = defaultUserAgent.value || "";
   proxyInput.value = defaultProxy.value || "";
   timeoutInput.value = defaultTimeout.value || "";

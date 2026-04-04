@@ -901,9 +901,6 @@ const showIconPopup = () => {
 const setIcon = (icon: any) => {
   form.icon = icon.url;
 };
-const iconTips = () => {
-  router.push(`/icon/collection`);
-};
 // 名称验证器
 const nameValidator = (val: string): Promise<boolean> => {
   return new Promise((resolve) => {

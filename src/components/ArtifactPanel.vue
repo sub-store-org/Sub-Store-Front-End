@@ -23,7 +23,7 @@
           v-model.trim="editPanelData.icon"
           type="text"
           left-icon="shop"
-          @click-left-icon="iconTips"
+          @click-left-icon="showIconPopup"
         />
       </nut-form-item>
       <nut-form-item
@@ -149,16 +149,20 @@
       </template>
     </nut-form>
   </nut-dialog>
+  <icon-popup
+    v-if="iconPopupVisible"
+    v-model:visible="iconPopupVisible"
+    @setIcon="setIcon"
+  />
 </template>
 
 <script lang="ts" setup>
-  import { useRouter } from "vue-router";
   import { useArtifactsStore } from '@/store/artifacts';
   import { useSubsStore } from '@/store/subs';
+  import IconPopup from '@/views/icon/IconPopup.vue';
   import { Dialog, Toast } from '@nutui/nutui';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
-  const router = useRouter();
   const { t } = useI18n();
   const artifactsStore = useArtifactsStore();
   const isInit = ref(false);
@@ -199,6 +203,7 @@
       editPanelData.value.isIconColor = value;
     },
   });
+  const iconPopupVisible = ref(false);
   const sourceSelectorIsVisible = ref(false);
   const sourceOptions = computed(() => {
     const subsNameList = useSubsStore().subs.map(sub => {
@@ -339,6 +344,14 @@
     ruleForm.value.validate(prop);
   };
 
+  const showIconPopup = () => {
+    iconPopupVisible.value = true;
+  };
+
+  const setIcon = (icon: any) => {
+    editPanelData.value.icon = icon.url;
+  };
+
   const includeUnsupportedProxyTips = () => {
     window.open('https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E');
     // const includeUnsupportedProxyTipsTitle = t(`syncPage.addArtForm.includeUnsupportedProxy.tips.title`)
@@ -352,9 +365,6 @@
     //   closeOnPopstate: true,
     //   lockScroll: false,
     // });
-  };
-  const iconTips = () => {
-    router.push(`/icon/collection`);
   };
   watchEffect(() => {
     if (!isInit.value && name) {
