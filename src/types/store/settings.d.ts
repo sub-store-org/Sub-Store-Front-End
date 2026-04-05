@@ -1,4 +1,5 @@
 type CreateItemPosition = 'top' | 'bottom';
+type ListPageViewMode = 'single-column' | 'dual-column';
 
 type SettingsStoreState = SettingsBase & SettingsPostData;
 
@@ -48,6 +49,7 @@ interface SettingsPostData {
     istabBar?: boolean; // 隐藏 "Gist 同步" 页
     istabBar2?: boolean; // 隐藏 "文件" 页
     subProgressStyle?: string; // 订阅进度样式
+    listPageViewMode?: ListPageViewMode; // 列表页视图模式
   },
 }
 

@@ -17,7 +17,7 @@
       </div>
     </Teleport>
 
-    <div class="subs-list-wrapper">
+    <div class="subs-list-wrapper" :class="{ 'dual-column-mode': isDualColumnMode }">
       <div
         v-if="hasEntries && showTagBar"
         ref="radioWrapperRef"
@@ -71,6 +71,7 @@
             v-model="filteredSubEntries"
             item-key="id"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -91,7 +92,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isEntrySelected(element) }"
+                  :class="{ selected: isEntrySelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleEntrySelection(element)"
                 >
                   <nut-checkbox
@@ -100,13 +101,14 @@
                     @click.stop="toggleEntrySelection(element)"
                   />
                   <div class="share-select-item-content">
-                    <ArchiveListItem :data="element" :disabled="true" />
+                    <ArchiveListItem :data="element" :disabled="true" :is-dual-column="isDualColumnMode" />
                   </div>
                 </div>
                 <ArchiveListItem
                   v-else
                   :data="element"
                   :disabled="dragDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @restore="restoreEntry"
                   @delete="confirmDeleteEntry"
                 />
@@ -145,6 +147,7 @@
             v-model="filteredColEntries"
             item-key="id"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -165,7 +168,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isEntrySelected(element) }"
+                  :class="{ selected: isEntrySelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleEntrySelection(element)"
                 >
                   <nut-checkbox
@@ -174,13 +177,14 @@
                     @click.stop="toggleEntrySelection(element)"
                   />
                   <div class="share-select-item-content">
-                    <ArchiveListItem :data="element" :disabled="true" />
+                    <ArchiveListItem :data="element" :disabled="true" :is-dual-column="isDualColumnMode" />
                   </div>
                 </div>
                 <ArchiveListItem
                   v-else
                   :data="element"
                   :disabled="dragDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @restore="restoreEntry"
                   @delete="confirmDeleteEntry"
                 />
@@ -219,6 +223,7 @@
             v-model="filteredFileEntries"
             item-key="id"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -239,7 +244,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isEntrySelected(element) }"
+                  :class="{ selected: isEntrySelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleEntrySelection(element)"
                 >
                   <nut-checkbox
@@ -248,13 +253,14 @@
                     @click.stop="toggleEntrySelection(element)"
                   />
                   <div class="share-select-item-content">
-                    <ArchiveListItem :data="element" :disabled="true" />
+                    <ArchiveListItem :data="element" :disabled="true" :is-dual-column="isDualColumnMode" />
                   </div>
                 </div>
                 <ArchiveListItem
                   v-else
                   :data="element"
                   :disabled="dragDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @restore="restoreEntry"
                   @delete="confirmDeleteEntry"
                 />
@@ -293,6 +299,7 @@
             v-model="filteredArtifactEntries"
             item-key="id"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -313,7 +320,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isEntrySelected(element) }"
+                  :class="{ selected: isEntrySelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleEntrySelection(element)"
                 >
                   <nut-checkbox
@@ -322,13 +329,14 @@
                     @click.stop="toggleEntrySelection(element)"
                   />
                   <div class="share-select-item-content">
-                    <ArchiveListItem :data="element" :disabled="true" />
+                    <ArchiveListItem :data="element" :disabled="true" :is-dual-column="isDualColumnMode" />
                   </div>
                 </div>
                 <ArchiveListItem
                   v-else
                   :data="element"
                   :disabled="dragDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @restore="restoreEntry"
                   @delete="confirmDeleteEntry"
                 />
@@ -367,6 +375,7 @@
             v-model="filteredShareEntries"
             item-key="id"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -387,7 +396,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isEntrySelected(element) }"
+                  :class="{ selected: isEntrySelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleEntrySelection(element)"
                 >
                   <nut-checkbox
@@ -396,13 +405,14 @@
                     @click.stop="toggleEntrySelection(element)"
                   />
                   <div class="share-select-item-content">
-                    <ArchiveListItem :data="element" :disabled="true" />
+                    <ArchiveListItem :data="element" :disabled="true" :is-dual-column="isDualColumnMode" />
                   </div>
                 </div>
                 <ArchiveListItem
                   v-else
                   :data="element"
                   :disabled="dragDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @restore="restoreEntry"
                   @delete="confirmDeleteEntry"
                 />
@@ -481,6 +491,8 @@ import draggable from 'vuedraggable';
 
 import ArchiveListItem from '@/components/ArchiveListItem.vue';
 import { useFilteredDraggableList } from '@/hooks/useFilteredDraggableList';
+import { useListViewMode } from '@/hooks/useListViewMode';
+import { useListViewModeSelectionLock } from '@/hooks/useListViewModeSelectionLock';
 import { useTagBarHeight } from '@/hooks/useTagBarHeight';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { useGlobalStore } from '@/store/global';
@@ -515,10 +527,14 @@ const { showNotify } = useAppNotifyStore();
 const archiveStore = useArchiveStore();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
+const { effectiveListViewMode } = useListViewMode();
 
 const { entries, hasEntries } = storeToRefs(archiveStore);
 const { bottomSafeArea } = storeToRefs(globalStore);
 const { navBartop, navBarHeight } = storeToRefs(systemStore);
+const isDualColumnMode = computed(() => {
+  return effectiveListViewMode.value === 'dual-column';
+});
 
 const pageLoading = ref(false);
 const pageFetchResult = ref(true);
@@ -528,6 +544,7 @@ const isSelectionMode = ref(false);
 const selectedEntryIds = ref<string[]>([]);
 const isDeletingSelectedEntries = ref(false);
 const isRestoringSelectedEntries = ref(false);
+useListViewModeSelectionLock(isSelectionMode);
 
 const selectionToggleOffset = computed(() => {
   const navBarHeightNum = Number.parseFloat(navBarHeight.value || '56');
@@ -1050,6 +1067,23 @@ onMounted(() => {
 .draggable-item {
   margin-top: 12px;
   margin-bottom: 12px;
+  border-radius: var(--item-card-radios);
+  overflow: hidden;
+}
+
+.draggable-list.dual-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  padding-top: 12px;
+
+  > .draggable-item {
+    min-width: 0;
+    margin: 0;
+    border-radius: var(--item-card-radios);
+    overflow: hidden;
+  }
 }
 
 .chosensub {
@@ -1104,6 +1138,10 @@ onMounted(() => {
   width: 100%;
 }
 
+.share-data + .share-data {
+  margin-top: 8px;
+}
+
 .share-nav-action-layer {
   @include centered-fixed-container;
   top: 0;
@@ -1143,6 +1181,11 @@ onMounted(() => {
   gap: 10px;
   border-radius: var(--item-card-radios);
   transition: transform 0.2s ease;
+
+  &.is-dual-column {
+    height: 100%;
+    align-items: flex-start;
+  }
 }
 
 .share-select-checkbox {
@@ -1152,7 +1195,12 @@ onMounted(() => {
 .share-select-item-content {
   min-width: 0;
   flex: 1;
+  display: flex;
   pointer-events: none;
+
+  > * {
+    width: 100%;
+  }
 }
 
 .share-selection-actions {

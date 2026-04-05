@@ -32,6 +32,11 @@ export default {
       zh: "简体中文",
       en: "English",
     },
+    listView: {
+      switchToSingle: "Switch to single column",
+      switchToDual: "Switch to dual column",
+      disabledInSelectionMode: "Multi-select uses single column only",
+    },
     pagesTitle: {
       sub: "Subscription",
       file: "File",

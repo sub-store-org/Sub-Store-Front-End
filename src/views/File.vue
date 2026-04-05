@@ -107,7 +107,7 @@
 
     <!-- 页面内容 -->
     <!-- 有数据 -->
-    <div class="subs-list-wrapper">
+    <div class="subs-list-wrapper" :class="{ 'dual-column-mode': isDualColumnMode }">
       <div v-if="tags && tags.length > 0" ref="radioWrapperRef" class="radio-wrapper" >
         <!-- <nut-radiogroup v-model="tag" direction="horizontal"> -->
           <!-- <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio> -->
@@ -117,6 +117,8 @@
       <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight}px` }">
         <div v-if="hasFiles">
           <draggable
+            class="files-draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             v-model="filteredFiles"
             item-key="name"
             :scroll-sensitivity="200"
@@ -140,6 +142,7 @@
                   :file="element"
                   type="file"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @share="handleShare"
                 />
               </div>
@@ -221,6 +224,7 @@ import { initStores } from "@/utils/initApp";
 import { useI18n } from "vue-i18n";
 import { useBackend } from "@/hooks/useBackend";
 import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useListViewMode } from "@/hooks/useListViewMode";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { isMobile } from "@/utils/isMobile";
 
@@ -259,6 +263,7 @@ const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
+const { effectiveListViewMode } = useListViewMode();
 const { navBarHeight } = storeToRefs(systemStore);
 const { hasFiles, files } = storeToRefs(subsStore);
 const {
@@ -269,6 +274,9 @@ const {
   // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
 const swipeDisabled = ref(false);
+const isDualColumnMode = computed(() => {
+  return effectiveListViewMode.value === "dual-column";
+});
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const sortFailed = ref(false);
@@ -659,7 +667,8 @@ const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
 .draggable-item {
   margin-top: 12px;
   margin-bottom: 12px;
-  // overflow: hidden;
+  border-radius: var(--item-card-radios);
+  overflow: hidden;
 }
 
 .chosensub {
@@ -672,13 +681,29 @@ const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
+
+  .files-draggable-list.dual-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+    padding-top: 12px;
+
+    > .draggable-item {
+      min-width: 0;
+      margin: 0;
+      border-radius: var(--item-card-radios);
+      overflow: hidden;
+    }
+  }
+
   .radio-wrapper {
     box-sizing: border-box;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     position: fixed;
-    padding: 10px 10px 0 10px;
+    padding: 10px;
     top: v-bind(tagNavBarHeight);
     z-index: 10;
     backdrop-filter: blur(var(--nav-bar-blur));

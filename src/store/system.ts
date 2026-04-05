@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 
+export const SIDEBAR_EXPANDED_BREAKPOINT = 1220;
+
 export const useSystemStore = defineStore('systemStore', {
   state: () => {
     return {

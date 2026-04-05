@@ -1,20 +1,20 @@
 <template>
   <div
     class="sub-item-wrapper"
-    :class="{ disabled: props.disabled }"
-    :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+    :class="{ disabled: props.disabled, 'is-dual-column': props.isDualColumn }"
+    :style="{ padding: itemPadding }"
     data-testid="share-card"
     @click="onClickPreviews"
   >
     <div
       class="sub-img-wrappers"
-      :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
+      :style="{ 'margin-top': imageMarginTop }"
       @click.stop="onClickEdit"
     >
       <div v-if="appearanceSetting.isShowIcon">
         <div v-if="isIconColor">
           <nut-avatar
-            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+            :size="avatarSize"
             :url="shareIcon"
             bg-color=""
           />
@@ -22,7 +22,7 @@
         <div v-else>
           <nut-avatar
             class="sub-item-customer-icon"
-            :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+            :size="avatarSize"
             :url="shareIcon"
             bg-color=""
           />
@@ -74,7 +74,7 @@
             <font-awesome-icon icon="fa-solid fa-pen-nib" />
           </button>
           <button
-            class="share-sub-link share-danger-action"
+            class="share-sub-link"
             data-testid="share-delete-button"
             :aria-label="t('sharePage.selectMode.delete')"
             :title="t('sharePage.selectMode.delete')"
@@ -89,11 +89,15 @@
         <span>{{ t(`sharePage.createTimeLabel`) }}{{ createTime }}</span>
       </p>
       <p class="sub-item-remark">
-        <span>{{ expiresTime }}{{ expiresTime ? " · " : "" }}{{ leftTime }}</span>
+        <span>{{ appearanceSetting.isSimpleMode ? detailLine : nonSimpleSecondLine }}</span>
       </p>
 
       <p
-        v-if="remark && (appearanceSetting.isSimpleMode ? appearanceSetting.isSimpleShowRemark : true)"
+        v-if="remark && (
+          appearanceSetting.isSimpleMode
+            ? appearanceSetting.isSimpleShowRemark && !shouldInlineRemarkInSecondLine
+            : !isDualNonSimpleMode
+        )"
         class="sub-item-remark"
       >
         <span>{{ remark }}</span>
@@ -128,6 +132,7 @@ const router = useRouter();
 const props = defineProps<{
   data: Share;
   disabled?: boolean;
+  isDualColumn?: boolean;
 }>();
 const emit = defineEmits(["detail", "delete"]);
 const { copy, isSupported } = useClipboard();
@@ -141,6 +146,18 @@ const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const { currentUrl: host } = useHostAPI();
+const avatarSize = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "36";
+  return props.isDualColumn ? "40" : "48";
+});
+const itemPadding = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "9px";
+  return props.isDualColumn ? "12px" : "16px";
+});
+const imageMarginTop = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "5px";
+  return props.isDualColumn ? "2px" : "0";
+});
 
 const name = computed(() => {
   return props?.data?.name;
@@ -151,6 +168,20 @@ const displayName = computed(() => {
 });
 const remark = computed(() => {
   return props?.data?.remark;
+});
+const shouldInlineRemarkInSecondLine = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && appearanceSetting.value.isSimpleMode
+    && remark.value
+    && appearanceSetting.value.isSimpleShowRemark
+  );
+});
+const isDualNonSimpleMode = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && !appearanceSetting.value.isSimpleMode,
+  );
 });
 const type = computed(() => {
   return props?.data?.type;
@@ -175,6 +206,21 @@ const leftTime = computed(() => {
       ? `${t("sharePage.leftTime")} ${dayjs(props?.data?.exp).diff(dayjs(), "day", true).toFixed(0)} ${t("sharePage.createShare.unit.day")}`
       : t("sharePage.expired")
     : 0;
+});
+const detailLine = computed(() => {
+  const baseLine = `${expiresTime.value}${expiresTime.value ? " · " : ""}${leftTime.value}`;
+
+  if (!shouldInlineRemarkInSecondLine.value) {
+    return baseLine;
+  }
+
+  return [baseLine, remark.value].filter(Boolean).join(" · ");
+});
+const nonSimpleSecondLine = computed(() => {
+  const baseLine = `${expiresTime.value}${expiresTime.value ? " · " : ""}${leftTime.value}`;
+  return isDualNonSimpleMode.value
+    ? [baseLine, remark.value].filter(Boolean).join(" · ")
+    : baseLine;
 });
 
 const icon = computed(() => {
@@ -375,8 +421,10 @@ const onClickPreviews = () => {
   margin-right: auto;
   border-radius: var(--item-card-radios);
   display: flex;
+  min-width: 0;
   background: var(--card-color);
   cursor: pointer;
+  overflow: hidden;
 
   &.disabled {
     cursor: default;
@@ -399,11 +447,14 @@ const onClickPreviews = () => {
     min-width: 0;
     flex: 1;
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
 
     .sub-item-title-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
 
       .sub-item-title {
         flex: 1;
@@ -449,12 +500,6 @@ const onClickPreviews = () => {
         &:disabled {
           cursor: default;
           opacity: 0.45;
-        }
-      }
-
-      .share-danger-action {
-        :deep(svg) {
-          color: var(--danger-color);
         }
       }
 
@@ -507,6 +552,27 @@ const onClickPreviews = () => {
       font-size: 12px;
       max-width: 80%;
       color: var(--comment-text-color);
+    }
+  }
+}
+
+.sub-item-wrapper.is-dual-column {
+  :deep(.nut-avatar) {
+    margin-right: 12px;
+  }
+
+  > .sub-item-content {
+    .sub-item-title-wrapper {
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .sub-item-title {
+      font-size: 15px;
+    }
+
+    .sub-item-remark {
+      -webkit-line-clamp: 1;
     }
   }
 }

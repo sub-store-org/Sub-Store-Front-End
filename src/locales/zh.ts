@@ -60,6 +60,11 @@ export default {
       zh: '简体中文',
       en: 'English',
     },
+    listView: {
+      switchToSingle: '切换为单列',
+      switchToDual: '切换为双列',
+      disabledInSelectionMode: '多选模式下固定为单列',
+    },
     pagesTitle: {
       sub: '订阅管理',
       file: '文件管理',

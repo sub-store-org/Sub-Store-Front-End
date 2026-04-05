@@ -7,7 +7,6 @@
 
       <nut-navbar
         @on-click-back="back"
-        @on-click-right="showLangSwitchPopup = true"
         :title="currentTitle"
         :tit-icon="currentTitleWhetherAsk"
         @on-click-icon="onClickNavbarIcon"
@@ -47,8 +46,19 @@
             icon="fa-solid fa-toggle-off"
           />
           <font-awesome-icon
+            v-if="showListViewToggle"
+            @click.stop="handleListViewModeToggle"
+            class="navBar-right-icon fa-list-view"
+            :class="{ 'is-disabled': isListViewModeLocked }"
+            :icon="effectiveListViewMode === 'dual-column' ? 'fa-solid fa-table-columns' : 'fa-solid fa-list'"
+            :title="listViewModeToggleTitle"
+            :aria-disabled="isListViewModeLocked ? 'true' : 'false'"
+          />
+          <font-awesome-icon
             class="navBar-right-icon fa-lg"
             icon="fa-solid fa-language"
+            @click.stop="showLangSwitchPopup = true"
+            :title="t('navBar.langSwitcher.cellTitle')"
           />
         </template>
       </nut-navbar>
@@ -96,6 +106,7 @@ import { computed, ref, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/global";
+import { useListViewMode } from "@/hooks/useListViewMode";
 import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
@@ -118,6 +129,12 @@ const langList = ["zh", "en"];
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
+const {
+  effectiveListViewMode,
+  isListViewModeLocked,
+  showListViewToggle,
+  toggleListViewMode,
+} = useListViewMode();
 // 从systemStore获取状态
 const { isPWA, isLandscape, isSmall } = storeToRefs(systemStore);
 
@@ -194,6 +211,24 @@ const setSimpleMode = (isSimpleMode: boolean) => {
     isSimpleMode: isSimpleMode
   }
   changeAppearanceSetting({ appearanceSetting: data })
+};
+
+const listViewModeToggleTitle = computed(() => {
+  if (isListViewModeLocked.value) {
+    return t("navBar.listView.disabledInSelectionMode");
+  }
+
+  return effectiveListViewMode.value === "dual-column"
+    ? t("navBar.listView.switchToSingle")
+    : t("navBar.listView.switchToDual");
+});
+
+const handleListViewModeToggle = async () => {
+  if (isListViewModeLocked.value) {
+    return;
+  }
+
+  await toggleListViewMode();
 };
 
 const refresh = async () => {
@@ -307,6 +342,7 @@ const refresh = async () => {
         right: 15px;
         top: 50%;
         transform: translateY(-50%);
+        cursor: pointer;
       }
 
       .fa-toggle {
@@ -314,6 +350,19 @@ const refresh = async () => {
         right: 58px;
         top: 50%;
         transform: translateY(-50%);
+      }
+
+      .fa-list-view {
+        position: absolute;
+        right: 99px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--icon-nav-bar-right);
+
+        &.is-disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
       }
     }
   }

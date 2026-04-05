@@ -41,6 +41,7 @@ declare module 'vue-router' {
     title: string;
     needTabBar: boolean;
     needNavBack: boolean;
+    supportsListViewMode?: boolean;
   }
 }
 
@@ -89,6 +90,7 @@ const router = createRouter({
             title: 'sub',
             needTabBar: true,
             needNavBack: false,
+            supportsListViewMode: true,
           },
         },
         {
@@ -98,6 +100,7 @@ const router = createRouter({
             title: 'sync',
             needTabBar: true,
             needNavBack: false,
+            supportsListViewMode: true,
           },
         },
         {
@@ -116,6 +119,7 @@ const router = createRouter({
             title: 'file',
             needTabBar: true,
             needNavBack: false,
+            supportsListViewMode: true,
           },
         },
         {
@@ -125,6 +129,7 @@ const router = createRouter({
             title: 'shareManage',
             needTabBar: false,
             needNavBack: true,
+            supportsListViewMode: true,
           },
         },
         {
@@ -134,6 +139,7 @@ const router = createRouter({
             title: 'archive',
             needTabBar: false,
             needNavBack: true,
+            supportsListViewMode: true,
           },
         },
         // {

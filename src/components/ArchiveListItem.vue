@@ -1,8 +1,8 @@
 <template>
   <div
     class="sub-item-wrapper archives-item-wrapper"
-    :class="{ disabled: props.disabled }"
-    :style="{ padding: appearanceSetting.isSimpleMode ? '10px 12px' : '14px 16px' }"
+    :class="{ disabled: props.disabled, 'is-dual-column': props.isDualColumn }"
+    :style="{ padding: itemPadding }"
   >
     <div
       class="sub-img-wrappers"
@@ -10,7 +10,7 @@
     >
       <div
         class="archives-item-icon"
-        :class="{ simple: appearanceSetting.isSimpleMode }"
+        :class="{ simple: appearanceSetting.isSimpleMode, 'is-dual-column': props.isDualColumn }"
       >
         <img
           :src="displayItemIcon"
@@ -73,25 +73,35 @@
           </button>
         </div>
       </div>
-      <p
-        v-if="detailLine"
-        class="sub-item-remark archives-item-detail"
-        :class="{ 'sub-item-detail-isSimple': appearanceSetting.isSimpleMode }"
-      >
-        {{ detailLine }}
-      </p>
-      <p
-        v-if="archiveTimeLine && !appearanceSetting.isSimpleMode"
-        class="sub-item-remark archives-item-detail"
-      >
-        {{ archiveTimeLine }}
-      </p>
-      <p
-        v-if="remark && (!appearanceSetting.isSimpleMode || appearanceSetting.isSimpleShowRemark)"
-        class="sub-item-remark archives-item-remark"
-      >
-        {{ remark }}
-      </p>
+      <template v-if="isDualNonSimpleMode">
+        <p class="sub-item-remark archives-item-detail dual-non-simple-line">
+          {{ nonSimplePrimaryLine }}
+        </p>
+        <p class="sub-item-remark archives-item-detail dual-non-simple-line">
+          {{ nonSimpleSecondLine }}
+        </p>
+      </template>
+      <template v-else>
+        <p
+          v-if="detailLineWithInlineRemark"
+          class="sub-item-remark archives-item-detail"
+          :class="{ 'sub-item-detail-isSimple': appearanceSetting.isSimpleMode }"
+        >
+          {{ detailLineWithInlineRemark }}
+        </p>
+        <p
+          v-if="archiveTimeLine && !appearanceSetting.isSimpleMode"
+          class="sub-item-remark archives-item-detail"
+        >
+          {{ archiveTimeLine }}
+        </p>
+        <p
+          v-if="remark && (!appearanceSetting.isSimpleMode || appearanceSetting.isSimpleShowRemark) && !shouldInlineRemarkInSecondLine"
+          class="sub-item-remark archives-item-remark"
+        >
+          {{ remark }}
+        </p>
+      </template>
     </div>
   </div>
 </template>
@@ -116,6 +126,7 @@ import {
 const props = defineProps<{
   data: ArchiveEntry;
   disabled?: boolean;
+  isDualColumn?: boolean;
 }>();
 
 const emit = defineEmits(['restore', 'delete']);
@@ -124,9 +135,27 @@ const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
+const itemPadding = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return '10px 12px';
+  return props.isDualColumn ? '12px' : '14px 16px';
+});
 
 const displayName = computed(() => getArchiveEntryDisplayName(props.data));
 const remark = computed(() => props.data?.remark || '');
+const shouldInlineRemarkInSecondLine = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && appearanceSetting.value.isSimpleMode
+    && remark.value
+    && appearanceSetting.value.isSimpleShowRemark
+  );
+});
+const isDualNonSimpleMode = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && !appearanceSetting.value.isSimpleMode,
+  );
+});
 const tags = computed(() => props.data?.tag || []);
 const itemType = computed(() => props.data?.itemType);
 const shareType = computed(() => props.data?.shareType);
@@ -292,6 +321,23 @@ const detailLine = computed(() => {
 
   return parts.join(' · ');
 });
+const detailLineWithInlineRemark = computed(() => {
+  if (!shouldInlineRemarkInSecondLine.value) {
+    return detailLine.value;
+  }
+
+  return [detailLine.value, remark.value].filter(Boolean).join(" · ");
+});
+const nonSimplePrimaryLine = computed(() => {
+  return detailLine.value || archiveTimeLine.value;
+});
+const nonSimpleSecondLine = computed(() => {
+  if (!detailLine.value) {
+    return remark.value;
+  }
+
+  return [archiveTimeLine.value, remark.value].filter(Boolean).join(" · ");
+});
 </script>
 
 <style lang="scss" scoped>
@@ -301,8 +347,10 @@ const detailLine = computed(() => {
   margin-right: auto;
   border-radius: var(--item-card-radios);
   display: flex;
+  min-width: 0;
   background: var(--card-color);
   cursor: default;
+  overflow: hidden;
 
   &.disabled {
     opacity: 0.92;
@@ -330,6 +378,12 @@ const detailLine = computed(() => {
     height: 36px;
   }
 
+  &.is-dual-column:not(.simple) {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+
   img {
     width: 100%;
     height: 100%;
@@ -342,12 +396,15 @@ const detailLine = computed(() => {
   min-width: 0;
   flex: 1;
   line-height: 1.6;
+  display: flex;
+  flex-direction: column;
 }
 
 .sub-item-title-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .sub-item-title {
@@ -410,5 +467,34 @@ const detailLine = computed(() => {
   font-size: 12px;
   line-height: 1.5;
   word-break: break-all;
+}
+
+.archives-item-wrapper.is-dual-column {
+  .sub-item-title-wrapper {
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .archives-item-title {
+    font-size: 15px;
+  }
+
+  .archives-item-detail {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+
+  .dual-non-simple-line {
+    min-height: 18px;
+  }
+
+  .archives-item-remark {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
 }
 </style>

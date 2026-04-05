@@ -66,7 +66,7 @@
 
     <!-- 页面内容 -->
     <!-- 有数据 -->
-    <div class="subs-list-wrapper">
+    <div class="subs-list-wrapper" :class="{ 'dual-column-mode': isDualColumnMode }">
       <div
         v-if="hasShares && showTagBar"
         ref="radioWrapperRef"
@@ -123,6 +123,7 @@
             v-model="filteredSubShareData"
             item-key="token"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -146,7 +147,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isShareSelected(element) }"
+                  :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
@@ -158,6 +159,7 @@
                     <ShareListItem
                       :data="element"
                       :disabled="true"
+                      :is-dual-column="isDualColumnMode"
                       @detail="handleShareDetail"
                     />
                   </div>
@@ -166,6 +168,7 @@
                   v-else
                   :data="element"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @detail="handleShareDetail"
                 />
               </div>
@@ -209,6 +212,7 @@
             v-model="filteredCollectionShareData"
             item-key="token"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -232,7 +236,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isShareSelected(element) }"
+                  :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
@@ -244,6 +248,7 @@
                     <ShareListItem
                       :data="element"
                       :disabled="true"
+                      :is-dual-column="isDualColumnMode"
                       @detail="handleShareDetail"
                     />
                   </div>
@@ -252,6 +257,7 @@
                   v-else
                   :data="element"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @detail="handleShareDetail"
                 />
               </div>
@@ -291,6 +297,7 @@
             v-model="filteredFileShareData"
             item-key="token"
             class="draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
             :force-fallback="true"
             :scroll-speed="8"
@@ -314,7 +321,7 @@
                 <div
                   v-if="isSelectionMode"
                   class="share-select-item"
-                  :class="{ selected: isShareSelected(element) }"
+                  :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
@@ -326,6 +333,7 @@
                     <ShareListItem
                       :data="element"
                       :disabled="true"
+                      :is-dual-column="isDualColumnMode"
                       @detail="handleShareDetail"
                     />
                   </div>
@@ -334,6 +342,7 @@
                   v-else
                   :data="element"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @detail="handleShareDetail"
                 />
               </div>
@@ -440,6 +449,8 @@ import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
 import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { useListViewMode } from "@/hooks/useListViewMode";
+import { useListViewModeSelectionLock } from "@/hooks/useListViewModeSelectionLock";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
@@ -485,6 +496,10 @@ const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
+const { effectiveListViewMode } = useListViewMode();
+const isDualColumnMode = computed(() => {
+  return effectiveListViewMode.value === "dual-column";
+});
 
 const { shares, hasShares } = storeToRefs(subsStore);
 const {
@@ -604,6 +619,7 @@ const filteredFileShareData = useFilteredDraggableList(fileShareData, shouldShow
 const isSelectionMode = ref(false);
 const selectedShareKeys = ref<string[]>([]);
 const isDeletingSelectedShares = ref(false);
+useListViewModeSelectionLock(isSelectionMode);
 
 const subShareDataCount = computed(() => countSharesByTagFilter(subShareData.value, tag.value));
 const collectionShareDataCount = computed(() => countSharesByTagFilter(collectionShareData.value, tag.value));
@@ -1109,7 +1125,23 @@ const handleShareDetail = (detail: Share) => {
 .draggable-item {
   margin-top: 12px;
   margin-bottom: 12px;
-  // overflow: hidden;
+  border-radius: var(--item-card-radios);
+  overflow: hidden;
+}
+
+.draggable-list.dual-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  padding-top: 12px;
+
+  > .draggable-item {
+    min-width: 0;
+    margin: 0;
+    border-radius: var(--item-card-radios);
+    overflow: hidden;
+  }
 }
 
 .chosensub {
@@ -1164,6 +1196,10 @@ const handleShareDetail = (detail: Share) => {
   width: 100%;
 }
 
+.share-data + .share-data {
+  margin-top: 8px;
+}
+
 .share-nav-action-layer {
   @include centered-fixed-container;
   top: 0;
@@ -1203,6 +1239,11 @@ const handleShareDetail = (detail: Share) => {
   gap: 10px;
   border-radius: var(--item-card-radios);
   transition: transform 0.2s ease;
+
+  &.is-dual-column {
+    height: 100%;
+    align-items: flex-start;
+  }
 }
 
 .share-select-checkbox {
@@ -1212,7 +1253,12 @@ const handleShareDetail = (detail: Share) => {
 .share-select-item-content {
   min-width: 0;
   flex: 1;
+  display: flex;
   pointer-events: none;
+
+  > * {
+    width: 100%;
+  }
 }
 
 .share-selection-actions {

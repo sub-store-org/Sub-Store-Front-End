@@ -50,6 +50,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar: false,
         istabBar2: false,
         subProgressStyle: "hidden",
+        listPageViewMode: undefined,
       },
       gistUpload: "base64",
       avatarUrl: "",
@@ -99,6 +100,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
         this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
+        this.appearanceSetting.listPageViewMode = res.data.data.appearanceSetting?.listPageViewMode;
         this.gistUpload = res.data.data?.gistUpload ?? "base64";
       } else {
         showNotify({

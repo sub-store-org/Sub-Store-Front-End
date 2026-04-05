@@ -20,7 +20,9 @@ import {
   faFloppyDisk,
   faGrip,
   faLanguage,
+  faList,
   faListCheck,
+  faTableColumns,
   faToggleOn,
   faToggleOff,
   faLocationArrow,
@@ -50,7 +52,9 @@ library.add(faFileExport);
 library.add(faToggleOn);
 library.add(faToggleOff);
 library.add(faLanguage);
+library.add(faList);
 library.add(faListCheck);
+library.add(faTableColumns);
 library.add(faCheck);
 library.add(faPlus);
 library.add(faReply);

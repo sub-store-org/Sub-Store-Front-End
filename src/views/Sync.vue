@@ -38,7 +38,7 @@
       </div>
     </Teleport>
 
-    <div class="subs-list-wrapper">
+    <div class="subs-list-wrapper" :class="{ 'dual-column-mode': isDualColumnMode }">
       <div
         v-if="artifacts.length > 0 && tags.length > 0"
         ref="radioWrapperRef"
@@ -102,6 +102,8 @@
 
         <div v-if="artifacts.length > 0">
           <draggable
+            class="sync-draggable-list"
+            :class="{ 'dual-column': isDualColumnMode }"
             v-model="filteredArtifacts"
             @change="changeArtifacts"
             @start="handleDragStart"
@@ -128,6 +130,7 @@
                   :name="element.name"
                   @edit="onClickEdit"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                 />
               </div>
             </template>
@@ -199,6 +202,7 @@ import { useI18n } from "vue-i18n";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useBackend } from "@/hooks/useBackend";
 import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useListViewMode } from "@/hooks/useListViewMode";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { Dialog } from "@nutui/nutui";
 import { isMobile } from "@/utils/isMobile";
@@ -213,6 +217,7 @@ const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
 const systemStore = useSystemStore();
 const methodStore = useMethodStore();
+const { effectiveListViewMode } = useListViewMode();
 
 const {
   // isSimpleMode,
@@ -223,6 +228,9 @@ const {
 } = storeToRefs(globalStore);
 const { artifacts } = storeToRefs(artifactsStore);
 const { navBarHeight } = storeToRefs(systemStore);
+const isDualColumnMode = computed(() => {
+  return effectiveListViewMode.value === "dual-column";
+});
 const {
   appearanceSetting,
   artifactStore: artifactStoreUrl,
@@ -564,5 +572,22 @@ const filteredArtifacts = useFilteredDraggableList(artifacts, shouldShowElement)
 .draggable-itemsync {
   margin-top: 12px;
   margin-bottom: 12px;
+  border-radius: var(--item-card-radios);
+  overflow: hidden;
+}
+
+.sync-draggable-list.dual-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  padding-top: 12px;
+
+  > .draggable-itemsync {
+    min-width: 0;
+    margin: 0;
+    border-radius: var(--item-card-radios);
+    overflow: hidden;
+  }
 }
 </style>

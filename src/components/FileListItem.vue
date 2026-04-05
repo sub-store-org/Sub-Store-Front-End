@@ -2,6 +2,7 @@
   <!-- 滚动内容 -->
   <nut-swipe
     class="sub-item-swipe"
+    :class="{ 'is-dual-column': props.isDualColumn }"
     ref="swipe"
     :disabled="props.disabled"
     @close="setIsMoveClose()"
@@ -9,26 +10,27 @@
   >
     <div
       class="sub-item-wrapper"
-      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      :class="{ 'is-dual-column': props.isDualColumn }"
+      :style="{ padding: itemPadding }"
       @click="handleContentClick"
     >
       <div
         @click.stop="previewFile"
         class="sub-img-wrappers"
-        :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
+        :style="{ 'margin-top': imageMarginTop }"
       >
         <!-- icon visible -->
         <div v-if="appearanceSetting.isShowIcon">
           <div v-if="isIconColor">
             <nut-avatar
               v-if="props[props.type].icon"
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(props[props.type].icon)"
               bg-color=""
             />
             <nut-avatar
               v-else
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(icon)"
               bg-color=""
             />
@@ -36,7 +38,7 @@
           <div v-else>
             <nut-avatar
               class="sub-item-customer-icon"
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(props[props.type].icon || icon)"
               bg-color=""
             />
@@ -60,8 +62,8 @@
 
           <!-- onClickCopyLink 拷贝 -->
           <div
-            style="position: relative"
-            :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
+            class="sub-item-actions"
+            :style="{ top: titleActionTop }"
           >
             <!-- 预览 -->
             <button
@@ -111,8 +113,12 @@
               </span>
             </template>
           </p>
-          <p v-if="remark" class="sub-item-remark">
-            <span>{{ remarkText }}</span>
+          <p
+            v-if="isDualNonSimpleMode || remark"
+            class="sub-item-remark"
+            :class="{ 'dual-non-simple-second-line': isDualNonSimpleMode }"
+          >
+            <span>{{ isDualNonSimpleMode ? nonSimpleSecondLine : remarkText }}</span>
           </p>
         </template>
 
@@ -120,12 +126,12 @@
           <p class="sub-item-detail-isSimple">
             <template v-if="typeof flow === 'string'">
               <span style="font-weight: normal">
-                {{ flow }}
+                {{ simpleDetailLine }}
               </span>
             </template>
           </p>
           <p
-            v-if="remark && appearanceSetting.isSimpleShowRemark"
+            v-if="remark && appearanceSetting.isSimpleShowRemark && !shouldInlineRemarkInSecondLine"
             class="sub-item-remark"
           >
             <span>{{ remarkText }}</span>
@@ -270,6 +276,7 @@
     sub?: Sub;
     collection?: Collection;
     disabled?: boolean;
+    isDualColumn?: boolean;
   }>();
   // console.log('props.disabled')
   // console.log(props.disabled)
@@ -311,11 +318,41 @@
       return "";
     }
   })
+  const shouldInlineRemarkInSecondLine = computed(() => {
+    return Boolean(
+      props.isDualColumn
+      && appearanceSetting.value.isSimpleMode
+      && remarkText.value
+      && appearanceSetting.value.isSimpleShowRemark
+    );
+  });
+  const isDualNonSimpleMode = computed(() => {
+    return Boolean(
+      props.isDualColumn
+      && !appearanceSetting.value.isSimpleMode,
+    );
+  });
   const { flows } = storeToRefs(subsStore);
   const icon = computed(() => {
     if (props.file.type === 'mihomoProfile') return clashmetaIcon;
     return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
   })
+  const avatarSize = computed(() => {
+    if (appearanceSetting.value.isSimpleMode) return '36';
+    return props.isDualColumn ? '40' : '48';
+  });
+  const itemPadding = computed(() => {
+    if (appearanceSetting.value.isSimpleMode) return '9px';
+    return props.isDualColumn ? '12px' : '16px';
+  });
+  const imageMarginTop = computed(() => {
+    if (appearanceSetting.value.isSimpleMode) return '5px';
+    return props.isDualColumn ? '2px' : '0';
+  });
+  const titleActionTop = computed(() => {
+    if (appearanceSetting.value.isSimpleMode) return '8px';
+    return props.isDualColumn ? '2px' : '0';
+  });
   const githubUrlRewriter = computed(() => {
     return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
   });
@@ -345,6 +382,16 @@
     if (props.file.type === 'mihomoProfile') return t('filePage.type.mihomoProfile');
     if (props.file.source === 'remote') return t('filePage.source.remote');
     return t('filePage.source.local');
+  });
+  const simpleDetailLine = computed(() => {
+    if (!shouldInlineRemarkInSecondLine.value) {
+      return flow.value;
+    }
+
+    return [flow.value, remarkText.value].filter(Boolean).join(" · ");
+  });
+  const nonSimpleSecondLine = computed(() => {
+    return remarkText.value;
   });
 
   const closePreview = () => {
@@ -601,8 +648,11 @@
     margin-right: auto;
     border-radius: var(--item-card-radios);
     display: flex;
+    min-width: 0;
     background: var(--card-color);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
 
     :deep(.nut-avatar) {
       flex-shrink: 0;
@@ -619,14 +669,20 @@
 
     > .sub-item-content {
       flex: 1;
+      min-width: 0;
       line-height: 1.6;
+      display: flex;
+      flex-direction: column;
 
       .sub-item-title-wrapper {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 8px;
 
         .sub-item-title {
+          flex: 1;
+          min-width: 0;
           display: -webkit-box;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 1;
@@ -662,11 +718,13 @@
         button {
           white-space: nowrap;
         }
+      }
 
-        div {
-          display: flex;
-          align-items: center;
-        }
+      .sub-item-actions {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
       }
 
       .sub-item-detail {
@@ -717,7 +775,51 @@
     }
   }
 
+  .sub-item-swipe.is-dual-column {
+    .sub-item-wrapper {
+      :deep(.nut-avatar) {
+        margin-right: 12px;
+      }
+
+      > .sub-item-content {
+        .sub-item-title-wrapper {
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .sub-item-title {
+          font-size: 15px;
+        }
+
+        .compare-sub-link,
+        .share-sub-link,
+        .copy-sub-link,
+        .refresh-sub-flow {
+          padding: 0 8px;
+        }
+
+        .sub-item-detail {
+          -webkit-line-clamp: 1;
+        }
+
+        .sub-item-remark {
+          -webkit-line-clamp: 1;
+        }
+
+        .dual-non-simple-second-line {
+          min-height: 18px;
+        }
+
+        .sub-item-detail-isSimple {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+
   .sub-item-swipe {
+    display: block;
+    min-width: 0;
     :deep(.nut-swipe__left) {
       .sub-item-swipe-btn-wrapper {
         padding-left: 24px;

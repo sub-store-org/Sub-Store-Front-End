@@ -2,13 +2,15 @@
   <nut-swipe
     ref="swipe"
     class="sub-item-swipe"
+    :class="{ 'is-dual-column': props.isDualColumn }"
     :disabled="props.disabled"
     @close="setIsMoveClose()"
     @open="setIsMoveOpen()"
   >
     <div
       class="sub-item-wrapper"
-      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      :class="{ 'is-dual-column': props.isDualColumn }"
+      :style="{ padding: itemPadding }"
       @click="handleContentClick"
     >
       <div
@@ -23,7 +25,7 @@
       <!-- compareSub -->
       <div
         class="sub-img-wrappers"
-        :style="{ 'margin-top': appearanceSetting.isSimpleMode ? '5px' : '0' }"
+        :style="{ 'margin-top': imageMarginTop }"
         @click.stop="compareSub"
       >
         <!-- icon visible -->
@@ -31,13 +33,13 @@
           <div v-if="isIconColor">
             <nut-avatar
               v-if="props[props.type].icon"
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(props[props.type].icon)"
               bg-color=""
             />
             <nut-avatar
               v-else
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(icon)"
               bg-color=""
             />
@@ -45,7 +47,7 @@
           <div v-else>
             <nut-avatar
               class="sub-item-customer-icon"
-              :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+              :size="avatarSize"
               :url="rewriteGithubUrl(props[props.type].icon || icon)"
               bg-color=""
             />
@@ -162,52 +164,63 @@
           </div>
         </div>
         <template v-if="!appearanceSetting.isSimpleMode">
-          <p v-if="type === 'sub'" class="sub-item-detail">
-            <template v-if="typeof flow === 'string'">
-              <span>
-                {{ flow }}
+          <template v-if="isDualNonSimpleMode">
+            <p class="sub-item-detail">
+              <span :title="nonSimpleLineTitle">
+                {{ nonSimplePrimaryLine }}
               </span>
-            </template>
-            <template v-else-if="typeof flow === 'object'">
-              <span :title="flow.planName">
-                {{ flow.firstLine }}
+            </p>
+            <p class="sub-item-remark dual-non-simple-second-line">
+              <span :title="nonSimpleLineTitle">
+                {{ nonSimpleSecondLine }}
               </span>
-              <span :title="flow.planName">{{ flow.secondLine }}</span>
-            </template>
-          </p>
-          <p v-else-if="type === 'collection'" class="sub-item-detail">
-            {{ collectionDetail }}
-          </p>
-          <p v-if="remark" class="sub-item-remark">
-            <span>{{ remarkText }}</span>
-          </p>
+            </p>
+          </template>
+          <template v-else>
+            <p v-if="type === 'sub'" class="sub-item-detail">
+              <template v-if="typeof flow === 'string'">
+                <span>
+                  {{ flow }}
+                </span>
+              </template>
+              <template v-else-if="typeof flow === 'object'">
+                <span :title="flow.planName">
+                  {{ flow.firstLine }}
+                </span>
+                <span :title="flow.planName">{{ flow.secondLine }}</span>
+              </template>
+            </p>
+            <p v-else-if="type === 'collection'" class="sub-item-detail">
+              {{ collectionDetail }}
+            </p>
+            <p v-if="remark" class="sub-item-remark">
+              <span>{{ remarkText }}</span>
+            </p>
+          </template>
         </template>
 
         <template v-else>
           <p v-if="type === 'sub'" class="sub-item-detail-isSimple">
             <template v-if="typeof flow === 'string'">
               <span style="font-weight: normal">
-                {{ flow }}
+                {{ simpleSubDetailLine }}
               </span>
             </template>
             <template v-else-if="typeof flow === 'object'">
               <span
-                v-if="flow.secondLine"
+                v-if="simpleSubDetailLine"
                 style="font-weight: normal"
                 :title="flow.planName"
               >
-                {{ `${flow.firstLine} · ${flow.secondLine}` }}
-              </span>
-              <span v-else style="font-weight: normal" :title="flow.planName">
-                {{ flow.firstLine }}
+                {{ simpleSubDetailLine }}
               </span>
             </template>
           </p>
           <p v-else-if="type === 'collection'" class="sub-item-detail-isSimple">
-            {{ collectionDetail }}
+            {{ simpleCollectionDetailLine }}
           </p>
           <p
-            v-if="remark && appearanceSetting.isSimpleShowRemark"
+            v-if="remark && appearanceSetting.isSimpleShowRemark && !shouldInlineRemarkInSecondLine"
             class="sub-item-remark"
           >
             <span>{{ remarkText }}</span>
@@ -333,6 +346,7 @@ const props = defineProps<{
   sub?: Sub;
   collection?: Collection;
   disabled?: boolean;
+  isDualColumn?: boolean;
 }>();
 const emit = defineEmits(["update:visible", "share"]);
 const { copy, isSupported } = useClipboard();
@@ -386,10 +400,36 @@ const remarkText = computed(() => {
     return "";
   }
 });
+const shouldInlineRemarkInSecondLine = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && appearanceSetting.value.isSimpleMode
+    && remarkText.value
+    && appearanceSetting.value.isSimpleShowRemark
+  );
+});
+const isDualNonSimpleMode = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && !appearanceSetting.value.isSimpleMode,
+  );
+});
 const { flows } = storeToRefs(subsStore);
 
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
+});
+const avatarSize = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "36";
+  return props.isDualColumn ? "40" : "48";
+});
+const itemPadding = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "9px";
+  return props.isDualColumn ? "12px" : "16px";
+});
+const imageMarginTop = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "5px";
+  return props.isDualColumn ? "2px" : "0";
 });
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
@@ -424,6 +464,16 @@ const collectionDetail = computed(() => {
       ", ",
     )} | ${t("subPage.collectionItem.contain")}: ${displayNameList.join(", ")}`;
   }
+});
+const appendRemarkToSimpleDetailLine = (value: string) => {
+  if (!shouldInlineRemarkInSecondLine.value) {
+    return value;
+  }
+
+  return [value, remarkText.value].filter(Boolean).join(" · ");
+};
+const simpleCollectionDetailLine = computed(() => {
+  return appendRemarkToSimpleDetailLine(collectionDetail.value);
 });
 
 const flow = computed(() => {
@@ -552,6 +602,48 @@ const flow = computed(() => {
       }
     }
   }
+});
+const simpleSubDetailLine = computed(() => {
+  if (props.type !== "sub") {
+    return "";
+  }
+
+  if (typeof flow.value === "string") {
+    return appendRemarkToSimpleDetailLine(flow.value);
+  }
+
+  const baseLine = flow.value.secondLine
+    ? `${flow.value.firstLine} · ${flow.value.secondLine}`
+    : flow.value.firstLine;
+
+  return appendRemarkToSimpleDetailLine(baseLine);
+});
+const nonSimpleLineTitle = computed(() => {
+  return props.type === "sub" && typeof flow.value === "object"
+    ? flow.value.planName
+    : undefined;
+});
+const nonSimplePrimaryLine = computed(() => {
+  if (props.type === "collection") {
+    return collectionDetail.value;
+  }
+
+  if (typeof flow.value === "string") {
+    return flow.value;
+  }
+
+  return flow.value.firstLine;
+});
+const nonSimpleSecondLine = computed(() => {
+  if (props.type === "collection") {
+    return remarkText.value;
+  }
+
+  if (typeof flow.value === "string") {
+    return remarkText.value;
+  }
+
+  return [flow.value.secondLine, remarkText.value].filter(Boolean).join(" · ");
 });
 
 const closeCompare = () => {
@@ -891,6 +983,8 @@ const onClickRefresh = async () => {
 <style lang="scss" scoped>
 .sub-item-swipe {
   position: relative;
+  display: block;
+  min-width: 0;
 }
 
 
@@ -910,6 +1004,7 @@ const onClickRefresh = async () => {
   margin-right: auto;
   border-radius: var(--item-card-radios);
   display: flex;
+  min-width: 0;
   background: var(--card-color);
   cursor: pointer;
   position: relative;
@@ -930,12 +1025,16 @@ const onClickRefresh = async () => {
   > .sub-item-content {
     z-index: 1;
     flex: 1;
+    min-width: 0;
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
 
     .sub-item-title-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
 
       .sub-item-title {
         display: -webkit-box;
@@ -962,6 +1061,9 @@ const onClickRefresh = async () => {
         // background: var(--card-color);
         padding: 4px 0;
         border-radius: var(--item-card-radios);
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
         &.simple-mode {
           position: relative;
           top: 8px;
@@ -1058,6 +1160,43 @@ const onClickRefresh = async () => {
     width: 0%;
     height: 100%;
     background: var(--primary-color);
+  }
+}
+
+.sub-item-swipe.is-dual-column {
+  .sub-item-wrapper {
+    :deep(.nut-avatar) {
+      margin-right: 12px;
+    }
+
+    > .sub-item-content {
+      .sub-item-title-wrapper {
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .sub-item-title {
+        font-size: 15px;
+      }
+
+      .sub-item-detail {
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+      }
+
+      .sub-item-remark {
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+      }
+
+      .dual-non-simple-second-line {
+        min-height: 18px;
+      }
+
+      .sub-item-detail-isSimple {
+        max-width: 100%;
+      }
+    }
   }
 }
 

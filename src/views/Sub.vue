@@ -104,7 +104,7 @@
 
     <!-- 页面内容 -->
     <!-- 有数据 -->
-    <div class="subs-list-wrapper">
+    <div class="subs-list-wrapper" :class="{ 'dual-column-mode': isDualColumnMode }">
       <div v-if="tags && tags.length > 0" ref="radioWrapperRef" class="radio-wrapper" >
         <!-- <nut-radiogroup v-model="tag" direction="horizontal"> -->
           <!-- <nut-radio v-for="i in tags" shape="button" :label="String(i.value)">{{ i.label }}</nut-radio> -->
@@ -123,6 +123,8 @@
 
           <draggable
             v-if="!isFold('sub')"
+            class="list-draggable"
+            :class="{ 'dual-column': isDualColumnMode }"
             v-model="filteredSubs"
             item-key="name"
             :scroll-sensitivity="200"
@@ -146,6 +148,7 @@
                   :sub="element"
                   type="sub"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @share="handleShare"
                 />
               </div>
@@ -163,6 +166,8 @@
 
           <draggable
             v-if="!isFold('col')"
+            class="list-draggable"
+            :class="{ 'dual-column': isDualColumnMode }"
             v-model="filteredCollections"
             item-key="name"
             :scroll-sensitivity="200"
@@ -186,6 +191,7 @@
                   :collection="element"
                   type="collection"
                   :disabled="swipeDisabled"
+                  :is-dual-column="isDualColumnMode"
                   @share="handleShare"
                 />
               </div>
@@ -261,6 +267,7 @@ import { useSubsApi } from "@/api/subs";
 import SubListItem from "@/components/SubListItem.vue";
 import { useBackend } from "@/hooks/useBackend";
 import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
+import { useListViewMode } from "@/hooks/useListViewMode";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
@@ -287,6 +294,7 @@ const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
 const { appearanceSetting } = storeToRefs(settingsStore);
+const { effectiveListViewMode } = useListViewMode();
 const {
   // isSimpleMode,
   isLoading,
@@ -295,6 +303,9 @@ const {
   // showFloatingRefreshButton,
 } = storeToRefs(globalStore);
 const { navBarHeight } = storeToRefs(systemStore);
+const isDualColumnMode = computed(() => {
+  return effectiveListViewMode.value === "dual-column";
+});
 const swipeDisabled = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
@@ -785,7 +796,8 @@ const importTips = () => {
 .draggable-item {
   margin-top: 12px;
   margin-bottom: 12px;
-  // overflow: hidden;
+  border-radius: var(--item-card-radios);
+  overflow: hidden;
 }
 
 .chosensub {
@@ -796,6 +808,20 @@ const importTips = () => {
 
 .subs-list-wrapper {
   width: 100%;
+  .list-draggable.dual-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+    padding-top: 12px;
+
+    > .draggable-item {
+      min-width: 0;
+      margin: 0;
+      border-radius: var(--item-card-radios);
+      overflow: hidden;
+    }
+  }
   .radio-wrapper {
     box-sizing: border-box;
     width: 100%;
@@ -835,6 +861,10 @@ const importTips = () => {
     margin-top: 0;
     padding: 0;
     // margin-top: var(--safe-area-side);
+  }
+
+  .subs-list-content + .subs-list-content {
+    margin-top: 8px;
   }
 }
 </style>

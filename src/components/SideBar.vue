@@ -71,6 +71,7 @@
 import { useGlobalStore } from '@/store/global';
 import { useSettingsStore } from '@/store/settings';
 import { useSystemStore } from "@/store/system";
+import { SIDEBAR_EXPANDED_BREAKPOINT } from "@/store/system";
 import { storeToRefs } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -103,7 +104,7 @@ watch(
 const { width: windowWidth } = useWindowSize();
 
 const isExpanded = computed(() => {
-  return windowWidth.value >= 1220;
+  return windowWidth.value >= SIDEBAR_EXPANDED_BREAKPOINT;
 });
 
 const globalStore = useGlobalStore();

@@ -1,6 +1,7 @@
 <template>
   <nut-swipe
     class="sub-item-swipe"
+    :class="{ 'is-dual-column': props.isDualColumn }"
     ref="swipe"
     @close="setIsMoveClose()"
     @open="setIsMoveOpen()"
@@ -8,13 +9,14 @@
   >
     <div
       class="sub-item-wrapper"
-      :style="{ padding: appearanceSetting.isSimpleMode ? '9px' : '16px' }"
+      :class="{ 'is-dual-column': props.isDualColumn }"
+      :style="{ padding: itemPadding }"
       @click="handleContentClick"
     >
       <div v-if="appearanceSetting.isShowIcon" class="sub-img-wrappers" @click.stop="openUrl">
         <nut-avatar
           :class="{ 'sub-item-customer-icon': !isIconColor }"
-          :size="appearanceSetting.isSimpleMode ? '36' : '48'"
+          :size="avatarSize"
           :url="displayIcon"
           bg-color=""
         ></nut-avatar>
@@ -65,7 +67,13 @@
             {{ detail.firstLine }}
           </p>
           <div class="second-line-wrapper">
-            <p>{{ detail.secondLine }}</p>
+            <p :class="{ 'dual-non-simple-second-line': isDualNonSimpleMode }">
+              {{
+                appearanceSetting.isSimpleMode
+                  ? simpleDetailSecondLine
+                  : nonSimpleDetailSecondLine
+              }}
+            </p>
             <div class="task-switch">
               <div v-if="appearanceSetting.isSimpleMode">
                 <div class="simple-actions">
@@ -116,7 +124,11 @@
           </div>
         </div>
         <p
-          v-if="remark && (!appearanceSetting.isSimpleMode || appearanceSetting.isSimpleShowRemark)"
+          v-if="remark && (
+            appearanceSetting.isSimpleMode
+              ? appearanceSetting.isSimpleShowRemark && !shouldInlineRemarkInSecondLine
+              : !isDualNonSimpleMode
+          )"
           class="sub-item-remark"
         >
           <span>{{ remarkText }}</span>
@@ -225,6 +237,7 @@ const isArchiveEnabled = computed(() => {
 const props = defineProps<{
   name: string;
   disabled?: boolean;
+  isDualColumn?: boolean;
 }>();
 
 const { showNotify } = useAppNotifyStore();
@@ -252,6 +265,28 @@ const remarkText = computed(() => {
     return remark.value;
   }
   return "";
+});
+const shouldInlineRemarkInSecondLine = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && appearanceSetting.value.isSimpleMode
+    && remarkText.value
+    && appearanceSetting.value.isSimpleShowRemark
+  );
+});
+const isDualNonSimpleMode = computed(() => {
+  return Boolean(
+    props.isDualColumn
+    && !appearanceSetting.value.isSimpleMode,
+  );
+});
+const avatarSize = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "36";
+  return props.isDualColumn ? "40" : "48";
+});
+const itemPadding = computed(() => {
+  if (appearanceSetting.value.isSimpleMode) return "9px";
+  return props.isDualColumn ? "12px" : "16px";
 });
 
 const isInit = ref(false);
@@ -463,6 +498,16 @@ const detail = computed(() => {
     };
   }
 });
+const simpleDetailSecondLine = computed(() => {
+  if (!shouldInlineRemarkInSecondLine.value) {
+    return detail.value.secondLine;
+  }
+
+  return [detail.value.secondLine, remarkText.value].filter(Boolean).join(" · ");
+});
+const nonSimpleDetailSecondLine = computed(() => {
+  return [detail.value.secondLine, remarkText.value].filter(Boolean).join(" · ");
+});
 
 const swipeController = () => {
   if (swipeIsOpen.value) {
@@ -592,8 +637,10 @@ watch(isSyncOpen, async () => {
   display: flex;
   flex-direction: row; //
   justify-content: flex-end; //
+  min-width: 0;
   background: var(--card-color);
   cursor: pointer;
+  overflow: hidden;
 
   :deep(.nut-avatar) {
     flex-shrink: 0;
@@ -610,11 +657,15 @@ watch(isSyncOpen, async () => {
 
   .sub-item-content {
     flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 
     .sub-item-title-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
 
       .sub-item-title {
         display: -webkit-box;
@@ -631,6 +682,12 @@ watch(isSyncOpen, async () => {
           display: inline-flex;
           vertical-align: middle;
         }
+      }
+
+      .title-right-wrapper {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
       }
     }
 
@@ -714,6 +771,8 @@ watch(isSyncOpen, async () => {
 }
 
 .sub-item-swipe {
+  display: block;
+  min-width: 0;
   :deep(.nut-swipe__left) {
     .sub-item-swipe-btn-wrapper {
       padding-left: 24px;
@@ -737,6 +796,43 @@ watch(isSyncOpen, async () => {
         border-radius: 50%;
         height: 46px;
         width: 44px;
+      }
+    }
+  }
+}
+
+.sub-item-swipe.is-dual-column {
+  .sub-item-wrapper {
+    :deep(.nut-avatar) {
+      margin-right: 12px;
+    }
+
+    .sub-item-content {
+      .sub-item-title-wrapper {
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .sub-item-title {
+        font-size: 15px;
+      }
+
+      .sub-item-detail {
+        .second-line-wrapper {
+          gap: 8px;
+        }
+
+        p {
+          -webkit-line-clamp: 1;
+        }
+      }
+
+      .sub-item-remark {
+        -webkit-line-clamp: 1;
+      }
+
+      .dual-non-simple-second-line {
+        min-height: 18px;
       }
     }
   }
