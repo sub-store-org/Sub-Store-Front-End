@@ -765,9 +765,9 @@ export default {
         isRequired: '目标平台不能为空',
       },
       includeUnsupportedProxy: {
-        label: '包含官方/商店版/未续费订阅不支持的协议',
+        label: '包含不支持的协议(详见文档)',
         tips: {
-          title: '包含官方/商店版未续费订阅不支持的协议',
+          title: '包含不支持的协议(详见文档)',
           content: 'https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E'
         }
       },

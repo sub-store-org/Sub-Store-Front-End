@@ -6,7 +6,7 @@
     </div>
     <div class="includeUnsupportedProxy">
       <input type="checkbox" id="includeUnsupportedProxy" name="includeUnsupportedProxy" value="includeUnsupportedProxy" v-model="includeUnsupportedProxy">
-      <label for="includeUnsupportedProxy">包含官方/商店版/未续费订阅不支持的协议</label>
+      <label for="includeUnsupportedProxy">包含不支持的协议(详见文档)</label>
     </div>
     <ul class="preview-list">
       <li v-for="platform in platformList" :key="platform.name">
