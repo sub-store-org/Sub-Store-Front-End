@@ -601,6 +601,10 @@ const flow = computed(() => {
         };
       }
     }
+    return {
+      firstLine: t("subPage.subItem.noFlowInfo"),
+      secondLine: ``,
+    };
   }
 });
 const simpleSubDetailLine = computed(() => {
