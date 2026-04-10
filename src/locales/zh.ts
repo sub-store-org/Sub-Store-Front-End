@@ -64,6 +64,11 @@ export default {
       switchToSingle: '切换为单列',
       switchToDual: '切换为双列',
       disabledInSelectionMode: '多选模式下固定为单列',
+      disabledInNarrowNavigationMode: '窄屏导航模式下固定为单列',
+    },
+    navigationMode: {
+      switchToNarrow: '切换为窄屏导航',
+      switchToWide: '切换为宽屏导航',
     },
     pagesTitle: {
       sub: '订阅管理',

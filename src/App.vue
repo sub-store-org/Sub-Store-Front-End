@@ -1,7 +1,7 @@
 <template>
   <!-- <GlobalNotify /> -->
   <NavBar />
-  <SideBar v-show="!route.path.startsWith('/preview')" />
+  <SideBar v-show="shouldShowSideBar" />
   <main class="page-body">
     <router-view />
   </main>
@@ -18,6 +18,7 @@
 import SideBar from "@/components/SideBar.vue";
 import NavBar from "@/components/NavBar.vue";
 import MagicPathDialog from "@/components/MagicPathDialog.vue";
+import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
 import { useThemes } from "@/hooks/useThemes";
 import { useGlobalStore } from "@/store/global";
 import { useSubsStore } from "@/store/subs";
@@ -32,6 +33,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const route = useRoute();
 const router = useRouter();
+const { shouldShowSideBar } = useWideScreenNarrowMode();
 
 const { subs, flows } = storeToRefs(subsStore);
 

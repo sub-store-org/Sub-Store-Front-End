@@ -51,6 +51,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar2: false,
         subProgressStyle: "hidden",
         listPageViewMode: undefined,
+        useNarrowModeOnWideScreen: false,
       },
       gistUpload: "base64",
       avatarUrl: "",
@@ -101,6 +102,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
         this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
         this.appearanceSetting.listPageViewMode = res.data.data.appearanceSetting?.listPageViewMode;
+        this.appearanceSetting.useNarrowModeOnWideScreen = res.data.data.appearanceSetting?.useNarrowModeOnWideScreen ?? false;
         this.gistUpload = res.data.data?.gistUpload ?? "base64";
       } else {
         showNotify({

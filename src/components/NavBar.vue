@@ -56,6 +56,13 @@
             icon="fa-solid fa-toggle-off"
           />
           <font-awesome-icon
+            v-if="showWideScreenNarrowModeToggle"
+            @click.stop="handleWideScreenNarrowModeToggle"
+            class="navBar-right-icon fa-navigation-mode"
+            :icon="isWideScreenNarrowModeActive ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-desktop'"
+            :title="wideScreenNarrowModeToggleTitle"
+          />
+          <font-awesome-icon
             v-if="showListViewToggle"
             @click.stop="handleListViewModeToggle"
             class="navBar-right-icon fa-list-view"
@@ -115,12 +122,13 @@
 import { computed, ref, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
+import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
 import { useGlobalStore } from "@/store/global";
 import { useListViewMode } from "@/hooks/useListViewMode";
 import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
 import { storeToRefs } from "pinia";
-import { Toast, Dialog } from "@nutui/nutui";
+import { Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
@@ -141,10 +149,17 @@ const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
 const {
   effectiveListViewMode,
+  isListViewModeLockedBySelection,
+  isListViewModeLockedByWideScreenNarrowMode,
   isListViewModeLocked,
   showListViewToggle,
   toggleListViewMode,
 } = useListViewMode();
+const {
+  isWideScreenNarrowModeActive,
+  showWideScreenNarrowModeToggle,
+  toggleWideScreenNarrowMode,
+} = useWideScreenNarrowMode();
 // 从systemStore获取状态
 const { isPWA, isLandscape, isSmall } = storeToRefs(systemStore);
 
@@ -224,7 +239,11 @@ const setSimpleMode = (isSimpleMode: boolean) => {
 };
 
 const listViewModeToggleTitle = computed(() => {
-  if (isListViewModeLocked.value) {
+  if (isListViewModeLockedByWideScreenNarrowMode.value) {
+    return t("navBar.listView.disabledInNarrowNavigationMode");
+  }
+
+  if (isListViewModeLockedBySelection.value) {
     return t("navBar.listView.disabledInSelectionMode");
   }
 
@@ -233,12 +252,26 @@ const listViewModeToggleTitle = computed(() => {
     : t("navBar.listView.switchToDual");
 });
 
+const wideScreenNarrowModeToggleTitle = computed(() => {
+  return isWideScreenNarrowModeActive.value
+    ? t("navBar.navigationMode.switchToWide")
+    : t("navBar.navigationMode.switchToNarrow");
+});
+
+const wideScreenNarrowModeToggleRight = computed(() => {
+  return showListViewToggle.value ? "141px" : "99px";
+});
+
 const handleListViewModeToggle = async () => {
   if (isListViewModeLocked.value) {
     return;
   }
 
   await toggleListViewMode();
+};
+
+const handleWideScreenNarrowModeToggle = async () => {
+  await toggleWideScreenNarrowMode();
 };
 
 const refresh = async () => {
@@ -323,6 +356,7 @@ const refresh = async () => {
         padding-bottom: 15px;
         padding-left: 10px;
         color: var(--icon-nav-bar-right);
+        cursor: pointer;
       }
       .icon-group {
         .navBar-left-icon {
@@ -377,6 +411,13 @@ const refresh = async () => {
       .fa-toggle {
         position: absolute;
         right: 58px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .fa-navigation-mode {
+        position: absolute;
+        right: v-bind(wideScreenNarrowModeToggleRight);
         top: 50%;
         transform: translateY(-50%);
       }

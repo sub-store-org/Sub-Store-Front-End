@@ -15,6 +15,7 @@ import {
   faCloudArrowDown,
   faCloudArrowUp,
   faCode,
+  faDesktop,
   faEye,
   faEllipsis,
   faFloppyDisk,
@@ -42,6 +43,7 @@ import {
   faSquareArrowUpRight,
   faMaximize,
   faMinimize,
+  faMobileScreenButton,
   faBars,
   faBoxArchive,
   faShare
@@ -70,6 +72,7 @@ library.add(faCircleXmark);
 library.add(faXmark);
 library.add(faLocationArrow);
 library.add(faCode);
+library.add(faDesktop);
 library.add(faArrowRotateRight);
 library.add(faArrowsRotate);
 library.add(faAnglesRight);
@@ -89,5 +92,6 @@ library.add(faBars);
 library.add(faEllipsis);
 library.add(faMaximize);
 library.add(faMinimize);
+library.add(faMobileScreenButton);
 library.add(faBoxArchive);
 library.add(faShare);

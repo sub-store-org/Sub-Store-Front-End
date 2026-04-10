@@ -2,28 +2,23 @@
   <div class="app-layout-wrapper">
     <router-view />
   </div>
-  <TabBar v-if="isNeedTabBar" />
+  <TabBar v-if="shouldShowTabBar" />
 </template>
 
 <script lang="ts" setup>
   import TabBar from '@/components/TabBar.vue';
-  import { useRoute } from 'vue-router';
   import { computed } from 'vue';
   import { storeToRefs } from 'pinia';
+  import { useWideScreenNarrowMode } from '@/hooks/useWideScreenNarrowMode';
   import { useGlobalStore } from '@/store/global';
   import router from '@/router';
 
   const globalStore = useGlobalStore();
   const { bottomSafeArea } = storeToRefs(globalStore);
-
-  const route = useRoute();
-
-  const isNeedTabBar = computed(() => {
-    return route.meta?.needTabBar ?? false;
-  });
+  const { shouldShowTabBar } = useWideScreenNarrowMode();
 
   const height = computed(() => {
-    if (route.meta.needTabBar) {
+    if (shouldShowTabBar.value) {
       return 44 + 12 + bottomSafeArea.value + 'px';
     } else {
       return '16px';

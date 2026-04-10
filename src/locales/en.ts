@@ -36,6 +36,11 @@ export default {
       switchToSingle: "Switch to single column",
       switchToDual: "Switch to dual column",
       disabledInSelectionMode: "Multi-select uses single column only",
+      disabledInNarrowNavigationMode: "Single column only in narrow navigation mode",
+    },
+    navigationMode: {
+      switchToNarrow: "Switch to narrow navigation",
+      switchToWide: "Switch to wide navigation",
     },
     pagesTitle: {
       sub: "Subscription",
