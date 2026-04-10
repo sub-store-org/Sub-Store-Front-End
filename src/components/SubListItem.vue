@@ -707,6 +707,11 @@ const fetchCompareData = async (data?: any) => {
     console.error(e);
     compareData.value = null;
   }
+  try {
+    await subsStore.fetchFlows(ref([props.sub]).value);
+  } catch (e) {
+    console.error(e);
+  }
   Toast.hide("compare");
 };
 

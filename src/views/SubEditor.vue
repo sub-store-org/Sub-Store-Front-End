@@ -890,9 +890,9 @@ const fetchCompareData = async () => {
         }
       }
     });
-    if (configName !== "UNTITLED") {
-      await subsStore.fetchFlows(ref([data]).value);
-    }
+    // if (configName !== "UNTITLED") {
+    //   await subsStore.fetchFlows(ref([data]).value);
+    // }
     const type = editType === "collections" ? "collection" : "sub";
     const res = await subsApi.compareSub(type, data);
     if (res?.data?.status === "success") {
