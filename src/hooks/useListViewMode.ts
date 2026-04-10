@@ -14,7 +14,7 @@ export const useListViewMode = () => {
   const listPageViewStore = useListPageViewStore();
   const settingsStore = useSettingsStore();
   const systemStore = useSystemStore();
-  const { isWideScreenNarrowModeActive, supportsWideScreenNarrowMode } = useWideScreenNarrowMode();
+  const { isWideScreenNarrowModeActive } = useWideScreenNarrowMode();
 
   const { singleColumnLockRoutePath } = storeToRefs(listPageViewStore);
   const { appearanceSetting } = storeToRefs(settingsStore);
@@ -26,25 +26,21 @@ export const useListViewMode = () => {
   const isListViewModeLockedBySelection = computed(() => {
     return showListViewToggle.value && singleColumnLockRoutePath.value === route.path;
   });
-  const isListViewModeLockedByWideScreenNarrowMode = computed(() => {
-    return supportsListViewMode.value && supportsWideScreenNarrowMode.value && isWideScreenNarrowModeActive.value;
-  });
   const isListViewModeLocked = computed(() => {
-    return isListViewModeLockedBySelection.value || isListViewModeLockedByWideScreenNarrowMode.value;
+    return isListViewModeLockedBySelection.value;
   });
   const canToggleListView = computed(() => showListViewToggle.value && !isListViewModeLocked.value);
 
   const storedListViewMode = computed<ListPageViewMode | undefined>(() => {
+    if (isWideScreenNarrowModeActive.value) {
+      return appearanceSetting.value.listPageViewModeInWideScreenNarrowMode ?? appearanceSetting.value.listPageViewMode;
+    }
+
     return appearanceSetting.value.listPageViewMode;
   });
 
   const effectiveListViewMode = computed<ListPageViewMode>(() => {
-    if (
-      !supportsListViewMode.value ||
-      !isWideListViewport.value ||
-      isListViewModeLockedBySelection.value ||
-      isListViewModeLockedByWideScreenNarrowMode.value
-    ) {
+    if (!supportsListViewMode.value || !isWideListViewport.value || isListViewModeLockedBySelection.value) {
       return "single-column";
     }
 
@@ -61,10 +57,15 @@ export const useListViewMode = () => {
     }
 
     await settingsStore.changeAppearanceSetting({
-      appearanceSetting: {
-        ...appearanceSetting.value,
-        listPageViewMode: mode,
-      },
+      appearanceSetting: isWideScreenNarrowModeActive.value
+        ? {
+            ...appearanceSetting.value,
+            listPageViewModeInWideScreenNarrowMode: mode,
+          }
+        : {
+            ...appearanceSetting.value,
+            listPageViewMode: mode,
+          },
     });
   };
 
@@ -81,7 +82,6 @@ export const useListViewMode = () => {
     isWideListViewport,
     showListViewToggle,
     isListViewModeLockedBySelection,
-    isListViewModeLockedByWideScreenNarrowMode,
     isListViewModeLocked,
     canToggleListView,
     storedListViewMode,

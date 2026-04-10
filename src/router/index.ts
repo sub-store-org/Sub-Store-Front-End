@@ -42,6 +42,7 @@ declare module 'vue-router' {
     needTabBar: boolean;
     needNavBack: boolean;
     supportsListViewMode?: boolean;
+    hideSideBarInWideScreenNarrowMode?: boolean;
   }
 }
 
@@ -130,6 +131,7 @@ const router = createRouter({
             needTabBar: false,
             needNavBack: true,
             supportsListViewMode: true,
+            hideSideBarInWideScreenNarrowMode: true,
           },
         },
         {
@@ -140,6 +142,7 @@ const router = createRouter({
             needTabBar: false,
             needNavBack: true,
             supportsListViewMode: true,
+            hideSideBarInWideScreenNarrowMode: true,
           },
         },
         // {

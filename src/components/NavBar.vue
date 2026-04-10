@@ -150,7 +150,6 @@ const { appearanceSetting } = storeToRefs(settingsStore);
 const {
   effectiveListViewMode,
   isListViewModeLockedBySelection,
-  isListViewModeLockedByWideScreenNarrowMode,
   isListViewModeLocked,
   showListViewToggle,
   toggleListViewMode,
@@ -239,10 +238,6 @@ const setSimpleMode = (isSimpleMode: boolean) => {
 };
 
 const listViewModeToggleTitle = computed(() => {
-  if (isListViewModeLockedByWideScreenNarrowMode.value) {
-    return t("navBar.listView.disabledInNarrowNavigationMode");
-  }
-
   if (isListViewModeLockedBySelection.value) {
     return t("navBar.listView.disabledInSelectionMode");
   }

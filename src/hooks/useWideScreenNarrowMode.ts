@@ -16,6 +16,9 @@ export const useWideScreenNarrowMode = () => {
   const { screenWidth } = storeToRefs(systemStore);
 
   const supportsWideScreenNarrowMode = computed(() => Boolean(route.meta?.needTabBar));
+  const shouldHideSideBarInWideScreenNarrowMode = computed(() => {
+    return Boolean(route.meta?.needTabBar || route.meta?.hideSideBarInWideScreenNarrowMode);
+  });
   const isWideScreen = computed(() => screenWidth.value >= WIDE_SCREEN_NARROW_MODE_BREAKPOINT);
   const storedWideScreenNarrowMode = computed(() => {
     return appearanceSetting.value.useNarrowModeOnWideScreen ?? false;
@@ -38,19 +41,25 @@ export const useWideScreenNarrowMode = () => {
       return false;
     }
 
-    if (!supportsWideScreenNarrowMode.value) {
+    if (!shouldHideSideBarInWideScreenNarrowMode.value) {
       return true;
     }
 
-    return !isWideScreenNarrowModeActive.value;
+    return !storedWideScreenNarrowMode.value;
   });
 
   const setWideScreenNarrowMode = async (enabled: boolean) => {
+    const nextAppearanceSetting = {
+      ...appearanceSetting.value,
+      useNarrowModeOnWideScreen: enabled,
+    };
+
+    if (enabled && !appearanceSetting.value.listPageViewModeInWideScreenNarrowMode) {
+      nextAppearanceSetting.listPageViewModeInWideScreenNarrowMode = appearanceSetting.value.listPageViewMode ?? "dual-column";
+    }
+
     await settingsStore.changeAppearanceSetting({
-      appearanceSetting: {
-        ...appearanceSetting.value,
-        useNarrowModeOnWideScreen: enabled,
-      },
+      appearanceSetting: nextAppearanceSetting,
     });
   };
 

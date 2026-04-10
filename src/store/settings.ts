@@ -9,6 +9,30 @@ import { defineStore } from "pinia";
 
 const settingsApi = useSettingsApi();
 const { t } = i18n.global;
+const LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewMode";
+const NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewModeInWideScreenNarrowMode";
+const WIDE_SCREEN_NARROW_MODE_STORAGE_KEY = "appearanceSetting.useNarrowModeOnWideScreen";
+
+const getCachedListPageViewMode = (storageKey: string): ListPageViewMode | undefined => {
+  const cachedMode = localStorage.getItem(storageKey);
+  if (cachedMode === "single-column" || cachedMode === "dual-column") {
+    return cachedMode;
+  }
+
+  return undefined;
+};
+
+const syncCachedListPageViewMode = (storageKey: string, mode?: ListPageViewMode) => {
+  if (mode) {
+    localStorage.setItem(storageKey, mode);
+  } else {
+    localStorage.removeItem(storageKey);
+  }
+};
+
+const getCachedWideScreenNarrowMode = () => {
+  return localStorage.getItem(WIDE_SCREEN_NARROW_MODE_STORAGE_KEY) === "1";
+};
 
 export const useSettingsStore = defineStore("settingsStore", {
   state: (): SettingsStoreState => {
@@ -50,8 +74,9 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar: false,
         istabBar2: false,
         subProgressStyle: "hidden",
-        listPageViewMode: undefined,
-        useNarrowModeOnWideScreen: false,
+        listPageViewMode: getCachedListPageViewMode(LIST_PAGE_VIEW_MODE_STORAGE_KEY),
+        listPageViewModeInWideScreenNarrowMode: getCachedListPageViewMode(NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY),
+        useNarrowModeOnWideScreen: getCachedWideScreenNarrowMode(),
       },
       gistUpload: "base64",
       avatarUrl: "",
@@ -62,6 +87,45 @@ export const useSettingsStore = defineStore("settingsStore", {
   },
   getters: {},
   actions: {
+    applyAppearanceSetting(appearanceSetting?: SettingsPostData["appearanceSetting"]) {
+      const cachedNarrowModeListPageViewMode = getCachedListPageViewMode(
+        NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
+      );
+
+      this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? "";
+      this.appearanceSetting.isLeftRight = appearanceSetting?.isLeftRight ?? "";
+      this.appearanceSetting.isDefaultIcon = appearanceSetting?.isDefaultIcon ?? "";
+      this.appearanceSetting.isIconColor = appearanceSetting?.isIconColor ?? "";
+      this.appearanceSetting.isShowIcon = appearanceSetting?.isShowIcon ?? true;
+      this.appearanceSetting.isSimpleShowRemark = appearanceSetting?.isSimpleShowRemark ?? "";
+      this.appearanceSetting.isEditorCommon = appearanceSetting?.isEditorCommon ?? true;
+      this.appearanceSetting.isSimpleReicon = appearanceSetting?.isSimpleReicon ?? "";
+      this.appearanceSetting.isSubItemMenuFold = appearanceSetting?.isSubItemMenuFold ?? true;
+      this.appearanceSetting.showFloatingRefreshButton = appearanceSetting?.showFloatingRefreshButton ?? "";
+      this.appearanceSetting.showFloatingAddButton = appearanceSetting?.showFloatingAddButton ?? false;
+      this.appearanceSetting.createItemPosition = appearanceSetting?.createItemPosition ?? "bottom";
+      this.appearanceSetting.displayPreviewInWebPage = appearanceSetting?.displayPreviewInWebPage ?? true;
+      this.appearanceSetting.invalidShareFakeNode = appearanceSetting?.invalidShareFakeNode ?? false;
+      this.appearanceSetting.istabBar = appearanceSetting?.istabBar ?? "";
+      this.appearanceSetting.istabBar2 = appearanceSetting?.istabBar2 ?? "";
+      this.appearanceSetting.subProgressStyle = appearanceSetting?.subProgressStyle ?? "hidden";
+      this.appearanceSetting.listPageViewMode = appearanceSetting?.listPageViewMode;
+      this.appearanceSetting.listPageViewModeInWideScreenNarrowMode =
+        appearanceSetting?.listPageViewModeInWideScreenNarrowMode ?? cachedNarrowModeListPageViewMode;
+      this.appearanceSetting.useNarrowModeOnWideScreen = appearanceSetting?.useNarrowModeOnWideScreen ?? false;
+
+      syncCachedListPageViewMode(LIST_PAGE_VIEW_MODE_STORAGE_KEY, this.appearanceSetting.listPageViewMode);
+      syncCachedListPageViewMode(
+        NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
+        this.appearanceSetting.listPageViewModeInWideScreenNarrowMode,
+      );
+
+      if (this.appearanceSetting.useNarrowModeOnWideScreen) {
+        localStorage.setItem(WIDE_SCREEN_NARROW_MODE_STORAGE_KEY, "1");
+      } else {
+        localStorage.removeItem(WIDE_SCREEN_NARROW_MODE_STORAGE_KEY);
+      }
+    },
     async fetchSettings() {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.getSettings();
@@ -85,24 +149,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.theme.dark = res.data.data.theme?.dark ?? "dark";
         this.theme.light = res.data.data.theme?.light ?? "light";
 
-        this.appearanceSetting.isSimpleMode = res.data.data.appearanceSetting?.isSimpleMode ?? "";
-        this.appearanceSetting.isLeftRight = res.data.data.appearanceSetting?.isLeftRight ?? "";
-        this.appearanceSetting.isDefaultIcon = res.data.data.appearanceSetting?.isDefaultIcon ?? "";
-        this.appearanceSetting.isIconColor = res.data.data.appearanceSetting?.isIconColor ?? "";
-        this.appearanceSetting.isShowIcon = res.data.data.appearanceSetting?.isShowIcon ?? true;
-        this.appearanceSetting.isSimpleShowRemark = res.data.data.appearanceSetting?.isSimpleShowRemark ?? "";
-        this.appearanceSetting.isEditorCommon = res.data.data.appearanceSetting?.isEditorCommon ?? true;
-        this.appearanceSetting.isSimpleReicon = res.data.data.appearanceSetting?.isSimpleReicon ?? "";
-        this.appearanceSetting.isSubItemMenuFold = res.data.data.appearanceSetting?.isSubItemMenuFold ?? true;
-        this.appearanceSetting.showFloatingRefreshButton = res.data.data.appearanceSetting?.showFloatingRefreshButton ?? "";
-        this.appearanceSetting.showFloatingAddButton = res.data.data.appearanceSetting?.showFloatingAddButton ?? false;
-        this.appearanceSetting.createItemPosition = res.data.data.appearanceSetting?.createItemPosition ?? "bottom";
-        this.appearanceSetting.invalidShareFakeNode = res.data.data.appearanceSetting?.invalidShareFakeNode ?? false;
-        this.appearanceSetting.istabBar = res.data.data.appearanceSetting?.istabBar ?? "";
-        this.appearanceSetting.istabBar2 = res.data.data.appearanceSetting?.istabBar2 ?? "";
-        this.appearanceSetting.subProgressStyle = res.data.data.appearanceSetting?.subProgressStyle ?? "hidden";
-        this.appearanceSetting.listPageViewMode = res.data.data.appearanceSetting?.listPageViewMode;
-        this.appearanceSetting.useNarrowModeOnWideScreen = res.data.data.appearanceSetting?.useNarrowModeOnWideScreen ?? false;
+        this.applyAppearanceSetting(res.data.data.appearanceSetting);
         this.gistUpload = res.data.data?.gistUpload ?? "base64";
       } else {
         showNotify({
@@ -214,7 +261,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       const { showNotify } = useAppNotifyStore();
       const res = await settingsApi.setSettings(data);
       if (res?.data?.status === "success" && res?.data?.data) {
-        this.appearanceSetting = res.data.data.appearanceSetting;
+        this.applyAppearanceSetting(res.data.data.appearanceSetting);
       } else {
         showNotify({
           title: `保存外观设置失败`,
