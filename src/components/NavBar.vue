@@ -14,21 +14,31 @@
         <template #left>
           <div :class="isNeedBack ? 'icon-back' : 'icon-home'"></div>
           <div class="icon-group">
-            <font-awesome-icon
+            <button
               v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
+              type="button"
               @click.stop="refresh"
-              class="icon fa-arrow-rotate-right"
-              icon="fa-solid fa-arrow-rotate-right"
-            />
-            <font-awesome-icon
+              class="navBar-left-icon navBar-left-icon--refresh"
+            >
+              <font-awesome-icon
+                class="icon fa-arrow-rotate-right"
+                icon="fa-solid fa-arrow-rotate-right"
+              />
+            </button>
+            <button
               v-if="
                 ['/subs', '/sync', '/files'].includes(route.path) &&
                 !appearanceSetting.showFloatingAddButton
               "
+              type="button"
               @click.stop="add(route)"
-              class="icon fa-plus"
-              icon="fa-solid fa-plus"
-            />
+              class="navBar-left-icon navBar-left-icon--add"
+            >
+              <font-awesome-icon
+                class="icon fa-plus"
+                icon="fa-solid fa-plus"
+              />
+            </button>
           </div>
         </template>
 
@@ -315,27 +325,46 @@ const refresh = async () => {
         color: var(--icon-nav-bar-right);
       }
       .icon-group {
-        .icon {
-          &:first-child:last-child {
-            left: 15px;
+        .navBar-left-icon {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 32px;
+          padding-top: v-bind(navBartop);
+          padding-right: 0;
+          padding-bottom: 0;
+          padding-left: 8px;
+          border: 0;
+          margin: 0;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          color: var(--icon-nav-bar-right);
+          cursor: pointer;
+
+          .icon {
+            pointer-events: none;
+          }
+        }
+
+        .navBar-left-icon--refresh {
+          left: 7px;
+        }
+
+        .navBar-left-icon--add {
+          left: 37px;
+
+          &:only-child {
+            left: 7px;
           }
         }
       }
       .fa-plus {
-        padding-top: v-bind(navBartop);
-        color: var(--icon-nav-bar-right);
-        position: absolute;
-        left: 45px;
-        top: 50%;
-        transform: translateY(-50%);
+        color: currentColor;
       }
       .fa-arrow-rotate-right {
-        padding-top: v-bind(navBartop);
-        color: var(--icon-nav-bar-right);
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
+        color: currentColor;
       }
       .fa-lg {
         position: absolute;
