@@ -4,6 +4,7 @@ import '@/assets/styles/overwritten_css_var.scss';
 // import VConsole from 'vconsole';
 // const vConsole = new VConsole();
 import SvgIcon from '@/components/SvgIcon.vue';
+import { enableDesktopPickerWheel } from '@/hooks/useDesktopPickerWheel';
 import i18n from '@/locales';
 import '@/plugin/awesomeIcon';
 
@@ -37,6 +38,7 @@ export function initializeApp() {
 
   // 开始观察`body`元素上的`class`属性的变化
   observer.observe(document.body, { attributes: true });
+  enableDesktopPickerWheel();
   const pinia = createPinia();
   const app = createApp(App);
 

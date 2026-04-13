@@ -164,7 +164,6 @@
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
-  import { useMousePicker } from '@/hooks/useMousePicker';
   import { useThemes } from '@/hooks/useThemes';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -383,7 +382,6 @@
   const { changeTheme } = settingsStore;
   const { theme } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
-  useMousePicker();
   const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {

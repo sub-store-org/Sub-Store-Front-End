@@ -66,7 +66,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { useMousePicker } from '@/hooks/useMousePicker';
   import { useThemes } from '@/hooks/useThemes';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
@@ -82,7 +81,6 @@
   const { changeTheme } = settingsStore;
   const { theme, } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
-  useMousePicker();
   const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {
