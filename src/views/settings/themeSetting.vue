@@ -50,7 +50,7 @@
     />
   </div>
 
-  <nut-picker
+  <DesktopPicker
     v-model="selectedValue"
     v-model:visible="showThemePicker"
     :columns="pickerColumn"
@@ -59,14 +59,14 @@
     :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
     :ok-text="$t(`themeSettingPage.themePicker.confirm`)"
     @confirm="confirm"
-  ></nut-picker>
+  ></DesktopPicker>
 
 
  
 </template>
 
 <script lang="ts" setup>
-  import { useMousePicker } from '@/hooks/useMousePicker';
+  import DesktopPicker from '@/components/DesktopPicker.vue';
   import { useThemes } from '@/hooks/useThemes';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
@@ -82,7 +82,6 @@
   const { changeTheme } = settingsStore;
   const { theme, } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
-  useMousePicker();
   const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {

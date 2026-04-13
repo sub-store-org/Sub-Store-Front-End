@@ -405,7 +405,7 @@
   <icon-popup v-if="iconPopupVisible" v-model:visible="iconPopupVisible" @setIcon="setIcon">
   </icon-popup>
   <!-- 订阅名称 -->
-  <nut-picker
+  <DesktopPicker
     :key="sourceNameColumns.length"
     v-model="selectSourceName"
     v-model:visible="showSourceNamePicker"
@@ -418,7 +418,7 @@
     <div v-if="!sourceNameColumns.length" class="empty-tips" @click="goAddSub">
       <p>{{ t(`editorPage.subConfig.sourceNamePicker.emptyTips`) }}</p>
     </div>
-  </nut-picker>
+  </DesktopPicker>
   <tag-popup
     v-model:visible="tagPopupVisible"
     ref="tagPopupRef"
@@ -446,6 +446,7 @@ import Script from "@/views/editor/components/Script.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
+import DesktopPicker from "@/components/DesktopPicker.vue";
 import { initStores } from "@/utils/initApp";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";

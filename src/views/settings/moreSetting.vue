@@ -53,11 +53,11 @@
       <nut-cell class="cell-item" :title="$t(`moreSettingPage.subProgress.title`)" :desc="subProgressStyleName"
         @click="()=>{showSubProgressPicker=true}" is-link>
       </nut-cell>
-      <nut-picker v-model="subProgressStyleValue" v-model:visible="showSubProgressPicker" :columns="[
+      <DesktopPicker v-model="subProgressStyleValue" v-model:visible="showSubProgressPicker" :columns="[
         { text: $t(`moreSettingPage.subProgress.hidden`), value: 'hidden' },
         { text: $t(`moreSettingPage.subProgress.background`), value: 'background' }
       ]" :title="$t(`moreSettingPage.subProgress.title`)" @confirm="subProgressStyleConfirm">
-      </nut-picker>
+      </DesktopPicker>
 
 
       <nut-cell :title="$t(`moreSettingPage.displayPreviewInWebPage`)" class="cell-item">
@@ -86,11 +86,11 @@
       <nut-cell class="cell-item" :title="$t(`moreSettingPage.createItemPosition.title`)" :desc="createItemPositionName"
         @click="()=>{showCreateItemPositionPicker=true}" is-link>
       </nut-cell>
-      <nut-picker v-model="createItemPositionValue" v-model:visible="showCreateItemPositionPicker" :columns="[
+      <DesktopPicker v-model="createItemPositionValue" v-model:visible="showCreateItemPositionPicker" :columns="[
         { text: $t(`moreSettingPage.createItemPosition.top`), value: 'top' },
         { text: $t(`moreSettingPage.createItemPosition.bottom`), value: 'bottom' }
       ]" :title="$t(`moreSettingPage.createItemPosition.title`)" @confirm="createItemPositionConfirm">
-      </nut-picker>
+      </DesktopPicker>
       <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch class="my-switch" v-model="awShowFloatingAddButton" size="mini"
@@ -118,11 +118,11 @@
       <nut-cell class="cell-item" :title="$t(`moreSettingPage.gistUpload.title`)" :desc="gistUploadName"
         @click="()=>{showGistUploadPicker=true}" is-link>
       </nut-cell>
-      <nut-picker v-model="gistUploadValue" v-model:visible="showGistUploadPicker" :columns="[
+      <DesktopPicker v-model="gistUploadValue" v-model:visible="showGistUploadPicker" :columns="[
         { text: $t(`moreSettingPage.gistUpload.base64`), value: 'base64' },
         { text: $t(`moreSettingPage.gistUpload.plaintext`), value: 'plaintext' }
       ]" :title="$t(`moreSettingPage.gistUpload.title`)" @confirm="gistUploadConfirm">
-      </nut-picker>
+      </DesktopPicker>
     </nut-cell-group>
 
     <nut-cell-group>
@@ -145,7 +145,7 @@
       <nut-cell v-else class="cell-item" :title="$t(`themeSettingPage.themeSettingTitle`)" :desc="themeDes.nameDes"
         @click="openPicker('name')" is-link />
     </nut-cell-group>
-    <nut-picker v-model="selectedValue" v-model:visible="showThemePicker" :columns="pickerColumn"
+    <DesktopPicker v-model="selectedValue" v-model:visible="showThemePicker" :columns="pickerColumn"
       :title="$t(`themeSettingPage.themePicker.title`)" :cancel-text="$t(`themeSettingPage.themePicker.cancel`)"
       :ok-text="$t(`themeSettingPage.themePicker.confirm`)" @confirm="confirm" />
     <nut-cell-group>
@@ -159,12 +159,12 @@
 </template>
 
 <script lang="ts" setup>
+  import DesktopPicker from '@/components/DesktopPicker.vue';
   import { initStores } from "@/utils/initApp";
   import { Dialog, Toast } from '@nutui/nutui';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
   import { useGlobalStore } from '@/store/global';
-  import { useMousePicker } from '@/hooks/useMousePicker';
   import { useThemes } from '@/hooks/useThemes';
   import { computed, ref, toRaw, watchEffect } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -383,7 +383,6 @@
   const { changeTheme } = settingsStore;
   const { theme } = storeToRefs(settingsStore);
   const { pickerList, pickerLightList, pickerDarkList, isAuto } = useThemes();
-  useMousePicker();
   const selectedValue = ref(['dark']);
 
   const themeDes = computed(() => {
