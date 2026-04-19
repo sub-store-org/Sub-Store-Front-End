@@ -417,25 +417,17 @@
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.label`)"
           prop="ignoreFailedRemoteSub"
-          class="ignore-failed-wrapper"
         >
-          <!-- <div class="switch-wrapper">
-            <nut-switch v-model="form.ignoreFailedRemoteSub" />
-          </div> -->
-          <div class="radio-wrapper">
-            <nut-radiogroup direction="horizontal" v-model="form.ignoreFailedRemoteSub">
-              <nut-radio shape="button" label="disabled">
-                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.disabled`) }}
-              </nut-radio>
-              <nut-radio shape="button" label="quiet">
-                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.quiet`) }}
-              </nut-radio>
-              <nut-radio shape="button" label="enabled">
-                {{ $t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.enabled`) }}
-              </nut-radio>
-            
-            </nut-radiogroup>
-          </div>
+          <nut-input
+            :model-value="subFailureModeLabel"
+            :border="false"
+            class="nut-input-text failure-mode-input"
+            readonly
+            input-align="right"
+            right-icon="rect-right"
+            @click="openSubFailureModePicker"
+            @click-right-icon="openSubFailureModePicker"
+          />
         </nut-form-item>
       </nut-form>
     </div>
@@ -491,6 +483,15 @@
     v-model:visible="iconPopupVisible"
     @setIcon="setIcon">
   </icon-popup>
+  <DesktopPicker
+    v-model="selectedSubFailureMode"
+    v-model:visible="showSubFailureModePicker"
+    :columns="subFailureModeColumns"
+    :title="$t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.label`)"
+    :cancel-text="$t(`editorPage.subConfig.sourceNamePicker.cancel`)"
+    :ok-text="$t(`editorPage.subConfig.sourceNamePicker.confirm`)"
+    @confirm="handleSubFailureModeConfirm"
+  />
   <tag-popup
     v-model:visible="tagPopupVisible"
     ref="tagPopupRef"
@@ -523,6 +524,7 @@ import Regex from "@/views/editor/components/Regex.vue";
 import Script from "@/views/editor/components/Script.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import TagPopup from "@/components/TagPopup.vue";
+import DesktopPicker from "@/components/DesktopPicker.vue";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
 import {
@@ -542,7 +544,7 @@ import { useCodeStore } from "@/store/codeStore";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 const cmStore = useCodeStore();
 const isDis = ref(true)
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const subsApi = useSubsApi();
@@ -632,15 +634,80 @@ type SubSelectRow = [string, string, string | undefined, string[] | undefined, b
       form.tag = tag;      
     }
   };
-  const selectedSubs = computed(() => {
-    const subscriptions = form.subscriptions || [];
-    if(!Array.isArray(subscriptions) || subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
+const selectedSubs = computed(() => {
+  const subscriptions = form.subscriptions || [];
+  if(!Array.isArray(subscriptions) || subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
     return `: ${subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
       if(!sub) form.subscriptions = form.subscriptions.filter((n) => n !== name);
       return sub?.displayName || sub?.["display-name"] || sub?.name || `${name}(🚫)`;
     }).join(', ')}`
   });
+  const subFailureModeOptions = computed(() => {
+    const prefix = "editorPage.subConfig.basic.ignoreFailedRemoteSub";
+    return [
+      {
+        value: "disabled",
+        label: t(`${prefix}.disabled`),
+        note: t(`${prefix}.disabledNote`),
+      },
+      {
+        value: "enabled",
+        label: t(`${prefix}.enabled`),
+        note: t(`${prefix}.enabledNote`),
+      },
+      {
+        value: "quiet",
+        label: t(`${prefix}.quiet`),
+        note: t(`${prefix}.quietNote`),
+      },
+      {
+        value: "fallbackNotify",
+        label: t(`${prefix}.fallbackNotify`),
+        note: t(`${prefix}.fallbackNotifyNote`),
+      },
+      {
+        value: "fallbackQuiet",
+        label: t(`${prefix}.fallbackQuiet`),
+        note: t(`${prefix}.fallbackQuietNote`),
+      },
+    ];
+  });
+  const formatFailureModePickerText = (label: string, note?: string) => {
+    if (!note) return label;
+    return locale.value.startsWith("zh")
+      ? `${label}（${note}）`
+      : `${label} (${note})`;
+  };
+  const subFailureModeValue = computed(() => {
+    return form.ignoreFailedRemoteSub === false || form.ignoreFailedRemoteSub == null
+      ? "disabled"
+      : form.ignoreFailedRemoteSub;
+  });
+  const subFailureModeColumns = computed(() => {
+    return subFailureModeOptions.value.map((option) => ({
+      text: formatFailureModePickerText(option.label, option.note),
+      value: option.value,
+    }));
+  });
+  const subFailureModeLabel = computed(() => {
+    return subFailureModeOptions.value.find(
+      (option) => option.value === subFailureModeValue.value
+    )?.label || "";
+  });
+  const showSubFailureModePicker = ref(false);
+  const selectedSubFailureMode = ref<string[]>([]);
+  const openSubFailureModePicker = () => {
+    selectedSubFailureMode.value = [subFailureModeValue.value];
+    showSubFailureModePicker.value = true;
+  };
+  const handleSubFailureModeConfirm = ({ selectedValue }) => {
+    const nextValue =
+      selectedValue[0] ?? subFailureModeColumns.value[0]?.value ?? "disabled";
+    selectedSubFailureMode.value = [nextValue];
+    form.ignoreFailedRemoteSub = nextValue;
+    showSubFailureModePicker.value = false;
+  };
   const compareTableIsVisible = ref(false);
   usePopupRoute(compareTableIsVisible);
   const compareData = ref();
@@ -1559,6 +1626,16 @@ const handleEditGlobalClick = () => {
   .switch-wrapper {
     display: flex;
     justify-content: flex-end
+  }
+}
+
+.failure-mode-input {
+  cursor: pointer;
+
+  :deep(.nut-input-value),
+  :deep(.nut-input-inner),
+  :deep(.nut-input-right-icon) {
+    cursor: pointer;
   }
 }
 

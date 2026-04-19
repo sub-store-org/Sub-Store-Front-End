@@ -153,10 +153,16 @@ export default {
       remote: '远程',
     },
     ignoreFailedRemoteFile: {
-      label: '忽略失败的远程文件',
-      quiet: '启用(无通知)',
-      disabled: '禁用',
-      enabled : '启用(有通知)'
+      label: '远程文件失败处理',
+      disabled: '严格报错',
+      disabledDesc: '远程文件失败时，立即报错并通知。',
+      disabledNote: '失败即报错并通知',
+      enabled : '失败通知',
+      enabledDesc: '远程文件失败时，跳过失败项并通知。',
+      enabledNote: '失败跳过并通知',
+      quiet: '失败静默',
+      quietDesc: '远程文件失败时，跳过失败项且不通知。',
+      quietNote: '失败跳过且静默'
     },
     download: {
       label: '启用下载(文件名为显示名称)'
@@ -358,10 +364,22 @@ export default {
           label: '图标原色',
         },
         ignoreFailedRemoteSub: {
-          label: '忽略失败的远程订阅',
-          quiet: '启用(无通知)',
-          disabled: '禁用',
-          enabled : '启用(有通知)'
+          label: '订阅失败处理',
+          disabled: '严格报错',
+          disabledDesc: '订阅处理出错时，立即报错并通知。',
+          disabledNote: '出错即报错并通知',
+          enabled : '失败通知',
+          enabledDesc: '远程订阅失败时，跳过失败项并通知；其他错误仍报错。',
+          enabledNote: '远程失败跳过并通知',
+          quiet: '失败静默',
+          quietDesc: '远程订阅失败时，跳过失败项且不通知；其他错误仍报错。',
+          quietNote: '远程失败跳过且静默',
+          fallbackNotify: '兜底通知',
+          fallbackNotifyDesc: '订阅处理出现任何错误时，不报错，返回空结果并通知。',
+          fallbackNotifyNote: '任何错误都空结果并通知',
+          fallbackQuiet: '兜底静默',
+          fallbackQuietDesc: '订阅处理出现任何错误时，不报错，静默返回空结果。',
+          fallbackQuietNote: '任何错误都空结果且静默'
         },
         ua: {
           label: 'User-Agent',

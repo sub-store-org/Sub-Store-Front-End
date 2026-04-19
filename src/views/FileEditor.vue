@@ -336,25 +336,17 @@
             <nut-form-item
               :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
               prop="ignoreFailedRemoteFile"
-              class="ignore-failed-wrapper"
             >
-              <!-- <div class="switch-wrapper">
-                <nut-switch v-model="form.ignoreFailedRemoteFile" />
-              </div> -->
-              <div class="radio-wrapper">
-                <nut-radiogroup direction="horizontal" v-model="form.ignoreFailedRemoteFile">
-                  <nut-radio shape="button" label="disabled">
-                    {{ $t(`filePage.ignoreFailedRemoteFile.disabled`) }}
-                  </nut-radio>
-                  <nut-radio shape="button" label="quiet">
-                    {{ $t(`filePage.ignoreFailedRemoteFile.quiet`) }}
-                  </nut-radio>
-                  <nut-radio shape="button" label="enabled">
-                    {{ $t(`filePage.ignoreFailedRemoteFile.enabled`) }}
-                  </nut-radio>
-                
-                </nut-radiogroup>
-              </div>
+              <nut-input
+                :model-value="fileFailureModeLabel"
+                :border="false"
+                class="nut-input-text failure-mode-input"
+                readonly
+                input-align="right"
+                right-icon="rect-right"
+                @click="openFileFailureModePicker"
+                @click-right-icon="openFileFailureModePicker"
+              />
             </nut-form-item>
           </template>
         </nut-form>
@@ -419,6 +411,15 @@
       <p>{{ t(`editorPage.subConfig.sourceNamePicker.emptyTips`) }}</p>
     </div>
   </DesktopPicker>
+  <DesktopPicker
+    v-model="selectedFileFailureMode"
+    v-model:visible="showFileFailureModePicker"
+    :columns="fileFailureModeColumns"
+    :title="$t(`filePage.ignoreFailedRemoteFile.label`)"
+    :cancel-text="$t(`editorPage.subConfig.sourceNamePicker.cancel`)"
+    :ok-text="$t(`editorPage.subConfig.sourceNamePicker.confirm`)"
+    @confirm="handleFileFailureModeConfirm"
+  />
   <tag-popup
     v-model:visible="tagPopupVisible"
     ref="tagPopupRef"
@@ -469,7 +470,7 @@ import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 
 const cmStore = useCodeStore();
 const isDis = ref(true);
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const subsApi = useSubsApi();
@@ -525,6 +526,61 @@ const tagPopupRef = ref(null);
 const currentTag = computed(() => {
   return form.tag
 })
+const fileFailureModeOptions = computed(() => {
+  const prefix = "filePage.ignoreFailedRemoteFile";
+  return [
+    {
+      value: "disabled",
+      label: t(`${prefix}.disabled`),
+      note: t(`${prefix}.disabledNote`),
+    },
+    {
+      value: "enabled",
+      label: t(`${prefix}.enabled`),
+      note: t(`${prefix}.enabledNote`),
+    },
+    {
+      value: "quiet",
+      label: t(`${prefix}.quiet`),
+      note: t(`${prefix}.quietNote`),
+    },
+  ];
+});
+const formatFailureModePickerText = (label: string, note?: string) => {
+  if (!note) return label;
+  return locale.value.startsWith("zh")
+    ? `${label}（${note}）`
+    : `${label} (${note})`;
+};
+const fileFailureModeValue = computed(() => {
+  return form.ignoreFailedRemoteFile === false || form.ignoreFailedRemoteFile == null
+    ? "disabled"
+    : form.ignoreFailedRemoteFile;
+});
+const fileFailureModeColumns = computed(() => {
+  return fileFailureModeOptions.value.map((option) => ({
+    text: formatFailureModePickerText(option.label, option.note),
+    value: option.value,
+  }));
+});
+const fileFailureModeLabel = computed(() => {
+  return fileFailureModeOptions.value.find(
+    (option) => option.value === fileFailureModeValue.value
+  )?.label || "";
+});
+const showFileFailureModePicker = ref(false);
+const selectedFileFailureMode = ref<string[]>([]);
+const openFileFailureModePicker = () => {
+  selectedFileFailureMode.value = [fileFailureModeValue.value];
+  showFileFailureModePicker.value = true;
+};
+const handleFileFailureModeConfirm = ({ selectedValue }) => {
+  const nextValue =
+    selectedValue[0] ?? fileFailureModeColumns.value[0]?.value ?? "disabled";
+  selectedFileFailureMode.value = [nextValue];
+  form.ignoreFailedRemoteFile = nextValue;
+  showFileFailureModePicker.value = false;
+};
 const showTagPopup = (type:string) => {
   tagType.value = type || 'tag'
   tagPopupVisible.value = true
@@ -1075,6 +1131,16 @@ const handleEditGlobalClick = () => {
   .switch-wrapper {
     display: flex;
     justify-content: end;
+  }
+}
+
+.failure-mode-input {
+  cursor: pointer;
+
+  :deep(.nut-input-value),
+  :deep(.nut-input-inner),
+  :deep(.nut-input-right-icon) {
+    cursor: pointer;
   }
 }
 

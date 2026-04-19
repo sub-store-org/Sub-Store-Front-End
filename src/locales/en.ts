@@ -128,10 +128,16 @@ export default {
       remote: "Remote",
     },
     ignoreFailedRemoteFile: {
-      label: "Ignore failed remote file(s)",
-      quiet: 'Enabled (without notification)',
-      disabled: 'Disabled',
-      enabled : 'Enabled (with notification)'
+      label: "Remote File Failure Handling",
+      disabled: 'Strict Errors',
+      disabledDesc: 'Fail immediately and show a notification when a remote file request fails.',
+      disabledNote: 'fail + notify',
+      enabled : 'Skip + Notify',
+      enabledDesc: 'Skip failed remote files and show a notification.',
+      enabledNote: 'skip failed files',
+      quiet: 'Skip Silently',
+      quietDesc: 'Skip failed remote files without showing a notification.',
+      quietNote: 'skip failed files'
     },
     download: {
       label: "Enable download (filename: display name)",
@@ -340,10 +346,22 @@ export default {
           label: 'Custom Icon Use Original Color',
         },
         ignoreFailedRemoteSub: {
-          label: "Ignore failed remote subscription(s)",
-          quiet: 'Enabled (without notification)',
-          disabled: 'Disabled',
-          enabled : 'Enabled (with notification)'
+          label: "Sub Failure Handling",
+          disabled: 'Strict Errors',
+          disabledDesc: 'Fail immediately and show a notification when subscription processing errors occur.',
+          disabledNote: 'fail and notify',
+          enabled : 'Skip Remote + Notify',
+          enabledDesc: 'Skip failed remote subscriptions and show a notification; other errors still fail.',
+          enabledNote: 'other errors still fail',
+          quiet: 'Skip Remote Silently',
+          quietDesc: 'Skip failed remote subscriptions without showing a notification; other errors still fail.',
+          quietNote: 'other errors still fail',
+          fallbackNotify: 'Empty on Error + Notify',
+          fallbackNotifyDesc: 'If subscription processing hits any error, return an empty result and show a notification.',
+          fallbackNotifyNote: 'return empty result',
+          fallbackQuiet: 'Empty on Error Silently',
+          fallbackQuietDesc: 'If subscription processing hits any error, return an empty result without showing a notification.',
+          fallbackQuietNote: 'return empty result'
         },
         ua: {
           label: "User-Agent",
