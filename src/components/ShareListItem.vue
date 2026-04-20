@@ -125,6 +125,11 @@ import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { openManagedDeleteDialog } from "@/utils/archive";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
+import {
+  getShareEditPath,
+  getSharePublicUrl,
+  resolveShareDisplayIconState,
+} from "@/utils/share";
 import { normalizeTagArray } from "@/utils/shareTags";
 
 const { showNotify } = useAppNotifyStore();
@@ -134,7 +139,6 @@ const props = defineProps<{
   disabled?: boolean;
   isDualColumn?: boolean;
 }>();
-const emit = defineEmits(["detail", "delete"]);
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 const { t } = useI18n();
@@ -229,38 +233,32 @@ const icon = computed(() => {
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
 });
-
-const shareIcon = computed(() => {
-  let iconUrl: string;
-
+const sourceItem = computed(() => {
   switch (type.value) {
     case "sub":
-      iconUrl = subsStore.getOneSub(name.value)?.icon || icon.value;
-      break;
+      return subsStore.getOneSub(name.value) || null;
     case "col":
-      iconUrl = subsStore.getOneCollection(name.value)?.icon || icon.value;
-      break;
+      return subsStore.getOneCollection(name.value) || null;
     case "file":
-      iconUrl = subsStore.getOneFile(name.value)?.icon || icon.value;
-      break;
+      return subsStore.getOneFile(name.value) || null;
     default:
-      iconUrl = icon.value;
+      return null;
   }
+});
+const shareIconState = computed(() => {
+  return resolveShareDisplayIconState({
+    share: props.data,
+    source: sourceItem.value,
+    fallbackIcon: icon.value,
+  });
+});
 
-  return githubUrlRewriter.value(iconUrl) || icon.value;
+const shareIcon = computed(() => {
+  return githubUrlRewriter.value(shareIconState.value.icon) || shareIconState.value.icon;
 });
 
 const isIconColor = computed(() => {
-  switch (type.value) {
-    case "sub":
-      return subsStore.getOneSub(name.value)?.isIconColor !== false;
-    case "col":
-      return subsStore.getOneCollection(name.value)?.isIconColor !== false;
-    case "file":
-      return subsStore.getOneFile(name.value)?.isIconColor !== false;
-    default:
-      return true;
-  }
+  return shareIconState.value.isIconColor;
 });
 
 const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
@@ -271,7 +269,10 @@ const onClickEdit = () => {
   if (props.disabled) {
     return;
   }
-  emit("detail", props.data);
+  if (!type.value || !name.value || !token.value) {
+    return;
+  }
+  router.push(getShareEditPath(type.value, name.value, token.value));
 };
 
 const getOneShareOrigin = async (keyName: string) => {
@@ -351,21 +352,18 @@ const secretPath = computed(() => {
 
 const getShareUrl = () => {
   try {
-    const { type, name, token } = props.data;
-    if (!secretPath.value.startsWith("/")) {
-      Toast.fail(t("sharePage.magicPathErrorNotify"));
-      throw new Error(
-        t("sharePage.magicPathErrorNotify"),
-      );
+    if (!props.data.type || !props.data.name || !props.data.token) {
+      return "";
     }
-    const shareUrl = `${host.value.replace(
-      new RegExp(`${secretPath.value}$`),
-      "",
-    )}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(
-      token,
-    )}`;
-    return shareUrl;
+    return getSharePublicUrl({
+      host: host.value,
+      secretPath: secretPath.value,
+      type: props.data.type,
+      name: props.data.name,
+      token: props.data.token,
+    });
   } catch (error) {
+    Toast.fail(t("sharePage.magicPathErrorNotify"));
     console.error(error);
     return "";
   }

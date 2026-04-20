@@ -81,6 +81,7 @@ export default {
       syncEditor: '同步编辑',
       preview: '预览',
       shareManage: '分享管理',
+      shareEditor: '分享编辑',
       archive: '已归档',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
@@ -841,7 +842,9 @@ export default {
       },
       token: {
         label: "自定义 Token",
-        placeholder: "默认后端随机 Token"
+        placeholder: "默认后端随机 Token",
+        reserved: "自定义 Token 不能使用 UNTITLED",
+        isExist: "当前来源下该 Token 已存在",
       },
       remark: {
         label: "备注",
@@ -853,7 +856,7 @@ export default {
       },
       shareUrl: {
         label: "分享链接",
-        placeholder: "请点击按钮创建分享链接"
+        placeholder: "保存后会在这里显示分享链接"
       },
       unit: {
         day: "天",
@@ -862,9 +865,23 @@ export default {
         year: "年",
       },
       copyBtn: "复制链接",
-      updateBtn: "更新分享",
-      createBtn: "创建分享",
-      succeedNotify: "创建分享成功！",
+    },
+    editor: {
+      create: {
+        submit: "创建分享",
+        succeedNotify: "创建分享成功！",
+      },
+      edit: {
+        submit: "保存修改",
+        succeedNotify: "分享更新成功！",
+      },
+      loadFailed: {
+        title: "无法载入分享编辑页",
+        desc: "请检查分享或源对象是否仍然存在，然后重试。",
+        retry: "重新载入",
+        back: "返回分享列表",
+      },
+      failNotify: "更新分享失败",
     },
     copyShare: {
       succeedNotify: "复制分享链接成功",
@@ -873,13 +890,6 @@ export default {
       title: '你还没有创建分享',
       desc: '创建分享后开始使用',
       btn: '立即创建',
-    },
-    updateShare: {
-      failNotify: "更新分享失败",
-      title: "温馨提示",
-      tips: "更新分享后，原分享链接将失效，是否继续?",
-      confirm: "确认",
-      cancel: "取消",
     },
     deleteShare: {
       title: "温馨提示",

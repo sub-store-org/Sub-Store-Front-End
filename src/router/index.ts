@@ -21,6 +21,7 @@ import Sync from '@/views/Sync.vue';
 import SyncEditor from '@/views/SyncEditor.vue';
 
 import ShareManage from '@/views/share/Share.vue';
+import ShareEditorPage from '@/views/share/ShareEditorPage.vue';
 import Archive from '@/views/archive/Archive.vue';
 
 // import themeSetting from '@/views/themeSetting.vue';
@@ -131,6 +132,16 @@ const router = createRouter({
             needTabBar: false,
             needNavBack: true,
             supportsListViewMode: true,
+            hideSideBarInWideScreenNarrowMode: true,
+          },
+        },
+        {
+          path: '/edit/shares/:name',
+          component: ShareEditorPage,
+          meta: {
+            title: 'shareEditor',
+            needTabBar: false,
+            needNavBack: true,
             hideSideBarInWideScreenNarrowMode: true,
           },
         },
@@ -326,7 +337,7 @@ router.beforeResolve(async (to, from) => {
 
   // 进入编辑页面前查询是否存在订阅
   if (to.fullPath.startsWith('/edit/')) {
-    const name = to.params.id as string;
+    const name = (to.params.id || to.params.name) as string;
     if (!['UNTITLED', 'UNTITLED-mihomoProfile'].includes(name)) {
       try {
         if (to.params.editType === 'subs') {

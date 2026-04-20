@@ -117,6 +117,7 @@ import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from '@/store/subs';
 import { resolveArtifactIcon } from '@/utils/artifactIcon';
 import { createGithubProxyUrlRewriter } from '@/utils/githubProxy';
+import { isShareType, resolveShareDisplayIconState } from '@/utils/share';
 import {
   formatArchiveTime,
   getArchiveEntryDisplayName,
@@ -162,6 +163,44 @@ const shareType = computed(() => props.data?.shareType);
 const archivedAt = computed(() => formatArchiveTime(props.data?.archivedAt));
 const icon = computed(() => {
   return appearanceSetting.value.isDefaultIcon ? logoIcon : logoRedIcon;
+});
+const shareSnapshot = computed(() => {
+  return itemType.value === 'share' ? props.data?.snapshot : null;
+});
+const shareSourceType = computed(() => {
+  const snapshotType = shareSnapshot.value?.type;
+  if (isShareType(snapshotType)) {
+    return snapshotType;
+  }
+  return isShareType(shareType.value) ? shareType.value : null;
+});
+const shareSourceName = computed(() => {
+  return typeof shareSnapshot.value?.name === 'string'
+    ? shareSnapshot.value.name
+    : '';
+});
+const shareSourceItem = computed(() => {
+  if (!shareSourceType.value || !shareSourceName.value) {
+    return null;
+  }
+
+  switch (shareSourceType.value) {
+    case 'sub':
+      return subsStore.getOneSub(shareSourceName.value) || null;
+    case 'col':
+      return subsStore.getOneCollection(shareSourceName.value) || null;
+    case 'file':
+      return subsStore.getOneFile(shareSourceName.value) || null;
+    default:
+      return null;
+  }
+});
+const shareIconState = computed(() => {
+  return resolveShareDisplayIconState({
+    share: shareSnapshot.value,
+    source: shareSourceItem.value,
+    fallbackIcon: icon.value,
+  });
 });
 const artifactSnapshot = computed(() => {
   return itemType.value === 'artifact' ? props.data?.snapshot : null;
@@ -236,7 +275,7 @@ const itemIcon = computed(() => {
         sourceIcon: artifactSourceIcon.value,
       });
     case 'share':
-      return icon.value;
+      return shareIconState.value.icon;
     default:
       return icon.value;
   }
@@ -250,7 +289,7 @@ const displayItemIcon = computed(() => {
 
 const isIconColor = computed(() => {
   if (itemType.value === 'share') {
-    return true;
+    return shareIconState.value.isIconColor;
   }
 
   return props.data?.snapshot?.isIconColor !== false;

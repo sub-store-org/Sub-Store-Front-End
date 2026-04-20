@@ -13,11 +13,28 @@ const filesApi = useFilesApi();
 const shareApi = useShareApi();
 
 const normalizeShare = (share: Share): Share => {
+  const expiresAt = share?.expiresAt == null ? null : Number(share.expiresAt);
+  const exp = share?.exp == null ? null : Number(share.exp);
+
   return {
     ...share,
     tag: normalizeTagArray(share?.tag),
+    expiresAt: Number.isFinite(expiresAt) ? expiresAt : null,
+    exp: Number.isFinite(exp) ? exp : null,
   };
 };
+
+type ShareUpdateResult =
+  | {
+      status: 'success';
+      token: string | null;
+    }
+  | {
+      status: 'retry_create';
+    }
+  | {
+      status: 'failed';
+    };
 // class TaskProcessor {
 //   #fulfilledIndexes; // 已完成任务的索引集合
 //   #results; // 所有任务的执行结果
@@ -413,7 +430,7 @@ export const useSubsStore = defineStore('subsStore', {
       return false;
     },
     async fetchShareData() {
-      Promise.all([shareApi.getShares()]).then((res) => {
+      await Promise.all([shareApi.getShares()]).then((res) => {
         if ("data" in res[0].data) {
           this.shares = res[0].data.data.map(normalizeShare);
         }
@@ -449,19 +466,54 @@ export const useSubsStore = defineStore('subsStore', {
 
       return false;
     },
-    async updateShare(token: string, type: string, name:string, data: ShareToken) {
-      const { showNotify } = useAppNotifyStore();
+    async updateShare(
+      token: string,
+      type: string,
+      name: string,
+      data: ShareToken,
+      isShowNotify: boolean = true,
+    ): Promise<ShareUpdateResult> {
+      let deleteSucceeded = false;
       try {
-        await shareApi.deleteShare(token, type, name);
-        await shareApi.createShare(data);
-        await this.fetchShareData();
+        const { showNotify } = useAppNotifyStore();
+
+        const deleteRes = await shareApi.deleteShare(token, type, name);
+        if (deleteRes.data.status !== 'success') {
+          throw new Error('deleteShare failed');
+        }
+        deleteSucceeded = true;
+
+        const createRes = await shareApi.createShare(data);
+        if (createRes.data.status === 'success') {
+          await this.fetchShareData();
+          isShowNotify && showNotify({
+            type: 'success',
+            title: t('sharePage.editor.edit.succeedNotify'),
+          });
+          return {
+            status: 'success',
+            token: createRes.data.data?.token || null,
+          };
+        }
+
+        return {
+          status: 'retry_create',
+        };
       } catch (error) {
         console.log('updateShare error', error);
+      }
+
+      if (isShowNotify) {
+        const { showNotify } = useAppNotifyStore();
         showNotify({
-          type: "danger",
-          title: t("sharePage.deleteShare.failNotify"),
+          type: 'danger',
+          title: t('sharePage.editor.failNotify'),
         });
       }
+
+      return {
+        status: deleteSucceeded ? 'retry_create' : 'failed',
+      };
     },
   },
 });

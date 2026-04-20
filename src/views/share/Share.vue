@@ -5,6 +5,17 @@
     <Teleport to="body">
       <div v-if="hasShares" class="share-nav-action-layer">
         <button
+          v-if="!appearanceSetting.showFloatingAddButton"
+          type="button"
+          class="share-top-create-button"
+          :style="{ top: shareTopSelectionOffset }"
+          :aria-label="$t(`sharePage.emptyShare.btn`)"
+          :title="$t(`sharePage.emptyShare.btn`)"
+          @click="addShare"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" />
+        </button>
+        <button
           type="button"
           class="share-top-selection-toggle"
           :style="{ top: shareTopSelectionOffset }"
@@ -50,8 +61,8 @@
           </div>
 
           <!-- 加号 -->
-          <!-- <div
-            class="router-link"
+          <div
+            v-if="appearanceSetting.showFloatingAddButton"
             @touchmove="onTa"
             @touchend="enTa"
             @click="addShare"
@@ -59,7 +70,7 @@
             <div class="drag-btn">
               <font-awesome-icon icon="fa-solid fa-plus" />
             </div>
-          </div> -->
+          </div>
         </nut-drag>
       </div>
     </Teleport>
@@ -121,7 +132,7 @@
           <draggable
             v-if="!isFold('sub')"
             v-model="filteredSubShareData"
-            item-key="token"
+            :item-key="getShareSelectionKey"
             class="draggable-list"
             :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
@@ -141,7 +152,7 @@
           >
             <template #item="{ element }">
               <div
-                :key="element.token"
+                :key="getShareSelectionKey(element)"
                 class="draggable-item"
               >
                 <div
@@ -160,7 +171,6 @@
                       :data="element"
                       :disabled="true"
                       :is-dual-column="isDualColumnMode"
-                      @detail="handleShareDetail"
                     />
                   </div>
                 </div>
@@ -169,7 +179,6 @@
                   :data="element"
                   :disabled="swipeDisabled"
                   :is-dual-column="isDualColumnMode"
-                  @detail="handleShareDetail"
                 />
               </div>
             </template>
@@ -210,7 +219,7 @@
           <draggable
             v-if="!isFold('col')"
             v-model="filteredCollectionShareData"
-            item-key="token"
+            :item-key="getShareSelectionKey"
             class="draggable-list"
             :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
@@ -230,7 +239,7 @@
           >
             <template #item="{ element }">
               <div
-                :key="element.token"
+                :key="getShareSelectionKey(element)"
                 class="draggable-item"
               >
                 <div
@@ -249,7 +258,6 @@
                       :data="element"
                       :disabled="true"
                       :is-dual-column="isDualColumnMode"
-                      @detail="handleShareDetail"
                     />
                   </div>
                 </div>
@@ -258,7 +266,6 @@
                   :data="element"
                   :disabled="swipeDisabled"
                   :is-dual-column="isDualColumnMode"
-                  @detail="handleShareDetail"
                 />
               </div>
             </template>
@@ -295,7 +302,7 @@
           <draggable
             v-if="!isFold('file')"
             v-model="filteredFileShareData"
-            item-key="token"
+            :item-key="getShareSelectionKey"
             class="draggable-list"
             :class="{ 'dual-column': isDualColumnMode }"
             :scroll-sensitivity="200"
@@ -315,7 +322,7 @@
           >
             <template #item="{ element }">
               <div
-                :key="element.token"
+                :key="getShareSelectionKey(element)"
                 class="draggable-item"
               >
                 <div
@@ -334,7 +341,6 @@
                       :data="element"
                       :disabled="true"
                       :is-dual-column="isDualColumnMode"
-                      @detail="handleShareDetail"
                     />
                   </div>
                 </div>
@@ -343,7 +349,6 @@
                   :data="element"
                   :disabled="swipeDisabled"
                   :is-dual-column="isDualColumnMode"
-                  @detail="handleShareDetail"
                 />
               </div>
             </template>
@@ -359,11 +364,9 @@
           <p>{{ $t(`sharePage.emptyShare.desc`) }}</p>
         </template>
       </nut-empty>
-      <router-link to="/subs" class="router-link">
-        <nut-button type="primary">
-          {{ $t(`sharePage.emptyShare.btn`) }}
-        </nut-button>
-      </router-link>
+      <nut-button type="primary" @click="addShare">
+        {{ $t(`sharePage.emptyShare.btn`) }}
+      </nut-button>
     </div>
 
     <!-- 数据加载失败 -->
@@ -395,12 +398,6 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
-    <SharePopup
-      v-model:visible="sharePopupVisible"
-      :data="shareData"
-      :type="shareDataType"
-      action="edit"
-    />
     <div
       v-if="hasShares && isSelectionMode"
       class="share-selection-actions"
@@ -448,7 +445,6 @@ import ShareListItem from "@/components/ShareListItem.vue";
 import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
 import { useFilteredDraggableList } from "@/hooks/useFilteredDraggableList";
-import { useHostAPI } from "@/hooks/useHostAPI";
 import { useListViewMode } from "@/hooks/useListViewMode";
 import { useListViewModeSelectionLock } from "@/hooks/useListViewModeSelectionLock";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
@@ -457,6 +453,7 @@ import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { useSystemStore } from "@/store/system";
+import { getShareCreatePath } from "@/utils/share";
 import {
   ALL_SHARE_TAG,
   UNTAGGED_SHARE_TAG,
@@ -470,9 +467,6 @@ import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 import { openManagedDeleteDialog } from "@/utils/archive";
 
-import SharePopup from "./SharePopup.vue";
-import { Dialog } from "@nutui/nutui";
-
 type ShareGroupKey = "sub" | "col" | "file";
 
 const shareTypeLabelKeyMap: Record<ShareGroupKey, "singleSub" | "collectionSub" | "file"> = {
@@ -482,7 +476,6 @@ const shareTypeLabelKeyMap: Record<ShareGroupKey, "singleSub" | "collectionSub" 
 };
 
 const router = useRouter();
-const { currentUrl: host } = useHostAPI();
 
 const { env } = useBackend();
 const isArchiveEnabled = computed(() => {
@@ -548,19 +541,7 @@ const toggleFold = (key: ShareGroupKey) => {
 
 const addShare = () => {
   if (as.value) return;
-  Dialog({
-    title: t("sharePage.emptyShare.title"),
-    content: t("sharePage.emptyShare.emptyTips"),
-    popClass: "auto-dialog",
-    okText: "OK",
-    noCancelBtn: true,
-    closeOnPopstate: true,
-    lockScroll: false,
-    onOk: () => {
-      router.push("/subs");
-    },
-    onCancel: () => {},
-  });
+  router.push(getShareCreatePath());
 };
 
 const getTag = () => {
@@ -917,27 +898,6 @@ const confirmDeleteSelectedShares = () => {
   });
 };
 
-const shareData = ref(null);
-const shareDataType = ref(null);
-const sharePopupVisible = ref(false);
-
-const secretPath = computed(() => {
-  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
-});
-
-const handleShareDetail = (detail: Share) => {
-  console.log('detail', detail)
-  const { type, name, token } = detail;
-  const shareUrl = `${host.value.replace(new RegExp(`${secretPath.value}$`), "")}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(token)}`;
-  shareData.value = { ...detail, shareUrl };
-  shareDataType.value = type;
-  sharePopupVisible.value = true;
-  console.log("share", detail);
-  console.log("env", env.value);
-  console.log('shareDataType', shareDataType.value)
-  console.log("secretPath", secretPath.value);
-  console.log("shareUrl", shareUrl);
-};
 </script>
 
 <style lang="scss">
@@ -1224,12 +1184,35 @@ const handleShareDetail = (detail: Share) => {
   justify-content: center;
 }
 
+.share-top-create-button {
+  position: absolute;
+  left: 80px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-nav-bar-right);
+  cursor: pointer;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .share-top-selection-toggle svg {
   width: 17px;
   height: 17px;
 }
 
-.share-top-selection-toggle:focus {
+.share-top-create-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.share-top-selection-toggle:focus,
+.share-top-create-button:focus {
   outline: none;
 }
 

@@ -53,6 +53,7 @@ export default {
       syncEditor: "Sync Editor",
       preview: 'Preview',
       shareManage: "Share Manage",
+      shareEditor: "Share Editor",
       archive: "Archived",
       themeSetting: "Theme Setting",
       moreSetting: "More Setting",
@@ -851,19 +852,21 @@ export default {
       },
       token: {
         label: "Custom Token",
-        placeholder: "default random Token"
+        placeholder: "default random Token",
+        reserved: "Custom token cannot be UNTITLED",
+        isExist: "This token already exists for the selected source",
       },
       remark: {
         label: "Remarks",
         placeholder: "The remarks",
       },
       displayName: {
-        label: "显示名称",
-        placeholder: "输入展示的名称",
+        label: "Display Name",
+        placeholder: "Enter the name shown to others",
       },
       shareUrl: {
         label: "Share Link",
-        placeholder: "Share Link",
+        placeholder: "The share link will appear here after you save.",
       },
       unit: {
         day: "Day",
@@ -872,9 +875,23 @@ export default {
         year: "Year",
       },
       copyBtn: "Copy Link",
-      updateBtn: "Update",
-      createBtn: "Create",
-      succeedNotify: "Create share successfully!",
+    },
+    editor: {
+      create: {
+        submit: "Create Share",
+        succeedNotify: "Share created successfully!",
+      },
+      edit: {
+        submit: "Save Changes",
+        succeedNotify: "Share updated successfully!",
+      },
+      loadFailed: {
+        title: "This share page could not be loaded",
+        desc: "Check whether the share or its source item still exists, then try again.",
+        retry: "Retry",
+        back: "Back to Shares",
+      },
+      failNotify: "Update share failed",
     },
     copyShare: {
       succeedNotify: "Copy share link successfully!",
@@ -884,13 +901,6 @@ export default {
       desc: "Create and share, then start using.",
       emptyTips: "Please go to the Subs, Files Management page to add the share",
       btn: "Create Now",
-    },
-    updateShare: {
-      failNotify: "Update share failed",
-      title: "Update Share",
-      tips: "After updating the share, the original share link will not work, should I continue?",
-      confirm: "Confirm",
-      cancel: "Cancel",
     },
     deleteShare: {
       title: "Delete Share",

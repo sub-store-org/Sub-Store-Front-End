@@ -245,12 +245,6 @@
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
       </a>
     </div>
-
-    <SharePopup
-      v-model:visible="sharePopupVisible"
-      :data="shareData"
-      action="add"
-    />
   </div>
 </template>
 
@@ -259,10 +253,9 @@ import { Dialog } from '@nutui/nutui';
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import draggable from "vuedraggable";
 
-import SharePopup from "./share/SharePopup.vue";
 import { useSubsApi } from "@/api/subs";
 import SubListItem from "@/components/SubListItem.vue";
 import { useBackend } from "@/hooks/useBackend";
@@ -275,6 +268,7 @@ import { useSystemStore } from "@/store/system";
 import { useMethodStore } from '@/store/methodStore';
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
+import { getShareCreatePath } from "@/utils/share";
 import { initStores } from "@/utils/initApp";
 import { isMobile } from "@/utils/isMobile";
 const { env } = useBackend();
@@ -292,6 +286,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
+const router = useRouter();
 const { hasSubs, hasCollections, subs, collections } = storeToRefs(subsStore);
 const { appearanceSetting } = storeToRefs(settingsStore);
 const { effectiveListViewMode } = useListViewMode();
@@ -362,16 +357,9 @@ const tags = computed(() => {
   }
   return result;
 });
-const shareData = ref(null);
-const sharePopupVisible = ref(false);
 const handleShare = (element, type) => {
-  console.log("share", element);
-  shareData.value = {
-    displayName: element.displayName || "",
-    name: element.name,
-    type: type as "col" | "sub",
-  };
-  sharePopupVisible.value = true;
+  const shareType = type === "collection" ? "col" : "sub";
+  router.push(getShareCreatePath(shareType, element.name));
 };
 const filterdSubsCount = computed(() => {
   if(tag.value === 'all') return subs.value.length;
