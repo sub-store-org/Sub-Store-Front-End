@@ -97,6 +97,7 @@ interface Share {
   icon?: string | null;
   isIconColor?: boolean | null;
   token?: string | null;
+  mode?: 'duration' | 'datetime' | null;
   expiresIn?: string | null;
   expiresAt?: number | null;
   exp?: number | null;
@@ -118,6 +119,8 @@ interface ShareToken {
   payload: SharePayload;
   options?: {
     expiresIn?: number | string | undefined;
+    exp?: number | string | null | undefined;
+    mode?: 'duration' | 'datetime' | undefined;
   }
 }
 

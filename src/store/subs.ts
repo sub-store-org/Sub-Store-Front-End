@@ -4,6 +4,7 @@ import { useShareApi } from '@/api/share';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
+import { isShareExpirationMode } from '@/utils/share';
 import { normalizeTagArray } from '@/utils/shareTags';
 import { defineStore } from 'pinia';
 
@@ -15,10 +16,12 @@ const shareApi = useShareApi();
 const normalizeShare = (share: Share): Share => {
   const expiresAt = share?.expiresAt == null ? null : Number(share.expiresAt);
   const exp = share?.exp == null ? null : Number(share.exp);
+  const mode = isShareExpirationMode(share?.mode) ? share.mode : null;
 
   return {
     ...share,
     tag: normalizeTagArray(share?.tag),
+    mode,
     expiresAt: Number.isFinite(expiresAt) ? expiresAt : null,
     exp: Number.isFinite(exp) ? exp : null,
   };

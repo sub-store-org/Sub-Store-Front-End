@@ -62,40 +62,13 @@
           </nut-form-item>
 
           <nut-form-item
-            :label="$t(`sharePage.createShare.expiresValue.label`)"
-            prop="expiresValue"
-            required
-            :rules="[
-              {
-                required: true,
-                message: $t(`sharePage.createShare.expiresValue.empty`),
-              },
-              {
-                validator: validateExpiresValue,
-                message: $t(`sharePage.createShare.expiresValue.regex`),
-              },
-            ]"
-          >
-            <nut-input
-              v-model="form.expiresValue"
-              class="nut-input-text"
-              :border="false"
-              :placeholder="$t(`sharePage.createShare.expiresValue.placeholder`)"
-              type="number"
-              input-align="right"
-              max-length="8"
-              format-trigger="onBlur"
-              @blur="customerBlurValidate('expiresValue')"
-            />
-          </nut-form-item>
-          <nut-form-item
-            :label="$t(`sharePage.createShare.expiresUnit.label`)"
-            prop="expiresUnit"
+            :label="$t(`sharePage.createShare.expirationMode.label`)"
+            prop="expirationMode"
           >
             <div class="radio-wrapper">
-              <nut-radiogroup v-model="form.expiresUnit" direction="horizontal">
+              <nut-radiogroup v-model="form.expirationMode" direction="horizontal">
                 <nut-radio
-                  v-for="(item, index) in expiresUnitList"
+                  v-for="(item, index) in expirationModeList"
                   :key="index"
                   :label="item.value"
                 >
@@ -104,6 +77,82 @@
               </nut-radiogroup>
             </div>
           </nut-form-item>
+
+          <template v-if="!isExactExpirationMode">
+            <nut-form-item
+              :label="$t(`sharePage.createShare.expiresValue.label`)"
+              prop="expiresValue"
+              required
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`sharePage.createShare.expiresValue.empty`),
+                },
+                {
+                  validator: validateExpiresValue,
+                  message: $t(`sharePage.createShare.expiresValue.regex`),
+                },
+              ]"
+            >
+              <nut-input
+                v-model="form.expiresValue"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.expiresValue.placeholder`)"
+                type="number"
+                input-align="right"
+                max-length="8"
+                format-trigger="onBlur"
+                @blur="customerBlurValidate('expiresValue')"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.expiresUnit.label`)"
+              prop="expiresUnit"
+            >
+              <div class="radio-wrapper">
+                <nut-radiogroup v-model="form.expiresUnit" direction="horizontal">
+                  <nut-radio
+                    v-for="(item, index) in expiresUnitList"
+                    :key="index"
+                    :label="item.value"
+                  >
+                    {{ item.label }}
+                  </nut-radio>
+                </nut-radiogroup>
+              </div>
+            </nut-form-item>
+          </template>
+
+          <template v-else>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.exactDatetime.label`)"
+              prop="exactDatetime"
+              body-align="right"
+              required
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`sharePage.createShare.exactDatetime.empty`),
+                },
+                {
+                  validator: validateExactDatetime,
+                  message: $t(`sharePage.createShare.exactDatetime.invalid`),
+                },
+              ]"
+            >
+              <ShareExactDatetimeField
+                v-model="form.exactDatetime"
+                :placeholder="$t(`sharePage.createShare.exactDatetime.placeholder`)"
+                :locale="datetimePickerLocale"
+                :confirm-text="$t(`sharePage.createShare.exactDatetime.confirm`)"
+                :cancel-text="$t(`sharePage.createShare.exactDatetime.cancel`)"
+                :dark-theme="isDatetimeInputDarkTheme"
+                @blur="customerBlurValidate('exactDatetime')"
+                @closed="handleExactDatetimeClosed"
+              />
+            </nut-form-item>
+          </template>
 
           <nut-form-item
             :label="$t(`sharePage.createShare.token.label`)"
@@ -280,7 +329,7 @@
 
 <script setup lang="ts">
 import { Toast } from "@nutui/nutui";
-import { useClipboard } from "@vueuse/core";
+import { useClipboard, usePreferredDark } from "@vueuse/core";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
 import { storeToRefs } from "pinia";
 import { computed, reactive, ref, watch } from "vue";
@@ -290,6 +339,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
+import ShareExactDatetimeField from "@/components/ShareExactDatetimeField.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import { useShareApi } from "@/api/share";
@@ -306,8 +356,12 @@ import {
   getShareExpirationFormState,
   getSharePublicUrl,
   isShareType,
+  isValidShareExactDatetime,
   parseShareEditorRouteIdentity,
   resolveShareDisplayIconState,
+  SHARE_EXPIRATION_DATETIME_BACKEND_VERSION,
+  supportsShareExpirationDatetime,
+  type ShareExpirationMode,
 } from "@/utils/share";
 import { normalizeTagArray, stringifyTagInput } from "@/utils/shareTags";
 
@@ -322,19 +376,31 @@ type ActiveShareEditorData = ShareEditorData & {
   token: string;
 };
 
+const shareThemeModules = import.meta.globEager("@/themes/*.ts");
+const shareThemeLabelMap = Object.keys(shareThemeModules).reduce((map, path) => {
+  const key = path.split("/").pop()?.replace(".ts", "");
+  if (!key) {
+    return map;
+  }
+
+  map[key] = (shareThemeModules[path] as any)?.default?.meta?.label;
+  return map;
+}, {} as Record<string, string | undefined>);
+
 const route = useRoute();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const shareApi = useShareApi();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
-const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
+const { appearanceSetting, githubProxy, githubProxyRegex, theme } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const { env } = useBackend();
 const { copy, isSupported } = useClipboard();
+const preferredDark = usePreferredDark();
 const { toClipboard: copyFallback } = useV3Clipboard();
 const padding = computed(() => `${bottomSafeArea.value}px`);
 
@@ -355,8 +421,10 @@ const isRetryingCreateAfterDelete = ref(false);
 const form = reactive({
   sourceType: "" as ShareSourceType | "",
   sourceName: "",
+  expirationMode: "duration" as ShareExpirationMode,
   expiresValue: "",
   expiresUnit: "day",
+  exactDatetime: null as number | null,
   remark: "",
   token: "",
   displayName: "",
@@ -390,9 +458,29 @@ const submitButtonLabel = computed(() => {
     ? t("sharePage.editor.create.submit")
     : t("sharePage.editor.edit.submit");
 });
+const isExactExpirationMode = computed(() => form.expirationMode === "datetime");
 const shouldShowShareUrlRow = computed(() => isEditMode.value);
 const shouldShowShareQrCode = computed(() => {
   return isEditMode.value && Boolean(form.shareUrl);
+});
+const resolvedThemeName = computed(() => {
+  if (theme.value?.auto) {
+    return preferredDark.value ? theme.value?.dark : theme.value?.light;
+  }
+
+  return theme.value?.name;
+});
+const isDatetimeInputDarkTheme = computed(() => {
+  const resolvedName = resolvedThemeName.value;
+  if (!resolvedName) {
+    return preferredDark.value;
+  }
+
+  const label = shareThemeLabelMap[resolvedName];
+  return label ? label === "dark" : preferredDark.value;
+});
+const datetimePickerLocale = computed(() => {
+  return locale.value === "zh" ? "zh-CN" : "en-US";
 });
 
 const currentTag = computed(() => form.tag || "");
@@ -493,6 +581,16 @@ const sourceDisplayName = computed(() => {
     );
 });
 
+const expirationModeList = computed(() => [
+  {
+    label: t("sharePage.createShare.expirationMode.duration"),
+    value: "duration",
+  },
+  {
+    label: t("sharePage.createShare.expirationMode.datetime"),
+    value: "datetime",
+  },
+]);
 const expiresUnitList = computed(() => [
   {
     label: t("sharePage.createShare.unit.day"),
@@ -542,8 +640,10 @@ const resetFormState = () => {
   sourceModel.value = [];
   form.sourceType = "";
   form.sourceName = "";
+  form.expirationMode = "duration";
   form.expiresValue = "";
   form.expiresUnit = "day";
+  form.exactDatetime = null;
   form.remark = "";
   form.token = "";
   form.displayName = "";
@@ -590,12 +690,15 @@ const hydrateForm = () => {
   form.sourceName = activeSource.name;
   syncSourceModel();
   const expirationState = getShareExpirationFormState({
+    mode: activeSource.mode,
     expiresAt: activeSource.expiresAt,
     expiresIn: activeSource.expiresIn,
     exp: activeSource.exp,
   });
+  form.expirationMode = expirationState.mode;
   form.expiresValue = expirationState.expiresValue;
   form.expiresUnit = expirationState.expiresUnit;
+  form.exactDatetime = expirationState.exactDatetime;
 
   form.remark = activeSource.remark || "";
   form.token = activeSource.token || "";
@@ -740,12 +843,20 @@ const openSourceSelector = () => {
   sourceSelectorIsVisible.value = true;
 };
 
-const ensureEnvLoaded = async () => {
-  if (env.value?.backend) {
-    return;
+const ensureEnvLoaded = async (
+  options: {
+    forceRefresh?: boolean;
+    strict?: boolean;
+  } = {},
+) => {
+  if (!options.forceRefresh && env.value?.backend) {
+    return env.value;
   }
 
-  await globalStore.setEnv();
+  return globalStore.setEnv({
+    bypassCache: options.forceRefresh === true,
+    strict: options.strict === true,
+  });
 };
 
 const isLoadRequestActive = (requestId: number) => latestLoadRequestId.value === requestId;
@@ -879,8 +990,16 @@ const validateExpiresValue = (value: string) => {
   return /^(?:0\.0[1-9]\d*|[1-9]\d{0,4}(?:\.\d*)?|0\.[1-9]\d*)$/.test(value);
 };
 
+const validateExactDatetime = (value: number | null) => {
+  return value == null || isValidShareExactDatetime(value);
+};
+
 const customerBlurValidate = (prop: string) => {
   ruleForm.value?.validate?.(prop);
+};
+
+const handleExactDatetimeClosed = () => {
+  customerBlurValidate("exactDatetime");
 };
 
 const validateTokenBeforeSubmit = () => {
@@ -917,6 +1036,76 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
   return `${value * unitConfig.multiplier}${unitConfig.suffix}`;
 };
 
+const getDurationExpirationOptions = (): ShareToken["options"] | null => {
+  if (!form.expiresValue) {
+    Toast.warn(t("sharePage.createShare.expiresValue.empty"));
+    return null;
+  }
+
+  if (!validateExpiresValue(form.expiresValue)) {
+    Toast.warn(t("sharePage.createShare.expiresValue.regex"));
+    return null;
+  }
+
+  return {
+    expiresIn: genExpiresIn(form.expiresValue, form.expiresUnit),
+  };
+};
+
+const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | null> => {
+  if (form.exactDatetime == null) {
+    Toast.warn(t("sharePage.createShare.exactDatetime.empty"));
+    return null;
+  }
+
+  if (!isValidShareExactDatetime(form.exactDatetime)) {
+    Toast.warn(t("sharePage.createShare.exactDatetime.invalid"));
+    return null;
+  }
+
+  let verifiedEnv: { version?: string | null } | null = null;
+  try {
+    // Temporary safety check for mixed-version deployments.
+    // Once exact datetime support is baseline everywhere, we can remove the forced refresh gate.
+    verifiedEnv = await ensureEnvLoaded({
+      forceRefresh: true,
+      strict: true,
+    });
+  } catch (error) {
+    console.error(error);
+    showNotify({
+      title: t("sharePage.editor.datetimeBackendCheckFailed.title"),
+      content: t("sharePage.editor.datetimeBackendCheckFailed.desc"),
+      type: "danger",
+      duration: 3600,
+    });
+    return null;
+  }
+
+  if (!supportsShareExpirationDatetime(verifiedEnv?.version)) {
+    showNotify({
+      title: t("sharePage.editor.datetimeBackendRequired.title"),
+      content: t("sharePage.editor.datetimeBackendRequired.desc", {
+        currentVersion: verifiedEnv?.version || t("specificWord.unknown"),
+        minVersion: SHARE_EXPIRATION_DATETIME_BACKEND_VERSION,
+      }),
+      type: "danger",
+      duration: 3600,
+    });
+    return null;
+  }
+
+  if (!isValidShareExactDatetime(form.exactDatetime)) {
+    Toast.warn(t("sharePage.createShare.exactDatetime.invalid"));
+    return null;
+  }
+
+  return {
+    mode: "datetime",
+    exp: Number(form.exactDatetime),
+  };
+};
+
 const handleCopyShare = async (isNotify: boolean = true) => {
   if (!form.shareUrl) {
     return;
@@ -943,19 +1132,9 @@ const handleCopyShare = async (isNotify: boolean = true) => {
   }
 };
 
-const getSubmitParams = (): ShareToken | null => {
+const getSubmitParams = async (): Promise<ShareToken | null> => {
   if (!selectedSourceType.value || !normalizedSourceName.value) {
     Toast.warn(t("syncPage.addArtForm.source.isRequired"));
-    return null;
-  }
-
-  if (!form.expiresValue) {
-    Toast.warn(t("sharePage.createShare.expiresValue.empty"));
-    return null;
-  }
-
-  if (!validateExpiresValue(form.expiresValue)) {
-    Toast.warn(t("sharePage.createShare.expiresValue.regex"));
     return null;
   }
 
@@ -963,9 +1142,12 @@ const getSubmitParams = (): ShareToken | null => {
     return null;
   }
 
-  const options: ShareToken["options"] = {
-    expiresIn: genExpiresIn(form.expiresValue, form.expiresUnit),
-  };
+  const options = isExactExpirationMode.value
+    ? await getDatetimeExpirationOptions()
+    : getDurationExpirationOptions();
+  if (!options) {
+    return null;
+  }
 
   const payload: SharePayload = {
     type: selectedSourceType.value,
@@ -1077,7 +1259,7 @@ const finalizeRetryableUpdateFailure = () => {
 };
 
 const handleCreate = async () => {
-  const params = getSubmitParams();
+  const params = await getSubmitParams();
   if (!params) {
     return;
   }
@@ -1098,7 +1280,7 @@ const handleCreate = async () => {
 
 const handleEdit = async () => {
   const activeSource = editorData.value;
-  const params = getSubmitParams();
+  const params = await getSubmitParams();
   if (!activeSource || !params || !activeSource.token) {
     return;
   }
@@ -1200,8 +1382,10 @@ watch(
   () => [
     form.sourceType,
     form.sourceName,
+    form.expirationMode,
     form.expiresValue,
     form.expiresUnit,
+    form.exactDatetime,
     form.token,
     form.displayName,
     form.remark,
@@ -1269,6 +1453,10 @@ watch(
 
   :deep(.nut-form-item__body) {
     justify-content: flex-end;
+  }
+
+  :deep(.nut-form-item__body__slots) {
+    width: 100%;
   }
 
   :deep(.nut-input-text) {
@@ -1385,14 +1573,6 @@ watch(
 
 .share-editor-form {
   width: 100%;
-}
-
-.share-editor-inline-hint {
-  margin: -4px 0 16px;
-  color: var(--lowest-text-color);
-  font-size: 12px;
-  line-height: 1.5;
-  text-align: right;
 }
 
 .source-input-disabled {

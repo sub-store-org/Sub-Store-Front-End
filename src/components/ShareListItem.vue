@@ -126,6 +126,7 @@ import { useSubsStore } from "@/store/subs";
 import { openManagedDeleteDialog } from "@/utils/archive";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import {
+  formatShareTimestamp,
   getShareEditPath,
   getSharePublicUrl,
   resolveShareDisplayIconState,
@@ -197,12 +198,10 @@ const shareTags = computed(() => {
   return normalizeTagArray(props?.data?.tag);
 });
 const expiresTime = computed(() => {
-  return props?.data?.exp ? dayjs(props?.data?.exp).format("YYYY-MM-DD") : "";
+  return formatShareTimestamp(props?.data?.exp);
 });
 const createTime = computed(() => {
-  return props?.data?.createdAt
-    ? dayjs(props?.data?.createdAt).format("YYYY-MM-DD")
-    : "";
+  return formatShareTimestamp(props?.data?.createdAt);
 });
 const leftTime = computed(() => {
   return props?.data?.exp

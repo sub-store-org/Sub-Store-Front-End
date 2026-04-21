@@ -1,12 +1,20 @@
+import dayjs from 'dayjs';
+
+import { semverGte } from '@/utils/semver';
+
 export const isShareType = (value: unknown): value is 'sub' | 'col' | 'file' => {
   return value === 'sub' || value === 'col' || value === 'file';
 };
 
 export const SHARE_EDITOR_CREATE_ID = 'UNTITLED';
+export const SHARE_EXPIRATION_DATETIME_BACKEND_VERSION = '2.22.6';
 
-type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year';
+export type ShareExpirationMode = 'duration' | 'datetime';
+export type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year';
 
+const DEFAULT_SHARE_EXPIRATION_MODE: ShareExpirationMode = 'duration';
 const DEFAULT_SHARE_EXPIRATION_UNIT: ShareExpirationUnit = 'day';
+const SHARE_DISPLAY_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm';
 const SHARE_DURATION_MS_UNIT_MAP: Record<ShareExpirationUnit, number> = {
   day: 24 * 60 * 60 * 1000,
   month: 30 * 24 * 60 * 60 * 1000,
@@ -41,8 +49,10 @@ const parseMillisecondsDuration = (
 };
 
 export interface ShareExpirationFormState {
+  mode: ShareExpirationMode;
   expiresValue: string;
   expiresUnit: ShareExpirationUnit;
+  exactDatetime: number | null;
 }
 
 interface ShareIconSourceLike {
@@ -55,10 +65,36 @@ export interface ShareDisplayIconState {
   isIconColor: boolean;
 }
 
+export const isShareExpirationMode = (value: unknown): value is ShareExpirationMode => {
+  return value === 'duration' || value === 'datetime';
+};
+
+const getValidTimestamp = (value?: number | string | null) => {
+  const timestamp = value == null ? Number.NaN : Number(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+export const formatShareTimestamp = (value?: number | string | null) => {
+  const timestamp = getValidTimestamp(value);
+  return timestamp == null
+    ? ''
+    : dayjs(timestamp).format(SHARE_DISPLAY_TIMESTAMP_FORMAT);
+};
+
+export const isValidShareExactDatetime = (value?: number | string | null) => {
+  return getValidTimestamp(value) != null;
+};
+
+export const supportsShareExpirationDatetime = (backendVersion?: string | null) => {
+  return semverGte(backendVersion, SHARE_EXPIRATION_DATETIME_BACKEND_VERSION);
+};
+
 const createDefaultShareExpirationFormState = (): ShareExpirationFormState => {
   return {
+    mode: DEFAULT_SHARE_EXPIRATION_MODE,
     expiresValue: '',
     expiresUnit: DEFAULT_SHARE_EXPIRATION_UNIT,
+    exactDatetime: null,
   };
 };
 
@@ -158,8 +194,10 @@ const getDurationState = (expiresIn: string): ShareExpirationFormState => {
   const parsedDuration = parseShareDuration(expiresIn);
   if (parsedDuration) {
     return {
+      mode: 'duration',
       expiresValue: String(parsedDuration.value),
       expiresUnit: parsedDuration.unit,
+      exactDatetime: null,
     };
   }
 
@@ -177,21 +215,54 @@ const getDurationStateFromExactCutoff = (
   return getDurationState(getExactExpirationDuration(exactCutoff, now));
 };
 
+const getExactDatetimeState = (exactCutoff: number): ShareExpirationFormState => {
+  return {
+    mode: 'datetime',
+    expiresValue: '',
+    expiresUnit: DEFAULT_SHARE_EXPIRATION_UNIT,
+    exactDatetime: getValidTimestamp(exactCutoff),
+  };
+};
+
 export const getShareExpirationFormState = ({
+  mode,
   expiresAt,
   expiresIn,
   exp,
 }: {
+  mode?: ShareExpirationMode | null;
   expiresAt?: number | null;
   expiresIn?: string | null;
   exp?: number | null;
 }): ShareExpirationFormState => {
   const nextExpiresAt = expiresAt == null ? Number.NaN : Number(expiresAt);
   const nextExp = exp == null ? Number.NaN : Number(exp);
+  const nextMode = isShareExpirationMode(mode) ? mode : null;
   const now = Date.now();
+
+  if (nextMode === 'datetime') {
+    if (Number.isFinite(nextExp)) {
+      return getExactDatetimeState(nextExp);
+    }
+
+    if (Number.isFinite(nextExpiresAt)) {
+      return getExactDatetimeState(nextExpiresAt);
+    }
+
+    return {
+      ...createDefaultShareExpirationFormState(),
+      mode: 'datetime',
+    };
+  }
 
   if (expiresIn) {
     return getDurationState(expiresIn);
+  }
+
+  // Legacy exact-datetime shares may only persist exp without a mode field.
+  // Preserve that absolute cutoff instead of backfilling a relative duration.
+  if (nextMode == null && Number.isFinite(nextExp)) {
+    return getExactDatetimeState(nextExp);
   }
 
   if (Number.isFinite(nextExpiresAt)) {

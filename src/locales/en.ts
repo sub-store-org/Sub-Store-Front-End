@@ -841,6 +841,11 @@ export default {
     createTimeLabel: "Created: ",
     magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH should start with /, please check the configuration!",
     createShare: {
+      expirationMode: {
+        label: "Expiration Mode",
+        duration: "Duration",
+        datetime: "Exact DateTime",
+      },
       expiresValue: {
         label: "Valid for",
         placeholder: "Enter valid for",
@@ -849,6 +854,14 @@ export default {
       },
       expiresUnit: {
         label: "Validity unit",
+      },
+      exactDatetime: {
+        label: "Expiration DateTime",
+        placeholder: "Select an expiration date and time",
+        empty: "Expiration date and time cannot be empty",
+        invalid: "Please enter a valid expiration date and time",
+        confirm: "Confirm",
+        cancel: "Cancel",
       },
       token: {
         label: "Custom Token",
@@ -890,6 +903,14 @@ export default {
         desc: "Check whether the share or its source item still exists, then try again.",
         retry: "Retry",
         back: "Back to Shares",
+      },
+      datetimeBackendRequired: {
+        title: "This backend does not support exact expiration yet",
+        desc: "The current backend version is {currentVersion}. Upgrade to {minVersion} or later before saving an exact expiration date and time.",
+      },
+      datetimeBackendCheckFailed: {
+        title: "Unable to verify backend version right now",
+        desc: "Check the current backend connection and try saving the exact expiration date and time again.",
       },
       failNotify: "Update share failed",
     },

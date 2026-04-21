@@ -187,16 +187,27 @@ export const useGlobalStore = defineStore('globalStore', {
       service.defaults.baseURL = hostApi;
       await initStores(true, true, true);
     },
-    async setEnv() {
-      const res = await envApi.getEnv();
-      if (res?.data?.status === 'success') {
-        this.env = res.data.data;
+    async setEnv(options?: { bypassCache?: boolean; strict?: boolean }) {
+      const res = await envApi.getEnv({
+        bypassCache: options?.bypassCache === true,
+      });
+      const nextEnv = res?.data?.status === 'success' ? res.data.data : null;
 
-        // 检测是否是Docker部署
-        if (this.env?.meta?.node?.env?.SUB_STORE_DOCKER === 'true') {
-          this.isDockerDeployment = true;
+      if (!nextEnv?.backend) {
+        if (options?.strict) {
+          throw new Error('ENV_LOAD_FAILED');
         }
+        return null;
       }
+
+      this.env = nextEnv;
+
+      // 检测是否是Docker部署
+      if (this.env?.meta?.node?.env?.SUB_STORE_DOCKER === 'true') {
+        this.isDockerDeployment = true;
+      }
+
+      return nextEnv;
     },
     setDockerDeployment(isDockerDeployment: boolean) {
       this.isDockerDeployment = isDockerDeployment;

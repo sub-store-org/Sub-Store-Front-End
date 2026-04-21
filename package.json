@@ -1,6 +1,6 @@
 {
   "name": "sub-store-front-end",
-  "version": "2.16.57",
+  "version": "2.16.58",
   "private": true,
   "scripts": {
     "dev": "vite --host",
@@ -25,6 +25,7 @@
     "@lezer/javascript": "^1.4.13",
     "@nutui/nutui": "^3.3.8",
     "@replit/codemirror-indentation-markers": "^6.5.0",
+    "@vuepic/vue-datepicker": "10.0.0",
     "@vueuse/core": "^8.9.2",
     "@vueuse/integrations": "^8.9.2",
     "axios": "^0.27.2",

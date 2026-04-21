@@ -489,7 +489,7 @@ const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
       cursor: pointer;
       margin-left: 4px;
     }
-  }
+}
 .drag-btn-wrapper {
   position: relative;
   z-index: 999;

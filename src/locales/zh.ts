@@ -831,6 +831,11 @@ export default {
     createTimeLabel: "创建：",
     magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH 必须以 / 开头，当前分享链接异常，请检查运行环境",
     createShare: {
+      expirationMode: {
+        label: "到期方式",
+        duration: "按时长",
+        datetime: "指定日期时间",
+      },
       expiresValue: {
         label: "有效期时长",
         placeholder: "请输入有效期时长",
@@ -839,6 +844,14 @@ export default {
       },
       expiresUnit: {
         label: "有效期单位",
+      },
+      exactDatetime: {
+        label: "到期日期时间",
+        placeholder: "请选择到期日期时间",
+        empty: "到期日期时间不可为空",
+        invalid: "请选择有效的到期日期时间",
+        confirm: "确定",
+        cancel: "取消",
       },
       token: {
         label: "自定义 Token",
@@ -880,6 +893,14 @@ export default {
         desc: "请检查分享或源对象是否仍然存在，然后重试。",
         retry: "重新载入",
         back: "返回分享列表",
+      },
+      datetimeBackendRequired: {
+        title: "当前后端暂不支持指定到期时间",
+        desc: "检测到后端版本为 {currentVersion}，需要升级到 {minVersion} 或更高版本后，才能保存指定到期日期时间。",
+      },
+      datetimeBackendCheckFailed: {
+        title: "暂时无法验证后端版本",
+        desc: "请检查当前后端连接是否正常，然后重试保存指定到期日期时间。",
       },
       failNotify: "更新分享失败",
     },

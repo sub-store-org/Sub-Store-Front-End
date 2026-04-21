@@ -43,7 +43,7 @@
           }"
           :style="{
             cursor: 'pointer',
-            right: '16px',
+            left: '15px',
             bottom: `${
               bottomSafeArea +
               48 + 36 + 

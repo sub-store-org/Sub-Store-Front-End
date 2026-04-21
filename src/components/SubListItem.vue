@@ -532,7 +532,7 @@ const flow = computed(() => {
           : "";
         const expiresInfo = !expires
           ? ""
-          : `${dayjs.unix(expires).format("YYYY-MM-DD")}`;
+          : `${dayjs.unix(expires).format("YYYY-MM-DD HH:mm")}`;
         if (expiresInfo) {
           secondLine = secondLine
             ? `${secondLine} | ${expiresInfo}`
@@ -561,7 +561,7 @@ const flow = computed(() => {
           ? t("subPage.subItem.noExpiresInfo")
           : `${t("subPage.subItem.expires")}: ${dayjs
               .unix(expires)
-              .format("YYYY-MM-DD")}`;
+              .format("YYYY-MM-DD HH:mm")}`;
         if (target.hideExpire) {
           expiresInfo = "";
         }
