@@ -431,6 +431,18 @@
   .name-wrapper {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+
+    > div {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
   }
 
   .compare-table-body {
@@ -469,6 +481,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      min-width: 0;
     }
 
     li:first-child,
@@ -495,6 +508,8 @@
   .original-item {
     display: flex;
     align-items: center;
+    width: 100%;
+    min-width: 0;
 
     &::before {
       content: '';
@@ -504,6 +519,7 @@
       border-radius: 50%;
       margin-right: 10px;
       background: var(--primary-color);
+      flex-shrink: 0;
     }
   }
 
@@ -513,7 +529,6 @@
 
   .processed-item::before {
     background: var(--third-color);
-    flex-shrink: 0;
   }
 
   .block-wrapper {

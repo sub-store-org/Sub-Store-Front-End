@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+CODEMAP.md
+CONTEXT_BUNDLE.md
+mydocs

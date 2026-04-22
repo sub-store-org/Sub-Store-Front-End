@@ -179,6 +179,18 @@ const copyUrl = async () => {
 .name-wrapper {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+
+  > div {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
 }
 
 .compare-table-body {
@@ -215,6 +227,7 @@ const copyUrl = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 0;
   }
 
   li:first-child,
@@ -241,6 +254,8 @@ const copyUrl = async () => {
 .original-item {
   display: flex;
   align-items: center;
+  width: 100%;
+  min-width: 0;
 
   &::before {
     content: "";
@@ -250,6 +265,7 @@ const copyUrl = async () => {
     border-radius: 50%;
     margin-right: 10px;
     background: var(--primary-color);
+    flex-shrink: 0;
   }
 }
 
@@ -259,7 +275,6 @@ const copyUrl = async () => {
 
 .processed-item::before {
   background: var(--third-color);
-  flex-shrink: 0;
 }
 
 .block-wrapper {
