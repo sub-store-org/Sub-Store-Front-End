@@ -296,6 +296,9 @@ const LOGS_BACKEND_MIN_VERSION = "2.22.7";
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 1;
 const MIN_REFRESH_LOADING_MS = 600;
 const SEARCH_DEBOUNCE_MS = 400;
+const LOGS_LIMIT_STORAGE_KEY = "logsPage.limit";
+const LOGS_AUTO_REFRESH_STORAGE_KEY = "logsPage.autoRefresh";
+const LOGS_REFRESH_INTERVAL_STORAGE_KEY = "logsPage.refreshInterval";
 const LOG_MESSAGE_PREFIX_RE = /^\[([^\]]+)\]\s+([A-Z]+):\s*/i;
 
 const logs = ref<DebugLogEntry[]>([]);
@@ -350,6 +353,43 @@ const normalizeNonNegativeInteger = (value: unknown, fallback: number, max: numb
   const numberValue = Number(value);
   if (!Number.isFinite(numberValue) || numberValue < 0) return fallback;
   return Math.min(Math.floor(numberValue), max);
+};
+
+const normalizePositiveInput = (value: string, max: number) => {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue) || numberValue <= 0) return "";
+  return String(Math.min(Math.floor(numberValue), max));
+};
+
+const normalizeRefreshIntervalInput = (value: string) => {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue) || numberValue <= 0) return "";
+  return String(Math.max(numberValue, 1));
+};
+
+const loadLocalPreferences = () => {
+  if (typeof window === "undefined") return;
+
+  limitInput.value = normalizePositiveInput(
+    window.localStorage.getItem(LOGS_LIMIT_STORAGE_KEY) || "",
+    MAX_LOGS_MAX_COUNT,
+  );
+  refreshIntervalInput.value = normalizeRefreshIntervalInput(
+    window.localStorage.getItem(LOGS_REFRESH_INTERVAL_STORAGE_KEY) || "",
+  );
+  autoRefresh.value =
+    window.localStorage.getItem(LOGS_AUTO_REFRESH_STORAGE_KEY) === "1";
+};
+
+const saveLocalPreference = (key: string, value: string) => {
+  if (typeof window === "undefined") return;
+
+  if (value) {
+    window.localStorage.setItem(key, value);
+    return;
+  }
+
+  window.localStorage.removeItem(key);
 };
 
 const configuredLogsMaxCount = computed(() =>
@@ -678,8 +718,13 @@ const clearRefreshTimer = () => {
 
 const restartTimer = () => {
   clearRefreshTimer();
-  if (!autoRefresh.value || isBackendVersionUnsupported.value) return;
+  if (!autoRefresh.value || !canUseLogs.value) return;
   refreshTimer.value = window.setInterval(() => {
+    if (!canUseLogs.value) {
+      clearRefreshTimer();
+      return;
+    }
+
     if (!isLoading.value) {
       loadLogs();
     }
@@ -724,7 +769,6 @@ const ensureLogsBackendVersion = async () => {
 
   if (isBackendVersionUnsupported.value) {
     logs.value = [];
-    autoRefresh.value = false;
     clearRefreshTimer();
     hasLoadedLogs.value = true;
     return false;
@@ -734,7 +778,22 @@ const ensureLogsBackendVersion = async () => {
 };
 
 watch([keywordInput, regexSearch, ignoreCaseSearch, limitInput], scheduleSearchLoad);
-watch([autoRefresh, refreshIntervalInput], restartTimer);
+watch(limitInput, (value) => {
+  saveLocalPreference(
+    LOGS_LIMIT_STORAGE_KEY,
+    normalizePositiveInput(value, MAX_LOGS_MAX_COUNT),
+  );
+});
+watch(autoRefresh, (value) => {
+  saveLocalPreference(LOGS_AUTO_REFRESH_STORAGE_KEY, value ? "1" : "");
+});
+watch(refreshIntervalInput, (value) => {
+  saveLocalPreference(
+    LOGS_REFRESH_INTERVAL_STORAGE_KEY,
+    normalizeRefreshIntervalInput(value),
+  );
+});
+watch([autoRefresh, refreshIntervalInput, canUseLogs], restartTimer);
 watch(logs, (nextLogs) => {
   const visibleIds = new Set(nextLogs.map((log) => log.id));
   selectedLogIds.value = selectedLogIds.value.filter((id) =>
@@ -746,6 +805,8 @@ watch(logs, (nextLogs) => {
 });
 
 const prepareLogsPage = async () => {
+  loadLocalPreferences();
+
   const canLoadLogs = await ensureLogsBackendVersion();
   if (!canLoadLogs) return;
 
