@@ -83,6 +83,7 @@ export default {
       shareManage: '分享管理',
       shareEditor: '分享编辑',
       archive: '已归档',
+      logs: '后端日志',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
       apiSetting: '后端设置',
@@ -639,6 +640,7 @@ export default {
       resourceCacheTtl: '资源缓存(单位: 秒, 默认: 3600)',
       headersCacheTtl: '响应头缓存(单位: 秒, 默认: 60)',
       scriptCacheTtl: '脚本缓存(单位: 秒, 默认: 172800)',
+      logsMaxCount: '最大保存日志条数(默认: 0=关闭)',
       concurrency: '并发数(默认: 3)',
       apiCheckTimeout: 'API 检测超时(单位: 毫秒, 默认: 3000)',
       noGithubUser: '未配置 GitHub 用户名',
@@ -683,6 +685,7 @@ export default {
     cacheConfig: "缓存配置",
     frontEndConfig: "前端配置",
     githubConfig: 'GitHub 配置',
+    logsTitle: '后端日志',
     storage: {
       gist: {
         label: 'Gist 同步',
@@ -696,6 +699,58 @@ export default {
         restore: '恢复',
       }
     }
+  },
+  logsPage: {
+    placeholder: {
+      keyword: '关键词搜索',
+      limit: '最近 N 条(默认: {count})',
+      refreshInterval: '刷新间隔(默认 {seconds}(s))',
+    },
+    search: {
+      regex: '正则',
+      ignoreCase: '忽略大小写',
+    },
+    autoRefresh: '定时刷新',
+    refresh: '刷新',
+    clear: '清空',
+    copy: '复制',
+    floating: {
+      open: '打开后端日志',
+      close: '关闭后端日志',
+    },
+    confirmClear: '确定要清空后端持久化日志吗？',
+    empty: '暂无日志',
+    disabled: {
+      desc: '日志功能默认关闭\n\n可在“我的” - “缓存配置” - “最大保存日志条数”中设置\n此方式会频繁读写持久化缓存，可能影响性能\n\n“更多设置”中可关闭“显示悬浮日志按钮”',
+      alternatives: {
+        title: '不同方案 如何查看日志',
+        proxyApp: '代理 App: 查看脚本日志',
+        docker: 'Docker 版: 容器日志',
+        android: 'Android 模块版: 在 /data/adb/sub_store/run',
+        other: '其他的方案在对应的地方看',
+      },
+    },
+    backendRequired: {
+      desc: '当前后端版本为 {currentVersion}，日志页面需要后端 {minVersion} 或更高版本。请更新后端后再打开日志。',
+    },
+    meta: '当前显示 {total} 条，最多保存 {maxCount} 条',
+    selectMode: {
+      enter: '多选',
+      cancel: '取消多选',
+      selectedCount: '已选 {count} 条',
+      selectAll: '全选',
+      clearAll: '取消全选',
+      copy: '复制所选',
+      empty: '请先选择日志',
+    },
+    notify: {
+      loadFailed: '日志加载失败',
+      clearSucceed: '日志已清空',
+      copySucceed: '日志已复制',
+      copyFailed: '复制日志失败\n{e}',
+      invalidRegex: '正则表达式无效',
+      backendCheckFailed: '无法验证后端版本',
+    },
   },
   comparePage: {
     title: '即时预览',
@@ -1099,6 +1154,7 @@ export default {
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
+    showFloatingLogsButton: '显示悬浮日志按钮',
     createItemPosition: {
       title: '新创建的项目',
       top: '在最上面',

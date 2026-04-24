@@ -19,6 +19,26 @@ interface SucceedResponse {
   data?: any;
 }
 
+interface DebugLogEntry {
+  id: string;
+  time: number;
+  level: string;
+  message: string;
+}
+
+interface DebugLogQuery {
+  limit?: number | string;
+  keyword?: string;
+  regex?: boolean | string;
+  ignoreCase?: boolean | string;
+}
+
+interface DebugLogsResponse {
+  logs: DebugLogEntry[];
+  total: number;
+  maxCount: number;
+}
+
 interface IpApiData {
   shareUrl: string;
   info: {

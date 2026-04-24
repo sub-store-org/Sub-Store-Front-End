@@ -5,6 +5,7 @@
   <main class="page-body">
     <router-view />
   </main>
+  <FloatingLogsButton />
   <MagicPathDialog
     v-model="showMagicPathDialog"
     :url-api-error="urlApiError"
@@ -18,6 +19,7 @@
 import SideBar from "@/components/SideBar.vue";
 import NavBar from "@/components/NavBar.vue";
 import MagicPathDialog from "@/components/MagicPathDialog.vue";
+import FloatingLogsButton from "@/components/FloatingLogsButton.vue";
 import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
 import { useThemes } from "@/hooks/useThemes";
 import { useGlobalStore } from "@/store/global";

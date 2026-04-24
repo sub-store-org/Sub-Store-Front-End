@@ -13,6 +13,10 @@ const LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewMode";
 const NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewModeInWideScreenNarrowMode";
 const WIDE_SCREEN_NARROW_MODE_STORAGE_KEY = "appearanceSetting.useNarrowModeOnWideScreen";
 
+const normalizeSettingInputValue = (value: unknown) => {
+  return value === null || value === undefined ? "" : String(value);
+};
+
 const getCachedListPageViewMode = (storageKey: string): ListPageViewMode | undefined => {
   const cachedMode = localStorage.getItem(storageKey);
   if (cachedMode === "single-column" || cachedMode === "dual-column") {
@@ -49,6 +53,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       resourceCacheTtl: "",
       headersCacheTtl: "",
       scriptCacheTtl: "",
+      logsMaxCount: "",
       syncTime: 0,
       theme: {
         auto: true,
@@ -67,6 +72,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isSimpleReicon: false,
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
+        showFloatingLogsButton: true,
         showFloatingAddButton: false,
         createItemPosition: "bottom",
         displayPreviewInWebPage: true,
@@ -102,6 +108,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.isSimpleReicon = appearanceSetting?.isSimpleReicon ?? "";
       this.appearanceSetting.isSubItemMenuFold = appearanceSetting?.isSubItemMenuFold ?? true;
       this.appearanceSetting.showFloatingRefreshButton = appearanceSetting?.showFloatingRefreshButton ?? "";
+      this.appearanceSetting.showFloatingLogsButton = appearanceSetting?.showFloatingLogsButton ?? true;
       this.appearanceSetting.showFloatingAddButton = appearanceSetting?.showFloatingAddButton ?? false;
       this.appearanceSetting.createItemPosition = appearanceSetting?.createItemPosition ?? "bottom";
       this.appearanceSetting.displayPreviewInWebPage = appearanceSetting?.displayPreviewInWebPage ?? true;
@@ -139,6 +146,10 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
+        this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
+        this.headersCacheTtl = res.data.data.headersCacheTtl || "";
+        this.scriptCacheTtl = res.data.data.scriptCacheTtl || "";
+        this.logsMaxCount = normalizeSettingInputValue(res.data.data.logsMaxCount);
         this.syncTime = res.data.data.syncTime || 0;
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
@@ -174,6 +185,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
         this.headersCacheTtl = res.data.data.headersCacheTtl || "";
         this.scriptCacheTtl = res.data.data.scriptCacheTtl || "";
+        this.logsMaxCount = normalizeSettingInputValue(res.data.data.logsMaxCount);
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
         this.artifactStoreStatus = res.data.data.artifactStoreStatus || "";

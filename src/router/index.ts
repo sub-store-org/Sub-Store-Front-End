@@ -23,6 +23,7 @@ import SyncEditor from '@/views/SyncEditor.vue';
 import ShareManage from '@/views/share/Share.vue';
 import ShareEditorPage from '@/views/share/ShareEditorPage.vue';
 import Archive from '@/views/archive/Archive.vue';
+import Logs from '@/views/Logs.vue';
 
 // import themeSetting from '@/views/themeSetting.vue';
 import moreSetting from '@/views/settings/moreSetting.vue';
@@ -153,6 +154,16 @@ const router = createRouter({
             needTabBar: false,
             needNavBack: true,
             supportsListViewMode: true,
+            hideSideBarInWideScreenNarrowMode: true,
+          },
+        },
+        {
+          path: '/logs',
+          component: Logs,
+          meta: {
+            title: 'logs',
+            needTabBar: false,
+            needNavBack: true,
             hideSideBarInWideScreenNarrowMode: true,
           },
         },

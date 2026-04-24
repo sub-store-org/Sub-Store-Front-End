@@ -55,6 +55,7 @@ export default {
       shareManage: "Share Manage",
       shareEditor: "Share Editor",
       archive: "Archived",
+      logs: "Backend Logs",
       themeSetting: "Theme Setting",
       moreSetting: "More Setting",
       apiSetting: "Backend Setting",
@@ -644,6 +645,7 @@ export default {
       resourceCacheTtl: 'Resource Cache TTL, default: 3600(s)',
       headersCacheTtl: 'Headers Cache TTL, default: 60(s)',
       scriptCacheTtl: 'Script Cache TTL, default: 172800(s)',
+      logsMaxCount: 'Max stored logs, default: 0=off',
       concurrency: 'Concurrency Limit(default: 3)',
       apiCheckTimeout: 'API Check Timeout, default: 3000(ms)',
       noGithubUser: "Not set GitHub username",
@@ -688,6 +690,7 @@ export default {
     cacheConfig: "Cache Configuration",
     frontEndConfig: "Front-End Configuration",
     githubConfig: 'GitHub Configuration',
+    logsTitle: 'Backend Logs',
     storage: {
       gist: {
         label: "Gist",
@@ -700,6 +703,58 @@ export default {
         backup: "Backup",
         restore: "Restore",
       },
+    },
+  },
+  logsPage: {
+    placeholder: {
+      keyword: "Keyword search",
+      limit: "Recent N logs, default: {count}",
+      refreshInterval: "Interval (default {seconds}s)",
+    },
+    search: {
+      regex: "Regex",
+      ignoreCase: "Ignore case",
+    },
+    autoRefresh: "Auto refresh",
+    refresh: "Refresh",
+    clear: "Clear",
+    copy: "Copy",
+    floating: {
+      open: "Open backend logs",
+      close: "Close backend logs",
+    },
+    confirmClear: "Clear persisted backend logs?",
+    empty: "No logs",
+    disabled: {
+      desc: 'Logs are off by default. Set "My Profile" - "Cache Configuration" - "Max stored logs" to enable them. This frequently reads and writes persistent cache and may affect performance. You can turn off "Show floating logs button" in "More Setting".',
+      alternatives: {
+        title: "How to view logs in different setups",
+        proxyApp: "Proxy app: view the script logs in the proxy app",
+        docker: "Docker: view container logs",
+        android: "Android module: check /data/adb/sub_store/run",
+        other: "Other setups: check the corresponding runtime log location",
+      },
+    },
+    backendRequired: {
+      desc: "The current backend version is {currentVersion}. The logs page requires backend {minVersion} or later. Update the backend before opening logs.",
+    },
+    meta: "Showing {total}, max stored {maxCount}",
+    selectMode: {
+      enter: "Select",
+      cancel: "Cancel",
+      selectedCount: "{count} selected",
+      selectAll: "Select All",
+      clearAll: "Clear All",
+      copy: "Copy Selected",
+      empty: "Select logs first",
+    },
+    notify: {
+      loadFailed: "Failed to load logs",
+      clearSucceed: "Logs cleared",
+      copySucceed: "Logs copied",
+      copyFailed: "Failed to copy logs\n{e}",
+      invalidRegex: "Invalid regular expression",
+      backendCheckFailed: "Unable to verify backend version",
     },
   },
   comparePage: {
@@ -1111,6 +1166,7 @@ export default {
     isSimpleReicon: "Show items refresh button",
     isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
+    showFloatingLogsButton: "Show floating logs button",
     createItemPosition: {
       title: "Newly created items",
       top: "At the top",

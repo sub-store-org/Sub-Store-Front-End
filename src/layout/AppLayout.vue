@@ -1,6 +1,13 @@
 <template>
   <div class="app-layout-wrapper">
-    <router-view />
+    <router-view v-slot="{ Component, route }">
+      <KeepAlive :include="keepAliveRouteComponents" :max="8">
+        <component
+          :is="Component"
+          :key="route.fullPath"
+        />
+      </KeepAlive>
+    </router-view>
   </div>
   <TabBar v-if="shouldShowTabBar" />
 </template>
@@ -11,11 +18,13 @@
   import { storeToRefs } from 'pinia';
   import { useWideScreenNarrowMode } from '@/hooks/useWideScreenNarrowMode';
   import { useGlobalStore } from '@/store/global';
-  import router from '@/router';
+  import { useRouter } from 'vue-router';
 
   const globalStore = useGlobalStore();
+  const router = useRouter();
   const { bottomSafeArea } = storeToRefs(globalStore);
   const { shouldShowTabBar } = useWideScreenNarrowMode();
+  const keepAliveRouteComponents = ['Sub', 'File', 'SubEditor', 'FileEditor'];
 
   const height = computed(() => {
     if (shouldShowTabBar.value) {

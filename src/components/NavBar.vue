@@ -1,7 +1,10 @@
 <template>
   <!-- isPWA 时候顶部边距 -->
   <div v-if="isPWA" class="pwa_top_padding" />
-  <div class="nav-bar-wrapper">
+  <div
+    class="nav-bar-wrapper"
+    :class="{ 'is-floating-logs-route': shouldCloseFloatingLogs }"
+  >
     <nav>
       <!-- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ navBarHeight }} {{ wh }}    {{ topHeight }}-->
 
@@ -12,7 +15,23 @@
         @on-click-icon="onClickNavbarIcon"
       >
         <template #left>
-          <div :class="isNeedBack ? 'icon-back' : 'icon-home'"></div>
+          <button
+            v-if="shouldCloseFloatingLogs"
+            type="button"
+            class="nav-close-button"
+            :aria-label="$t('logsPage.floating.close')"
+            :title="$t('logsPage.floating.close')"
+            @click.stop="back"
+          >
+            <font-awesome-icon icon="fa-solid fa-xmark" />
+          </button>
+          <button
+            v-else-if="isNeedBack"
+            type="button"
+            class="nav-leading-button icon-back"
+            @click.stop="back"
+          />
+          <div v-else :class="leftIconClass" @click.stop="back"></div>
           <div class="icon-group">
             <button
               v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
@@ -133,6 +152,11 @@ import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
 import i18n from "@/locales";
+import {
+  closeFloatingLogs,
+  getFloatingLogsPreviousRoute,
+  LOGS_PATH,
+} from "@/utils/floatingLogs";
 
 const { t:i18n_global } = i18n.global;
 const { showNotify } = useAppNotifyStore();
@@ -169,8 +193,14 @@ onMounted(() => {
 // 使用systemStore中的计算属性
 const { navBarHeight, navBartop, navBartopRight, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
 
+const shouldCloseFloatingLogs = computed(() => {
+  return route.path === LOGS_PATH && Boolean(getFloatingLogsPreviousRoute());
+});
 const isNeedBack = computed(() => {
-  return route.meta.needNavBack ?? false;
+  return shouldCloseFloatingLogs.value || (route.meta.needNavBack ?? false);
+});
+const leftIconClass = computed(() => {
+  return isNeedBack.value ? "icon-back" : "icon-home";
 });
 
 const currentTitle = computed(() => {
@@ -216,6 +246,11 @@ const add = (route: any) => {
 };
 
 const back = () => {
+  if (shouldCloseFloatingLogs.value) {
+    closeFloatingLogs(router);
+    return;
+  }
+
   if (isNeedBack.value) {
     try {
       if (router.options.history.state.back) {
@@ -305,6 +340,11 @@ const refresh = async () => {
   height: v-bind(navBarHeight);
   z-index: 20;
   @include centered-fixed-container;
+
+  &.is-floating-logs-route {
+    z-index: 1004;
+  }
+
   nav {
     .nut-navbar {
       padding-top: v-bind(navBartop);
@@ -470,6 +510,36 @@ const refresh = async () => {
 .icon-back::before {
   color: var(--icon-nav-bar-right);
   content: "\e6c9";
+}
+
+.nav-leading-button,
+.nav-close-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  color: var(--icon-nav-bar-right);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.nav-leading-button::before {
+  display: block;
+  font-size: 17px;
+  line-height: 1;
 }
 
 .icon-null::before {

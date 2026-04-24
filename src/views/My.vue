@@ -362,6 +362,17 @@
             right-icon="tips"
             @click-right-icon="scriptCacheTtlTips"
           />
+          <nut-input
+            class="input"
+            v-model="logsMaxCountInput"
+            :disabled="!isCacheConfigEditing"
+            :placeholder="$t(`myPage.placeholder.logsMaxCount`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconMax"
+            right-icon="tips"
+            @click-right-icon="logsMaxCountTips"
+          />
         </div>
       </div>
       <div class="config-card">
@@ -460,6 +471,14 @@
           is-link
         ></nut-cell>
         <nut-cell
+          :title="$t(`myPage.logsTitle`)"
+          class="right-icon"
+          @click.stop="onClickLogs"
+          is-link
+        ></nut-cell>
+      </nut-cell-group>
+      <nut-cell-group>
+        <nut-cell
           :title="$t(`moreSettingPage.moreSettingTitle`)"
           class="right-icon"
           @click.stop="onClickMore"
@@ -529,7 +548,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, syncPlatform, githubProxy, githubProxyRegex, gistUpload } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubProxyRegex, gistUpload } =
   storeToRefs(settingsStore);
 
 const HTTP_URL_RE = /^https?:\/\//i;
@@ -622,6 +641,9 @@ const archiveVisible = computed(() => {
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
 };
+const onClickLogs = () => {
+  router.push(`/logs`);
+};
 
 const onClickShareManage = () => {
   router.push(`/shares`);
@@ -650,6 +672,7 @@ const cacheThresholdInput = ref("");
 const resourceCacheTtlInput = ref("");
 const headersCacheTtlInput = ref("");
 const scriptCacheTtlInput = ref("");
+const logsMaxCountInput = ref("");
 const concurrencyInput = ref("");
 const apiCheckTimeoutInput = ref("");
 const isGitHubConfigEditing = ref(false);
@@ -678,6 +701,7 @@ const toggleEditMode = async (type) => {
         resourceCacheTtl: resourceCacheTtlInput.value,
         headersCacheTtl: headersCacheTtlInput.value,
         scriptCacheTtl: scriptCacheTtlInput.value,
+        logsMaxCount: logsMaxCountInput.value,
       });
 
       if (saveSucceeded && type === 'github') {
@@ -702,6 +726,7 @@ const toggleEditMode = async (type) => {
       resourceCacheTtlInput.value = resourceCacheTtl.value;
       headersCacheTtlInput.value = headersCacheTtl.value;
       scriptCacheTtlInput.value = scriptCacheTtl.value;
+      logsMaxCountInput.value = logsMaxCount.value;
     }
     if (type === 'frontEnd' && isFrontEndConfigEditing.value) {
       const apiCheckTimeout = Number(apiCheckTimeoutInput.value);
@@ -819,6 +844,7 @@ const setDisplayInfo = () => {
   resourceCacheTtlInput.value = resourceCacheTtl.value || "";
   headersCacheTtlInput.value = headersCacheTtl.value || "";
   scriptCacheTtlInput.value = scriptCacheTtl.value || "";
+  logsMaxCountInput.value = logsMaxCount.value ?? "";
 };
 
 // 同步 上传
@@ -1095,6 +1121,17 @@ const scriptCacheTtlTips = () => {
   Dialog({
       title: '脚本缓存时间 (秒)',
       content: '主要涉及在脚本中使用的 scriptResourceCache 缓存',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const logsMaxCountTips = () => {
+  Dialog({
+      title: '最大保存日志条数',
+      content: '默认 0，即关闭日志缓存读写。设为大于 0 后，后端会把日志写入持久化缓存；数值越大占用的缓存空间越多，也可能影响性能。',
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,
