@@ -16,7 +16,7 @@
         @click="toggleLogs"
         @dragstart.prevent
       >
-        <font-awesome-icon :icon="isLogsRoute ? 'fa-solid fa-xmark' : 'fa-solid fa-file-lines'" />
+        <font-awesome-icon icon="fa-solid fa-file-lines" />
       </button>
     </div>
   </Teleport>
@@ -24,25 +24,29 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 import { useGlobalStore } from "@/store/global";
+import { useLogsOverlayStore } from "@/store/logsOverlay";
 import { useSettingsStore } from "@/store/settings";
-import {
-  clearFloatingLogsPreviousRoute,
-  closeFloatingLogs,
-  LOGS_PATH,
-  setFloatingLogsPreviousRoute,
-} from "@/utils/floatingLogs";
+import { LOGS_PATH } from "@/utils/popupHistory";
 
 const route = useRoute();
-const router = useRouter();
 const { t } = useI18n();
 const globalStore = useGlobalStore();
+const logsOverlayStore = useLogsOverlayStore();
 const settingsStore = useSettingsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { isOpen: isLogsOverlayOpen } = storeToRefs(logsOverlayStore);
 const { appearanceSetting } = storeToRefs(settingsStore);
 
 const FLOATING_BUTTON_SIZE = 48;
@@ -70,17 +74,15 @@ const dragPosition = ref<DragPosition | null>(null);
 const dragStart = ref<DragStart | null>(null);
 const suppressClick = ref(false);
 let suppressClickTimer: ReturnType<typeof setTimeout> | null = null;
-let clearPreviousRouteTimer: ReturnType<typeof setTimeout> | null = null;
 
 const isLogsRoute = computed(() => route.path === LOGS_PATH);
 const shouldShowFloatingLogsButton = computed(
-  () => appearanceSetting.value.showFloatingLogsButton !== false,
+  () =>
+    appearanceSetting.value.showFloatingLogsButton !== false &&
+    !isLogsOverlayOpen.value &&
+    !isLogsRoute.value,
 );
-const buttonLabel = computed(() =>
-  isLogsRoute.value
-    ? t("logsPage.floating.close")
-    : t("logsPage.floating.open"),
-);
+const buttonLabel = computed(() => t("logsPage.floating.open"));
 const buttonBottom = computed(() => `${bottomSafeArea.value + 104}px`);
 const dragBoundary = computed(() => ({
   top: 56 + 8,
@@ -241,25 +243,6 @@ watch(bottomSafeArea, () => {
   dragPosition.value = clampPosition(dragPosition.value);
 });
 
-watch(
-  () => route.path,
-  (path) => {
-    if (clearPreviousRouteTimer) {
-      clearTimeout(clearPreviousRouteTimer);
-      clearPreviousRouteTimer = null;
-    }
-
-    if (path !== LOGS_PATH) {
-      clearPreviousRouteTimer = setTimeout(() => {
-        if (route.path !== LOGS_PATH) {
-          clearFloatingLogsPreviousRoute();
-        }
-        clearPreviousRouteTimer = null;
-      }, 50);
-    }
-  },
-);
-
 onMounted(() => {
   if (typeof window === "undefined") return;
 
@@ -280,39 +263,16 @@ onBeforeUnmount(() => {
   if (suppressClickTimer) {
     clearTimeout(suppressClickTimer);
   }
-
-  if (clearPreviousRouteTimer) {
-    clearTimeout(clearPreviousRouteTimer);
-  }
 });
 
-const openLogs = async () => {
-  if (isLogsRoute.value) return;
-
-  setFloatingLogsPreviousRoute(route.fullPath);
-  await router.push({
-    path: LOGS_PATH,
-    query: route.query,
-  });
-};
-
-const closeLogs = async () => {
-  await closeFloatingLogs(router);
-};
-
-const toggleLogs = async (event?: MouseEvent) => {
+const toggleLogs = (event?: MouseEvent) => {
   if (suppressClick.value) {
     event?.preventDefault();
     event?.stopPropagation();
     return;
   }
 
-  if (isLogsRoute.value) {
-    await closeLogs();
-    return;
-  }
-
-  await openLogs();
+  logsOverlayStore.open();
 };
 </script>
 

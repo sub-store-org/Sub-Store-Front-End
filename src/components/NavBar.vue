@@ -3,7 +3,7 @@
   <div v-if="isPWA" class="pwa_top_padding" />
   <div
     class="nav-bar-wrapper"
-    :class="{ 'is-floating-logs-route': shouldCloseFloatingLogs }"
+    :class="{ 'is-logs-overlay-open': isLogsOverlayOpen }"
   >
     <nav>
       <!-- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ navBarHeight }} {{ wh }}    {{ topHeight }}-->
@@ -15,16 +15,7 @@
         @on-click-icon="onClickNavbarIcon"
       >
         <template #left>
-          <button
-            v-if="shouldCloseFloatingLogs"
-            type="button"
-            class="nav-close-button"
-            :aria-label="$t('logsPage.floating.close')"
-            :title="$t('logsPage.floating.close')"
-            @click.stop="back"
-          >
-            <font-awesome-icon icon="fa-solid fa-xmark" />
-          </button>
+          <div v-if="isLogsOverlayOpen" class="nav-leading-placeholder" />
           <button
             v-else-if="isNeedBack"
             type="button"
@@ -32,7 +23,7 @@
             @click.stop="back"
           />
           <div v-else :class="leftIconClass" @click.stop="back"></div>
-          <div class="icon-group">
+          <div v-if="!isLogsOverlayOpen" class="icon-group">
             <button
               v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
               type="button"
@@ -62,40 +53,42 @@
         </template>
 
         <template #right>
-          <font-awesome-icon
-            v-if="appearanceSetting.isSimpleMode"
-            @click.stop="setSimpleMode(false)"
-            class="navBar-right-icon fa-toggle"
-            icon="fa-solid fa-toggle-on "
-          />
-          <font-awesome-icon
-            v-else
-            @click.stop="setSimpleMode(true)"
-            class="navBar-right-icon fa-toggle"
-            icon="fa-solid fa-toggle-off"
-          />
-          <font-awesome-icon
-            v-if="showWideScreenNarrowModeToggle"
-            @click.stop="handleWideScreenNarrowModeToggle"
-            class="navBar-right-icon fa-navigation-mode"
-            :icon="isWideScreenNarrowModeActive ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-desktop'"
-            :title="wideScreenNarrowModeToggleTitle"
-          />
-          <font-awesome-icon
-            v-if="showListViewToggle"
-            @click.stop="handleListViewModeToggle"
-            class="navBar-right-icon fa-list-view"
-            :class="{ 'is-disabled': isListViewModeLocked }"
-            :icon="effectiveListViewMode === 'dual-column' ? 'fa-solid fa-table-columns' : 'fa-solid fa-list'"
-            :title="listViewModeToggleTitle"
-            :aria-disabled="isListViewModeLocked ? 'true' : 'false'"
-          />
-          <font-awesome-icon
-            class="navBar-right-icon fa-lg"
-            icon="fa-solid fa-language"
-            @click.stop="showLangSwitchPopup = true"
-            :title="t('navBar.langSwitcher.cellTitle')"
-          />
+          <template v-if="!isLogsOverlayOpen">
+            <font-awesome-icon
+              v-if="appearanceSetting.isSimpleMode"
+              @click.stop="setSimpleMode(false)"
+              class="navBar-right-icon fa-toggle"
+              icon="fa-solid fa-toggle-on "
+            />
+            <font-awesome-icon
+              v-else
+              @click.stop="setSimpleMode(true)"
+              class="navBar-right-icon fa-toggle"
+              icon="fa-solid fa-toggle-off"
+            />
+            <font-awesome-icon
+              v-if="showWideScreenNarrowModeToggle"
+              @click.stop="handleWideScreenNarrowModeToggle"
+              class="navBar-right-icon fa-navigation-mode"
+              :icon="isWideScreenNarrowModeActive ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-desktop'"
+              :title="wideScreenNarrowModeToggleTitle"
+            />
+            <font-awesome-icon
+              v-if="showListViewToggle"
+              @click.stop="handleListViewModeToggle"
+              class="navBar-right-icon fa-list-view"
+              :class="{ 'is-disabled': isListViewModeLocked }"
+              :icon="effectiveListViewMode === 'dual-column' ? 'fa-solid fa-table-columns' : 'fa-solid fa-list'"
+              :title="listViewModeToggleTitle"
+              :aria-disabled="isListViewModeLocked ? 'true' : 'false'"
+            />
+            <font-awesome-icon
+              class="navBar-right-icon fa-lg"
+              icon="fa-solid fa-language"
+              @click.stop="showLangSwitchPopup = true"
+              :title="t('navBar.langSwitcher.cellTitle')"
+            />
+          </template>
         </template>
       </nut-navbar>
     </nav>
@@ -138,7 +131,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watchEffect, onMounted } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
@@ -146,17 +139,13 @@ import { useGlobalStore } from "@/store/global";
 import { useListViewMode } from "@/hooks/useListViewMode";
 import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
+import { useLogsOverlayStore } from "@/store/logsOverlay";
 import { storeToRefs } from "pinia";
 import { Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
 import i18n from "@/locales";
-import {
-  closeFloatingLogs,
-  getFloatingLogsPreviousRoute,
-  LOGS_PATH,
-} from "@/utils/floatingLogs";
 
 const { t:i18n_global } = i18n.global;
 const { showNotify } = useAppNotifyStore();
@@ -166,11 +155,13 @@ const route = useRoute();
 const methodStore = useMethodStore()
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
+const logsOverlayStore = useLogsOverlayStore();
 const showLangSwitchPopup = ref(false);
 const langList = ["zh", "en"];
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
+const { isOpen: isLogsOverlayOpen } = storeToRefs(logsOverlayStore);
 const {
   effectiveListViewMode,
   isListViewModeLockedBySelection,
@@ -193,21 +184,30 @@ onMounted(() => {
 // 使用systemStore中的计算属性
 const { navBarHeight, navBartop, navBartopRight, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
 
-const shouldCloseFloatingLogs = computed(() => {
-  return route.path === LOGS_PATH && Boolean(getFloatingLogsPreviousRoute());
+watch(isLogsOverlayOpen, (isOpen) => {
+  if (isOpen) {
+    showLangSwitchPopup.value = false;
+  }
 });
+
 const isNeedBack = computed(() => {
-  return shouldCloseFloatingLogs.value || (route.meta.needNavBack ?? false);
+  return route.meta.needNavBack ?? false;
 });
 const leftIconClass = computed(() => {
   return isNeedBack.value ? "icon-back" : "icon-home";
 });
 
 const currentTitle = computed(() => {
+  if (isLogsOverlayOpen.value) {
+    return t("navBar.pagesTitle.logs");
+  }
+
   const metaTitle = route.meta.title;
   return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
 });
 const currentTitleWhetherAsk = computed(() => {
+  if (isLogsOverlayOpen.value) return "";
+
   const ownAsk = ["sync"];
   const metaTitle = route.meta.title;
   return ownAsk.includes(metaTitle) ? "ask" : "";
@@ -246,8 +246,8 @@ const add = (route: any) => {
 };
 
 const back = () => {
-  if (shouldCloseFloatingLogs.value) {
-    closeFloatingLogs(router);
+  if (isLogsOverlayOpen.value) {
+    logsOverlayStore.close();
     return;
   }
 
@@ -263,6 +263,7 @@ const back = () => {
     }
   }
 };
+
 const setSimpleMode = (isSimpleMode: boolean) => {
   // globalStore.setSimpleMode(isSimpleMode);
   const data = {
@@ -341,7 +342,7 @@ const refresh = async () => {
   z-index: 20;
   @include centered-fixed-container;
 
-  &.is-floating-logs-route {
+  &.is-logs-overlay-open {
     z-index: 1004;
   }
 
@@ -360,10 +361,15 @@ const refresh = async () => {
         overflow: hidden;
       }
       .nut-navbar__title {
-        min-width: 53%;
-        margin: 0 auto;
-        position: relative;
-        left: -7px;
+        position: absolute;
+        left: 50%;
+        top: v-bind(navBartop);
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 53%;
+        max-width: calc(100% - 160px);
+        min-width: 0;
+        margin: 0;
         text-align: center;
         display: flex;
         justify-content: center;
@@ -512,8 +518,7 @@ const refresh = async () => {
   content: "\e6c9";
 }
 
-.nav-leading-button,
-.nav-close-button {
+.nav-leading-button {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -534,6 +539,11 @@ const refresh = async () => {
   &:focus {
     outline: none;
   }
+}
+
+.nav-leading-placeholder {
+  width: 32px;
+  height: 32px;
 }
 
 .nav-leading-button::before {

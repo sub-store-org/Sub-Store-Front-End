@@ -38,6 +38,49 @@ import APISetting from '@/views/settings/APISetting.vue';
 
 let globalStore = null;
 
+const scrollContainers = ['#app', '.app-layout-wrapper', '.page-body'];
+
+const isTabRoute = (route?: { meta?: { needTabBar?: boolean } }) => route?.meta?.needTabBar === true;
+
+const isTabSwitch = (
+  to?: { path?: string; meta?: { needTabBar?: boolean } },
+  from?: { path?: string; meta?: { needTabBar?: boolean } },
+) => Boolean(to?.path && from?.path && to.path !== from.path && isTabRoute(to) && isTabRoute(from));
+
+const resetDocumentScrollStyles = () => {
+  ['html', 'body', '#app'].forEach(selector => {
+    const element = document.querySelector(selector) as HTMLElement | null;
+
+    if (!element) return;
+
+    element.style['overflow-y'] = '';
+    element.style.height = '';
+  });
+};
+
+const getElementScrollTop = (selector: string) => {
+  return (document.querySelector(selector) as HTMLElement | null)?.scrollTop || 0;
+};
+
+const getCurrentScrollTop = () => {
+  return document.documentElement.scrollTop
+    || document.body.scrollTop
+    || getElementScrollTop('#app')
+    || getElementScrollTop('.app-layout-wrapper')
+    || getElementScrollTop('.page-body')
+    || 0;
+};
+
+const scrollToPosition = (top = 0) => {
+  window.scrollTo({ left: 0, top, behavior: "instant" as any });
+  document.documentElement.scrollTop = top;
+  document.body.scrollTop = top;
+
+  scrollContainers.forEach(selector => {
+    document.querySelector(selector)?.scrollTo?.({ left: 0, top });
+  });
+};
+
 declare module 'vue-router' {
   interface RouteMeta {
     title: string;
@@ -273,16 +316,12 @@ const router = createRouter({
 
 // 全局前置守卫
 router.afterEach(async (to, from) => {
-  document.querySelector('html').style['overflow-y'] = '';
-  document.querySelector('html').style.height = '';
-  document.body.style.height = '';
-  document.body.style['overflow-y'] = '';
-  (document.querySelector('#app') as HTMLElement).style['overflow-y'] = '';
-  (document.querySelector('#app') as HTMLElement).style.height = '';
+  resetDocumentScrollStyles();
   // console.log(`afterEach ${from.path} => ${to.path}`)
   if (to?.path && from?.path !== to?.path) {
+    const shouldResetTabScroll = isTabSwitch(to, from);
     let scrollTop = 0;
-    if (to?.meta?.needTabBar && globalStore !== null) {
+    if (to?.meta?.needTabBar && globalStore !== null && !shouldResetTabScroll) {
       const savedPositions = toRaw(globalStore.savedPositions);
       if (savedPositions[to.path]?.top) {
         scrollTop = savedPositions[to.path]?.top
@@ -291,10 +330,11 @@ router.afterEach(async (to, from) => {
     }
     // console.log(`${to.path} 滚动到：${scrollTop}`)
     await nextTick()
-    window.scrollTo({
-      top: scrollTop,
-      behavior: "instant" as any
-    });
+    scrollToPosition(scrollTop);
+
+    if (shouldResetTabScroll) {
+      requestAnimationFrame(() => scrollToPosition(0));
+    }
   }
 });
 router.beforeEach((to, from) => {
@@ -306,7 +346,7 @@ router.beforeEach((to, from) => {
   if (globalStore) {
     if (from?.meta?.needTabBar && from?.path !== to?.path) {
       // if (from?.meta?.needTabBar) {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        const scrollTop = isTabSwitch(to, from) ? 0 : getCurrentScrollTop();
         // console.log(`保存 ${from.path} 滚动位置：${scrollTop}`)
         globalStore.setSavedPositions(from.path, { left: 0, top: scrollTop })
       }

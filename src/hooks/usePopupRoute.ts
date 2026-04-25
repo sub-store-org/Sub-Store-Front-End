@@ -1,34 +1,32 @@
-import { watch, Ref } from 'vue';
-import { useEventListener } from '@vueuse/core';
+import { useEventListener } from "@vueuse/core";
+import type { Ref } from "vue";
+import { watch } from "vue";
+
+import { useLogsOverlayStore } from "@/store/logsOverlay";
 import {
-  clearFloatingLogsPreviousRoute,
-  getFloatingLogsPreviousRoute,
-} from '@/utils/floatingLogs';
+  isPopupHistoryState,
+  pushPopupHistoryState,
+} from "@/utils/popupHistory";
 
 export const usePopupRoute = (popupController: Ref<boolean>) => {
+  const logsOverlayStore = useLogsOverlayStore();
+
   // 监听打开弹窗，添加一条路由记录
-  watch(popupController, newValue => {
+  watch(popupController, (newValue) => {
     if (newValue) {
-      history.pushState(
-        {
-          ...(history.state || {}),
-          subStorePopup: true,
-        },
-        '',
-        '',
-      );
+      pushPopupHistoryState();
     }
   });
 
   // 监听浏览器的 popstate 事件关闭弹窗
-  useEventListener(window, 'popstate', () => {
-    if (getFloatingLogsPreviousRoute()) {
-      window.setTimeout(clearFloatingLogsPreviousRoute, 0);
-      return;
-    }
+  useEventListener(window, "popstate", (event) => {
+    if (!popupController.value) return;
+    if (logsOverlayStore.isOpen) return;
 
-    if (popupController.value) {
-      popupController.value = false;
-    }
+    // 回退后若历史 state 仍处于弹窗层级（例如刚关闭的是叠加在弹窗之上的
+    // 日志 overlay），则保持弹窗打开，仅当真正退出弹窗 entry 时才关闭。
+    if (isPopupHistoryState((event as PopStateEvent).state ?? {})) return;
+
+    popupController.value = false;
   });
 };
