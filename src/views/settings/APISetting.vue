@@ -149,7 +149,6 @@ import { computed, ref, onMounted, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useBackend } from '@/hooks/useBackend';
 import { useHostAPI } from '@/hooks/useHostAPI';
-import axios from 'axios';
 
 import { useClipboard } from '@vueuse/core';
 import useV3Clipboard from 'vue-clipboard3';
@@ -276,41 +275,22 @@ const addApiHandler = async () => {
     }
 
 
-    try {
-      const res = await axios.get(`${apiUrl}/api/utils/env`);
-      if (res?.data?.status !== 'success') {
-        error.value = t('magicPath.errors.invalid');
-        showNotify({
-          title: error.value,
-          type: 'danger'
-        });
-        return;
-      }
+    const result = await addApi({ name: addForm.value.name, url: apiUrl });
 
+    if (result) {
+      setCurrent(addForm.value.name);
 
-      const result = await addApi({ name: addForm.value.name, url: apiUrl });
-
-      if (result) {
-        setCurrent(addForm.value.name);
-
-        showNotify({
-          title: t('magicPath.success'),
-          type: 'success'
-        });
-
-
-        addForm.value = {
-          name: '',
-          url: '',
-        };
-        error.value = '';
-      }
-    } catch (e) {
-      error.value = t('magicPath.errors.connection');
       showNotify({
-        title: t('magicPath.errors.connection'),
-        type: 'danger'
+        title: t('magicPath.success'),
+        type: 'success'
       });
+
+
+      addForm.value = {
+        name: '',
+        url: '',
+      };
+      error.value = '';
     }
   } catch (e) {
     error.value = t('magicPath.errors.unknown');

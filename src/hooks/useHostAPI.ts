@@ -1,21 +1,88 @@
 import { ref, watch, computed, onUnmounted } from 'vue';
 import { useGlobalStore } from '@/store/global';
 import { useAppNotifyStore } from '@/store/appNotify';
-import service from '@/api';
 import axios from 'axios';
-import { initStores } from '@/utils/initApp';
 
 const lsKey = 'hostAPI';
+
+const createEmptyHostAPI = (): HostAPIStorage => ({
+  current: '',
+  apis: [],
+});
+
+const normalizeHostAPIUrl = (url: string) => {
+  const trimmed = (url || '').trim();
+  if (!trimmed) return '';
+
+  try {
+    return new URL(trimmed).toString().replace(/\/+$/, '');
+  } catch {
+    const normalizedPath = trimmed.replace(/\/+$/, '');
+    return normalizedPath || (trimmed.startsWith('/') ? '/' : '');
+  }
+};
+
+const isSameHostAPIUrl = (left: string, right: string) =>
+  normalizeHostAPIUrl(left) === normalizeHostAPIUrl(right);
+
+const getDefaultHostAPIUrl = (): string =>
+  normalizeHostAPIUrl(import.meta.env.VITE_API_URL || 'https://sub.store');
+
+const isDefaultHostAPIUrl = (url: string): boolean =>
+  isSameHostAPIUrl(url, getDefaultHostAPIUrl());
+
+const normalizeHostAPIStorage = (hostAPI: HostAPIStorage): HostAPIStorage => {
+  const current = hostAPI?.current || '';
+  const apiRecords = new Map<string, { api: HostAPI; index: number }>();
+
+  (Array.isArray(hostAPI?.apis) ? hostAPI.apis : []).forEach((api, index) => {
+    if (!api?.name || !api?.url) return;
+
+    const normalizedUrl = normalizeHostAPIUrl(api.url);
+    if (!normalizedUrl) return;
+    if (isDefaultHostAPIUrl(normalizedUrl)) return;
+
+    const key = normalizedUrl;
+    const normalizedApi = { ...api, url: normalizedUrl };
+    const existing = apiRecords.get(key);
+
+    if (!existing) {
+      apiRecords.set(key, { api: normalizedApi, index });
+    } else if (api.name === current) {
+      existing.api = normalizedApi;
+    }
+  });
+
+  const apis = Array.from(apiRecords.values())
+    .sort((left, right) => left.index - right.index)
+    .map(({ api }) => api);
+
+  return {
+    current: apis.find(api => api.name === current) ? current : '',
+    apis,
+  };
+};
+
+const setHostAPI = (hostAPI: HostAPIStorage) => {
+  localStorage.setItem(lsKey, JSON.stringify(normalizeHostAPIStorage(hostAPI)));
+};
 
 const getHostAPI = (): HostAPIStorage => {
   const item = localStorage.getItem(lsKey);
   if (item) {
-    return JSON.parse(item);
+    try {
+      const hostAPI = normalizeHostAPIStorage(JSON.parse(item));
+      if (JSON.stringify(hostAPI) !== item) {
+        setHostAPI(hostAPI);
+      }
+      return hostAPI;
+    } catch {
+      const emptyHostAPI = createEmptyHostAPI();
+      setHostAPI(emptyHostAPI);
+      return emptyHostAPI;
+    }
   } else {
-    setHostAPI({
-      current: '',
-      apis: [],
-    });
+    setHostAPI(createEmptyHostAPI());
     return getHostAPI();
   }
 };
@@ -23,36 +90,93 @@ export const getHostAPIUrl = (): string => {
   const { current, apis } = getHostAPI();
   return (
     apis.find(api => api.name === current)?.url ||
-    import.meta.env.VITE_API_URL ||
-    'https://sub.store'
+    getDefaultHostAPIUrl()
   ).replace(/\/$/, ''); // 去除末尾斜杠;
 };
 
-const setHostAPI = (hostAPI: HostAPIStorage) => {
-  localStorage.setItem(lsKey, JSON.stringify(hostAPI));
-};
 export const useHostAPI = () => {
-  const defaultAPI = import.meta.env.VITE_API_URL || 'https://sub.store';
+  const defaultAPI = getDefaultHostAPIUrl();
 
   const { showNotify } = useAppNotifyStore();
-  const apis = ref(getHostAPI().apis);
-  const currentName = ref(getHostAPI().current);
+  const hostAPI = getHostAPI();
+  const apis = ref(hostAPI.apis);
+  const currentName = ref(hostAPI.current);
   const currentUrl = computed(() => {
     const url = apis.value.find(api => api.name === currentName.value)?.url ?? defaultAPI
     return url.startsWith('/') ? `${window.location.origin}${url}` : url;
   });
 
+  const getAPIByUrl = (url: string, list = getHostAPI().apis) =>
+    list.find(api => isSameHostAPIUrl(api.url, url));
+
+  const createAPIName = (url: string, list = getHostAPI().apis) => {
+    const baseName = url.slice(0, 10) || 'Custom';
+    let name = baseName;
+    let index = 1;
+
+    while (list.find(api => api.name === name)) {
+      name = `${baseName}_${index}`;
+      index += 1;
+    }
+
+    return name;
+  };
+
+  const testAPIConnection = async (url: string) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
+
+    try {
+      const res = await axios.get<{ status: 'success' | 'failed' }>(
+        `${url}/api/utils/env`,
+        { signal: controller.signal }
+      );
+
+      return res?.data?.status === 'success';
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+
+  const handleDefaultAPIUrl = async (url: string): Promise<boolean> => {
+    const latestHostAPI = getHostAPI();
+    apis.value = latestHostAPI.apis;
+
+    setCurrent('');
+    const globalStore = useGlobalStore();
+    globalStore.setFetchResult(false);
+
+    try {
+      const isValid = await testAPIConnection(url);
+
+      if (isValid) {
+        localStorage.setItem('backendConfigured', 'true');
+        globalStore.setFetchResult(true);
+        return true;
+      }
+
+      globalStore.setFetchResult(false);
+      return false;
+    } catch (e) {
+      console.error('测试默认API连接时出错:', e);
+      globalStore.setFetchResult(false);
+      return false;
+    }
+  };
+
   const stopWatchCurrent = watch(currentName, async (newName, oldName) => {
     if (newName !== oldName) {
+      const latestHostAPI = getHostAPI();
+
       // 保存新的API配置
       setHostAPI({
-        ...getHostAPI(),
+        ...latestHostAPI,
         current: newName,
       });
 
       // 获取新API的URL
       const url =
-        apis.value.find(api => api.name === newName)?.url ?? defaultAPI;
+        latestHostAPI.apis.find(api => api.name === newName)?.url ?? defaultAPI;
 
       // 清除旧的连接状态
       const globalStore = useGlobalStore();
@@ -78,63 +202,125 @@ export const useHostAPI = () => {
   });
 
   const setCurrent = (name: string) => {
-    if (name !== '' && !apis.value.find(api => api.name === name)) {
+    const latestHostAPI = getHostAPI();
+
+    if (name !== '' && !latestHostAPI.apis.find(api => api.name === name)) {
       return;
     }
+
+    apis.value = latestHostAPI.apis;
+
+    if (currentName.value === name) {
+      setHostAPI({
+        ...latestHostAPI,
+        current: name,
+      });
+      return;
+    }
+
     currentName.value = name;
   };
 
-  const addApi = async ({ name, url }: HostAPI, skipConnectionCheck = false) => {
-    if (apis.value.find(api => api.name === name)) {
-      showNotify({
-        title: 'API 名称重复',
-        type: 'danger',
-      });
-      return false;
-    } else {
-      // 如果跳过连接检查，直接添加API
-      if (skipConnectionCheck) {
-        apis.value.push({ name, url });
-        return true;
-      }
+  const addApi = async ({ name, url }: HostAPI, skipConnectionCheck = false, silentDuplicate = false) => {
+    const normalizedUrl = normalizeHostAPIUrl(url);
+    const latestHostAPI = getHostAPI();
 
-      try {
-        const res = await axios.get<{ status: 'success' | 'failed' }>(
-          url + '/api/utils/env'
-        );
-        if (res?.data?.status === 'success') {
-          apis.value.push({ name, url });
-          return true;
-        } else {
-          showNotify({
-            title: '无效的 API 地址，请检查',
-            type: 'danger',
-          });
-          return false;
-        }
-      } catch {
+    apis.value = latestHostAPI.apis;
+
+    if (!normalizedUrl) {
+      if (!silentDuplicate) {
+        showNotify({
+          title: '无效的 API 地址，请检查',
+          type: 'danger',
+        });
+      }
+      return false;
+    }
+
+    if (latestHostAPI.apis.find(api => api.name === name)) {
+      if (!silentDuplicate) {
+        showNotify({
+          title: 'API 名称重复',
+          type: 'danger',
+        });
+      }
+      return false;
+    }
+
+    if (isDefaultHostAPIUrl(normalizedUrl) || getAPIByUrl(normalizedUrl, latestHostAPI.apis)) {
+      if (!silentDuplicate) {
+        showNotify({
+          title: 'API 地址重复',
+          type: 'danger',
+        });
+      }
+      return false;
+    }
+
+    const saveApi = () => {
+      const storage = getHostAPI();
+      const nextHostAPI = normalizeHostAPIStorage({
+        ...storage,
+        apis: [...storage.apis, { name, url: normalizedUrl }],
+      });
+
+      setHostAPI(nextHostAPI);
+      apis.value = nextHostAPI.apis;
+      return true;
+    };
+
+    // 如果跳过连接检查，直接添加API
+    if (skipConnectionCheck) {
+      return saveApi();
+    }
+
+    try {
+      const isValid = await testAPIConnection(normalizedUrl);
+      if (isValid) {
+        return saveApi();
+      } else {
         showNotify({
           title: '无效的 API 地址，请检查',
           type: 'danger',
         });
         return false;
       }
+    } catch {
+      showNotify({
+        title: '无效的 API 地址，请检查',
+        type: 'danger',
+      });
+      return false;
     }
   };
 
   const deleteApi = (name: string) => {
-    const index = apis.value.findIndex(api => api.name === name);
-    if (index === -1) return;
-    apis.value.splice(index, 1);
-    if (currentName.value === name) {
-      currentName.value = apis.value[0]?.name || '';
-    }
+    const latestHostAPI = getHostAPI();
+    const nextApis = latestHostAPI.apis.filter(api => api.name !== name);
+    if (nextApis.length === latestHostAPI.apis.length) return;
+
+    const nextCurrentName = latestHostAPI.current === name
+      ? nextApis[0]?.name || ''
+      : latestHostAPI.current;
+
+    setHostAPI({
+      current: nextCurrentName,
+      apis: nextApis,
+    });
+
+    apis.value = nextApis;
+    currentName.value = nextCurrentName;
   };
 
   const editApi = ({ name, url }: HostAPI) => {
-    const index = apis.value.findIndex(api => api.name === name);
+    const latestHostAPI = getHostAPI();
+    const index = latestHostAPI.apis.findIndex(api => api.name === name);
     if (index === -1) return;
-    apis.value[index].url = url;
+
+    latestHostAPI.apis[index].url = normalizeHostAPIUrl(url);
+    const nextHostAPI = normalizeHostAPIStorage(latestHostAPI);
+    setHostAPI(nextHostAPI);
+    apis.value = nextHostAPI.apis;
   };
 
   const handleUrlQuery = async ({
@@ -148,14 +334,12 @@ export const useHostAPI = () => {
       return false; // 没有URL参数，返回false
     }
 
+    const queryParams = new URLSearchParams(query);
+
     // 处理 concurrency 参数
-    const concurrency = query
-      .slice(1)
-      .split('&')
-      .map(i => i.split('='))
-      .find(i => i[0] === 'concurrency');
-    if (concurrency) {
-      const value = parseInt(concurrency[1], 10);
+    const concurrency = queryParams.get('concurrency');
+    if (concurrency !== null) {
+      const value = parseInt(concurrency, 10);
       if (!isNaN(value)) {
         if (value >= 1) {
           console.log(`设置并发数 ${value}`)
@@ -167,13 +351,9 @@ export const useHostAPI = () => {
       }
     }
     // 处理 timeout 参数
-    const timeout = query
-      .slice(1)
-      .split('&')
-      .map(i => i.split('='))
-      .find(i => i[0] === 'timeout');
-    if (timeout) {
-      const value = Number(timeout[1]);
+    const timeout = queryParams.get('timeout');
+    if (timeout !== null) {
+      const value = Number(timeout);
       if (!isNaN(value)) {
         if (value > 0) {
           console.log(`设置超时 ${value}`)
@@ -186,47 +366,33 @@ export const useHostAPI = () => {
     }
 
     // 处理api参数
-    const apiUrl = query
-      .slice(1)
-      .split('&')
-      .map(i => i.split('='))
-      .find(i => i[0] === 'api');
+    const apiUrl = queryParams.get('api');
 
     // 处理magicpath参数
-    const magicPathParam = query
-      .slice(1)
-      .split('&')
-      .map(i => i.split('='))
-      .find(i => i[0] === 'magicpath');
+    const magicPathParam = queryParams.get('magicpath');
 
     // 获取全局状态管理
     const globalStore = useGlobalStore();
 
     // 优先处理api参数
-    if (apiUrl) {
-      const url = decodeURIComponent(apiUrl[1]).replace(/\/$/, ''); // 去除末尾斜杠;
+    if (apiUrl !== null) {
+      const url = normalizeHostAPIUrl(apiUrl);
       if (!url) return await errorCb?.();
+      if (isDefaultHostAPIUrl(url)) return await handleDefaultAPIUrl(url);
 
       // 检查是否已存在相同URL的API
-      const isExist = apis.value.find(api => api.url === url);
+      const latestHostAPI = getHostAPI();
+      const isExist = getAPIByUrl(url, latestHostAPI.apis);
+      apis.value = latestHostAPI.apis;
 
       if (isExist) {
         // 如果已存在且不是当前API，则切换到该API
-        if (isExist.name === currentName.value) {
+        if (isExist.name === latestHostAPI.current) {
           // 如果是当前API，尝试重新连接
           try {
-            // 测试API连接是否有效
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
+            const isValid = await testAPIConnection(url);
 
-            const res = await axios.get<{ status: 'success' | 'failed' }>(
-              url + '/api/utils/env',
-              { signal: controller.signal }
-            );
-
-            clearTimeout(timeoutId); // 清除超时计时器
-
-            if (res?.data?.status === 'success') {
+            if (isValid) {
               // 连接成功
               globalStore.setFetchResult(true);
               localStorage.setItem('backendConfigured', 'true');
@@ -257,31 +423,24 @@ export const useHostAPI = () => {
 
       try {
         // 生成API名称
-        const name = url.slice(0, 10) + (Math.random() * 100).toFixed(0);
+        const name = createAPIName(url, latestHostAPI.apis);
 
         // 无论连接是否成功，都先添加到列表并设置为当前API
         // 使用skipConnectionCheck=true跳过连接检查直接添加
-        const addResult = await addApi({ name, url }, true);
-        if (addResult) {
+        const addResult = await addApi({ name, url }, true, true);
+        const targetAPI = getAPIByUrl(url);
+
+        if (addResult || targetAPI) {
           // 设置为当前API
-          setCurrent(name);
+          setCurrent(targetAPI?.name || name);
 
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
 
-          // 测试API连接是否有效，添加超时处理
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
-
           try {
-            const res = await axios.get<{ status: 'success' | 'failed' }>(
-              url + '/api/utils/env',
-              { signal: controller.signal }
-            );
+            const isValid = await testAPIConnection(url);
 
-            clearTimeout(timeoutId); // 清除超时计时器
-
-            if (res?.data?.status === 'success') {
+            if (isValid) {
               // 设置已配置标志，表示用户已通过URL参数成功配置了后端
               localStorage.setItem('backendConfigured', 'true');
               // 设置fetchResult为true，表示连接成功
@@ -315,34 +474,32 @@ export const useHostAPI = () => {
     }
 
     // 处理magicpath参数
-    if (magicPathParam) {
-      const magicPath = decodeURIComponent(magicPathParam[1]);
+    if (magicPathParam !== null) {
+      const magicPath = magicPathParam;
       if (!magicPath) return await errorCb?.();
 
       // 构建完整的API URL
       const currentHost = window.location.origin;
-      const apiUrl = `${currentHost}/${magicPath.replace(/^\/+/, '')}`;
+      const apiUrl = normalizeHostAPIUrl(`${currentHost}/${magicPath.replace(/^\/+/, '')}`);
+      if (isDefaultHostAPIUrl(apiUrl)) {
+        const isHandled = await handleDefaultAPIUrl(apiUrl);
+        if (isHandled) localStorage.setItem('magicPathConfigured', 'true');
+        return isHandled;
+      }
 
       // 检查是否已存在相同URL的API
-      const isExist = apis.value.find(api => api.url === apiUrl);
+      const latestHostAPI = getHostAPI();
+      const isExist = getAPIByUrl(apiUrl, latestHostAPI.apis);
+      apis.value = latestHostAPI.apis;
 
       if (isExist) {
         // 如果已存在且不是当前API，则切换到该API
-        if (isExist.name === currentName.value) {
+        if (isExist.name === latestHostAPI.current) {
           // 如果是当前API，尝试重新连接
           try {
-            // 测试API连接是否有效
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
+            const isValid = await testAPIConnection(apiUrl);
 
-            const res = await axios.get<{ status: 'success' | 'failed' }>(
-              apiUrl + '/api/utils/env',
-              { signal: controller.signal }
-            );
-
-            clearTimeout(timeoutId); // 清除超时计时器
-
-            if (res?.data?.status === 'success') {
+            if (isValid) {
               // 连接成功
               globalStore.setFetchResult(true);
               localStorage.setItem('backendConfigured', 'true');
@@ -379,27 +536,20 @@ export const useHostAPI = () => {
 
         // 无论连接是否成功，都先添加到列表并设置为当前API
         // 使用skipConnectionCheck=true跳过连接检查直接添加
-        const addResult = await addApi({ name, url: apiUrl }, true);
-        if (addResult) {
+        const addResult = await addApi({ name, url: apiUrl }, true, true);
+        const targetAPI = getAPIByUrl(apiUrl);
+
+        if (addResult || targetAPI) {
           // 设置为当前API
-          setCurrent(name);
+          setCurrent(targetAPI?.name || name);
 
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
 
-          // 测试API连接是否有效，添加超时处理
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout') as string, 10) : 3000); // 3秒超时
-
           try {
-            const res = await axios.get<{ status: 'success' | 'failed' }>(
-              apiUrl + '/api/utils/env',
-              { signal: controller.signal }
-            );
+            const isValid = await testAPIConnection(apiUrl);
 
-            clearTimeout(timeoutId); // 清除超时计时器
-
-            if (res?.data?.status === 'success') {
+            if (isValid) {
               // 设置已配置标志
               localStorage.setItem('magicPathConfigured', 'true');
               localStorage.setItem('backendConfigured', 'true');
