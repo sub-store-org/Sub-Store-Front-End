@@ -86,6 +86,8 @@ export const useHostAPI = () => {
 
   const addApi = async ({ name, url }: HostAPI, skipConnectionCheck = false) => {
     if (apis.value.find(api => api.name === name)) {
+      console.log('apis', apis.value);
+      
       showNotify({
         title: 'API 名称重复',
         type: 'danger',
@@ -133,8 +135,19 @@ export const useHostAPI = () => {
 
   const editApi = ({ name, url }: HostAPI) => {
     const index = apis.value.findIndex(api => api.name === name);
-    if (index === -1) return;
+    if (index === -1) return false;
     apis.value[index].url = url;
+    return true;
+  };
+
+  const editApiName = async ({ name, url}: { name: string; url: string }) => {
+    const index = apis.value.findIndex(api => api.url === url);
+    if (index === -1) return false;
+    apis.value[index].name = name;
+    if (currentName.value === apis.value[index].name) {
+      currentName.value = name;
+    }
+    return true;
   };
 
   const handleUrlQuery = async ({
@@ -465,6 +478,7 @@ export const useHostAPI = () => {
     addApi,
     deleteApi,
     editApi,
+    editApiName,
     handleUrlQuery,
     defaultAPI,
   };

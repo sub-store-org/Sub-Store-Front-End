@@ -1099,6 +1099,9 @@ export default {
       defaultName: '默认后端',
       currentTag: '当前',
     },
+    switchApi: {
+      loading: '切换中...',
+    },
     addApi: {
       title: '添加新的后端连接配置',
       placeholder: {
@@ -1109,6 +1112,12 @@ export default {
         nameEmpty: '名称不能为空',
       },
       btn: '添加',
+      duplicate: {
+        title: '温馨提示',
+        content: '当前已存在相同地址的后端配置，是否切换至该后端？',
+        confirm: '直接切换',
+        cancel: '覆盖切换',
+      },
     },
   },
   moreSettingPage: {

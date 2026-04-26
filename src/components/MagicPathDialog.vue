@@ -99,7 +99,7 @@ import axios from 'axios';
 
 const { t } = useI18n();
 const { showNotify } = useAppNotifyStore();
-const { addApi, setCurrent } = useHostAPI();
+const { apis, addApi, setCurrent } = useHostAPI();
 
 const props = defineProps<{
   modelValue: boolean;
@@ -162,16 +162,21 @@ const handleSubmit = async () => {
         return;
       }
 
-      // 添加API并设置为当前API
-      const apiName = `Custom_${new Date().getTime()}`;
-      const addResult = await addApi({ name: apiName, url: apiUrl });
+      const existingApi = apis.value.find(api => api.url === apiUrl);
+      if (existingApi) {
+        setCurrent(existingApi.name);
+      } else {
+        // 添加API并设置为当前API
+        const apiName = `Custom_${new Date().getTime()}`;
+        const addResult = await addApi({ name: apiName, url: apiUrl });
 
-      if (!addResult) {
-        // addApi内部已经显示了错误通知，这里不需要再设置error
-        return;
+        if (!addResult) {
+          // addApi内部已经显示了错误通知，这里不需要再设置error
+          return;
+        }
+
+        setCurrent(apiName);
       }
-
-      setCurrent(apiName);
 
       showNotify({
         title: t('magicPath.success'),
