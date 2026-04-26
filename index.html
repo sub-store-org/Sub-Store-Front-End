@@ -13,29 +13,42 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark" />
   <title>Sub Store</title>
   <meta name="description" content="A sub-converter running in a Progressive Web App" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="alternate icon" href="/favicon.ico" type="image/png" sizes="16x16" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <link rel="mask-icon" href="/favicon.svg" color="#FFFFFF" />
-  <meta id="theme__color" name="theme-color" content="#000" />
+  <meta id="theme__color_light" name="theme-color" content="#F4F4F4" media="(prefers-color-scheme: light)" />
+  <meta id="theme__color_dark" name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
   <link rel="manifest" href="/manifests.json" />
   <style>
-    html {
+    html,
+    body,
+    #app {
       width: 100%;
+      min-height: 100%;
+      background: #F4F4F4;
+    }
+
+    html {
       height: 100vh;
       overflow-x: hidden;
       overflow-y: auto;
+      color-scheme: light dark;
     }
 
     body {
-      background: #f2f2f2;
+      margin: 0;
     }
 
     @media (prefers-color-scheme: dark) {
-      body {
-        background: #000;
+      html,
+      body,
+      #app {
+        background: #121212;
+        color-scheme: dark;
       }
     }
   </style>

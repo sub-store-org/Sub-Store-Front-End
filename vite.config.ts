@@ -76,6 +76,8 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           scope: "/",
           lang: "en",
           display: "standalone",
+          background_color: "#121212",
+          theme_color: "#121212",
           icons: [
             {
               src: "144x144.png",

@@ -49,6 +49,30 @@ const getThemeModules = () => {
 };
 const modules = getThemeModules();
 
+const getThemeColor = (mode: CustomTheme, key: string) => modules[mode]?.colors?.[key] || '';
+
+const setThemeColorMeta = (mode: CustomTheme) => {
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach(meta => {
+    meta.setAttribute('content', getThemeColor(mode, 'status-bar-background-color'));
+  });
+};
+
+const setAutoThemeColorMeta = (lightMode: CustomTheme, darkMode: CustomTheme) => {
+  const lightThemeColorMeta = document.getElementById('theme__color_light');
+  const darkThemeColorMeta = document.getElementById('theme__color_dark');
+
+  lightThemeColorMeta?.setAttribute('content', getThemeColor(lightMode, 'status-bar-background-color'));
+  darkThemeColorMeta?.setAttribute('content', getThemeColor(darkMode, 'status-bar-background-color'));
+};
+
+const setDocumentBackground = (mode: CustomTheme) => {
+  const backgroundColor = getThemeColor(mode, 'background-color');
+
+  document.documentElement.style.backgroundColor = backgroundColor;
+  document.body.style.backgroundColor = backgroundColor;
+  document.getElementById('app')?.style.setProperty('background-color', backgroundColor);
+};
+
 // 定义修改 root 变量方法
 const changeVariables = (newMode: CustomTheme) => {
   const map = { ...{ ...modules[newMode].colors }, ...commonVariables };
@@ -59,12 +83,8 @@ const changeVariables = (newMode: CustomTheme) => {
   }
 
   // 切换浏览器窗口 / 状态栏颜色
-  const themeColorMeta = document.getElementById('theme__color');
-  themeColorMeta.setAttribute(
-    'content',
-    modules[newMode].colors['status-bar-background-color']
-  );
-  document.body.style.backgroundColor = modules[newMode].colors['background-color'] || '';
+  setThemeColorMeta(newMode);
+  setDocumentBackground(newMode);
 };
 
 export const useThemes = () => {
@@ -108,6 +128,7 @@ export const useThemes = () => {
     // console.log(theme.value);
     if (theme.value.auto) {
       if (theme.value.dark && theme.value.light) {
+        setAutoThemeColorMeta(theme.value.light, theme.value.dark);
         autoTheme(mql);
         useEventListener(mql, 'change', autoTheme);
       }
