@@ -26,7 +26,7 @@
       :title="$t(`apiSettingPage.apiList.title`)"
       :desc="$t(`apiSettingPage.apiList.desc`)"
     >
-      <nut-cell @click="setCurrent('')">
+      <nut-cell @click="handleSwitchClick('')">
         <div class="api-list-item">
           <div class="api-item-left">
             <h2>
@@ -43,7 +43,7 @@
       <nut-cell
         v-for="api in apis"
         :key="api.name"
-        @click="setCurrent(api.name)"
+        @click="handleSwitchClick(api.name)"
       >
         <div class="api-list-item">
           <div class="api-item-left">
@@ -131,7 +131,7 @@
     <p class="desc-text">
       <p>{{ $t(`apiSettingPage.apiSettingDesc0`) }}</p>
       <p>{{ $t(`apiSettingPage.apiSettingDesc1`) }}</p>
-      {{ $t(`apiSettingPage.apiSettingDesc2`) }}
+      <span>{{ $t(`apiSettingPage.apiSettingDesc2`) }}</span>
       <a
         href="https://xream.notion.site/Sub-Store-abe6a96944724dc6a36833d5c9ab7c87"
         target="_blank"
@@ -166,7 +166,7 @@ const { showNotify } = useAppNotifyStore();
 const { icon, env, isEnvReady } = useBackend();
 const settingsStore = useSettingsStore();
 const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
-const { defaultAPI, currentName, apis, setCurrent, addApi, deleteApi }
+const { defaultAPI, currentName, apis, setCurrent, addApi, editApiName, deleteApi }
     = useHostAPI();
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
@@ -185,6 +185,7 @@ const addForm = ref<HostAPI>({
 
 const error = ref('');
 const checkingAPI = ref(false);
+const switchingAPI = ref(false);
 
 
 const inputType = ref('path');
@@ -192,6 +193,16 @@ const parsedHost = ref('');
 const parsedPath = ref('');
 const previewUrl = ref('');
 const currentOrigin = ref(window.location.origin);
+
+const copyApi = async (api: HostAPI) => {
+  const url = `${window.location.origin}?api=${encodeURIComponent(api.url)}`;
+  if (isSupported) {
+    await copy(url);
+  } else {
+    await copyFallback(url);
+  }
+  showNotify({ title: url });
+};
 
 // 验证输入
 const validateInput = () => {
@@ -263,76 +274,150 @@ const addApiHandler = async () => {
     });
     return;
   }
+  // 使用解析后的完整URL（host:port 类型会被 previewUrl 补全为 http://...）
+  const addFormUrl = previewUrl.value || (addForm.value.url && addForm.value.url.trim());
+  const addFormName = addForm.value.name && addForm.value.name.trim();
+  // 默认API地址
+  const defaultApiUrl = defaultAPI && defaultAPI.trim();
+  
+  // 如果输入的地址与默认API地址不同，且不为空，则进行重复检查
+  if (addFormUrl && addFormUrl !== defaultApiUrl) {
+    const existingApi = apis.value.find(api => api.url === addFormUrl);
+    // 如果存在相同地址的API，提示用户选择是切换还是覆盖
+    if (existingApi) {
+      Dialog({
+        title: t('apiSettingPage.addApi.duplicate.title'),
+        content: t('apiSettingPage.addApi.duplicate.content', { name: existingApi.name }),
+        onOk: async () => {
+          checkingAPI.value = true;
+          try {
+            const ok = await checkApiConnectivity(existingApi.url);
+            if (ok) {
+              setCurrent(existingApi.name);
+              await resetAddForm();
+              showNotify({ title: t('magicPath.success'), type: 'success' });
+            }
+          } finally {
+            checkingAPI.value = false;
+          }
+        },
+        onCancel: async () => {
+          await setApi({ name: addFormName, url: addFormUrl, isEditName: true });
+        },
+        popClass: "auto-dialog",
+        noCancelBtn: false,
+        okText: t('apiSettingPage.addApi.duplicate.confirm'),
+        cancelText: t('apiSettingPage.addApi.duplicate.cancel'),
+        closeOnClickOverlay: true,
+        lockScroll: false,
+      });
+      return;
+    }
+  }
+  // 如果没有重复，直接添加
+  await setApi({ name: addFormName, url: addFormUrl });
+};
 
+// 检查API连通性，成功返回 true，失败自动 showNotify 并返回 false
+const checkApiConnectivity = async (url: string): Promise<boolean> => {
+  try {
+    const res = await axios.get(`${url}/api/utils/env`);
+    if (res?.data?.status !== 'success') {
+      showNotify({ title: t('magicPath.errors.invalid'), type: 'danger' });
+      return false;
+    }
+    return true;
+  } catch (e) {
+    showNotify({ title: t('magicPath.errors.connection'), type: 'danger' });
+    return false;
+  }
+};
+
+// 切换前先检查连通性再调用 setCurrent（使用独立 switchingAPI 避免影响表单 loading 状态）
+const switchToApi = async (name: string) => {
+  if (switchingAPI.value) return;
+  if (name === currentName.value) return;
+
+  const rawUrl = name === ''
+    ? defaultAPI
+    : apis.value.find(api => api.name === name)?.url;
+  if (!rawUrl) {
+    setCurrent(name);
+    return;
+  }
+  // 补全协议头：纯 host:port 格式需要加 http://
+  const url = /^\d+\.\d+\.\d+\.\d+:\d+/.test(rawUrl) || /^localhost:\d+/.test(rawUrl)
+    ? `http://${rawUrl}`
+    : rawUrl;
+  switchingAPI.value = true;
+  Toast.loading(t('apiSettingPage.switchApi.loading'), {
+    cover: true,
+    id: 'switch-api-loading',
+    duration: 0
+  });
+  try {
+    const ok = await checkApiConnectivity(url);
+    if (ok) {
+      setCurrent(name);
+      showNotify({ title: t('magicPath.success'), type: 'success' });
+    }
+  } finally {
+    Toast.hide('switch-api-loading');
+    switchingAPI.value = false;
+  }
+};
+
+const handleSwitchClick = async (name: string) => {
+  if (switchingAPI.value) return;
+  await switchToApi(name);
+};
+
+const setApi = async ({ name = '', url = '', isEditName = false }) => {
+  // 开始检查后端API连接状态
   checkingAPI.value = true;
 
   try {
-
-    const apiUrl = previewUrl.value;
-
+    const apiUrl = url;
+    const apiName = name;
     if (!apiUrl) {
       error.value = t('magicPath.errors.empty');
       return;
     }
-
-
-    try {
-      const res = await axios.get(`${apiUrl}/api/utils/env`);
-      if (res?.data?.status !== 'success') {
-        error.value = t('magicPath.errors.invalid');
-        showNotify({
-          title: error.value,
-          type: 'danger'
-        });
-        return;
-      }
-
-
-      const result = await addApi({ name: addForm.value.name, url: apiUrl });
-
-      if (result) {
-        setCurrent(addForm.value.name);
-
-        showNotify({
-          title: t('magicPath.success'),
-          type: 'success'
-        });
-
-
-        addForm.value = {
-          name: '',
-          url: '',
-        };
-        error.value = '';
-      }
-    } catch (e) {
+    const ok = await checkApiConnectivity(apiUrl);
+    if (!ok) {
       error.value = t('magicPath.errors.connection');
-      showNotify({
-        title: t('magicPath.errors.connection'),
-        type: 'danger'
-      });
+      return;
+    }
+
+    let result = null;
+    if (isEditName) {
+      result = await editApiName({ name: apiName, url: apiUrl });
+    } else {
+      // 已通过 checkApiConnectivity 验证，跳过 addApi 内部的重复检查
+      result = await addApi({ name: apiName, url: apiUrl }, true);
+    }
+    console.log('result', result);
+    if (result) {
+      setCurrent(apiName);
+      showNotify({ title: t('magicPath.success'), type: 'success' });
+      addForm.value = { name: '', url: '' };
+      error.value = '';
     }
   } catch (e) {
     error.value = t('magicPath.errors.unknown');
-    showNotify({
-      title: t('magicPath.errors.unknown'),
-      type: 'danger'
-    });
+    showNotify({ title: t('magicPath.errors.unknown'), type: 'danger' });
   } finally {
     checkingAPI.value = false;
   }
 };
 
-const copyApi = async (api: HostAPI) => {
-  const url = `${window.location.origin}?api=${encodeURIComponent(api.url)}`;
-  if (isSupported) {
-    await copy(url);
-  } else {
-    await copyFallback(url);
-  }
-  showNotify({ title: url });
+const resetAddForm = async () => {
+  addForm.value = {
+    name: '',
+    url: '',
+  };
+  error.value = '';
 };
-
 
 watchEffect(() => {
   const input = addForm.value.url.trim();
@@ -443,6 +528,7 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      cursor: pointer;
 
       .api-item-left {
         display: flex;
@@ -474,6 +560,7 @@ onMounted(() => {
         font-size: 20px;
         color: var(--comment-text-color);
         cursor: pointer;
+
         .copy-icon {
           margin-right: 16px;
         }
@@ -592,5 +679,6 @@ onMounted(() => {
         color: var(--primary-color);
       }
     }
+
   }
 </style>

@@ -1111,6 +1111,9 @@ export default {
       defaultName: "Default",
       currentTag: "Current",
     },
+    switchApi: {
+      loading: 'Switching...',
+    },
     addApi: {
       title: "Add New Backend Connection",
       placeholder: {
@@ -1121,6 +1124,12 @@ export default {
         nameEmpty: "Name cannot be empty",
       },
       btn: "Add",
+      duplicate: {
+        title: 'Tips',
+        content: 'A backend configuration with the same address already exists. Do you want to switch to this backend?',
+        confirm: 'Switch directly',
+        cancel: 'Overwrite and switch',
+      },
     },
   },
   moreSettingPage: {
