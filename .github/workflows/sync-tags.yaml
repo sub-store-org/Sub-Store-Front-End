@@ -10,9 +10,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Sync Tags from Upstream
         run: |
-          # 注意：这里是前端的上游地址
           git remote add upstream https://github.com/sub-store-org/Sub-Store-Front-End.git
           git fetch upstream --tags
           git push origin --tags
