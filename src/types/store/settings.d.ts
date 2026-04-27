@@ -19,6 +19,7 @@ interface SettingsPostData {
   githubUser?: string;
   defaultProxy?: string;
   defaultUserAgent?: string;
+  defaultFlowUserAgent?: string;
   defaultTimeout?: string;
   cacheThreshold?: string;
   resourceCacheTtl?: string;

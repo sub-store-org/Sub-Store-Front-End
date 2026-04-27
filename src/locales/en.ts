@@ -329,6 +329,7 @@ export default {
         subscriptions: {
           label: "Select included subscriptions",
           empty: 'Please create a subscription first, then use the collection feature',
+          none: 'None',
         },
         content: {
           label: "Content",
@@ -639,6 +640,7 @@ export default {
       githubProxy: "Please input GitHub Proxy",
       githubProxyRegex: "Please input GitHub proxy match regex",
       defaultUserAgent: "Please input Default User-Agent",
+      defaultFlowUserAgent: "Please input Default Flow User-Agent",
       defaultProxy: "Please input Default Proxy/Policy",
       defaultTimeout: "Default Timeout (in ms, default: 8000)",
       cacheThreshold: "Cache Threshold (in KB, default: 1024)",
