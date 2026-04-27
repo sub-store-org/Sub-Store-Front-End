@@ -349,6 +349,7 @@ export default {
         subscriptions: {
           label: '手动选择的订阅',
           empty: '请先创建单条订阅, 再使用组合订阅功能',
+          none: '未选择',
         },
         content: {
           label: '内容',
@@ -634,6 +635,7 @@ export default {
       githubProxy: '请输入 GitHub 加速代理',
       githubProxyRegex: '请输入 GitHub 加速代理匹配正则',
       defaultUserAgent: '请输入默认 User-Agent',
+      defaultFlowUserAgent: '请输入默认查询订阅流量信息 的 User-Agent',
       defaultProxy: '请输入默认代理/策略',
       defaultTimeout: '默认超时(单位: 毫秒, 默认: 8000)',
       cacheThreshold: '缓存阈值(单位: KB, 默认: 1024)',

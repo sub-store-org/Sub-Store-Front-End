@@ -47,6 +47,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       githubProxyRegex: "",
       githubUser: "",
       defaultUserAgent: "",
+      defaultFlowUserAgent: "",
       defaultProxy: "",
       defaultTimeout: "",
       cacheThreshold: "",
@@ -144,6 +145,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
+        this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
@@ -180,6 +182,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
+        this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";

@@ -606,7 +606,7 @@ type SubSelectRow = [string, string, string | undefined, string[] | undefined, b
     })
 
     let tags: any[] = Array.from(set)
-    if(tags.length === 0) return []
+    // if(tags.length === 0) return []
     tags = tags.map(i => ({ label: i, value: i }));
     const result = [{ label: t("specificWord.all"), value: "all" }, ...tags]
     if(hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" })
@@ -636,7 +636,10 @@ type SubSelectRow = [string, string, string | undefined, string[] | undefined, b
   };
 const selectedSubs = computed(() => {
   const subscriptions = form.subscriptions || [];
-  if(!Array.isArray(subscriptions) || subscriptions.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
+  if(!Array.isArray(subscriptions) || subscriptions.length === 0) {
+    if (!Array.isArray(subsSelectList.value) || subsSelectList.value.length === 0) return `: ${t(`editorPage.subConfig.basic.subscriptions.empty`)}`
+    return `: ${t(`editorPage.subConfig.basic.subscriptions.none`)}`
+  }
     return `: ${subscriptions.map((name) => {
       const sub = subsStore.getOneSub(name);
       if(!sub) form.subscriptions = form.subscriptions.filter((n) => n !== name);
