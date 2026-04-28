@@ -1575,6 +1575,9 @@ const handleEditGlobalClick = () => {
       }
     }
   }
+  :deep(.nut-form-item__label) {
+    width: auto;
+  }
   :deep(.nut-input-text){
     .nut-input-inner {
       .nut-input-right-icon {

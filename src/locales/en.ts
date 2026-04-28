@@ -173,7 +173,7 @@ export default {
       doc: "Visit Sub-Store Docs",
       followOfficialChannel:
         "You can also follow Sub-Store official channel and join the group to ask questions",
-      officialChannel: "Official channel:",
+      about: "Check the project & tutorial",
     },
     collectionItem: {
       noSub: "No subscription included",

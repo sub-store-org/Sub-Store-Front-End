@@ -197,7 +197,7 @@ export default {
       btn: '重试',
       doc: '查看 Sub-Store 教程',
       followOfficialChannel: '或关注 Sub-Store 官方频道并进群提问',
-      officialChannel: '官方频道：',
+      about: '查看项目 & 教程',
     },
     collectionItem: {
       noSub: '没有包含子订阅',
