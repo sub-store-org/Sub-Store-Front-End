@@ -86,7 +86,7 @@ export default {
       logs: '后端日志',
       themeSetting: '主题设置',
       moreSetting: '更多设置',
-      apiSetting: '后端设置',
+      apiSetting: '后端管理',
       aboutUs: '关于 Sub-Store',
       notFound: '地址未找到',
       askWhat: {
@@ -1088,7 +1088,7 @@ export default {
     },
   },
   apiSettingPage: {
-    apiSettingTitle: '后端设置',
+    apiSettingTitle: '后端管理',
     apiSettingDesc0: `1. 后端地址为 https://api.com 时, 将尝试请求 https://api.com/api/utils/env 验证后端可用性. 当无法添加后端地址时, 可先尝试访问此地址`,
     apiSettingDesc1: `2. HTTPS 前端无法请求非本地的 HTTP 后端(部分浏览器上也无法访问本地 HTTP 后端). 请配置反代或在局域网自建 HTTP 前端. `,
     apiSettingDesc2: `3. 添加后端服务器地址，例如 服务器/NAS/Android/云平台 上搭建的后端服务。可以查看小一佬的后端搭建教程：`,
@@ -1213,7 +1213,7 @@ export default {
     placeholder: '请输入后端路径或地址',
     connect: '连接',
     skip: '跳过',
-    info: '您可以稍后在"我的"页面中的"后端设置"中配置',
+    info: '您可以稍后在"我的"页面中的"后端管理"中配置',
     customInfo: '自建后端: 可通过环境变量 SUB_STORE_FRONTEND_BACKEND_PATH 设置后端路径',
     troubleshooting: '你可以查看此排查指南',
     preview: '预览',
