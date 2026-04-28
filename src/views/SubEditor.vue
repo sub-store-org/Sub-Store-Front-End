@@ -479,7 +479,6 @@
     @refresh="refreshCompare"
   />
   <icon-popup
-    v-if="iconPopupVisible"
     v-model:visible="iconPopupVisible"
     @setIcon="setIcon">
   </icon-popup>
