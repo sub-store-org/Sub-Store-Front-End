@@ -47,6 +47,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       githubProxyRegex: "",
       githubUser: "",
       defaultUserAgent: "",
+      defaultFlowUserAgent: "",
       defaultProxy: "",
       defaultTimeout: "",
       cacheThreshold: "",
@@ -62,7 +63,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         light: "light",
       },
       appearanceSetting: {
-        isSimpleMode: false,
+        isSimpleMode: true,
         isLeftRight: false,
         isDefaultIcon: false,
         isIconColor: false,
@@ -98,7 +99,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
       );
 
-      this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? "";
+      this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? true;
       this.appearanceSetting.isLeftRight = appearanceSetting?.isLeftRight ?? "";
       this.appearanceSetting.isDefaultIcon = appearanceSetting?.isDefaultIcon ?? "";
       this.appearanceSetting.isIconColor = appearanceSetting?.isIconColor ?? "";
@@ -144,6 +145,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
+        this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
@@ -180,6 +182,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
+        this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";

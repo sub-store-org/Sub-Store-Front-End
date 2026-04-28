@@ -477,7 +477,7 @@ onMounted(() => {
 
   }
   Dialog({
-    title: '后端设置',
+    title: '后端管理',
     content: `请仔细阅读页面底部的说明\n\n该写的都写了`,
     onCancel: () => {
       localStorage.setItem('api-desc-read', '1')

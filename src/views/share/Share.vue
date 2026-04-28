@@ -375,14 +375,14 @@
         <template #description>
           <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
           <p>{{ $t(`subPage.loadFailed.desc`) }}</p>
-          <p>{{ $t(`subPage.loadFailed.followOfficialChannel`) }}</p>
+          <a href="https://t.me/zhetengsha/1068" style="color: var(--primary-color)"> {{ $t(`magicPath.troubleshooting`) }}</a>
           <p>
-            {{ $t(`subPage.loadFailed.officialChannel`) }}
+            
             <a
-              href="https://t.me/cool_scripts"
+              href="/aboutUs"
               style="color: var(--primary-color)"
             >
-              Cool Scripts
+              {{ $t(`subPage.loadFailed.about`) }}
             </a>
           </p>
         </template>
@@ -390,13 +390,13 @@
       <nut-button icon="refresh" type="primary" @click="refresh">
         {{ $t(`subPage.loadFailed.btn`) }}
       </nut-button>
-      <a
+      <!-- <a
         href="https://www.notion.so/Sub-Store-6259586994d34c11a4ced5c406264b46"
         target="_blank"
       >
         <span>{{ $t(`subPage.loadFailed.doc`) }}</span>
         <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
-      </a>
+      </a> -->
     </div>
     <div
       v-if="hasShares && isSelectionMode"
@@ -1202,13 +1202,15 @@ const confirmDeleteSelectedShares = () => {
 }
 
 .share-top-selection-toggle svg {
-  width: 17px;
-  height: 17px;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 14px !important;
 }
 
 .share-top-create-button svg {
-  width: 16px;
-  height: 16px;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 14px !important;
 }
 
 .share-top-selection-toggle:focus,

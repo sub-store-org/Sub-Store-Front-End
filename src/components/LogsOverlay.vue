@@ -78,7 +78,7 @@ const navActionOffset = computed(() => {
 
 .logs-overlay-close-button {
   position: absolute;
-  left: 16px;
+  left: 7px;
   transform: translateY(-50%);
   width: 32px;
   height: 32px;
@@ -93,9 +93,10 @@ const navActionOffset = computed(() => {
   align-items: center;
   justify-content: center;
 
-  svg {
-    width: 21px;
-    height: 21px;
+  :deep(svg) {
+    width: 14px !important;
+    height: 14px !important;
+    font-size: 14px !important;
   }
 
   &:focus {

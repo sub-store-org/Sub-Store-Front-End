@@ -271,6 +271,7 @@ const router = createRouter({
             title: 'moreSetting',
             needTabBar: false,
             needNavBack: true,
+            hideSideBarInWideScreenNarrowMode: true,
           },
         },
         {
@@ -280,6 +281,7 @@ const router = createRouter({
             title: 'apiSetting',
             needTabBar: false,
             needNavBack: true,
+            hideSideBarInWideScreenNarrowMode: true,
           },
         },
         {
@@ -289,6 +291,7 @@ const router = createRouter({
             title: 'aboutUs',
             needTabBar: false,
             needNavBack: true,
+            hideSideBarInWideScreenNarrowMode: true,
           },
         },
       ],

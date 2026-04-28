@@ -1167,8 +1167,9 @@ onMounted(() => {
 }
 
 .share-top-selection-toggle svg {
-  width: 17px;
-  height: 17px;
+  width: 14px !important;
+  height: 14px !important;
+  font-size: 14px !important;
 }
 
 .share-top-selection-toggle:focus {

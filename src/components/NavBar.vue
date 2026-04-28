@@ -21,7 +21,12 @@
             type="button"
             class="nav-leading-button icon-back"
             @click.stop="back"
-          />
+          >
+            <font-awesome-icon
+              class="icon-back-icon"
+              icon="fa-solid fa-arrow-left"
+            />
+          </button>
           <div v-else :class="leftIconClass" @click.stop="back"></div>
           <div v-if="!isLogsOverlayOpen" class="icon-group">
             <button
@@ -54,40 +59,72 @@
 
         <template #right>
           <template v-if="!isLogsOverlayOpen">
-            <font-awesome-icon
+            <button
+              type="button"
               v-if="appearanceSetting.isSimpleMode"
+              class="navBar-right-button"
+              :style="{ right: navRightButtonRight.simple }"
               @click.stop="setSimpleMode(false)"
-              class="navBar-right-icon fa-toggle"
-              icon="fa-solid fa-toggle-on "
-            />
-            <font-awesome-icon
+            >
+              <font-awesome-icon
+                class="navBar-right-icon navBar-right-icon--simple"
+                icon="fa-solid fa-toggle-on"
+              />
+            </button>
+            <button
+              type="button"
               v-else
+              class="navBar-right-button"
+              :style="{ right: navRightButtonRight.simple }"
               @click.stop="setSimpleMode(true)"
-              class="navBar-right-icon fa-toggle"
-              icon="fa-solid fa-toggle-off"
-            />
-            <font-awesome-icon
+            >
+              <font-awesome-icon
+                class="navBar-right-icon navBar-right-icon--simple"
+                icon="fa-solid fa-toggle-off"
+              />
+            </button>
+            <button
               v-if="showWideScreenNarrowModeToggle"
+              type="button"
+              class="navBar-right-button"
+              :style="{ right: navRightButtonRight.navigation }"
               @click.stop="handleWideScreenNarrowModeToggle"
-              class="navBar-right-icon fa-navigation-mode"
-              :icon="isWideScreenNarrowModeActive ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-desktop'"
-              :title="wideScreenNarrowModeToggleTitle"
-            />
-            <font-awesome-icon
+            >
+              <font-awesome-icon
+                class="navBar-right-icon"
+                :icon="isWideScreenNarrowModeActive ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-desktop'"
+                :title="wideScreenNarrowModeToggleTitle"
+              />
+            </button>
+            <button
               v-if="showListViewToggle"
-              @click.stop="handleListViewModeToggle"
-              class="navBar-right-icon fa-list-view"
-              :class="{ 'is-disabled': isListViewModeLocked }"
-              :icon="effectiveListViewMode === 'dual-column' ? 'fa-solid fa-table-columns' : 'fa-solid fa-list'"
-              :title="listViewModeToggleTitle"
+              type="button"
+              class="navBar-right-button"
+              :style="{ right: navRightButtonRight.list }"
+              :disabled="isListViewModeLocked"
               :aria-disabled="isListViewModeLocked ? 'true' : 'false'"
-            />
-            <font-awesome-icon
-              class="navBar-right-icon fa-lg"
-              icon="fa-solid fa-language"
+              @click.stop="handleListViewModeToggle"
+            >
+              <font-awesome-icon
+                class="navBar-right-icon"
+                :class="{ 'is-disabled': isListViewModeLocked }"
+                :icon="effectiveListViewMode === 'dual-column' ? 'fa-solid fa-table-columns' : 'fa-solid fa-list'"
+                :title="listViewModeToggleTitle"
+              />
+            </button>
+            <button
+              type="button"
+              class="navBar-right-button"
+              :style="{ right: navRightButtonRight.language }"
               @click.stop="showLangSwitchPopup = true"
               :title="t('navBar.langSwitcher.cellTitle')"
-            />
+            >
+              <font-awesome-icon
+                class="navBar-right-icon"
+                icon="fa-solid fa-language"
+                :title="t('navBar.langSwitcher.cellTitle')"
+              />
+            </button>
           </template>
         </template>
       </nut-navbar>
@@ -289,8 +326,22 @@ const wideScreenNarrowModeToggleTitle = computed(() => {
     : t("navBar.navigationMode.switchToNarrow");
 });
 
-const wideScreenNarrowModeToggleRight = computed(() => {
-  return showListViewToggle.value ? "141px" : "99px";
+const NAV_BAR_RIGHT_BUTTON_BASE_RIGHT = 15;
+const NAV_BAR_RIGHT_BUTTON_GAP = 34;
+
+const navRightButtonRight = computed<Record<string, string>>(() => {
+  const buttons = ["language", "simple"];
+  if (showWideScreenNarrowModeToggle.value) {
+    buttons.push("navigation");
+  }
+  if (showListViewToggle.value) {
+    buttons.push("list");
+  }
+
+  return buttons.reduce((acc, key, index) => {
+    acc[key] = `${NAV_BAR_RIGHT_BUTTON_BASE_RIGHT + index * NAV_BAR_RIGHT_BUTTON_GAP}px`;
+    return acc;
+  }, {} as Record<string, string>);
 });
 
 const handleListViewModeToggle = async () => {
@@ -391,13 +442,53 @@ const refresh = async () => {
           margin-left: 5px;
         }
       }
-      .navBar-right-icon {
-        padding-top: v-bind(navBartopRight);
-        padding-right: 4px;
-        padding-bottom: 15px;
-        padding-left: 10px;
+      .navBar-right-button {
+        position: absolute;
+        top: 50%;
+        width: 32px;
+        height: 32px;
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background: transparent;
         color: var(--icon-nav-bar-right);
         cursor: pointer;
+        pointer-events: auto;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        .navBar-right-icon {
+          width: 14px;
+          height: 14px;
+          font-size: 14px;
+          line-height: 1;
+          color: currentColor;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+
+          // &.navBar-right-icon--simple {
+          //   transform: translateX(1px);
+          // }
+
+          :deep(svg) {
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
+          }
+        }
       }
       .icon-group {
         .navBar-left-icon {
@@ -408,18 +499,21 @@ const refresh = async () => {
           padding-top: v-bind(navBartop);
           padding-right: 0;
           padding-bottom: 0;
-          padding-left: 8px;
+          padding-left: 0;
           border: 0;
           margin: 0;
           background: transparent;
           display: flex;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           color: var(--icon-nav-bar-right);
           cursor: pointer;
 
           .icon {
             pointer-events: none;
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
           }
         }
 
@@ -441,39 +535,8 @@ const refresh = async () => {
       .fa-arrow-rotate-right {
         color: currentColor;
       }
-      .fa-lg {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-      }
-
-      .fa-toggle {
-        position: absolute;
-        right: 58px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-
-      .fa-navigation-mode {
-        position: absolute;
-        right: v-bind(wideScreenNarrowModeToggleRight);
-        top: 50%;
-        transform: translateY(-50%);
-      }
-
-      .fa-list-view {
-        position: absolute;
-        right: 99px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--icon-nav-bar-right);
-
-        &.is-disabled {
-          opacity: 0.35;
-          cursor: not-allowed;
-        }
+      .is-disabled {
+        opacity: 0.35;
       }
     }
   }
@@ -513,15 +576,17 @@ const refresh = async () => {
   }
 }
 
-.icon-back::before {
-  color: var(--icon-nav-bar-right);
-  content: "\e6c9";
-}
-
 .nav-leading-button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 10px;
   width: 32px;
-  height: 32px;
   padding: 0;
+  padding-top: v-bind(navBartop);
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
   border: 0;
   margin: 0;
   background: transparent;
@@ -532,8 +597,8 @@ const refresh = async () => {
   justify-content: center;
 
   svg {
-    width: 21px;
-    height: 21px;
+    width: 14px;
+    height: 14px;
   }
 
   &:focus {
@@ -546,10 +611,10 @@ const refresh = async () => {
   height: 32px;
 }
 
-.nav-leading-button::before {
-  display: block;
-  font-size: 17px;
-  line-height: 1;
+
+.icon-back-icon {
+  font-size: 14px;
+  color: var(--icon-nav-bar-right);
 }
 
 .icon-null::before {

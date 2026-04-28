@@ -52,13 +52,13 @@ export default {
       fileEditor: "File Editor",
       syncEditor: "Sync Editor",
       preview: 'Preview',
-      shareManage: "Share Manage",
+      shareManage: "Share",
       shareEditor: "Share Editor",
       archive: "Archived",
       logs: "Backend Logs",
       themeSetting: "Theme Setting",
       moreSetting: "More Setting",
-      apiSetting: "Backend Setting",
+      apiSetting: "Backend Management",
       aboutUs: "About Sub-Store",
       notFound: "404 Not Found",
       askWhat: {
@@ -173,7 +173,7 @@ export default {
       doc: "Visit Sub-Store Docs",
       followOfficialChannel:
         "You can also follow Sub-Store official channel and join the group to ask questions",
-      officialChannel: "Official channel:",
+      about: "Check the project & tutorial",
     },
     collectionItem: {
       noSub: "No subscription included",
@@ -329,6 +329,7 @@ export default {
         subscriptions: {
           label: "Select included subscriptions",
           empty: 'Please create a subscription first, then use the collection feature',
+          none: 'None',
         },
         content: {
           label: "Content",
@@ -639,6 +640,7 @@ export default {
       githubProxy: "Please input GitHub Proxy",
       githubProxyRegex: "Please input GitHub proxy match regex",
       defaultUserAgent: "Please input Default User-Agent",
+      defaultFlowUserAgent: "Please input Default Flow User-Agent",
       defaultProxy: "Please input Default Proxy/Policy",
       defaultTimeout: "Default Timeout (in ms, default: 8000)",
       cacheThreshold: "Cache Threshold (in KB, default: 1024)",
@@ -1098,7 +1100,7 @@ export default {
     },
   },
   apiSettingPage: {
-    apiSettingTitle: "Backend Setting",
+    apiSettingTitle: "Backend Management",
     apiSettingDesc0: `1. When the backend server address is https://api.com, an attempt is made to request https://api.com/api/utils/env to verify backend availability. When the backend server address cannot be added, try accessing this address first.`,
     apiSettingDesc1: `2. HTTPS front-end cannot request non-local HTTP backend(Some browsers also cannot access the local HTTP backend.). Please configure a reverse proxy or host your own HTTP front-end on your LAN.`,
     apiSettingDesc2: `Add the backend server address, such as the backend service built on server/NAS/Android/cloud platform. You can refer to XiaoYi's tutorial on setting up a backend: `,
@@ -1222,7 +1224,7 @@ export default {
     placeholder: "Please enter backend path or address",
     connect: "Connect",
     skip: "Skip",
-    info: "You can configure this later in the Backend Settings in the My Profile page",
+    info: "You can configure this later in the Backend Management in the My Profile page",
     customInfo: "Self-Hosted: Backend path can be set via SUB_STORE_FRONTEND_BACKEND_PATH environment variable",
     troubleshooting: 'You may refer to this troubleshooting guide',
     preview: "Preview",

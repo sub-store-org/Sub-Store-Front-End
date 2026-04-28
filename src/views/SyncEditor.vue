@@ -224,7 +224,6 @@
       type="artifact"
     />
     <icon-popup
-      v-if="iconPopupVisible"
       v-model:visible="iconPopupVisible"
       @setIcon="setIcon"
     />

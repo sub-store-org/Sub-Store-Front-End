@@ -268,6 +268,17 @@
           />
           <nut-input
             class="input"
+            v-model="flowUaInput"
+            :disabled="!isRequestConfigEditing"
+            :placeholder="$t(`myPage.placeholder.defaultFlowUserAgent`)"
+            type="text"
+            input-align="left"
+            :left-icon="iconUA"
+            right-icon="tips"
+            @click-right-icon="flowUaTips"
+          />
+          <nut-input
+            class="input"
             v-model="timeoutInput"
             :disabled="!isRequestConfigEditing"
             :placeholder="$t(`myPage.placeholder.defaultTimeout`)"
@@ -548,7 +559,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubProxyRegex, gistUpload } =
+const { githubUser, gistToken, syncTime, avatarUrl, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubProxyRegex, gistUpload } =
   storeToRefs(settingsStore);
 
 const HTTP_URL_RE = /^https?:\/\//i;
@@ -666,6 +677,7 @@ const tokenInput = ref("");
 const githubProxyInput = ref("");
 const githubProxyRegexInput = ref("");
 const uaInput = ref("");
+const flowUaInput = ref("");
 const proxyInput = ref("");
 const timeoutInput = ref("");
 const cacheThresholdInput = ref("");
@@ -695,6 +707,7 @@ const toggleEditMode = async (type) => {
         githubProxy: githubProxyInput.value,
         githubProxyRegex: githubProxyRegexInput.value,
         defaultUserAgent: uaInput.value,
+        defaultFlowUserAgent: flowUaInput.value,
         defaultProxy: proxyInput.value,
         defaultTimeout: timeoutInput.value,
         cacheThreshold: cacheThresholdInput.value,
@@ -720,6 +733,7 @@ const toggleEditMode = async (type) => {
       githubProxyInput.value = githubProxy.value;
       githubProxyRegexInput.value = githubProxyRegex.value;
       uaInput.value = defaultUserAgent.value;
+      flowUaInput.value = defaultFlowUserAgent.value || "";
       proxyInput.value = defaultProxy.value;
       timeoutInput.value = defaultTimeout.value;
       cacheThresholdInput.value = cacheThreshold.value;
@@ -838,6 +852,7 @@ const setDisplayInfo = () => {
   githubProxyRegexInput.value = githubProxyRegex.value || "";
   tokenInput.value = gistToken.value || "";
   uaInput.value = defaultUserAgent.value || "";
+  flowUaInput.value = defaultFlowUserAgent.value || "";
   proxyInput.value = defaultProxy.value || "";
   timeoutInput.value = defaultTimeout.value || "";
   cacheThresholdInput.value = cacheThreshold.value || "";
@@ -1065,7 +1080,18 @@ const proxyTips = () => {
 const uaTips = () => {
   Dialog({
       title: '默认为 clash.meta',
-      content: '可尝试设置为 clash-verge/v2.4.6, v2rayNG 等客户端的 User-Agent 让机场后端下发更多协议(可根据实际情况改成最新版本号)',
+      content: '可尝试设置为 clash-verge/v2.4.6, v2rayNG 等客户端的 User-Agent 让机场后端下发更多协议(可根据实际情况改成最新版本号)。也可在单条订阅里设置单独的 User-Agent',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const flowUaTips = () => {
+  Dialog({
+      title: '查询订阅流量信息 的 User-Agent',
+      content: '若机场后端不给默认 UA 下发订阅流量信息, 可改为 "Quantumult%20X/1.0.30 (iPhone14,2; iOS 15.6)"。也可在单条订阅里的远程链接参数里设置单独的 flowUserAgent',
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,

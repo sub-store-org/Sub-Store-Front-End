@@ -707,11 +707,8 @@ const fetchCompareData = async (data?: any) => {
     console.error(e);
     compareData.value = null;
   }
-  try {
-    await subsStore.fetchFlows(ref([props.sub]).value);
-  } catch (e) {
-    console.error(e);
-  }
+  await refreshSubFlowsIfNeeded()
+  
   Toast.hide("compare");
 };
 
@@ -979,14 +976,19 @@ const onClickRefresh = async () => {
   } catch (e) {
     console.error(e);
   }
-  try {
-    await subsStore.fetchFlows(ref([props.sub]).value);
-  } catch (e) {
-    console.error(e);
-  }
+  await refreshSubFlowsIfNeeded()
   Toast.hide("refresh");
   showNotify({ title: t("globalNotify.refresh.succeed") });
 };
+
+const refreshSubFlowsIfNeeded = async () => {
+  if (!props.sub) return
+  try {
+    await subsStore.fetchFlows([props.sub])
+  } catch (e) {
+    console.error(e)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
