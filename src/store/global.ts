@@ -19,7 +19,9 @@ export const useGlobalStore = defineStore('globalStore', {
       isDarkMode: false,
       env: {},
       isDockerDeployment: false,
-      isSimpleMode: localStorage.getItem('isSimpleMode') === '1',
+      isSimpleMode: localStorage.getItem('isSimpleMode') === null
+        ? true
+        : localStorage.getItem('isSimpleMode') === '1',
       isLeftRight: localStorage.getItem('isLr') === '1',
       isIconColor: localStorage.getItem('iconColor') === '1',
       isEditorCommon: localStorage.getItem('iseditorCommon') !== '1',
@@ -114,7 +116,7 @@ export const useGlobalStore = defineStore('globalStore', {
       if (isSimpleMode) {
         localStorage.setItem('isSimpleMode', '1');
       } else {
-        localStorage.removeItem('isSimpleMode');
+        localStorage.setItem('isSimpleMode', '0');
       }
       this.isSimpleMode = isSimpleMode;
     },

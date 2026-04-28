@@ -38,7 +38,7 @@
           v-if="logs.length > 0"
           type="button"
           class="logs-nav-action-button logs-clear-toggle"
-          :style="{ top: navActionOffset }"
+          :style="{ top: navActionOffset, right: logsClearButtonRight }"
           :aria-label="$t('logsPage.clear')"
           :title="$t('logsPage.clear')"
           @click="confirmClearLogs"
@@ -259,8 +259,10 @@
 <script lang="ts" setup>
 import { useLogsApi } from "@/api/logs";
 import { useGlobalStore } from "@/store/global";
+import { useListViewMode } from "@/hooks/useListViewMode";
 import { useSettingsStore } from "@/store/settings";
 import { useSystemStore } from "@/store/system";
+import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
 import { semverGte } from "@/utils/semver";
 import { Dialog, Toast } from "@nutui/nutui";
 import { useClipboard } from "@vueuse/core";
@@ -285,6 +287,8 @@ const { toClipboard: copyFallback } = useV3Clipboard();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
+const { showListViewToggle } = useListViewMode();
+const { showWideScreenNarrowModeToggle } = useWideScreenNarrowMode();
 const { bottomSafeArea } = storeToRefs(globalStore);
 const { navBartop, navBarHeight } = storeToRefs(systemStore);
 const { logsMaxCount } = storeToRefs(settingsStore);
@@ -437,6 +441,22 @@ const navActionOffset = computed(() => {
   const navBarHeightNum = Number.parseFloat(navBarHeight.value || "56");
   const navBarTopNum = Number.parseFloat(navBartop.value || "0");
   return `${(navBarHeightNum + navBarTopNum) / 2}px`;
+});
+const LOG_PANEL_RIGHT_ICON_GAP = 34;
+const LOG_PANEL_RIGHT_ICON_BASE_RIGHT = 15;
+const logsClearButtonRight = computed(() => {
+  if (props.mode === "overlay") {
+    return "16px";
+  }
+
+  const navIconCount = 2
+    + (showWideScreenNarrowModeToggle.value ? 1 : 0)
+    + (showListViewToggle.value ? 1 : 0);
+
+  const rightOffset = LOG_PANEL_RIGHT_ICON_BASE_RIGHT
+    + navIconCount * LOG_PANEL_RIGHT_ICON_GAP;
+
+  return `${rightOffset}px`;
 });
 
 const selectedLogIdSet = computed(() => new Set(selectedLogIds.value));
@@ -856,12 +876,6 @@ onUnmounted(() => {
 
   &.is-overlay {
     z-index: 1005;
-
-    // overlay 模式下 NavBar 右侧图标被隐藏，让清空按钮贴到最右。
-    // refresh / selection 保持原本的左侧布局不动。
-    .logs-clear-toggle {
-      right: 16px;
-    }
   }
 }
 
@@ -880,9 +894,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
 
-  svg {
-    width: 17px;
-    height: 17px;
+  :deep(svg) {
+    width: 14px !important;
+    height: 14px !important;
+    font-size: 14px !important;
   }
 
   &:focus {
@@ -891,15 +906,11 @@ onUnmounted(() => {
 }
 
 .logs-selection-toggle {
-  left: 84px;
-}
-
-.logs-clear-toggle {
-  right: 94px;
+  left: 67px;
 }
 
 .logs-refresh-toggle {
-  left: 50px;
+  left: 37px;
 
   &.loading svg {
     animation: logs-refresh-spin 0.8s linear infinite;
@@ -1282,6 +1293,12 @@ onUnmounted(() => {
   &:focus {
     color: var(--primary-color);
     background: var(--divider-color);
+  }
+
+  :deep(svg) {
+    width: 14px !important;
+    height: 14px !important;
+    font-size: 14px !important;
   }
 }
 

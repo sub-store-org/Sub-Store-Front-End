@@ -15,7 +15,9 @@ export const useWideScreenNarrowMode = () => {
   const { appearanceSetting } = storeToRefs(settingsStore);
   const { screenWidth } = storeToRefs(systemStore);
 
-  const supportsWideScreenNarrowMode = computed(() => Boolean(route.meta?.needTabBar));
+  const supportsWideScreenNarrowMode = computed(
+    () => Boolean(route.meta?.needTabBar || route.meta?.hideSideBarInWideScreenNarrowMode)
+  );
   const shouldHideSideBarInWideScreenNarrowMode = computed(() => {
     return Boolean(route.meta?.needTabBar || route.meta?.hideSideBarInWideScreenNarrowMode);
   });

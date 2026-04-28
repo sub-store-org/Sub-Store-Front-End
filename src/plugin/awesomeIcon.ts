@@ -6,6 +6,7 @@ import {
   faArrowRotateRight,
   faArrowsRotate,
   faArrowUpRightFromSquare,
+  faArrowLeft,
   faBan,
   faCheck,
   faCircleQuestion,
@@ -77,6 +78,7 @@ library.add(faFileLines);
 library.add(faDesktop);
 library.add(faArrowRotateRight);
 library.add(faArrowsRotate);
+library.add(faArrowLeft);
 library.add(faAnglesRight);
 library.add(faAngleRight);
 library.add(faCloudArrowDown);

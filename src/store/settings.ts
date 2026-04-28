@@ -63,7 +63,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         light: "light",
       },
       appearanceSetting: {
-        isSimpleMode: false,
+        isSimpleMode: true,
         isLeftRight: false,
         isDefaultIcon: false,
         isIconColor: false,
@@ -99,7 +99,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
       );
 
-      this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? "";
+      this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? true;
       this.appearanceSetting.isLeftRight = appearanceSetting?.isLeftRight ?? "";
       this.appearanceSetting.isDefaultIcon = appearanceSetting?.isDefaultIcon ?? "";
       this.appearanceSetting.isIconColor = appearanceSetting?.isIconColor ?? "";

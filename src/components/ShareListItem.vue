@@ -477,9 +477,9 @@ const onClickPreviews = () => {
         align-items: center;
       }
 
-      .share-sub-link,
-      .copy-sub-link,
-      .refresh-sub-flow {
+        .share-sub-link,
+        .copy-sub-link,
+        .refresh-sub-flow {
         background-color: transparent;
         border: none;
         padding: 0 8px;
@@ -489,8 +489,8 @@ const onClickPreviews = () => {
         align-items: center;
 
         svg {
-          width: 16px;
-          height: 16px;
+          width: 14px;
+          height: 14px;
           color: var(--comment-text-color);
         }
 
