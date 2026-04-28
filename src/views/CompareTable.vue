@@ -1,24 +1,16 @@
 <template>
   <Teleport to="#app">
     <div class="compare-page-wrapper">
-      <header class="compare-page-header">
-        <h1>
-          <font-awesome-icon icon="fa-solid fa-eye" />
-          <span class="title">{{ $t(`comparePage.title`) }}</span>
-          <span class="displayName">
-            <font-awesome-icon icon="fa-solid fa-angles-right" />
-            <span class="displayNameText">{{ displayName }}</span>
-          </span>
-        </h1>
-        <div class="btn-groups">
-          <button v-if="showRefresh" class="btn refresh" @click="emit('refresh')">
-            <font-awesome-icon  icon="fa-solid fa-arrows-rotate" />
+      <header class="compare-page-header preview-popup-header">
+        <div class="btn-groups preview-leading">
+          <button type="button" class="btn close" @click="clickClose">
+            <font-awesome-icon icon="fa-solid fa-xmark" />
           </button>
-          <button class="btn close" @click="clickClose">
-            <font-awesome-icon icon="fa-solid fa-circle-xmark" />
-          </button>          
+          <button v-if="showRefresh" type="button" class="btn refresh" @click="emit('refresh')">
+            <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
+          </button>
         </div>
-
+        <h1 class="preview-popup-title">{{ $t(`comparePage.title`) }}</h1>
       </header>
       <div class="compare-page-body">
         <div class="block-wrapper">
@@ -582,6 +574,13 @@
     background: var(--background-color);
     border-color: var(--divider-color);
     width: 100%;
+
+    &.preview-popup-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+    }
+
     .title {
       white-space: nowrap;
       flex-shrink: 0;
@@ -656,6 +655,43 @@
         font-size: 18px;
       }
     }
+  }
+
+  .compare-page-header .preview-leading {
+    gap: 0;
+    justify-content: flex-start;
+
+    button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      color: var(--icon-nav-bar-right);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      :deep(svg) {
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+      }
+    }
+
+  }
+
+  .compare-page-header .preview-popup-title {
+    grid-column: 2;
+    justify-self: center;
+    display: block;
+    flex: none;
+    margin: 0;
+    min-width: 20px;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 600;
+    color: var(--primary-text-color);
+    text-align: center;
+    overflow: hidden;
   }
 
   .compare-page-wrapper {

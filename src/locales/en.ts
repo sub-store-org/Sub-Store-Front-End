@@ -52,7 +52,7 @@ export default {
       fileEditor: "File Editor",
       syncEditor: "Sync Editor",
       preview: 'Preview',
-      shareManage: "Share Manage",
+      shareManage: "Share",
       shareEditor: "Share Editor",
       archive: "Archived",
       logs: "Backend Logs",

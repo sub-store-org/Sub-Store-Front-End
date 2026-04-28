@@ -5,7 +5,7 @@
       :class="{ 'compare-page-wrapper-overlay': !url }"
       :style="{ height: url ? 'calc(100vh - 80px)' : '100vh' }"
     >
-      <header class="compare-page-header">
+      <header class="compare-page-header" :class="{ 'preview-popup-header': !url }">
         <template v-if="url">
           <h1>
             <span class="title" @click="copyUrl"><font-awesome-icon class="copy" icon="fa-solid fa-clone" @click="copyUrl" /><span class="titleText">点击复制, 在外部资源中使用:</span></span>
@@ -15,29 +15,15 @@
           </h1>
         </template>
         <template v-else>
-          <h1>
-            <font-awesome-icon icon="fa-solid fa-eye" />
-            <span class="title">{{ $t(`comparePage.title`) }}</span>
-            <span class="displayName">
-              <font-awesome-icon icon="fa-solid fa-angles-right" />
-              <span class="displayNameText">{{ displayName }}</span>
-            </span>
-          </h1>
-          <!-- <button class="copy" @click.stop="copyContent">
-            <svg-icon
-              name="copy"
-              class="action-icon"
-              color="var(--comment-text-color)"
-            />
-          </button> -->
-          <div class="btn-groups">
-            <button v-if="showRefresh" class="btn refresh" @click="emit('refresh')">
+          <div class="btn-groups preview-leading">
+            <button type="button" class="btn close" @click="clickClose">
+              <font-awesome-icon icon="fa-solid fa-xmark" />
+            </button>
+            <button v-if="showRefresh" type="button" class="btn refresh" @click="emit('refresh')">
               <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
             </button>
-            <button class="btn close" @click="clickClose">
-              <font-awesome-icon icon="fa-solid fa-circle-xmark" />
-            </button>
           </div>
+          <h1 class="preview-popup-title">{{ $t(`comparePage.title`) }}</h1>
         </template>
       </header>
       <cmView :isReadOnly="false" id="filePreview" />
@@ -322,6 +308,13 @@ const copyUrl = async () => {
   background: var(--background-color);
   border-color: var(--divider-color);
   width: 100%;
+
+  &.preview-popup-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+  }
+
   .title {
     display: inline-flex;
     align-items: center;
@@ -413,6 +406,43 @@ const copyUrl = async () => {
     flex-shrink: 0;
     gap: 10px;
   }
+}
+
+.compare-page-header .preview-leading {
+  gap: 0;
+  justify-content: flex-start;
+
+  button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--icon-nav-bar-right);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    :deep(svg) {
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
+    }
+  }
+
+}
+
+.compare-page-header .preview-popup-title {
+  grid-column: 2;
+  justify-self: center;
+  display: block;
+  flex: none;
+  margin: 0;
+  min-width: 20px;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--primary-text-color);
+  text-align: center;
+  overflow: hidden;
 }
 
 .compare-page-wrapper {
