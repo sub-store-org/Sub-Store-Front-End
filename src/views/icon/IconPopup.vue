@@ -140,6 +140,7 @@
       :title="$t(`iconCollectionPage.collectionPicker.title`)"
       :cancel-text="$t(`iconCollectionPage.collectionPicker.cancel`)"
       :ok-text="$t(`iconCollectionPage.collectionPicker.confirm`)"
+      :z-index="ICON_COLLECTION_PICKER_Z_INDEX"
       @confirm="handleConfirm"
       @cancel="handleCancel"
     ></DesktopPicker>
@@ -172,6 +173,10 @@ const settingsStore = useSettingsStore();
 const { customIconCollections, defaultIconCollections, defaultIconCollection } =
   storeToRefs(globalStore);
 const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
+
+const ICON_COLLECTION_PICKER_Z_INDEX = 11001;
+const ICON_COLLECTION_FETCH_RETRY_COUNT = 1;
+const ICON_COLLECTION_FETCH_RETRY_DELAY = 600;
 
 const form = reactive({
   iconName: "",
@@ -247,14 +252,48 @@ const setCustomIconCollections = (collection: any[]) => {
   globalStore.setCustomIconCollections(collection);
 };
 
+let iconFetchRequestId = 0;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const fetchIconCollection = async (url: string) => {
+  let lastError;
+
+  for (let attempt = 0; attempt <= ICON_COLLECTION_FETCH_RETRY_COUNT; attempt++) {
+    try {
+      const { data } = await axios.get(url);
+      return data;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < ICON_COLLECTION_FETCH_RETRY_COUNT) {
+        await wait(ICON_COLLECTION_FETCH_RETRY_DELAY);
+      }
+    }
+  }
+
+  throw lastError;
+};
+
 const fetchIcons = async () => {
+  const requestId = iconFetchRequestId + 1;
+  iconFetchRequestId = requestId;
+  const iconCollectionUrl = form.iconCollectionUrl;
+
   try {
     Toast.loading(t(`globalNotify.refresh.loading`), {
       cover: true,
       id: "icon-collection",
     });
     fetchStatus.value = "loading";
-    const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl));
+    const rewrittenIconCollectionUrl = rewriteGithubUrl(iconCollectionUrl);
+    if (!rewrittenIconCollectionUrl) {
+      throw new Error("Missing icon collection URL");
+    }
+    const data = await fetchIconCollection(rewrittenIconCollectionUrl);
+    if (requestId !== iconFetchRequestId) {
+      return;
+    }
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";
     iconList.value = data[collectionKey];
@@ -271,23 +310,23 @@ const fetchIcons = async () => {
       });
       // 添加自定义图标仓库，
       const hasCollection = iconCollectionColumns.value.some(
-        (item) => item.value === form.iconCollectionUrl,
+        (item) => item.value === iconCollectionUrl,
       );
       console.log("hasCollection", hasCollection);
       if (!hasCollection) {
         const list = [
           {
             text: name,
-            value: form.iconCollectionUrl,
+            value: iconCollectionUrl,
           },
           ...customIconCollections.value,
         ];
         setCustomIconCollections(list);
-        setDefaultIconCollection(form.iconCollectionUrl);
-        defaultIconCollectionValue.value[0] = form.iconCollectionUrl;
+        setDefaultIconCollection(iconCollectionUrl);
+        defaultIconCollectionValue.value[0] = iconCollectionUrl;
       } else {
-        setDefaultIconCollection(form.iconCollectionUrl);
-        defaultIconCollectionValue.value[0] = form.iconCollectionUrl;
+        setDefaultIconCollection(iconCollectionUrl);
+        defaultIconCollectionValue.value[0] = iconCollectionUrl;
       }
     } else {
       iconList.value = [];
@@ -297,6 +336,9 @@ const fetchIcons = async () => {
     fetchStatus.value = "success";
     Toast.hide("icon-collection");
   } catch (error) {
+    if (requestId !== iconFetchRequestId) {
+      return;
+    }
     Toast.hide("icon-collection");
     iconList.value = [];
     searchResult.value = [];
@@ -460,6 +502,7 @@ defineExpose({ show, hide, close });
       padding-left: 60px;
       flex-shrink: 0;
       .action-btn {
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: flex-end;
