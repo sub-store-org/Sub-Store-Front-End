@@ -449,7 +449,7 @@ const logsClearButtonRight = computed(() => {
     return "16px";
   }
 
-  const navIconCount = 2
+  const navIconCount = 1
     + (showWideScreenNarrowModeToggle.value ? 1 : 0)
     + (showListViewToggle.value ? 1 : 0);
 

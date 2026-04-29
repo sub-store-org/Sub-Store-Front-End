@@ -3,7 +3,9 @@
     <div class="profile-block">
       <div class="radio-wrapper" >
         <span v-for="i in [{value: 'gist'}, {value:'manual'}]" :class="{ 'tag': true, 'current': i.value === storageType }" @click="setTag(i.value)">{{$t(`myPage.storage.${i.value}.label`) }}</span>
-        <p class="storage-info">{{ $t(`myPage.storage.${storageType}.info`) }}</p>
+        <div class="storage-language-switch">
+          <LanguageSwitcherButton />
+        </div>
       </div>
       <!-- <div class="radio-wrapper" >
         <nut-radiogroup v-model="storageType" direction="horizontal">
@@ -481,12 +483,6 @@
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
-        <nut-cell
-          :title="$t(`myPage.logsTitle`)"
-          class="right-icon"
-          @click.stop="onClickLogs"
-          is-link
-        ></nut-cell>
       </nut-cell-group>
       <nut-cell-group>
         <nut-cell
@@ -550,6 +546,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from '@/hooks/useHostAPI';
+import LanguageSwitcherButton from "@/components/LanguageSwitcherButton.vue";
 import { Dialog, Toast } from '@nutui/nutui';
 
 const { t } = useI18n();
@@ -651,9 +648,6 @@ const archiveVisible = computed(() => {
 
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
-};
-const onClickLogs = () => {
-  router.push(`/logs`);
 };
 
 const onClickShareManage = () => {
@@ -1231,10 +1225,9 @@ const setTag = (current) => {
         border-bottom: 1px solid var(--primary-color);
         color: var(--primary-color);
       }
-      .storage-info {
+      .storage-language-switch {
         margin-left: auto;
-        font-size: 12px;
-        color: var(--lowest-text-color);
+        flex-shrink: 0;
       }
 
     }

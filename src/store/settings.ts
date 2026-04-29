@@ -73,7 +73,6 @@ export const useSettingsStore = defineStore("settingsStore", {
         isSimpleReicon: false,
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
-        showFloatingLogsButton: true,
         showFloatingAddButton: false,
         createItemPosition: "bottom",
         displayPreviewInWebPage: true,
@@ -109,7 +108,6 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.isSimpleReicon = appearanceSetting?.isSimpleReicon ?? "";
       this.appearanceSetting.isSubItemMenuFold = appearanceSetting?.isSubItemMenuFold ?? true;
       this.appearanceSetting.showFloatingRefreshButton = appearanceSetting?.showFloatingRefreshButton ?? "";
-      this.appearanceSetting.showFloatingLogsButton = appearanceSetting?.showFloatingLogsButton ?? true;
       this.appearanceSetting.showFloatingAddButton = appearanceSetting?.showFloatingAddButton ?? false;
       this.appearanceSetting.createItemPosition = appearanceSetting?.createItemPosition ?? "bottom";
       this.appearanceSetting.displayPreviewInWebPage = appearanceSetting?.displayPreviewInWebPage ?? true;
