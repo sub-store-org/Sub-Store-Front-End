@@ -382,7 +382,7 @@
             :placeholder="$t(`myPage.placeholder.logsMaxCount`)"
             type="number"
             input-align="left"
-            :left-icon="iconMax"
+            :left-icon="iconLogsMaxCount"
             right-icon="tips"
             @click-right-icon="logsMaxCountTips"
           />
@@ -530,6 +530,7 @@ import icongithubProxy from "@/assets/icons/githubProxy.svg";
 import iconUA from "@/assets/icons/user-agent.svg";
 import iconMax from "@/assets/icons/max.svg";
 import iconHeadersCacheTtl from "@/assets/icons/headersCacheTtl.svg";
+import iconLogsMaxCount from "@/assets/icons/logsMaxCount.svg";
 import iconResourceCacheTtl from "@/assets/icons/resourceCacheTtl.svg";
 import iconScriptCacheTtl from "@/assets/icons/scriptCacheTtl.svg";
 import iconTimeout from "@/assets/icons/timeout.svg";
