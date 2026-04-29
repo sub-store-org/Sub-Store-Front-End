@@ -91,12 +91,6 @@
         { text: $t(`moreSettingPage.createItemPosition.bottom`), value: 'bottom' }
       ]" :title="$t(`moreSettingPage.createItemPosition.title`)" @confirm="createItemPositionConfirm">
       </DesktopPicker>
-      <nut-cell :title="$t(`moreSettingPage.showFloatingLogsButton`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch class="my-switch" v-model="awShowFloatingLogsButton" size="mini"
-            @change="setShowFloatingLogsButton" />
-        </template>
-      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.showFloatingAddButton`)" class="cell-item">
         <template v-slot:link>
           <nut-switch class="my-switch" v-model="awShowFloatingAddButton" size="mini"
@@ -212,7 +206,6 @@
   const awSimpleReicon = ref(true);
   const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
-  const awShowFloatingLogsButton = ref(true);
   const awShowFloatingAddButton = ref(true);
   const createItemPositionValue = ref<CreateItemPosition[]>(['bottom']);
   const awDisplayPreviewInWebPage = ref(true);
@@ -341,14 +334,6 @@
     const data = {
       ...appearanceSetting.value,
       showFloatingRefreshButton: showFloatingRefreshButton
-    }
-    changeAppearanceSetting({ appearanceSetting: data });
-  };
-
-  const setShowFloatingLogsButton = (showFloatingLogsButton: boolean) => {
-    const data = {
-      ...appearanceSetting.value,
-      showFloatingLogsButton: showFloatingLogsButton
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -578,7 +563,6 @@
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
-    awShowFloatingLogsButton.value = appearanceSetting.value.showFloatingLogsButton !== false;
     awShowFloatingAddButton.value = appearanceSetting.value.showFloatingAddButton;
     createItemPositionValue.value = [appearanceSetting.value.createItemPosition || 'bottom'];
     awDisplayPreviewInWebPage.value = appearanceSetting.value.displayPreviewInWebPage;

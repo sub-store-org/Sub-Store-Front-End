@@ -3,7 +3,9 @@
     <div class="profile-block">
       <div class="radio-wrapper" >
         <span v-for="i in [{value: 'gist'}, {value:'manual'}]" :class="{ 'tag': true, 'current': i.value === storageType }" @click="setTag(i.value)">{{$t(`myPage.storage.${i.value}.label`) }}</span>
-        <p class="storage-info">{{ $t(`myPage.storage.${storageType}.info`) }}</p>
+        <div class="storage-language-switch">
+          <LanguageSwitcherButton />
+        </div>
       </div>
       <!-- <div class="radio-wrapper" >
         <nut-radiogroup v-model="storageType" direction="horizontal">
@@ -380,7 +382,7 @@
             :placeholder="$t(`myPage.placeholder.logsMaxCount`)"
             type="number"
             input-align="left"
-            :left-icon="iconMax"
+            :left-icon="iconLogsMaxCount"
             right-icon="tips"
             @click-right-icon="logsMaxCountTips"
           />
@@ -481,12 +483,6 @@
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
-        <nut-cell
-          :title="$t(`myPage.logsTitle`)"
-          class="right-icon"
-          @click.stop="onClickLogs"
-          is-link
-        ></nut-cell>
       </nut-cell-group>
       <nut-cell-group>
         <nut-cell
@@ -534,6 +530,7 @@ import icongithubProxy from "@/assets/icons/githubProxy.svg";
 import iconUA from "@/assets/icons/user-agent.svg";
 import iconMax from "@/assets/icons/max.svg";
 import iconHeadersCacheTtl from "@/assets/icons/headersCacheTtl.svg";
+import iconLogsMaxCount from "@/assets/icons/logsMaxCount.svg";
 import iconResourceCacheTtl from "@/assets/icons/resourceCacheTtl.svg";
 import iconScriptCacheTtl from "@/assets/icons/scriptCacheTtl.svg";
 import iconTimeout from "@/assets/icons/timeout.svg";
@@ -550,6 +547,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from '@/hooks/useHostAPI';
+import LanguageSwitcherButton from "@/components/LanguageSwitcherButton.vue";
 import { Dialog, Toast } from '@nutui/nutui';
 
 const { t } = useI18n();
@@ -651,9 +649,6 @@ const archiveVisible = computed(() => {
 
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
-};
-const onClickLogs = () => {
-  router.push(`/logs`);
 };
 
 const onClickShareManage = () => {
@@ -1068,7 +1063,7 @@ const githubProxyRegexTips = () => {
 const proxyTips = () => {
   Dialog({
       title: '通过代理/节点/策略进行下载',
-      content: '1. Surge/Egern(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以是节点名称、策略组名称，也可以是一个 Loon 格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(http/https/socks5):\n\n例: socks5://a:b@127.0.0.1:7890\n\n※ 优先级由高到低: 单条订阅, 组合订阅, 默认配置',
+      content: '1. Surge/Egern(参数 policy/policy-descriptor)\n\n可设置节点代理 例: Test = snell, 1.2.3.4, 80, psk=password, version=4\n\n或设置策略/节点 例: 国外加速\n\n2. Loon(参数 node)\n\nLoon 官方文档: \n\n指定该请求使用哪一个节点或者策略组（可以是节点名称、策略组名称，也可以是一个 Loon 格式的节点描述，如：shadowsocksr,example.com,1070,chacha20-ietf,"password",protocol=auth_aes128_sha1,protocol-param=test,obfs=plain,obfs-param=edge.microsoft.com）\n\n3. Stash(参数 headers["X-Surge-Policy"])/Shadowrocket(参数 headers.X-Surge-Policy)/QX(参数 opts.policy)\n\n可设置策略/节点\n\n4. Node.js 版(http/https/socks5):\n\n例: socks5://a:b@127.0.0.1:7890\n\n※ 优先级由高到低: 单条订阅, 组合订阅, 默认配置\n\n完整说明 请查看 https://t.me/zhetengsha/1843',
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
@@ -1231,10 +1226,9 @@ const setTag = (current) => {
         border-bottom: 1px solid var(--primary-color);
         color: var(--primary-color);
       }
-      .storage-info {
+      .storage-language-switch {
         margin-left: auto;
-        font-size: 12px;
-        color: var(--lowest-text-color);
+        flex-shrink: 0;
       }
 
     }

@@ -64,11 +64,14 @@
               v-if="appearanceSetting.isSimpleMode"
               class="navBar-right-button"
               :style="{ right: navRightButtonRight.simple }"
+              :aria-label="simpleModeToggleTitle"
+              :title="simpleModeToggleTitle"
               @click.stop="setSimpleMode(false)"
             >
               <font-awesome-icon
                 class="navBar-right-icon navBar-right-icon--simple"
                 icon="fa-solid fa-toggle-on"
+                :title="simpleModeToggleTitle"
               />
             </button>
             <button
@@ -76,11 +79,14 @@
               v-else
               class="navBar-right-button"
               :style="{ right: navRightButtonRight.simple }"
+              :aria-label="simpleModeToggleTitle"
+              :title="simpleModeToggleTitle"
               @click.stop="setSimpleMode(true)"
             >
               <font-awesome-icon
                 class="navBar-right-icon navBar-right-icon--simple"
                 icon="fa-solid fa-toggle-off"
+                :title="simpleModeToggleTitle"
               />
             </button>
             <button
@@ -113,16 +119,17 @@
               />
             </button>
             <button
+              v-if="showLogsButton"
               type="button"
               class="navBar-right-button"
-              :style="{ right: navRightButtonRight.language }"
-              @click.stop="showLangSwitchPopup = true"
-              :title="t('navBar.langSwitcher.cellTitle')"
+              :style="{ right: navRightButtonRight.logs }"
+              @click.stop="openLogsOverlay"
+              :title="t('logsPage.floating.open')"
             >
               <font-awesome-icon
                 class="navBar-right-icon"
-                icon="fa-solid fa-language"
-                :title="t('navBar.langSwitcher.cellTitle')"
+                icon="fa-solid fa-file-lines"
+                :title="t('logsPage.floating.open')"
               />
             </button>
           </template>
@@ -130,45 +137,10 @@
       </nut-navbar>
     </nav>
   </div>
-  <!-- lock-scroll  -->
-  <nut-popup
-    pop-class="nav-bar-lang-switch-popup"
-    position="top"
-    v-model:visible="showLangSwitchPopup"
-    z-index="1000"
-     :style="{ paddingTop: 'env(safe-area-inset-top)' }"
-  >
-    <nut-cell-group>
-      <div
-        style="
-          color: var(--comment-text-color);
-          padding: 10px 0 10px 15px;
-          font-size: 14px;
-        "
-      >
-        {{ $t(`navBar.langSwitcher.cellTitle`) }}
-      </div>
-      <nut-cell
-        v-for="lang in langList"
-        :title="$t(`navBar.langSwitcher.${lang}`)"
-        @click="changeLang(lang)"
-        :key="lang"
-        :class="{ selected: lang === locale }"
-      >
-        <template v-slot:icon>
-          <font-awesome-icon
-            v-if="lang === locale"
-            class="fa-lg"
-            icon="fa-solid fa-check"
-          />
-        </template>
-      </nut-cell>
-    </nut-cell-group>
-  </nut-popup>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
@@ -182,19 +154,18 @@ import { Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
+import { LOGS_PATH } from "@/utils/popupHistory";
 import i18n from "@/locales";
 
 const { t:i18n_global } = i18n.global;
 const { showNotify } = useAppNotifyStore();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const methodStore = useMethodStore()
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const logsOverlayStore = useLogsOverlayStore();
-const showLangSwitchPopup = ref(false);
-const langList = ["zh", "en"];
 const settingsStore = useSettingsStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
@@ -221,12 +192,6 @@ onMounted(() => {
 // 使用systemStore中的计算属性
 const { navBarHeight, navBartop, navBartopRight, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
 
-watch(isLogsOverlayOpen, (isOpen) => {
-  if (isOpen) {
-    showLangSwitchPopup.value = false;
-  }
-});
-
 const isNeedBack = computed(() => {
   return route.meta.needNavBack ?? false;
 });
@@ -249,6 +214,7 @@ const currentTitleWhetherAsk = computed(() => {
   const metaTitle = route.meta.title;
   return ownAsk.includes(metaTitle) ? "ask" : "";
 });
+const showLogsButton = computed(() => route.path !== LOGS_PATH);
 const onClickNavbarIcon = () => {
   const metaTitle = route.meta.title;
   const content =
@@ -264,12 +230,6 @@ const onClickNavbarIcon = () => {
       closeOnPopstate: true,
       lockScroll: false,
     });
-};
-
-const changeLang = (type: string) => {
-  locale.value = type;
-  localStorage.setItem("locale", type);
-  showLangSwitchPopup.value = false;
 };
 
 const add = (route: any) => {
@@ -326,11 +286,21 @@ const wideScreenNarrowModeToggleTitle = computed(() => {
     : t("navBar.navigationMode.switchToNarrow");
 });
 
+const simpleModeToggleTitle = computed(() => {
+  return appearanceSetting.value.isSimpleMode
+    ? t("navBar.simpleMode.switchToNormal")
+    : t("navBar.simpleMode.switchToSimple");
+});
+
 const NAV_BAR_RIGHT_BUTTON_BASE_RIGHT = 15;
 const NAV_BAR_RIGHT_BUTTON_GAP = 34;
 
 const navRightButtonRight = computed<Record<string, string>>(() => {
-  const buttons = ["language", "simple"];
+  const buttons: string[] = [];
+  if (showLogsButton.value) {
+    buttons.push("logs");
+  }
+  buttons.push("simple");
   if (showWideScreenNarrowModeToggle.value) {
     buttons.push("navigation");
   }
@@ -354,6 +324,10 @@ const handleListViewModeToggle = async () => {
 
 const handleWideScreenNarrowModeToggle = async () => {
   await toggleWideScreenNarrowMode();
+};
+
+const openLogsOverlay = () => {
+  logsOverlayStore.open();
 };
 
 const refresh = async () => {
@@ -539,40 +513,6 @@ const refresh = async () => {
         opacity: 0.35;
       }
     }
-  }
-}
-
-.nav-bar-lang-switch-popup > .nut-cell-group {
-  width: 100%;
-
-  background-color: var(--popup-color);
-
-  > .nut-cell-group__title {
-    color: var(--comment-text-color);
-  }
-
-  > .nut-cell-group__warp {
-    background-color: var(--popup-color);
-
-    > .nut-cell {
-      background-color: var(--popup-color);
-
-      &::after {
-        border-color: var(--divider-color);
-      }
-    }
-
-    > .nut-cell:not(.selected) {
-      color: var(--primary-text-color);
-    }
-  }
-
-  .selected.nut-cell {
-    color: var(--primary-color);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
   }
 }
 

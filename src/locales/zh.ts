@@ -56,9 +56,10 @@ export default {
   // 顶部标题栏
   navBar: {
     langSwitcher: {
-      cellTitle: '轻点语言以切换',
+      cellTitle: 'Tap a language to switch',
       zh: '简体中文',
       en: 'English',
+      language: "Language",
     },
     listView: {
       switchToSingle: '切换为单列',
@@ -69,6 +70,10 @@ export default {
     navigationMode: {
       switchToNarrow: '切换为窄屏导航',
       switchToWide: '切换为宽屏导航',
+    },
+    simpleMode: {
+      switchToSimple: '开启简洁模式（更紧凑）',
+      switchToNormal: '关闭简洁模式（信息更完整）',
     },
     pagesTitle: {
       sub: '订阅管理',
@@ -723,7 +728,7 @@ export default {
     confirmClear: '确定要清空后端持久化日志吗？',
     empty: '暂无日志',
     disabled: {
-      desc: '日志功能默认关闭\n\n可在“我的” - “缓存配置” - “最大保存日志条数”中设置\n此方式会频繁读写持久化缓存，可能影响性能\n\n“更多设置”中可关闭“显示悬浮日志按钮”',
+      desc: '日志功能默认关闭\n\n可在“我的” - “缓存配置” - “最大保存日志条数”中设置\n此方式会频繁读写持久化缓存，可能影响性能',
       alternatives: {
         title: '不同方案 如何查看日志',
         proxyApp: '代理 App: 查看脚本日志',
@@ -760,6 +765,17 @@ export default {
       title: '保留的节点',
       beforeIndicator: '操作前',
       afterIndicator: '操作后',
+    },
+    nodeNames: {
+      entry: '全部节点名',
+      title: '{side}全部节点名',
+      descriptionBefore: '可复制全部节点名，也可复制提示词让 AI 生成一段比较通用的 JavaScript 脚本，然后粘贴到脚本操作中实现更符合你需求的重命名。若想实时 AI 处理可以参考：',
+      aiLink: '使用 AI 处理节点',
+      copyAll: '复制全部节点名',
+      copyPrompt: '复制提示词',
+      copyAllSucceed: '节点名已复制',
+      copyPromptSucceed: '提示词已复制',
+      copyFailed: '复制失败\n{e}',
     },
     divider: '以下为被过滤的节点',
     filter: {
@@ -1165,7 +1181,6 @@ export default {
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',
-    showFloatingLogsButton: '显示悬浮日志按钮',
     createItemPosition: {
       title: '新创建的项目',
       top: '在最上面',
@@ -1227,6 +1242,8 @@ export default {
       empty: '输入不能为空',
       invalid: '无效的后端地址',
       connection: '连接失败，请检查输入是否正确',
+      urlApiConnection: '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确',
+      urlMagicPathConnection: '通过 URL 参数指定的 magicpath 连接失败，请检查路径是否正确',
       unknown: '发生未知错误',
       portRequired: '主机格式需要包含端口号'
     }
