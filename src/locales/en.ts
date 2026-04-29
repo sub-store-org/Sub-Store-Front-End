@@ -733,7 +733,7 @@ export default {
     confirmClear: "Clear persisted backend logs?",
     empty: "No logs",
     disabled: {
-      desc: 'Logs are off by default. Set "My Profile" - "Cache Configuration" - "Max stored logs" to enable them. This frequently reads and writes persistent cache and may affect performance.',
+      desc: 'Logs are off by default. Set "My Profile" - "Cache Configuration" - "Max stored logs" to enable them. This frequently reads and writes persistent cache and may affect performance.\n\nYou can also access the logs popup anytime from the top right corner of the navigation bar.',
       alternatives: {
         title: "How to view logs in different setups",
         proxyApp: "Proxy app: view the script logs in the proxy app",

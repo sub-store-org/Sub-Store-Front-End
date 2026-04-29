@@ -190,7 +190,13 @@ onMounted(() => {
 });
 
 // 使用systemStore中的计算属性
-const { navBarHeight, navBartop, navBartopRight, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
+const { navBarHeight, navBartop, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
+
+const navActionOffset = computed(() => {
+  const navBarHeightNum = Number.parseFloat(navBarHeight.value || "56");
+  const navBarTopNum = Number.parseFloat(navBartop.value || "0");
+  return `${(navBarHeightNum + navBarTopNum) / 2}px`;
+});
 
 const isNeedBack = computed(() => {
   return route.meta.needNavBack ?? false;
@@ -418,7 +424,7 @@ const refresh = async () => {
       }
       .navBar-right-button {
         position: absolute;
-        top: 50%;
+        top: v-bind(navActionOffset);
         width: 32px;
         height: 32px;
         box-sizing: border-box;

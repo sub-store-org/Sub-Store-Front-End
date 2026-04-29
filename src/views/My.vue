@@ -483,6 +483,12 @@
           @click.stop="onClickAPISetting"
           is-link
         ></nut-cell>
+        <nut-cell
+          :title="$t(`myPage.logsTitle`)"
+          class="right-icon"
+          @click.stop="onClickLogs"
+          is-link
+        ></nut-cell>
       </nut-cell-group>
       <nut-cell-group>
         <nut-cell
@@ -649,6 +655,9 @@ const archiveVisible = computed(() => {
 
 const onClickAPISetting = () => {
   router.push(`/settings/api`);
+};
+const onClickLogs = () => {
+  router.push(`/logs`);
 };
 
 const onClickShareManage = () => {
