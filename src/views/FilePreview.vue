@@ -24,6 +24,17 @@
             </button>
           </div>
           <h1 class="preview-popup-title">{{ $t(`comparePage.title`) }}</h1>
+          <div class="btn-groups preview-trailing">
+            <button
+              type="button"
+              class="btn logs"
+              :aria-label="t('logsPage.floating.open')"
+              :title="t('logsPage.floating.open')"
+              @click.stop="openLogsOverlay"
+            >
+              <font-awesome-icon icon="fa-solid fa-file-lines" />
+            </button>
+          </div>
         </template>
       </header>
       <cmView :isReadOnly="false" id="filePreview" />
@@ -54,11 +65,13 @@ import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
 import useV3Clipboard from "vue-clipboard3";
 import { useAppNotifyStore } from "@/store/appNotify";
+import { useLogsOverlayStore } from "@/store/logsOverlay";
 import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 import { useRoute } from 'vue-router';
 
 const cmStore = useCodeStore();
+const logsOverlayStore = useLogsOverlayStore();
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
@@ -131,6 +144,9 @@ watch(() => props.previewData?.processed, (val) => {
  
 const clickClose = () => {
   emit("closePreview");
+};
+const openLogsOverlay = () => {
+  logsOverlayStore.open();
 };
 const copyUrl = async () => {
   if (isSupported) {
@@ -411,23 +427,30 @@ const copyUrl = async () => {
 .compare-page-header .preview-leading {
   gap: 0;
   justify-content: flex-start;
+}
 
-  button {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    color: var(--icon-nav-bar-right);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.compare-page-header .preview-trailing {
+  grid-column: 3;
+  justify-self: end;
+  gap: 0;
+  justify-content: flex-end;
+}
 
-    :deep(svg) {
-      width: 14px;
-      height: 14px;
-      font-size: 14px;
-    }
+.compare-page-header .preview-leading button,
+.compare-page-header .preview-trailing button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--icon-nav-bar-right);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  :deep(svg) {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
   }
-
 }
 
 .compare-page-header .preview-popup-title {

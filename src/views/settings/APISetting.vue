@@ -138,7 +138,7 @@
       >
         https://xream.notion.site/Sub-Store-abe6a96944724dc6a36833d5c9ab7c87</a>
       <br/>
-      4. <a href="https://t.me/zhetengsha/1068" target="_blank">{{ $t('magicPath.troubleshooting') }}</a>
+      4. <a href="https://t.me/zhetengsha/218" target="_blank">{{ $t('magicPath.troubleshooting') }}</a>
     </p>
   </div>
 </template>

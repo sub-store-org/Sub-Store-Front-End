@@ -88,7 +88,7 @@
       <div class="info">
         <p>{{ $t('magicPath.info') }}</p>
         <p>{{ $t('magicPath.customInfo') }}</p>
-        <p><a href="https://t.me/zhetengsha/1068" target="_blank">{{ $t('magicPath.troubleshooting') }}</a></p>
+        <p><a href="https://t.me/zhetengsha/218" target="_blank">{{ $t('magicPath.troubleshooting') }}</a></p>
       </div>
     </div>
   </nut-popup>
