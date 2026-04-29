@@ -28,9 +28,10 @@ export default {
   // Title Bar
   navBar: {
     langSwitcher: {
-      cellTitle: "Tap a language which you want to use",
+      cellTitle: "轻点语言以切换",
       zh: "简体中文",
       en: "English",
+      language: "语言",
     },
     listView: {
       switchToSingle: "Switch to single column",
@@ -41,6 +42,10 @@ export default {
     navigationMode: {
       switchToNarrow: "Switch to narrow navigation",
       switchToWide: "Switch to wide navigation",
+    },
+    simpleMode: {
+      switchToSimple: "Enable Simple Mode (more compact)",
+      switchToNormal: "Disable Simple Mode (more details)",
     },
     pagesTitle: {
       sub: "Subscription",
@@ -728,7 +733,7 @@ export default {
     confirmClear: "Clear persisted backend logs?",
     empty: "No logs",
     disabled: {
-      desc: 'Logs are off by default. Set "My Profile" - "Cache Configuration" - "Max stored logs" to enable them. This frequently reads and writes persistent cache and may affect performance. You can turn off "Show floating logs button" in "More Setting".',
+      desc: 'Logs are off by default. Set "My Profile" - "Cache Configuration" - "Max stored logs" to enable them. This frequently reads and writes persistent cache and may affect performance.',
       alternatives: {
         title: "How to view logs in different setups",
         proxyApp: "Proxy app: view the script logs in the proxy app",
@@ -1016,19 +1021,19 @@ export default {
     },
     liveDelete: {
       title: "Delete",
-      desc: 'This backend supports archiving.\nContinue with {displayName}?',
+      desc: 'New backend supports archiving.\nContinue with {displayName}?',
       batchDesc:
-        'This backend supports archiving.\nContinue with the selected {count} {type} item(s)?',
+        'New backend supports archiving.\nContinue with the selected {count} {type} item(s)?',
       succeedNotify: "Archived",
       btn: {
         archive: "Archive",
-        permanent: "Delete permanently",
+        permanent: "Delete",
       },
     },
     entry: {
       archivedAt: "Archived: {time}",
       restore: "Restore",
-      delete: "Delete permanently",
+      delete: "Delete",
     },
     selectMode: {
       enter: "Select",
@@ -1177,7 +1182,6 @@ export default {
     isSimpleReicon: "Show items refresh button",
     isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
-    showFloatingLogsButton: "Show floating logs button",
     createItemPosition: {
       title: "Newly created items",
       top: "At the top",

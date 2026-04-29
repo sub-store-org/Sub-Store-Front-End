@@ -44,7 +44,6 @@ interface SettingsPostData {
     isSimpleShowRemark?: boolean; // 展示简洁模式下的备注
     isSubItemMenuFold?: boolean; // 订阅项菜单折叠
     showFloatingRefreshButton?: boolean; // 显示悬浮刷新按钮
-    showFloatingLogsButton?: boolean; // 显示悬浮日志按钮
     showFloatingAddButton?: boolean; // 显示悬浮添加按钮
     createItemPosition?: CreateItemPosition; // 新建条目插入位置
     displayPreviewInWebPage?: boolean; // 在网页中预览

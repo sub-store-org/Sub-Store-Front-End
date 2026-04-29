@@ -607,7 +607,7 @@ const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
 
   a {
     font-size: 14px;
-    margin-top: 24px;
+    margin: 24px 0 12px 0;
     color: var(--comment-text-color);
 
     span {

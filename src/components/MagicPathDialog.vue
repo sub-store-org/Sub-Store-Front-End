@@ -13,7 +13,12 @@
     :close-on-click-overlay="false"
   >
     <div class="magic-path-container">
-      <div class="title">{{ $t('magicPath.title') }}</div>
+      <div class="dialog-header">
+        <div class="title">{{ $t('magicPath.title') }}</div>
+        <LanguageSwitcherButton
+          class="dialog-language-switch"
+        />
+      </div>
       <div class="description">
         <p>{{ $t('magicPath.description') }}</p>
         <p>{{ $t('magicPath.descriptionFormatsLabel') }}</p>
@@ -96,6 +101,7 @@ import { useHostAPI } from '@/hooks/useHostAPI';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { isMobile } from '@/utils/isMobile';
 import axios from 'axios';
+import LanguageSwitcherButton from '@/components/LanguageSwitcherButton.vue';
 
 const { t } = useI18n();
 const { showNotify } = useAppNotifyStore();
@@ -379,6 +385,28 @@ watchEffect(() => {
   flex-direction: column;
   width: 100%;
 
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 32px;
+    margin-bottom: 12px;
+
+    .title {
+      flex: 1;
+      margin-bottom: 0;
+      line-height: 1.25;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .dialog-language-switch {
+      flex-shrink: 0;
+      color: var(--primary-text-color);
+    }
+  }
+
   .title {
     font-size: 18px;
     font-weight: bold;
@@ -389,7 +417,7 @@ watchEffect(() => {
 
   .description {
     font-size: 14px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     text-align: left;
     color: var(--second-text-color);
 
