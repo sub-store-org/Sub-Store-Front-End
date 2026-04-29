@@ -1,4 +1,5 @@
 name: build
+
 on:
   workflow_dispatch:
   push:
@@ -6,61 +7,108 @@ on:
       - master
     paths:
       - "package.json"
-  pull_request:
-    branches:
-      - master
-    paths:
-      - "package.json"
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: "master"
+          fetch-depth: 0
+
+      - name: Sync upstream tags
+        run: |
+          if [ -z "${{ secrets.UPSTREAM_REPO }}" ]; then
+            echo "UPSTREAM_REPO secret is not set, skip syncing upstream tags"
+            exit 0
+          fi
+
+          git remote remove upstream 2>/dev/null || true
+          git remote add upstream "${{ secrets.UPSTREAM_REPO }}"
+
+          git ls-remote --tags --refs upstream | awk '{ sub("refs/tags/", "", $2); print $2 }' | sort -u > /tmp/upstream-tags
+          git ls-remote --tags --refs origin | awk '{ sub("refs/tags/", "", $2); print $2 }' | sort -u > /tmp/origin-tags
+
+          comm -23 /tmp/upstream-tags /tmp/origin-tags > /tmp/missing-tags
+
+          if [ ! -s /tmp/missing-tags ]; then
+            echo "No missing upstream tags to sync"
+            exit 0
+          fi
+
+          echo "Missing tags:"
+          cat /tmp/missing-tags
+
+          while IFS= read -r TAG; do
+            echo "Syncing tag: $TAG"
+            git fetch upstream "refs/tags/$TAG:refs/tags/$TAG"
+            git push origin "refs/tags/$TAG:refs/tags/$TAG"
+          done < /tmp/missing-tags
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install dependencies
+
+      - name: Install pnpm
         run: |
           npm install -g pnpm
           pnpm config set registry https://registry.npmmirror.com
           pnpm i --no-frozen-lockfile
-      - name: build
-        run: |
-          pnpm build
-      - uses: amondnet/vercel-action@v25 #deploy
+
+      - name: Build
+        run: pnpm build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
-          # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
-          vercel-args: "--prod --debug" # Optional
-          vercel-org-id: ${{ secrets.ORG_ID}} # Required
-          vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-args: "--prod --debug"
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
           working-directory: dist
-          vercel-version: '48.9.0'
-      - name: zip
-        run: |
-          zip -r dist.zip dist
+          vercel-version: "48.9.0"
+
+      - name: Zip dist
+        run: zip -r dist.zip dist
+
       - id: tag
         name: Generate release tag
         run: |
-          SUB_STORE_RELEASE=`node --eval="process.stdout.write(require('./package.json').version)"`
-          echo "release_tag=$SUB_STORE_RELEASE" >> $GITHUB_OUTPUT
+          VERSION=$(node --eval="process.stdout.write(require('./package.json').version)")
+          echo "release_tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create and push git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          TAG="${{ steps.tag.outputs.release_tag }}"
+
+          if git ls-remote --tags origin "refs/tags/$TAG" | grep "refs/tags/$TAG"; then
+            echo "Tag $TAG already exists on origin"
+          else
+            git tag "$TAG"
+            git push origin "refs/tags/$TAG"
+          fi
+
       - name: Prepare release
         run: |
           pnpm i -D conventional-changelog-cli
           pnpm run changelog
+
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ success() }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           body_path: ./CHANGELOG.md
           tag_name: ${{ steps.tag.outputs.release_tag }}
-          # generate_release_notes: true
           files: |
             dist.zip
