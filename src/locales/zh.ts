@@ -766,6 +766,17 @@ export default {
       beforeIndicator: '操作前',
       afterIndicator: '操作后',
     },
+    nodeNames: {
+      entry: '全部节点名',
+      title: '{side}全部节点名',
+      descriptionBefore: '可复制全部节点名，也可复制提示词让 AI 生成一段比较通用的 JavaScript 脚本，然后粘贴到脚本操作中实现更符合你需求的重命名。若想实时 AI 处理可以参考：',
+      aiLink: '使用 AI 处理节点',
+      copyAll: '复制全部节点名',
+      copyPrompt: '复制提示词',
+      copyAllSucceed: '节点名已复制',
+      copyPromptSucceed: '提示词已复制',
+      copyFailed: '复制失败\n{e}',
+    },
     divider: '以下为被过滤的节点',
     filter: {
       title: '被过滤的节点',

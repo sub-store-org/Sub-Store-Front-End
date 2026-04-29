@@ -31,17 +31,40 @@
           </div>
 
           <!--指示器说明-->
-          <div class="compare-des">
-            <span
-              @click="toggleProcessedVisible"
-              class="processed-item indicator"
-              >{{ $t(`comparePage.remain.afterIndicator`) }}</span
-            >
-            <span
-              @click="toggleOriginalVisible"
-              class="original-item indicator"
-              >{{ $t(`comparePage.remain.beforeIndicator`) }}</span
-            >
+          <div class="compare-des">      
+            <span class="indicator-group">
+              <span
+                @click="toggleOriginalVisible"
+                class="original-item indicator"
+                >{{ $t(`comparePage.remain.beforeIndicator`) }}</span
+              >
+              <button
+                type="button"
+                class="node-names-action"
+                :title="$t('comparePage.nodeNames.entry')"
+                @click.stop="openNodeNamesDialog('before')"
+              >
+                <font-awesome-icon icon="fa-solid fa-clone" />
+                {{ $t('comparePage.nodeNames.entry') }}
+              </button>
+            </span>
+
+            <span class="indicator-group">
+              <span
+                @click="toggleProcessedVisible"
+                class="processed-item indicator"
+                >{{ $t(`comparePage.remain.afterIndicator`) }}</span
+              >
+              <button
+                type="button"
+                class="node-names-action"
+                :title="$t('comparePage.nodeNames.entry')"
+                @click.stop="openNodeNamesDialog('after')"
+              >
+                <font-awesome-icon icon="fa-solid fa-clone" />
+                {{ $t('comparePage.nodeNames.entry') }}
+              </button>
+            </span>
           </div>
 
           <!--表格标题-->
@@ -242,14 +265,22 @@
       @close="closeNodeInfoPanel"
       @retry="retryLoadIpApi"
     />
+    <PreviewNodeNamesDialog
+      v-if="nodeNamesDialogVisible"
+      :side="nodeNamesDialogSide"
+      :node-infos="activeNodeInfos"
+      @close="closeNodeNamesDialog"
+    />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
   import { useSubsApi } from '@/api/subs';
   import NodeInfoPanel from '@/components/NodeInfoPanel.vue';
+  import PreviewNodeNamesDialog from '@/components/PreviewNodeNamesDialog.vue';
   import { useLogsOverlayStore } from '@/store/logsOverlay';
   import { useSubsStore } from '@/store/subs';
+  import { extractPreviewNodeInfos, PreviewNodeNameSide } from '@/utils/previewNodeNames';
   import { computed, ref, toRaw } from 'vue';
 
   const { getSubInfo } = useSubsApi();
@@ -277,6 +308,8 @@
   const ipApiStatus = ref<NodeInfoIpApiStatus>('idle');
   const nodeInfo = ref<NodeInfo>(null);
   const currentIpApiRequestId = ref(0);
+  const nodeNamesDialogVisible = ref(false);
+  const nodeNamesDialogSide = ref<PreviewNodeNameSide>('after');
 
   const displayName = computed(() => {
     const sub = subsStore.getOneSub(props.name) || subsStore.getOneCollection(props.name);
@@ -306,8 +339,16 @@
   };
 
   const processedData = computed(() => props.compareData?.processed || []);
+  const originalData = computed(() => props.compareData?.original || []);
+  const processedNodeInfos = computed(() => extractPreviewNodeInfos(processedData.value));
+  const originalNodeInfos = computed(() => extractPreviewNodeInfos(originalData.value));
+  const activeNodeInfos = computed(() => {
+    return nodeNamesDialogSide.value === 'after'
+      ? processedNodeInfos.value
+      : originalNodeInfos.value;
+  });
   const data = computed(() => {
-    const original = props.compareData?.original || [];
+    const original = originalData.value;
     const result = [];
     for (let i = 0; i < processedData.value.length; i++) {
       const item = [];
@@ -322,7 +363,7 @@
 
   // 被过滤掉的节点：original 中未被 processed 匹配到的
   const filteredOriginalData = computed(() => {
-    const original = props.compareData?.original || [];
+    const original = originalData.value;
     const processedIds = new Set(processedData.value.map(item => item.id));
     return original.filter(item => !processedIds.has(item.id));
   });
@@ -356,6 +397,15 @@
 
   const openLogsOverlay = () => {
     logsOverlayStore.open();
+  };
+
+  const openNodeNamesDialog = (side: PreviewNodeNameSide) => {
+    nodeNamesDialogSide.value = side;
+    nodeNamesDialogVisible.value = true;
+  };
+
+  const closeNodeNamesDialog = () => {
+    nodeNamesDialogVisible.value = false;
   };
 
   const invalidateIpApiRequest = () => {
@@ -532,8 +582,45 @@
     }
   }
 
-  .indicator {
+  .indicator-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-right: 24px;
+    min-width: 0;
+
+    .processed-item,
+    .original-item {
+      width: auto;
+    }
+  }
+
+  .indicator {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .node-names-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    padding: 2px 0;
+    border: none;
+    background: none;
+    color: var(--comment-text-color);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+
+    :deep(svg) {
+      width: 12px;
+      height: 12px;
+      color: var(--icon-nav-bar-right);
+      flex-shrink: 0;
+    }
   }
 
   .processed-item::before {
@@ -560,6 +647,8 @@
       padding: 6px var(--safe-area-side);
       z-index: 8;
       display: flex;
+      flex-wrap: wrap;
+      gap: 8px 0;
       position: sticky;
       top: calc(var(--compare-header-offset) + 32px);
       background: var(--background-color);
