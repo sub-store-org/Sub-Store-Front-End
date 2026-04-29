@@ -1,0 +1,53 @@
+name: sync-tags
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  sync-tags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync upstream tags
+        run: |
+          if [ -z "${{ secrets.UPSTREAM_REPO }}" ]; then
+            echo "UPSTREAM_REPO secret is not set"
+            exit 1
+          fi
+
+          git remote remove upstream 2>/dev/null || true
+          git remote add upstream "${{ secrets.UPSTREAM_REPO }}"
+
+          echo "Fetching tag list from upstream..."
+          git ls-remote --tags --refs upstream | awk '{ sub("refs/tags/", "", $2); print $2 }' | sort -u > /tmp/upstream-tags
+
+          echo "Fetching tag list from origin..."
+          git ls-remote --tags --refs origin | awk '{ sub("refs/tags/", "", $2); print $2 }' | sort -u > /tmp/origin-tags
+
+          echo "Checking missing tags..."
+          comm -23 /tmp/upstream-tags /tmp/origin-tags > /tmp/missing-tags
+
+          if [ ! -s /tmp/missing-tags ]; then
+            echo "No missing upstream tags to sync"
+            exit 0
+          fi
+
+          echo "Missing tags:"
+          cat /tmp/missing-tags
+
+          while IFS= read -r TAG; do
+            echo "Syncing tag: $TAG"
+            git fetch upstream "refs/tags/$TAG:refs/tags/$TAG"
+            git push origin "refs/tags/$TAG:refs/tags/$TAG"
+          done < /tmp/missing-tags
