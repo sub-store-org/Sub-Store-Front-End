@@ -1242,6 +1242,8 @@ export default {
       empty: "Input cannot be empty",
       invalid: "Invalid backend address",
       connection: "Connection failed, please check if the input is correct",
+      urlApiConnection: "The API address specified by the URL parameter failed to connect. Please check whether the address is correct",
+      urlMagicPathConnection: "The magicpath specified by the URL parameter failed to connect. Please check whether the path is correct",
       unknown: "An unknown error occurred",
       portRequired: "Host format must include port number"
     }

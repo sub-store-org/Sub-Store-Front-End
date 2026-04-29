@@ -1231,6 +1231,8 @@ export default {
       empty: '输入不能为空',
       invalid: '无效的后端地址',
       connection: '连接失败，请检查输入是否正确',
+      urlApiConnection: '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确',
+      urlMagicPathConnection: '通过 URL 参数指定的 magicpath 连接失败，请检查路径是否正确',
       unknown: '发生未知错误',
       portRequired: '主机格式需要包含端口号'
     }

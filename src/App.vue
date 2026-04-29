@@ -27,14 +27,16 @@ import { useSubsStore } from "@/store/subs";
 import { getFlowsUrlList } from "@/utils/getFlowsUrlList";
 import { initStores } from "@/utils/initApp";
 import { storeToRefs } from "pinia";
-import { ref, watchEffect, onMounted } from "vue";
+import { ref, watchEffect, onMounted, computed } from "vue";
 import { useHostAPI } from "@/hooks/useHostAPI"; //onMounted
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 const { shouldShowSideBar } = useWideScreenNarrowMode();
 
 const { subs, flows } = storeToRefs(subsStore);
@@ -72,7 +74,8 @@ globalStore.setBottomSafeArea(
 
 const { handleUrlQuery } = useHostAPI();
 const urlApiConfigSuccess = ref(false);
-const urlApiError = ref('');
+const urlApiErrorKey = ref('');
+const urlApiError = computed(() => urlApiErrorKey.value ? t(urlApiErrorKey.value) : '');
 const urlApiValue = ref('');
 
 const processUrlApiConfig = async () => {
@@ -102,14 +105,14 @@ const processUrlApiConfig = async () => {
     if (hasApiParam) {
       const apiValue = decodeURIComponent(hasApiParam[1]).replace(/\/$/, ''); // 去除末尾斜杠;
       urlApiValue.value = apiValue;
-      urlApiError.value = '通过 URL 参数指定的 API 地址连接失败，请检查地址是否正确';
+      urlApiErrorKey.value = 'magicPath.errors.urlApiConnection';
       hasUrlParams = true;
     } else if (hasMagicPathParam) {
       const magicPath = decodeURIComponent(hasMagicPathParam[1]);
       const currentHost = window.location.origin;
       const apiUrl = `${currentHost}/${magicPath.replace(/^\/+/, '')}`;
       urlApiValue.value = apiUrl;
-      urlApiError.value = '通过 URL 参数指定的 magicpath 连接失败，请检查路径是否正确';
+      urlApiErrorKey.value = 'magicPath.errors.urlMagicPathConnection';
       hasUrlParams = true;
     }
   }
@@ -164,7 +167,7 @@ const processUrlApiConfig = async () => {
 
     if (fetchResult) {
       // 连接成功，清除错误信息并隐藏弹窗
-      urlApiError.value = '';
+      urlApiErrorKey.value = '';
       showMagicPathDialog.value = false;
     } else if (hasUrlParams && skippedCycle !== connectionCheckCycle.value) {
       // 连接失败但已添加到后端列表，显示错误信息
