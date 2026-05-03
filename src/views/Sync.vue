@@ -206,8 +206,10 @@ import { useListViewMode } from "@/hooks/useListViewMode";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { Dialog } from "@nutui/nutui";
 import { isMobile } from "@/utils/isMobile";
+import { listItemMatchesSearch, shouldSearchListRemark } from "@/utils/listSearch";
 import { useRouter } from "vue-router";
 import { useSystemStore } from "@/store/system";
+import { useListSearchStore } from "@/store/listSearch";
 
 const { env } = useBackend();
 const subsApi = useSubsApi();
@@ -217,6 +219,7 @@ const artifactsStore = useArtifactsStore();
 const settingsStore = useSettingsStore();
 const systemStore = useSystemStore();
 const methodStore = useMethodStore();
+const listSearchStore = useListSearchStore();
 const { effectiveListViewMode } = useListViewMode();
 
 const {
@@ -478,12 +481,18 @@ const setTag = (current: string) => {
   scrollToTop();
 };
 
-const shouldShowElement = (element: Artifact) => {
+const shouldShowElementByTag = (element: Artifact) => {
   if (tag.value === "all") return true;
   if (tag.value === "untagged") {
     return !Array.isArray(element.tag) || element.tag.length === 0;
   }
   return element.tag?.includes(tag.value);
+};
+const shouldShowElement = (element: Artifact) => {
+  return shouldShowElementByTag(element)
+    && listItemMatchesSearch(element, listSearchStore.normalizedQuery, {
+      includeRemark: shouldSearchListRemark(appearanceSetting.value),
+    });
 };
 const filteredArtifacts = useFilteredDraggableList(artifacts, shouldShowElement);
 </script>

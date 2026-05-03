@@ -48,7 +48,8 @@ import {
   faMobileScreenButton,
   faBars,
   faBoxArchive,
-  faShare
+  faShare,
+  faMagnifyingGlass
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faFileImport);
@@ -99,3 +100,4 @@ library.add(faMinimize);
 library.add(faMobileScreenButton);
 library.add(faBoxArchive);
 library.add(faShare);
+library.add(faMagnifyingGlass);

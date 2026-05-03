@@ -75,6 +75,12 @@ export default {
       switchToSimple: '开启简洁模式（更紧凑）',
       switchToNormal: '关闭简洁模式（信息更完整）',
     },
+    listSearch: {
+      open: '搜索',
+      placeholder: '名称/标签/备注(若开启显示)',
+      clear: '清空搜索',
+      close: '关闭搜索',
+    },
     pagesTitle: {
       sub: '订阅管理',
       file: '文件管理',

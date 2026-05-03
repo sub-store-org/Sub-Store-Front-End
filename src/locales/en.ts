@@ -47,6 +47,12 @@ export default {
       switchToSimple: "Enable Simple Mode (more compact)",
       switchToNormal: "Disable Simple Mode (more details)",
     },
+    listSearch: {
+      open: "Search",
+      placeholder: "Name/tags/remarks (if shown)",
+      clear: "Clear search",
+      close: "Close search",
+    },
     pagesTitle: {
       sub: "Subscription",
       file: "File",

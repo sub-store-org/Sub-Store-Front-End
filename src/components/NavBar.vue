@@ -30,10 +30,11 @@
           <div v-else :class="leftIconClass" @click.stop="back"></div>
           <div v-if="!isLogsOverlayOpen" class="icon-group">
             <button
-              v-if="!isNeedBack && !appearanceSetting.showFloatingRefreshButton"
+              v-if="showRefreshButton"
               type="button"
               @click.stop="refresh"
               class="navBar-left-icon navBar-left-icon--refresh"
+              :style="{ left: navLeftButtonLeft.refresh }"
             >
               <font-awesome-icon
                 class="icon fa-arrow-rotate-right"
@@ -41,18 +42,55 @@
               />
             </button>
             <button
-              v-if="
-                ['/subs', '/sync', '/files'].includes(route.path) &&
-                !appearanceSetting.showFloatingAddButton
-              "
+              v-if="showAddButton"
               type="button"
               @click.stop="add(route)"
               class="navBar-left-icon navBar-left-icon--add"
+              :style="{ left: navLeftButtonLeft.add }"
             >
               <font-awesome-icon
                 class="icon fa-plus"
                 icon="fa-solid fa-plus"
               />
+            </button>
+            <button
+              v-if="showSearchButton"
+              type="button"
+              @click.stop="openListSearch"
+              class="navBar-left-icon navBar-left-icon--search"
+              :class="{ 'is-active': isListSearchActive || listSearchStore.hasQuery }"
+              :style="{ left: navLeftButtonLeft.search }"
+              :aria-label="t('navBar.listSearch.open')"
+              :title="t('navBar.listSearch.open')"
+            >
+              <font-awesome-icon
+                class="icon"
+                icon="fa-solid fa-magnifying-glass"
+              />
+            </button>
+          </div>
+          <div
+            v-if="isListSearchActive"
+            class="nav-search-field"
+            @click.stop
+          >
+            <input
+              ref="searchInputRef"
+              v-model="listSearchQuery"
+              class="nav-search-input"
+              type="search"
+              :placeholder="t('navBar.listSearch.placeholder')"
+              :aria-label="t('navBar.listSearch.placeholder')"
+              @keydown.esc.stop.prevent="closeListSearch"
+            />
+            <button
+              type="button"
+              class="nav-search-clear"
+              :aria-label="listSearchQuery ? t('navBar.listSearch.clear') : t('navBar.listSearch.close')"
+              :title="listSearchQuery ? t('navBar.listSearch.clear') : t('navBar.listSearch.close')"
+              @click.stop="handleSearchCloseButton"
+            >
+              <font-awesome-icon icon="fa-solid fa-circle-xmark" />
             </button>
           </div>
         </template>
@@ -140,7 +178,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
@@ -154,6 +192,7 @@ import { Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
 import { useMethodStore } from '@/store/methodStore';
 import { useAppNotifyStore } from "@/store/appNotify";
+import { useListSearchStore } from "@/store/listSearch";
 import { LOGS_PATH } from "@/utils/popupHistory";
 import i18n from "@/locales";
 
@@ -167,6 +206,7 @@ const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const logsOverlayStore = useLogsOverlayStore();
 const settingsStore = useSettingsStore();
+const listSearchStore = useListSearchStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
 const { isOpen: isLogsOverlayOpen } = storeToRefs(logsOverlayStore);
@@ -191,6 +231,7 @@ onMounted(() => {
 
 // 使用systemStore中的计算属性
 const { navBarHeight, navBartop, pwaTopPadding: Pwa_top } = storeToRefs(systemStore);
+const searchInputRef = ref<HTMLInputElement | null>(null);
 
 const navActionOffset = computed(() => {
   const navBarHeightNum = Number.parseFloat(navBarHeight.value || "56");
@@ -210,17 +251,109 @@ const currentTitle = computed(() => {
     return t("navBar.pagesTitle.logs");
   }
 
+  if (isListSearchActive.value) {
+    return "";
+  }
+
   const metaTitle = route.meta.title;
   return metaTitle ? t(`navBar.pagesTitle.${metaTitle}`) : undefined;
 });
 const currentTitleWhetherAsk = computed(() => {
-  if (isLogsOverlayOpen.value) return "";
+  if (isLogsOverlayOpen.value || isListSearchActive.value) return "";
 
   const ownAsk = ["sync"];
   const metaTitle = route.meta.title;
   return ownAsk.includes(metaTitle) ? "ask" : "";
 });
 const showLogsButton = computed(() => route.path !== LOGS_PATH);
+const showRefreshButton = computed(() => {
+  return !isNeedBack.value && !appearanceSetting.value.showFloatingRefreshButton;
+});
+const showAddButton = computed(() => {
+  return ["/subs", "/sync", "/files"].includes(route.path)
+    && !appearanceSetting.value.showFloatingAddButton;
+});
+const showSearchButton = computed(() => {
+  return Boolean(route.meta.supportsListSearch) && !isLogsOverlayOpen.value;
+});
+const isListSearchActive = computed(() => {
+  return showSearchButton.value
+    && listSearchStore.isSearchOpen
+    && listSearchStore.activeRoutePath === route.path;
+});
+const listSearchQuery = computed({
+  get: () => listSearchStore.query,
+  set: (value: string) => {
+    listSearchStore.setQuery(value);
+  },
+});
+const navLeftButtonLeft = computed<Record<string, string>>(() => {
+  if (isNeedBack.value) {
+    if (route.path === "/shares") {
+      return {
+        search: appearanceSetting.value.showFloatingAddButton ? "80px" : "114px",
+      };
+    }
+
+    if (route.path === "/archives") {
+      return {
+        search: "80px",
+      };
+    }
+
+    return {
+      search: "42px",
+    };
+  }
+
+  const buttons: string[] = [];
+  if (showRefreshButton.value) {
+    buttons.push("refresh");
+  }
+  if (showAddButton.value) {
+    buttons.push("add");
+  }
+  if (showSearchButton.value) {
+    buttons.push("search");
+  }
+
+  return buttons.reduce((acc, key, index) => {
+    acc[key] = `${7 + index * 30}px`;
+    return acc;
+  }, {} as Record<string, string>);
+});
+
+watch(
+  () => route.path,
+  () => {
+    listSearchStore.syncRoute(route.path, Boolean(route.meta.supportsListSearch));
+  },
+  { immediate: true },
+);
+
+const focusSearchInput = async () => {
+  await nextTick();
+  searchInputRef.value?.focus();
+};
+
+const openListSearch = async () => {
+  listSearchStore.open(route.path);
+  await focusSearchInput();
+};
+
+const closeListSearch = () => {
+  listSearchStore.close();
+};
+
+const handleSearchCloseButton = async () => {
+  if (listSearchQuery.value) {
+    listSearchStore.setQuery("");
+    await focusSearchInput();
+    return;
+  }
+
+  closeListSearch();
+};
 const onClickNavbarIcon = () => {
   const metaTitle = route.meta.title;
   const content =
@@ -488,6 +621,7 @@ const refresh = async () => {
           justify-content: center;
           color: var(--icon-nav-bar-right);
           cursor: pointer;
+          z-index: 3;
 
           .icon {
             pointer-events: none;
@@ -495,18 +629,82 @@ const refresh = async () => {
             height: 14px;
             font-size: 14px;
           }
+
+          &.is-active {
+            color: var(--primary-color);
+          }
         }
 
-        .navBar-left-icon--refresh {
+        .navBar-left-icon--refresh,
+        .navBar-left-icon--add,
+        .navBar-left-icon--search {
           left: 7px;
         }
+      }
+      .nav-search-field {
+        position: absolute;
+        left: 50%;
+        top: v-bind(navBartop);
+        bottom: 0;
+        width: calc(100% - 220px);
+        max-width: 53%;
+        min-width: 96px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        z-index: 4;
+      }
 
-        .navBar-left-icon--add {
-          left: 37px;
+      .nav-search-input {
+        width: 100%;
+        min-width: 0;
+        height: 32px;
+        box-sizing: border-box;
+        border: 1px solid var(--divider-color);
+        border-radius: var(--item-card-radios);
+        background: var(--card-color);
+        color: var(--primary-text-color);
+        padding: 0 30px 0 10px;
+        font-size: 14px;
+        line-height: 32px;
+        outline: none;
 
-          &:only-child {
-            left: 7px;
-          }
+        &::placeholder {
+          color: var(--comment-text-color);
+        }
+
+        &::-webkit-search-cancel-button,
+        &::-webkit-search-decoration {
+          -webkit-appearance: none;
+          appearance: none;
+          display: none;
+        }
+
+        &:focus {
+          border-color: var(--primary-color);
+        }
+      }
+
+      .nav-search-clear {
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: 0;
+        margin: 0;
+        background: transparent;
+        color: var(--comment-text-color);
+        transform: translateY(-50%);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 13px;
+          height: 13px;
         }
       }
       .fa-plus {

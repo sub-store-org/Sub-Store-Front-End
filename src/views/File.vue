@@ -210,6 +210,7 @@ import { useSubsApi } from "@/api/subs";
 import { useFilesApi } from '@/api/files';
 import FileListItem from "@/components/FileListItem.vue";
 import { useGlobalStore } from "@/store/global";
+import { useListSearchStore } from "@/store/listSearch";
 import { useSubsStore } from "@/store/subs";
 import { useSettingsStore } from '@/store/settings';
 import { useSystemStore } from "@/store/system";
@@ -222,6 +223,7 @@ import { useListViewMode } from "@/hooks/useListViewMode";
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { isMobile } from "@/utils/isMobile";
 import { getShareCreatePath } from "@/utils/share";
+import { listItemMatchesSearch, shouldSearchListRemark } from "@/utils/listSearch";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -257,6 +259,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
+const listSearchStore = useListSearchStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
 const { effectiveListViewMode } = useListViewMode();
 const { navBarHeight } = storeToRefs(systemStore);
@@ -468,10 +471,16 @@ const setTag = (current) => {
   // 增加滚动到顶部
   scrollToTop();
 };
-const shouldShowElement = (element) => {
+const shouldShowElementByTag = (element) => {
   if(tag.value === 'all') return true;
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
   return element.tag?.includes(tag.value);
+};
+const shouldShowElement = (element) => {
+  return shouldShowElementByTag(element)
+    && listItemMatchesSearch(element, listSearchStore.normalizedQuery, {
+      includeRemark: shouldSearchListRemark(appearanceSetting.value),
+    });
 };
 const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
 </script>

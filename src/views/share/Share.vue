@@ -450,15 +450,15 @@ import { useListViewModeSelectionLock } from "@/hooks/useListViewModeSelectionLo
 import { useTagBarHeight } from "@/hooks/useTagBarHeight";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
+import { useListSearchStore } from "@/store/listSearch";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
 import { useSystemStore } from "@/store/system";
 import { getShareCreatePath } from "@/utils/share";
+import { listItemMatchesSearch, shouldSearchListRemark } from "@/utils/listSearch";
 import {
   ALL_SHARE_TAG,
-  UNTAGGED_SHARE_TAG,
   buildShareTagOptions,
-  countSharesByTagFilter,
   groupSharesByType,
   resolveShareTagFilter,
   shareMatchesTagFilter,
@@ -488,6 +488,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
+const listSearchStore = useListSearchStore();
 const { appearanceSetting } = storeToRefs(settingsStore);
 const { effectiveListViewMode } = useListViewMode();
 const isDualColumnMode = computed(() => {
@@ -588,7 +589,10 @@ const setTag = (current: string) => {
   scrollToTop();
 };
 const shouldShowShare = (share: Share) => {
-  return shareMatchesTagFilter(share, tag.value);
+  return shareMatchesTagFilter(share, tag.value)
+    && listItemMatchesSearch(share, listSearchStore.normalizedQuery, {
+      includeRemark: shouldSearchListRemark(appearanceSetting.value),
+    });
 };
 
 const subShareData = ref<Share[]>([]);
@@ -602,9 +606,9 @@ const selectedShareKeys = ref<string[]>([]);
 const isDeletingSelectedShares = ref(false);
 useListViewModeSelectionLock(isSelectionMode);
 
-const subShareDataCount = computed(() => countSharesByTagFilter(subShareData.value, tag.value));
-const collectionShareDataCount = computed(() => countSharesByTagFilter(collectionShareData.value, tag.value));
-const fileShareDataCount = computed(() => countSharesByTagFilter(fileShareData.value, tag.value));
+const subShareDataCount = computed(() => subShareData.value.filter(shouldShowShare).length);
+const collectionShareDataCount = computed(() => collectionShareData.value.filter(shouldShowShare).length);
+const fileShareDataCount = computed(() => fileShareData.value.filter(shouldShowShare).length);
 const allShareData = computed(() => [
   ...subShareData.value,
   ...collectionShareData.value,
