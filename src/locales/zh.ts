@@ -1183,7 +1183,18 @@ export default {
     isDefaultIcon: '恢复默认图标',
     isShowIcon: '展示图标',
     isSubItemMenuFold: '收纳订阅页菜单功能',
-    isEditorCommon: '展示编辑页常用配置',
+    isEditorCommon: '编辑页常用配置',
+    editorCommon: {
+      title: '编辑页常用配置',
+    },
+    manualSubscriptions: {
+      title: '手动选择的订阅',
+    },
+    editorDisplayMode: {
+      expanded: '展开',
+      collapsed: '收起',
+      hidden: '不显示',
+    },
     isSimpleReicon: '简洁模式展示刷新按钮',
     isSimpleShowRemarks: '简洁模式列表展示备注',
     showFloatingRefreshButton: '显示悬浮刷新按钮',

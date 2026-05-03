@@ -38,6 +38,38 @@ const getCachedWideScreenNarrowMode = () => {
   return localStorage.getItem(WIDE_SCREEN_NARROW_MODE_STORAGE_KEY) === "1";
 };
 
+const isEditorCommonDisplayMode = (value: unknown): value is EditorCommonDisplayMode => {
+  return value === "expanded" || value === "collapsed" || value === "hidden";
+};
+
+const isEditorSectionFoldMode = (value: unknown): value is EditorSectionFoldMode => {
+  return value === "expanded" || value === "collapsed";
+};
+
+const normalizeEditorCommonDisplayMode = (
+  appearanceSetting?: SettingsPostData["appearanceSetting"],
+): EditorCommonDisplayMode => {
+  if (isEditorCommonDisplayMode(appearanceSetting?.editorCommonDisplayMode)) {
+    return appearanceSetting.editorCommonDisplayMode;
+  }
+
+  if (typeof appearanceSetting?.isEditorCommon === "boolean") {
+    return appearanceSetting.isEditorCommon ? "expanded" : "hidden";
+  }
+
+  return "collapsed";
+};
+
+const normalizeManualSubscriptionsDisplayMode = (
+  appearanceSetting?: SettingsPostData["appearanceSetting"],
+): EditorSectionFoldMode => {
+  if (isEditorSectionFoldMode(appearanceSetting?.manualSubscriptionsDisplayMode)) {
+    return appearanceSetting.manualSubscriptionsDisplayMode;
+  }
+
+  return "collapsed";
+};
+
 export const useSettingsStore = defineStore("settingsStore", {
   state: (): SettingsStoreState => {
     return {
@@ -70,6 +102,8 @@ export const useSettingsStore = defineStore("settingsStore", {
         isShowIcon: true,
         isSimpleShowRemark: false,
         isEditorCommon: true,
+        editorCommonDisplayMode: "collapsed",
+        manualSubscriptionsDisplayMode: "collapsed",
         isSimpleReicon: false,
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
@@ -97,6 +131,8 @@ export const useSettingsStore = defineStore("settingsStore", {
       const cachedNarrowModeListPageViewMode = getCachedListPageViewMode(
         NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
       );
+      const editorCommonDisplayMode = normalizeEditorCommonDisplayMode(appearanceSetting);
+      const manualSubscriptionsDisplayMode = normalizeManualSubscriptionsDisplayMode(appearanceSetting);
 
       this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? true;
       this.appearanceSetting.isLeftRight = appearanceSetting?.isLeftRight ?? "";
@@ -104,7 +140,9 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.isIconColor = appearanceSetting?.isIconColor ?? "";
       this.appearanceSetting.isShowIcon = appearanceSetting?.isShowIcon ?? true;
       this.appearanceSetting.isSimpleShowRemark = appearanceSetting?.isSimpleShowRemark ?? "";
-      this.appearanceSetting.isEditorCommon = appearanceSetting?.isEditorCommon ?? true;
+      this.appearanceSetting.editorCommonDisplayMode = editorCommonDisplayMode;
+      this.appearanceSetting.manualSubscriptionsDisplayMode = manualSubscriptionsDisplayMode;
+      this.appearanceSetting.isEditorCommon = editorCommonDisplayMode !== "hidden";
       this.appearanceSetting.isSimpleReicon = appearanceSetting?.isSimpleReicon ?? "";
       this.appearanceSetting.isSubItemMenuFold = appearanceSetting?.isSubItemMenuFold ?? true;
       this.appearanceSetting.showFloatingRefreshButton = appearanceSetting?.showFloatingRefreshButton ?? "";
@@ -217,12 +255,18 @@ export const useSettingsStore = defineStore("settingsStore", {
         subProgressStyle,
         gistUpload,
       } = globalStore;
+      const hasLocalEditorCommonSetting = localStorage.getItem('iseditorCommon') !== null;
+      const editorCommonDisplayMode = hasLocalEditorCommonSetting
+        ? (isEditorCommon ? "expanded" : "hidden")
+        : "collapsed";
       const data = {
         isSimpleMode: isSimpleMode ?? false,
         isLeftRight: isLeftRight ?? false,
         isIconColor: isIconColor ?? false,
         isDefaultIcon: isDefaultIcon ?? false,
-        isEditorCommon: isEditorCommon ?? true,
+        isEditorCommon: editorCommonDisplayMode !== "hidden",
+        editorCommonDisplayMode,
+        manualSubscriptionsDisplayMode: "collapsed",
         isSimpleReicon: isSimpleReicon ?? false,
         showFloatingRefreshButton: showFloatingRefreshButton ?? false,
         istabBar: istabBar ?? false,
@@ -234,7 +278,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       // 判断是否有本地持久化的外观设置
       const hasLocalAppearanceSetting = list.some((key) => {
         return localStorage.getItem(key) !== null
-      })
+      }) || hasLocalEditorCommonSetting;
       // 如果有本地持久化的外观设置，则将其同步到后端
       if (hasLocalAppearanceSetting) {
         await this.changeAppearanceSetting({ appearanceSetting: data });
@@ -249,6 +293,8 @@ export const useSettingsStore = defineStore("settingsStore", {
       globalStore.setIconColor(false);
       globalStore.setIsDefaultIcon(false);
       globalStore.setEditorCommon(false);
+      localStorage.removeItem('iseditorCommon');
+      globalStore.isEditorCommon = true;
       globalStore.setSimpleReicon(false);
       globalStore.setShowFloatingRefreshButton(false);
       globalStore.settabBar(false);

@@ -66,11 +66,23 @@
             @change="setDisplayPreviewInWebPage" />
         </template>
       </nut-cell>
-      <nut-cell :title="$t(`moreSettingPage.isEditorCommon`)" class="cell-item">
-        <template v-slot:link>
-          <nut-switch class="my-switch" v-model="awEditorCommon" size="mini" @change="setEditorCommon" />
-        </template>
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.editorCommon.title`)" :desc="editorCommonDisplayModeName"
+        @click="()=>{showEditorCommonDisplayModePicker=true}" is-link>
       </nut-cell>
+      <DesktopPicker v-model="editorCommonDisplayModeValue" v-model:visible="showEditorCommonDisplayModePicker" :columns="[
+        { text: $t(`moreSettingPage.editorDisplayMode.expanded`), value: 'expanded' },
+        { text: $t(`moreSettingPage.editorDisplayMode.collapsed`), value: 'collapsed' },
+        { text: $t(`moreSettingPage.editorDisplayMode.hidden`), value: 'hidden' }
+      ]" :title="$t(`moreSettingPage.editorCommon.title`)" @confirm="editorCommonDisplayModeConfirm">
+      </DesktopPicker>
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.manualSubscriptions.title`)" :desc="manualSubscriptionsDisplayModeName"
+        @click="()=>{showManualSubscriptionsDisplayModePicker=true}" is-link>
+      </nut-cell>
+      <DesktopPicker v-model="manualSubscriptionsDisplayModeValue" v-model:visible="showManualSubscriptionsDisplayModePicker" :columns="[
+        { text: $t(`moreSettingPage.editorDisplayMode.expanded`), value: 'expanded' },
+        { text: $t(`moreSettingPage.editorDisplayMode.collapsed`), value: 'collapsed' }
+      ]" :title="$t(`moreSettingPage.manualSubscriptions.title`)" @confirm="manualSubscriptionsDisplayModeConfirm">
+      </DesktopPicker>
     </nut-cell-group>
 
     <nut-cell-group v-if="shareBtnVisible">
@@ -202,7 +214,6 @@
   const awIsDefaultIcon = ref(false);
   const awIsShowIcon = ref(true);
   const awIsSubItemMenuFold = ref(true);
-  const awEditorCommon = ref(false);
   const awSimpleReicon = ref(true);
   const awSimpleShowRemark = ref(false);
   const awShowFloatingRefreshButton = ref(false);
@@ -216,6 +227,8 @@
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
   const gistUploadValue = ref(['base64']);
+  const editorCommonDisplayModeValue = ref<EditorCommonDisplayMode[]>(['collapsed']);
+  const manualSubscriptionsDisplayModeValue = ref<EditorSectionFoldMode[]>(['collapsed']);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
@@ -223,6 +236,8 @@
   // const isEditLoading = ref(false);
   const showSubProgressPicker = ref(false);
   const showCreateItemPositionPicker = ref(false);
+  const showEditorCommonDisplayModePicker = ref(false);
+  const showManualSubscriptionsDisplayModePicker = ref(false);
   const shareBtnVisible = computed(() => {
     return env.value?.feature?.share;
   });
@@ -254,6 +269,28 @@
     const data = {
       ...appearanceSetting.value,
       createItemPosition: selectedValue[0]
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const editorCommonDisplayModeName = computed(() => {
+    return t(`moreSettingPage.editorDisplayMode.${editorCommonDisplayModeValue.value[0] || 'collapsed'}`);
+  });
+  const editorCommonDisplayModeConfirm = ({ selectedValue }) => {
+    const editorCommonDisplayMode = selectedValue[0] || 'collapsed';
+    const data = {
+      ...appearanceSetting.value,
+      editorCommonDisplayMode,
+      isEditorCommon: editorCommonDisplayMode !== 'hidden',
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const manualSubscriptionsDisplayModeName = computed(() => {
+    return t(`moreSettingPage.editorDisplayMode.${manualSubscriptionsDisplayModeValue.value[0] || 'collapsed'}`);
+  });
+  const manualSubscriptionsDisplayModeConfirm = ({ selectedValue }) => {
+    const data = {
+      ...appearanceSetting.value,
+      manualSubscriptionsDisplayMode: selectedValue[0] || 'collapsed'
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -298,15 +335,6 @@
     const data = {
       ...appearanceSetting.value,
       isSubItemMenuFold: isSubItemMenuFold
-    }
-    changeAppearanceSetting({ appearanceSetting: data });
-  };
-
-  const setEditorCommon = (isEditorCommon: boolean) => {
-    // globalStore.setEditorCommon(isEditorCommon);
-    const data = {
-      ...appearanceSetting.value,
-      isEditorCommon: isEditorCommon
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -559,7 +587,6 @@
     awIsDefaultIcon.value = appearanceSetting.value.isDefaultIcon;
     awIsShowIcon.value = appearanceSetting.value.isShowIcon;
     awIsSubItemMenuFold.value = appearanceSetting.value.isSubItemMenuFold;
-    awEditorCommon.value = appearanceSetting.value.isEditorCommon;
     awSimpleReicon.value = appearanceSetting.value.isSimpleReicon;
     awSimpleShowRemark.value = appearanceSetting.value.isSimpleShowRemark;
     awShowFloatingRefreshButton.value = appearanceSetting.value.showFloatingRefreshButton;
@@ -571,6 +598,8 @@
     awtabBar2.value = appearanceSetting.value.istabBar2;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
     gistUploadValue.value = [gistUpload.value];
+    editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];
+    manualSubscriptionsDisplayModeValue.value = [appearanceSetting.value.manualSubscriptionsDisplayMode || 'collapsed'];
     // SimpleSwitch.value = isSimpleMode.value;
     // LeftRight.value = isLeftRight.value;
     // awIconColor.value = isIconColor.value;

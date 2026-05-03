@@ -313,12 +313,25 @@
               @click-right-icon="showTagPopup('linkTag')"
             />
           </nut-form-item>
-          <nut-form-item
-            :label="$t(`editorPage.subConfig.basic.subscriptions.label`)+ selectedSubs"
-            prop="subscriptions"
-            class="include-subs-wrapper"
-          >
-            <div v-if="tags && tags.length > 0" class="tag-check">
+          <nut-cell class="nut-form-item line include-subs-trigger" @click.stop="toggleManualSubscriptionsFold">
+            <view class="nut-cell__title nut-form-item__label">
+              {{ $t(`editorPage.subConfig.basic.subscriptions.label`) }}
+            </view>
+            <view class="nut-cell__value nut-form-item__body">
+              <view class="nut-form-item__body__slots">
+                <nut-input
+                  :model-value="selectedSubsDisplay"
+                  :border="false"
+                  class="nut-input-text include-subs-trigger-input"
+                  readonly
+                  input-align="right"
+                  :right-icon="manualSubscriptionsIsFold ? 'rect-right' : 'rect-down'"
+                />
+              </view>
+            </view>
+          </nut-cell>
+          <div v-show="!manualSubscriptionsIsFold" class="include-subs-wrapper">
+            <div v-show="!manualSubscriptionsIsFold && tags && tags.length > 0" class="tag-check">
               <div class="radio-wrapper">
                 <span
                   v-for="i in tags"
@@ -331,6 +344,7 @@
               <nut-checkbox v-model="subCheckbox" :indeterminate="subCheckboxIndeterminate" @click="subCheckboxClick"></nut-checkbox>
             </div>
             <nut-checkboxgroup
+              v-show="!manualSubscriptionsIsFold"
               v-model="visibleSelectedSubscriptions"
               :class="[
                 'subs-checkbox-wrapper',
@@ -379,7 +393,7 @@
                 </template>
               </draggable>
             </nut-checkboxgroup>
-            </nut-form-item>
+          </div>
             <nut-form-item
               :label="$t(`editorPage.subConfig.basic.subUserinfo.label`)"
               prop="subUserinfo"
@@ -433,7 +447,7 @@
     </div>
 
     <!-- 常用配置 -->
-    <CommonBlock v-if="appearanceSetting.isEditorCommon" />
+    <CommonBlock v-if="showEditorCommonBlock" :default-folded="editorCommonDefaultFolded" />
 
     <!-- 节点操作 -->
     <ActionBlock
@@ -511,6 +525,11 @@ import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
+import {
+  getEditorFoldState,
+  getEditorIsFolded,
+  setEditorFoldState,
+} from "@/utils/editorFoldState";
 import { initStores } from "@/utils/initApp";
 import draggable from "vuedraggable";
 import CompareTable from "@/views/CompareTable.vue";
@@ -546,6 +565,7 @@ const isDis = ref(true)
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY = "manual-subscriptions-fold";
 const subsApi = useSubsApi();
 const editType = route.params.editType as string;
 const configName = route.params.id as string;
@@ -569,6 +589,44 @@ const githubUrlRewriter = computed(() => {
 const rewriteGithubUrl = (url?: string | null) => {
   return githubUrlRewriter.value(url);
 };
+const editorCommonDisplayMode = computed<EditorCommonDisplayMode>(() => {
+  return appearanceSetting.value.editorCommonDisplayMode || (appearanceSetting.value.isEditorCommon ? "expanded" : "hidden");
+});
+const showEditorCommonBlock = computed(() => editorCommonDisplayMode.value !== "hidden");
+const editorCommonDefaultFolded = computed(() => editorCommonDisplayMode.value === "collapsed");
+const manualSubscriptionsDefaultFolded = computed(() => {
+  return (appearanceSetting.value.manualSubscriptionsDisplayMode || "collapsed") === "collapsed";
+});
+const manualSubscriptionsIsFold = ref(
+  getEditorIsFolded(
+    MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY,
+    route.path,
+    manualSubscriptionsDefaultFolded.value,
+  ),
+);
+const toggleManualSubscriptionsFold = () => {
+  manualSubscriptionsIsFold.value = !manualSubscriptionsIsFold.value;
+  setEditorFoldState(
+    MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY,
+    route.path,
+    manualSubscriptionsIsFold.value,
+  );
+};
+watch(
+  [() => route.path, manualSubscriptionsDefaultFolded],
+  ([path, defaultFolded]) => {
+    if (getEditorFoldState(MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY, path) === undefined) {
+      manualSubscriptionsIsFold.value = defaultFolded;
+      return;
+    }
+
+    manualSubscriptionsIsFold.value = getEditorIsFolded(
+      MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY,
+      path,
+      defaultFolded,
+    );
+  },
+);
 const chooserAvatarSize = computed(() => {
   return appearanceSetting.value.isSimpleMode ? "28" : "32";
 });
@@ -645,6 +703,7 @@ const selectedSubs = computed(() => {
       return sub?.displayName || sub?.["display-name"] || sub?.name || `${name}(🚫)`;
     }).join(', ')}`
   });
+const selectedSubsDisplay = computed(() => selectedSubs.value.replace(/^:\s*/, ""));
   const subFailureModeOptions = computed(() => {
     const prefix = "editorPage.subConfig.basic.ignoreFailedRemoteSub";
     return [
@@ -1644,8 +1703,35 @@ const handleEditGlobalClick = () => {
   }
 }
 
+.include-subs-trigger {
+  cursor: pointer;
+
+  :deep(.nut-form-item__label),
+  :deep(.nut-form-item__body),
+  :deep(.nut-cell__title),
+  :deep(.nut-cell__value),
+  :deep(.nut-input),
+  :deep(.nut-input-value),
+  :deep(.nut-input-inner),
+  :deep(.nut-input-right-icon),
+  :deep(input) {
+    cursor: pointer;
+  }
+
+  :deep(.include-subs-trigger-input .nut-input-inner .nut-input-right-icon) {
+    margin-left: 14px;
+  }
+}
+
 .include-subs-wrapper {
+  display: flex;
   flex-direction: column;
+  padding: 0 24px 12px;
+
+  .tag-check {
+    flex: 1;
+    min-width: 0;
+  }
 
   .radio-wrapper {
     display: flex;

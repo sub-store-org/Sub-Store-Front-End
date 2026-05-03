@@ -141,44 +141,27 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRouter, useRoute } from 'vue-router';
-  import { inject, watchEffect, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { inject, watchEffect, ref, watch } from 'vue';
+  import {
+    getEditorFoldState,
+    getEditorIsFolded,
+    setEditorFoldState,
+  } from '@/utils/editorFoldState';
   const route = useRoute();
+  const props = withDefaults(defineProps<{
+    defaultFolded?: boolean
+  }>(), {
+    defaultFolded: false,
+  });
 
   const storageKey = 'common-block-fold';
 
   function getFoldState() {
-    let states = []
-    try {
-      let raw = localStorage.getItem(storageKey)
-      states = raw ? JSON.parse(raw) : []
-      if (!Array.isArray(states)) {
-        states = []
-      }
-    } catch (e) {}
-
-    
-
-    return states.find(item => item.path === route.path)?.isFold ? true : false;
+    return getEditorIsFolded(storageKey, route.path, props.defaultFolded);
   }
   function setFoldState(isFold) {
-    let states = []
-    try {
-      let raw = localStorage.getItem(storageKey)
-      states = raw ? JSON.parse(raw) : []
-      if (!Array.isArray(states)) {
-        states = []
-      }
-    } catch (e) {}
-    states = states.filter((state) => state.path !== route.path && state.isFold);
-    if (isFold) {
-      states.unshift({ path: route.path, isFold: 1 });
-      if (states.length > 50) {
-        states.pop();
-      }
-    }
-
-    localStorage.setItem(storageKey, JSON.stringify(states));
+    setEditorFoldState(storageKey, route.path, isFold);
   }
   const isFold = ref(getFoldState());
 
@@ -209,6 +192,14 @@
     isFold.value = !isFold.value;
     setFoldState(isFold.value)
   };
+  watch(
+    () => props.defaultFolded,
+    (defaultFolded) => {
+      if (getEditorFoldState(storageKey, route.path) === undefined) {
+        isFold.value = defaultFolded;
+      }
+    },
+  );
   watchEffect(() => {
     if (!quick.args) {
       quick.args = createDefaultQuickArgs();

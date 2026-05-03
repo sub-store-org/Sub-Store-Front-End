@@ -1196,7 +1196,18 @@ export default {
     isDefaultIcon: "Restore default icon",
     isShowIcon: 'Show icon',
     isSubItemMenuFold: "Fold sub item menu",
-    isEditorCommon: "Show editor common settings",
+    isEditorCommon: "Editor common settings",
+    editorCommon: {
+      title: "Editor common settings",
+    },
+    manualSubscriptions: {
+      title: "Manually selected subscriptions",
+    },
+    editorDisplayMode: {
+      expanded: "Expanded",
+      collapsed: "Collapsed",
+      hidden: "Hidden",
+    },
     isSimpleReicon: "Show items refresh button",
     isSimpleShowRemarks: "Simple Mode Show items remarks",
     showFloatingRefreshButton: "Show floating refresh button",
