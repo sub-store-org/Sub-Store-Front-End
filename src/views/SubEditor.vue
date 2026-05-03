@@ -528,7 +528,9 @@ import { actionsToProcess } from "@/utils/actionsToPorcess";
 import {
   getEditorFoldState,
   getEditorIsFolded,
+  getEditorRouteValue,
   setEditorFoldState,
+  setEditorRouteValue,
 } from "@/utils/editorFoldState";
 import { initStores } from "@/utils/initApp";
 import draggable from "vuedraggable";
@@ -566,6 +568,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY = "manual-subscriptions-fold";
+const MANUAL_SUBSCRIPTIONS_GROUP_STORAGE_KEY = "manual-subscriptions-group";
 const subsApi = useSubsApi();
 const editType = route.params.editType as string;
 const configName = route.params.id as string;
@@ -670,6 +673,8 @@ type SubSelectRow = [string, string, string | undefined, string[] | undefined, b
     return result
   });
   const tag = ref('all');
+  const manualSubscriptionsGroupInitialized = ref(false);
+  const manualSubscriptionsGroupTouched = ref(false);
   const tagPopupVisible = ref(false);
   const tagType = ref('tag'); // 标签tag | 关联订阅标签linkTag
   const tagPopupRef = ref(null);
@@ -1326,8 +1331,60 @@ const urlValidator = (val: string): Promise<boolean> => {
         lockScroll: false,
       });
   };
+  const normalizeTagList = (value: any): string[] => {
+    const source = Array.isArray(value) ? value : String(value || "").split(",");
+    return source
+      .map((item) => String(item).trim())
+      .filter((item) => item.length);
+  };
+  const getMatchingCollectionGroup = () => {
+    const collectionTags = normalizeTagList(form.tag);
+    if (collectionTags.length === 0) return "";
+
+    const subTagSet = new Set<string>();
+    subsSelectList.value.forEach(([, , , subTags]) => {
+      normalizeTagList(subTags).forEach((item) => subTagSet.add(item));
+    });
+
+    return collectionTags.find((item) => subTagSet.has(item)) || "";
+  };
+  const isManualSubscriptionsGroupAvailable = (group: string) => {
+    if (group === "all") return true;
+    if (!Array.isArray(tags.value) || tags.value.length === 0) return false;
+
+    return tags.value.some((item) => item.value === group);
+  };
+  const applyInitialManualSubscriptionsGroup = () => {
+    if (editType !== "collections") return;
+    if (!isInit.value) return;
+    if (manualSubscriptionsGroupInitialized.value || manualSubscriptionsGroupTouched.value) return;
+    if (tag.value !== "all") return;
+
+    const rememberedGroup = getEditorRouteValue(
+      MANUAL_SUBSCRIPTIONS_GROUP_STORAGE_KEY,
+      route.path,
+    );
+    if (rememberedGroup && isManualSubscriptionsGroupAvailable(rememberedGroup)) {
+      tag.value = rememberedGroup;
+      manualSubscriptionsGroupInitialized.value = true;
+      return;
+    }
+    if (rememberedGroup && subsSelectList.value.length === 0) return;
+
+    const matchedGroup = getMatchingCollectionGroup();
+    if (!matchedGroup) return;
+
+    tag.value = matchedGroup;
+    manualSubscriptionsGroupInitialized.value = true;
+  };
   const setTag = (current) => {
+    manualSubscriptionsGroupTouched.value = true;
     tag.value = current;
+    setEditorRouteValue(
+      MANUAL_SUBSCRIPTIONS_GROUP_STORAGE_KEY,
+      route.path,
+      current,
+    );
   };
   const shouldShowElement = (element) => {
     if(tag.value === 'all') return true
@@ -1496,6 +1553,9 @@ const urlValidator = (val: string): Promise<boolean> => {
     syncSubscriptionsFromRows(mergedRows);
     syncDisplayedSubsSelectList();
   };
+  watch([() => form.tag, subsSelectList, tags, isInit], () => {
+    applyInitialManualSubscriptionsGroup();
+  }, { immediate: true, deep: true });
   watch([tag, subsSelectList], () => {
     if (isDragging.value) return;
     syncDisplayedSubsSelectList();

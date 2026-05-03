@@ -2,6 +2,7 @@ type StoredEditorFoldState = {
   path?: string;
   state?: "folded" | "unfolded";
   isFold?: boolean | number;
+  value?: string;
 };
 
 const MAX_FOLD_STATE_COUNT = 50;
@@ -48,6 +49,31 @@ export const setEditorFoldState = (
   states.unshift({
     path,
     state: isFolded ? "folded" : "unfolded",
+  });
+
+  if (states.length > MAX_FOLD_STATE_COUNT) {
+    states.length = MAX_FOLD_STATE_COUNT;
+  }
+
+  localStorage.setItem(storageKey, JSON.stringify(states));
+};
+
+export const getEditorRouteValue = (storageKey: string, path: string) => {
+  const item = readFoldStates(storageKey).find((state) => state.path === path);
+
+  return typeof item?.value === "string" ? item.value : undefined;
+};
+
+export const setEditorRouteValue = (
+  storageKey: string,
+  path: string,
+  value: string,
+) => {
+  const states = readFoldStates(storageKey).filter((state) => state.path !== path);
+
+  states.unshift({
+    path,
+    value,
   });
 
   if (states.length > MAX_FOLD_STATE_COUNT) {
