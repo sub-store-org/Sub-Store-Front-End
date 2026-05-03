@@ -1116,6 +1116,11 @@ export default {
       desc: '此列表为浏览器本地保存，更换浏览器/设备需重新添加，点击即可切换至对应后端',
       defaultName: '默认后端',
       currentTag: '当前',
+      copy: '复制链接',
+      editName: '编辑名称',
+      saveName: '保存名称',
+      cancelEditName: '取消编辑',
+      delete: '删除',
     },
     switchApi: {
       loading: '切换中...',
@@ -1128,6 +1133,7 @@ export default {
       },
       errors: {
         nameEmpty: '名称不能为空',
+        nameDuplicate: 'API 名称重复',
       },
       btn: '添加',
       duplicate: {

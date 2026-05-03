@@ -352,7 +352,10 @@ let clashMetaProxies = await produceArtifact({
     produceType: 'internal' // 'internal' produces an Array, otherwise produces a String( ProxyUtils.yaml.safeLoad('YAML String').proxies )
 })
 
-// YAML
+// Base64 encode
+// $content = ProxyUtils.Base64.encode($content ?? $files[0])
+
+// YAML parse/stringify
 // ProxyUtils.yaml.load('YAML String')
 // ProxyUtils.yaml.safeLoad('YAML String')
 // $content = ProxyUtils.yaml.safeDump({})

@@ -1129,6 +1129,11 @@ export default {
       desc: "This list is saved locally in the browser. If you change your browser/device, you will need to add it again. Click to switch to the corresponding backend.",
       defaultName: "Default",
       currentTag: "Current",
+      copy: "Copy link",
+      editName: "Edit name",
+      saveName: "Save name",
+      cancelEditName: "Cancel edit",
+      delete: "Delete",
     },
     switchApi: {
       loading: 'Switching...',
@@ -1141,6 +1146,7 @@ export default {
       },
       errors: {
         nameEmpty: "Name cannot be empty",
+        nameDuplicate: "API name already exists",
       },
       btn: "Add",
       duplicate: {

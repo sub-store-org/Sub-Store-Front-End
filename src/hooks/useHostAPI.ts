@@ -143,8 +143,16 @@ export const useHostAPI = () => {
   const editApiName = async ({ name, url}: { name: string; url: string }) => {
     const index = apis.value.findIndex(api => api.url === url);
     if (index === -1) return false;
+    if (apis.value.some((api, apiIndex) => apiIndex !== index && api.name === name)) {
+      showNotify({
+        title: 'API 名称重复',
+        type: 'danger',
+      });
+      return false;
+    }
+    const oldName = apis.value[index].name;
     apis.value[index].name = name;
-    if (currentName.value === apis.value[index].name) {
+    if (currentName.value === oldName) {
       currentName.value = name;
     }
     return true;

@@ -48,7 +48,18 @@
         <div class="api-list-item">
           <div class="api-item-left">
             <h2>
-              {{ api.name }}
+              <nut-input
+                v-if="editingApiName === api.name"
+                v-model="editApiNameInput"
+                class="api-name-input"
+                type="text"
+                input-align="left"
+                @click.stop
+                @keyup.enter.stop="saveApiName(api)"
+              />
+              <template v-else>
+                {{ api.name }}
+              </template>
               <nut-tag v-if="currentName === api.name" type="primary" plain>
                 {{ $t(`apiSettingPage.apiList.currentTag`) }}
               </nut-tag>
@@ -56,15 +67,50 @@
             <p>{{ `${api.url.slice(0, 20)}******` }}</p>
           </div>
           <div class="api-item-right">
-            <font-awesome-icon
-              class="copy-icon"
-              icon="fa-solid fa-clone"
-              @click.stop="copyApi(api)"
-            />
-            <font-awesome-icon
-              icon="fa-solid fa-xmark"
-              @click.stop="deleteApi(api.name)"
-            />
+            <template v-if="editingApiName === api.name">
+              <button
+                type="button"
+                class="api-action-btn"
+                :title="$t(`apiSettingPage.apiList.saveName`)"
+                @click.stop="saveApiName(api)"
+              >
+                <font-awesome-icon icon="fa-solid fa-floppy-disk" />
+              </button>
+              <button
+                type="button"
+                class="api-action-btn"
+                :title="$t(`apiSettingPage.apiList.cancelEditName`)"
+                @click.stop="cancelEditApiName"
+              >
+                <font-awesome-icon icon="fa-solid fa-ban" />
+              </button>
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="api-action-btn"
+                :title="$t(`apiSettingPage.apiList.copy`)"
+                @click.stop="copyApi(api)"
+              >
+                <font-awesome-icon icon="fa-solid fa-clone" />
+              </button>
+              <button
+                type="button"
+                class="api-action-btn"
+                :title="$t(`apiSettingPage.apiList.editName`)"
+                @click.stop="startEditApiName(api)"
+              >
+                <font-awesome-icon icon="fa-solid fa-pen-nib" />
+              </button>
+              <button
+                type="button"
+                class="api-action-btn"
+                :title="$t(`apiSettingPage.apiList.delete`)"
+                @click.stop="deleteApi(api.name)"
+              >
+                <font-awesome-icon icon="fa-solid fa-xmark" />
+              </button>
+            </template>
           </div>
         </div>
       </nut-cell>
@@ -166,7 +212,7 @@ const { showNotify } = useAppNotifyStore();
 const { icon, env, isEnvReady } = useBackend();
 const settingsStore = useSettingsStore();
 const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
-const { defaultAPI, currentName, apis, setCurrent, addApi, editApiName, deleteApi }
+const { defaultAPI, currentName, apis, setCurrent, addApi, editApiName: updateApiName, deleteApi }
     = useHostAPI();
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
@@ -181,6 +227,8 @@ const addForm = ref<HostAPI>({
   name: '',
   url: '',
 });
+const editingApiName = ref('');
+const editApiNameInput = ref('');
 
 
 const error = ref('');
@@ -202,6 +250,47 @@ const copyApi = async (api: HostAPI) => {
     await copyFallback(url);
   }
   showNotify({ title: url });
+};
+
+const startEditApiName = (api: HostAPI) => {
+  editingApiName.value = api.name;
+  editApiNameInput.value = api.name;
+};
+
+const cancelEditApiName = () => {
+  editingApiName.value = '';
+  editApiNameInput.value = '';
+};
+
+const saveApiName = async (api: HostAPI) => {
+  const nextName = editApiNameInput.value.trim();
+
+  if (!nextName) {
+    showNotify({
+      title: t('apiSettingPage.addApi.errors.nameEmpty'),
+      type: 'danger',
+    });
+    return;
+  }
+
+  if (nextName === api.name) {
+    cancelEditApiName();
+    return;
+  }
+
+  if (apis.value.some(item => item.url !== api.url && item.name === nextName)) {
+    showNotify({
+      title: t('apiSettingPage.addApi.errors.nameDuplicate'),
+      type: 'danger',
+    });
+    return;
+  }
+
+  const result = await updateApiName({ name: nextName, url: api.url });
+  if (result) {
+    cancelEditApiName();
+    showNotify({ title: t('magicPath.success'), type: 'success' });
+  }
 };
 
 // 验证输入
@@ -391,7 +480,7 @@ const setApi = async ({ name = '', url = '', isEditName = false }) => {
 
     let result = null;
     if (isEditName) {
-      result = await editApiName({ name: apiName, url: apiUrl });
+      result = await updateApiName({ name: apiName, url: apiUrl });
     } else {
       // 已通过 checkApiConnectivity 验证，跳过 addApi 内部的重复检查
       result = await addApi({ name: apiName, url: apiUrl }, true);
@@ -528,12 +617,15 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       cursor: pointer;
 
       .api-item-left {
         display: flex;
         flex-direction: column;
         gap: 4px;
+        flex: 1;
+        min-width: 0;
 
         :deep(.nut-tag) {
           background: transparent !important;
@@ -550,6 +642,16 @@ onMounted(() => {
           color: var(--second-text-color);
         }
 
+        .api-name-input {
+          width: 160px;
+          min-width: 0;
+          padding: 0;
+          background: transparent;
+          color: var(--second-text-color);
+          font-size: 16px;
+          font-weight: bold;
+        }
+
         > p {
           font-size: 12px;
           color: var(--comment-text-color);
@@ -557,12 +659,37 @@ onMounted(() => {
       }
 
       .api-item-right {
-        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
         color: var(--comment-text-color);
-        cursor: pointer;
 
-        .copy-icon {
-          margin-right: 16px;
+        .api-action-btn {
+          width: 28px;
+          height: 28px;
+          padding: 0;
+          border: none;
+          border-radius: 6px;
+          background: transparent;
+          color: var(--comment-text-color);
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0.78;
+
+          svg {
+            width: 15px;
+            height: 15px;
+          }
+
+          &:hover,
+          &:focus-visible {
+            background: var(--card-color);
+            color: var(--primary-color);
+            opacity: 1;
+          }
         }
       }
     }
