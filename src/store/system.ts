@@ -3,13 +3,37 @@ import { defineStore } from 'pinia';
 export const SIDEBAR_BREAKPOINT = 768;
 export const SIDEBAR_EXPANDED_BREAKPOINT = 1220;
 
+type NavigatorWithStandalone = Navigator & {
+  standalone?: boolean;
+};
+
+const isAppleStandalonePWA = () => {
+  const navigatorWithStandalone = navigator as NavigatorWithStandalone;
+
+  return (
+    (navigatorWithStandalone.standalone ||
+      window.matchMedia("(display-mode: standalone)").matches) &&
+    !/Android/.test(navigator.userAgent)
+  ) || false;
+};
+
+const isIPadLike = () =>
+  /iPad/.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+const isSmallSafeAreaDevice = () =>
+  window.innerHeight < 750 || isIPadLike();
+
+const shouldUsePwaTopInset = (state: SystemStoreState) =>
+  state.isPWA && (!state.isLandscape || state.isIPadLike);
+
 export const useSystemStore = defineStore('systemStore', {
   state: () => {
     return {
-      isPWA: (window.matchMedia("(display-mode: standalone)").matches &&
-        !/Android/.test(navigator.userAgent)) || false,
+      isPWA: isAppleStandalonePWA(),
       isLandscape: window.innerWidth > window.innerHeight,
-      isSmall: window.innerHeight < 750 || /iPad/.test(navigator.userAgent),
+      isIPadLike: isIPadLike(),
+      isSmall: isSmallSafeAreaDevice(),
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
       statusBarHeight: 0
@@ -17,23 +41,24 @@ export const useSystemStore = defineStore('systemStore', {
   },
   getters: {
     navBarHeight: (state) => {
-      return state.isPWA && !state.isLandscape ? (state.isSmall ? "78px" : "95px") : "56px";
+      return shouldUsePwaTopInset(state) ? (state.isSmall ? "78px" : "95px") : "56px";
     },
     navBartop: (state) => {
-      return state.isPWA && !state.isLandscape ? (state.isSmall ? "38px" : "55px") : "0px";
+      return shouldUsePwaTopInset(state) ? (state.isSmall ? "38px" : "55px") : "0px";
     },
     navBartopRight: (state) => {
-      return state.isPWA && !state.isLandscape ? (state.isSmall ? "52px" : "65px") : "15px";
+      return shouldUsePwaTopInset(state) ? (state.isSmall ? "52px" : "65px") : "15px";
     },
     pwaTopPadding: (state) => {
-      return state.isPWA ? (state.isSmall ? "20px" : "45px") : "45px";
+      return shouldUsePwaTopInset(state) ? (state.isSmall ? "20px" : "45px") : "0px";
     }
   },
   actions: {
     handleResize() {
       this.screenWidth = window.innerWidth;
       this.screenHeight = window.innerHeight;
-      this.isSmall = this.screenHeight < 750 || /iPad/.test(navigator.userAgent);
+      this.isIPadLike = isIPadLike();
+      this.isSmall = isSmallSafeAreaDevice();
       this.isLandscape = this.screenWidth > this.screenHeight;
       // console.log(`isPWA: ${this.isPWA}, Screen resized: ${this.screenWidth}x${this.screenHeight}, isSmall: ${this.isSmall}, isLandscape: ${this.isLandscape}`);
     },
@@ -44,8 +69,7 @@ export const useSystemStore = defineStore('systemStore', {
       this.isPWA = isPWA;
     },
     initSystemState() {
-      this.isPWA = (window.matchMedia("(display-mode: standalone)").matches &&
-        !/Android/.test(navigator.userAgent)) || false;
+      this.isPWA = isAppleStandalonePWA();
       this.handleResize();
       
       // 监听屏幕尺寸变化
