@@ -128,16 +128,16 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
               },
             },
             {
-              urlPattern: /.*\.(?:png|svg|ico|woff|ttf|eot)/i,
+              urlPattern: /.*\.(?:png|svg|ico|jpe?g|webp|avif|gif|woff2?|ttf|eot|otf)(?:\?.*)?$/i,
               handler: "CacheFirst",
               options: {
                 cacheName: "sub-store-res-cache",
                 expiration: {
-                  maxEntries: 30,
+                  maxEntries: 300,
                   maxAgeSeconds: 60 * 60 * 24 * 365,
                 },
                 cacheableResponse: {
-                  statuses: [200],
+                  statuses: [0, 200],
                 },
               },
             },
