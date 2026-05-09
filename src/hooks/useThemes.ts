@@ -5,6 +5,10 @@ import { ref, watchEffect } from 'vue';
 
 
 const mql = window.matchMedia('(prefers-color-scheme: dark)');
+const COLOR_SCHEME_META_ID = 'color__scheme';
+const COLOR_SCHEME_STORAGE_KEY = 'sub-store-color-scheme';
+
+type ColorScheme = 'light' | 'dark';
 
 // 通用变量
 const commonVariables = {
@@ -49,6 +53,25 @@ const getThemeModules = () => {
 };
 const modules = getThemeModules();
 
+const getColorScheme = (newMode: CustomTheme): ColorScheme => {
+  return modules[newMode]?.meta?.label === 'dark' ? 'dark' : 'light';
+};
+
+const syncColorScheme = (scheme: ColorScheme) => {
+  const root = document.documentElement;
+
+  root.dataset.theme = scheme;
+  root.style.setProperty('color-scheme', scheme);
+
+  const colorSchemeMeta = document.getElementById(COLOR_SCHEME_META_ID)
+    || document.querySelector('meta[name="color-scheme"]');
+  colorSchemeMeta?.setAttribute('content', scheme);
+
+  try {
+    localStorage.setItem(COLOR_SCHEME_STORAGE_KEY, scheme);
+  } catch {}
+};
+
 // 定义修改 root 变量方法
 const changeVariables = (newMode: CustomTheme) => {
   const map = { ...{ ...modules[newMode].colors }, ...commonVariables };
@@ -57,6 +80,8 @@ const changeVariables = (newMode: CustomTheme) => {
       document.documentElement.style.setProperty(`--${key}`, map[key]);
     });
   }
+
+  syncColorScheme(getColorScheme(newMode));
 
   // 切换浏览器窗口 / 状态栏颜色
   const themeColorMeta = document.getElementById('theme__color');

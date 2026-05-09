@@ -20,6 +20,32 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <link rel="mask-icon" href="/favicon.svg" color="#FFFFFF" />
   <meta id="theme__color" name="theme-color" content="#000" />
+  <meta id="color__scheme" name="color-scheme" content="light dark" />
+  <script>
+    (function () {
+      var storageKey = 'sub-store-color-scheme';
+      var scheme = null;
+
+      try {
+        scheme = localStorage.getItem(storageKey);
+      } catch {}
+
+      if (scheme !== 'dark' && scheme !== 'light') {
+        scheme =
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+      }
+
+      document.documentElement.dataset.theme = scheme;
+      document.documentElement.style.setProperty('color-scheme', scheme);
+
+      var colorSchemeMeta = document.getElementById('color__scheme');
+      if (colorSchemeMeta) {
+        colorSchemeMeta.setAttribute('content', scheme);
+      }
+    })();
+  </script>
   <link rel="manifest" href="/manifests.json" />
   <style>
     html {
@@ -27,6 +53,7 @@
       height: 100vh;
       overflow-x: hidden;
       overflow-y: auto;
+      color-scheme: light dark;
     }
 
     body {
