@@ -5,6 +5,10 @@ body {
   min-height: 100% !important;
 }
 
+html[data-darkreader-mode] body {
+  background-color: transparent !important;
+}
+
 a {
   color: inherit;
   text-decoration: none;
