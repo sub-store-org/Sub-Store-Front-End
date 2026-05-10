@@ -196,6 +196,17 @@
           />
           <nut-input
             class="input"
+            v-model="githubApiTimeoutInput"
+            :disabled="!isGitHubConfigEditing"
+            :placeholder="$t(`myPage.placeholder.githubApiTimeout`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconTimeout"
+            right-icon="tips"
+            @click-right-icon="githubApiTimeoutTips"
+          />
+          <nut-input
+            class="input"
             v-model="githubProxyInput"
             :disabled="!isGitHubConfigEditing"
             :placeholder="$t(`myPage.placeholder.githubProxy`)"
@@ -300,6 +311,17 @@
             :left-icon="iconTimeout"
             right-icon="tips"
             @click-right-icon="timeoutTips"
+          />
+          <nut-input
+            class="input"
+            v-model="githubApiTimeoutInput"
+            :disabled="!isRequestConfigEditing"
+            :placeholder="$t(`myPage.placeholder.githubApiTimeout`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconTimeout"
+            right-icon="tips"
+            @click-right-icon="githubApiTimeoutTips"
           />
         </div>
       </div>
@@ -574,7 +596,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubProxyRegex, gistUpload } =
+const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubApiTimeout, githubProxyRegex, gistUpload } =
   storeToRefs(settingsStore);
 
 const DEFAULT_GITHUB_API_URL = "https://api.github.com";
@@ -686,6 +708,7 @@ const userInput = ref("");
 const tokenInput = ref("");
 const githubProxyInput = ref("");
 const githubApiUrlInput = ref("");
+const githubApiTimeoutInput = ref("");
 const githubProxyRegexInput = ref("");
 const uaInput = ref("");
 const flowUaInput = ref("");
@@ -717,6 +740,7 @@ const toggleEditMode = async (type) => {
         gistToken: tokenInput.value,
         githubProxy: githubProxyInput.value,
         githubApiUrl: githubApiUrlInput.value,
+        githubApiTimeout: githubApiTimeoutInput.value,
         githubProxyRegex: githubProxyRegexInput.value,
         defaultUserAgent: uaInput.value,
         defaultFlowUserAgent: flowUaInput.value,
@@ -744,6 +768,7 @@ const toggleEditMode = async (type) => {
       tokenInput.value = gistToken.value;
       githubProxyInput.value = githubProxy.value;
       githubApiUrlInput.value = githubApiUrl.value || "";
+      githubApiTimeoutInput.value = githubApiTimeout.value || "";
       githubProxyRegexInput.value = githubProxyRegex.value;
       uaInput.value = defaultUserAgent.value;
       flowUaInput.value = defaultFlowUserAgent.value || "";
@@ -863,6 +888,7 @@ const setDisplayInfo = () => {
   userInput.value = githubUser.value || "";
   githubProxyInput.value = githubProxy.value || "";
   githubApiUrlInput.value = githubApiUrl.value || "";
+  githubApiTimeoutInput.value = githubApiTimeout.value || "";
   githubProxyRegexInput.value = githubProxyRegex.value || "";
   tokenInput.value = gistToken.value || "";
   uaInput.value = defaultUserAgent.value || "";
@@ -1073,6 +1099,18 @@ const githubApiUrlTips = () => {
       // onCancel: () => {
       //   window.open('https://github.com/lockcp/LiteGist');
       // },
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const githubApiTimeoutTips = () => {
+  Dialog({
+      title: 'GitHub API 请求超时',
+      content: 'GitHub API 请求可能比较慢, 可单独设置更长的超时时间。\n\n1. 单位为毫秒, 默认 10000\n\n2. 仅影响 GitHub/Gist API 请求\n\n3. 与请求配置里的默认超时相互独立',
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
       closeOnPopstate: true,
       lockScroll: false,
     });

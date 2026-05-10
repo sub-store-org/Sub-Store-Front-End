@@ -663,6 +663,7 @@ export default {
       gistToken: "Please input GitHub Token",
       githubProxy: "Please input GitHub Proxy",
       githubApiUrl: "GitHub API URL (default: https://api.github.com)",
+      githubApiTimeout: "GitHub API Request Timeout (in ms, default: 10000)",
       githubProxyRegex: "Please input GitHub proxy match regex",
       defaultUserAgent: "Please input Default User-Agent",
       defaultFlowUserAgent: "Please input Default Flow User-Agent",

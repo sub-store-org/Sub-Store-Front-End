@@ -18,6 +18,7 @@ interface SettingsPostData {
   gistToken?: string;
   githubProxy?: string;
   githubApiUrl?: string;
+  githubApiTimeout?: string;
   githubProxyRegex?: string;
   githubUser?: string;
   defaultProxy?: string;
