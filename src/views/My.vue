@@ -1064,7 +1064,7 @@ const githubProxyTips = () => {
 const githubApiUrlTips = () => {
   Dialog({
       title: 'GitHub API 地址',
-      content: `后端需 >= 2.22.21\n\n1. 默认为 ${DEFAULT_GITHUB_API_URL}\n\n2. 需使用 GitHub Gist 兼容接口\n\n3. 此时 GitHub 令牌里填入的是对应服务的 API Key 之类的\n\n4. 使用自定义 GitHub API 地址后, GitHub 加速代理不会作用于此处`,
+      content: `后端需 >= 2.22.21\n\n1. 默认为 ${DEFAULT_GITHUB_API_URL}\n\n2. 需使用 GitHub Gist 兼容接口\n\n3. 此时 GitHub 令牌里填入的是对应服务的 API Key 之类的\n\n4. 使用自定义 GitHub API 地址后, GitHub 加速代理不会作用于此处\n\n5. 项目推荐:\nEdgeGist: https://github.com/xream/EdgeGist\nLiteGist: https://github.com/lockcp/LiteGist`,
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
