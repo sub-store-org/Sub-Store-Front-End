@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           ref: "master"
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version-file: ".node-version"
       - name: Install dependencies
         run: |
           npm install -g pnpm
@@ -40,7 +40,7 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID}} # Required
           vercel-project-id: ${{ secrets.PROJECT_ID}} # Required
           working-directory: dist
-          vercel-version: '48.9.0'
+          vercel-version: "48.9.0"
       - name: zip
         run: |
           zip -r dist.zip dist

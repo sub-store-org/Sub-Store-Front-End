@@ -184,6 +184,8 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
         scss: {
           // 配置 自定义覆盖主题 和 nutui 全局 scss 变量
           additionalData: `@import "@/assets/styles/custom_variables.scss";@import "@nutui/nutui/dist/styles/variables-jdt.scss";@import '@/assets/styles/mixins.scss';`,
+          // NutUI 3 和 Vite 3 仍依赖 Sass 已弃用的 API。
+          silenceDeprecations: ["import", "legacy-js-api"],
         },
       },
     },
