@@ -10,6 +10,8 @@ interface SettingsBase {
   avatarUrl: string;
   artifactStore: string;
   artifactStoreStatus?: string;
+  hasFetchedSettings: boolean;
+  hasRemoteAppearanceSetting: boolean;
   // ishostApi: string;
 }
 

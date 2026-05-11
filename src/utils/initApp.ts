@@ -70,8 +70,8 @@ export const initStores = async (
     await subsStore.fetchSubsData();
     await new Promise((resolve) => setTimeout(resolve, 50));
     await artifactsStore.fetchArtifactsData();
-    await settingsStore.syncLocalAppearanceSetting();
     await settingsStore.fetchSettings();
+    await settingsStore.syncLocalAppearanceSetting();
 
     if (needRefreshCache) {
       const { data } = await useEnvApi().refreshCache();
