@@ -203,7 +203,7 @@
     <!-- 没有数据 -->
     <div
       v-if="!isLoading && fetchResult && !hasSubs && !hasCollections"
-      class="no-data-wrapper"
+      class="empty-state-wrapper"
     >
       <nut-empty image="empty">
         <template #description>
@@ -217,7 +217,7 @@
     </div>
 
     <!-- 数据加载失败 -->
-    <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
+    <div v-if="!isLoading && !fetchResult" class="empty-state-wrapper">
       <nut-empty image="error" style="padding: 32px 30px">
         <template #description>
           <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
@@ -702,7 +702,7 @@ const importTips = () => {
   }
 }
 
-.no-data-wrapper {
+.empty-state-wrapper {
   width: 100%;
   height: 100%;
   display: flex;

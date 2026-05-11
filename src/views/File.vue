@@ -152,7 +152,7 @@
       </div>
     </div>
     <!-- 没有数据 -->
-    <div v-if="!isLoading && fetchResult && !hasFiles" class="no-data-wrapper">
+    <div v-if="!isLoading && fetchResult && !hasFiles" class="empty-state-wrapper">
       <nut-empty image="empty">
         <template #description>
           <h3>{{ $t(`filePage.emptySub.title`) }}</h3>
@@ -167,7 +167,7 @@
     </div>
 
     <!-- 数据加载失败 -->
-    <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
+    <div v-if="!isLoading && !fetchResult" class="empty-state-wrapper">
       <nut-empty image="error" style="padding: 32px 30px">
         <template #description>
           <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
@@ -595,7 +595,7 @@ const filteredFiles = useFilteredDraggableList(files, shouldShowElement);
   }
 }
 
-.no-data-wrapper {
+.empty-state-wrapper {
   width: 100%;
   height: 100%;
   display: flex;

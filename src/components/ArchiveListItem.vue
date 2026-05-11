@@ -64,7 +64,7 @@
             <font-awesome-icon icon="fa-solid fa-reply" />
           </button>
           <button
-            class="share-sub-link archives-danger-action"
+            class="public-link-action archives-danger-action"
             :disabled="props.disabled"
             :title="$t('archivePage.entry.delete')"
             @click.stop="emit('delete', props.data)"
@@ -469,7 +469,7 @@ const nonSimpleSecondLine = computed(() => {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  .share-sub-link,
+  .public-link-action,
   .copy-sub-link,
   .refresh-sub-flow {
     background-color: transparent;

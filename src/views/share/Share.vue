@@ -3,11 +3,11 @@
     style="overflow: hidden; -webkit-user-select: none; user-select: none"
   >
     <Teleport to="body">
-      <div v-if="hasShares" class="share-nav-action-layer">
+      <div v-if="hasShares" class="link-nav-action-layer">
         <button
           v-if="!appearanceSetting.showFloatingAddButton"
           type="button"
-          class="share-top-create-button"
+          class="link-top-create-button"
           :style="{ top: shareTopSelectionOffset }"
           :aria-label="$t(`sharePage.emptyShare.btn`)"
           :title="$t(`sharePage.emptyShare.btn`)"
@@ -17,7 +17,7 @@
         </button>
         <button
           type="button"
-          class="share-top-selection-toggle"
+          class="link-top-selection-toggle"
           :style="{ top: shareTopSelectionOffset }"
           :aria-label="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
           :title="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
@@ -95,14 +95,14 @@
       </div>
       <div
         v-if="hasShares"
-        class="share-page-content"
+        class="link-page-content"
         :style="{
           paddingTop: `${radioWrapperHeight}px`,
           ...(isSelectionMode ? { paddingBottom: `${bottomSafeArea + 96}px` } : {}),
         }"
       >
         <!-- 单条订阅 -->
-        <div v-if="subShareDataCount > 0" class="share-data">
+        <div v-if="subShareDataCount > 0" class="link-section">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('sub')">
               <div class="list-title-main">
@@ -119,7 +119,7 @@
               <button
                 v-if="isSelectionMode"
                 type="button"
-                class="share-type-selection-toggle"
+                class="link-type-selection-toggle"
                 :class="{ active: isShareTypeAllSelected('sub') }"
                 :aria-label="getShareTypeSelectionA11yLabel('sub')"
                 :title="getShareTypeSelectionA11yLabel('sub')"
@@ -157,16 +157,16 @@
               >
                 <div
                   v-if="isSelectionMode"
-                  class="share-select-item"
+                  class="link-select-item"
                   :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
                     :model-value="isShareSelected(element)"
-                    class="share-select-checkbox"
+                    class="link-select-checkbox"
                     @click.stop="toggleShareSelection(element)"
                   />
-                  <div class="share-select-item-content">
+                  <div class="link-select-item-content">
                     <ShareListItem
                       :data="element"
                       :disabled="true"
@@ -185,7 +185,7 @@
           </draggable>
         </div>
         <!-- 组合订阅 -->
-        <div v-if="collectionShareDataCount > 0" class="share-data">
+        <div v-if="collectionShareDataCount > 0" class="link-section">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('col')">
               <div class="list-title-main">
@@ -206,7 +206,7 @@
               <button
                 v-if="isSelectionMode"
                 type="button"
-                class="share-type-selection-toggle"
+                class="link-type-selection-toggle"
                 :class="{ active: isShareTypeAllSelected('col') }"
                 :aria-label="getShareTypeSelectionA11yLabel('col')"
                 :title="getShareTypeSelectionA11yLabel('col')"
@@ -244,16 +244,16 @@
               >
                 <div
                   v-if="isSelectionMode"
-                  class="share-select-item"
+                  class="link-select-item"
                   :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
                     :model-value="isShareSelected(element)"
-                    class="share-select-checkbox"
+                    class="link-select-checkbox"
                     @click.stop="toggleShareSelection(element)"
                   />
-                  <div class="share-select-item-content">
+                  <div class="link-select-item-content">
                     <ShareListItem
                       :data="element"
                       :disabled="true"
@@ -272,7 +272,7 @@
           </draggable>
         </div>
         <!-- 文件 -->
-        <div v-if="fileShareDataCount > 0" class="share-data">
+        <div v-if="fileShareDataCount > 0" class="link-section">
           <div class="sticky-title-wrappers">
             <div class="list-title" @click="toggleFold('file')">
               <div class="list-title-main">
@@ -289,7 +289,7 @@
               <button
                 v-if="isSelectionMode"
                 type="button"
-                class="share-type-selection-toggle"
+                class="link-type-selection-toggle"
                 :class="{ active: isShareTypeAllSelected('file') }"
                 :aria-label="getShareTypeSelectionA11yLabel('file')"
                 :title="getShareTypeSelectionA11yLabel('file')"
@@ -327,16 +327,16 @@
               >
                 <div
                   v-if="isSelectionMode"
-                  class="share-select-item"
+                  class="link-select-item"
                   :class="{ selected: isShareSelected(element), 'is-dual-column': isDualColumnMode }"
                   @click.stop="toggleShareSelection(element)"
                 >
                   <nut-checkbox
                     :model-value="isShareSelected(element)"
-                    class="share-select-checkbox"
+                    class="link-select-checkbox"
                     @click.stop="toggleShareSelection(element)"
                   />
-                  <div class="share-select-item-content">
+                  <div class="link-select-item-content">
                     <ShareListItem
                       :data="element"
                       :disabled="true"
@@ -357,7 +357,7 @@
       </div>
     </div>
     <!-- 没有数据 -->
-    <div v-if="!isLoading && fetchResult && !hasShares" class="no-data-wrapper">
+    <div v-if="!isLoading && fetchResult && !hasShares" class="empty-state-wrapper">
       <nut-empty image="empty">
         <template #description>
           <h3>{{ $t(`sharePage.emptyShare.title`) }}</h3>
@@ -370,7 +370,7 @@
     </div>
 
     <!-- 数据加载失败 -->
-    <div v-if="!isLoading && !fetchResult" class="no-data-wrapper">
+    <div v-if="!isLoading && !fetchResult" class="empty-state-wrapper">
       <nut-empty image="error" style="padding: 32px 30px">
         <template #description>
           <h3>{{ $t(`subPage.loadFailed.title`) }}</h3>
@@ -400,10 +400,10 @@
     </div>
     <div
       v-if="hasShares && isSelectionMode"
-      class="share-selection-actions"
+      class="link-selection-actions"
       :style="{ bottom: `${bottomSafeArea + 12}px` }"
     >
-      <div class="share-selection-summary">
+      <div class="link-selection-summary">
         {{ $t(`sharePage.selectMode.selectedCount`, { count: selectedShareCount }) }}
       </div>
       <nut-button plain size="small" type="primary" @click="toggleSelectAllShares">
@@ -978,7 +978,7 @@ const confirmDeleteSelectedShares = () => {
   }
 }
 
-.no-data-wrapper {
+.empty-state-wrapper {
   width: 100%;
   height: 100%;
   display: flex;
@@ -1039,7 +1039,7 @@ const confirmDeleteSelectedShares = () => {
   align-items: center;
 }
 
-.share-type-selection-toggle {
+.link-type-selection-toggle {
   flex-shrink: 0;
   border: 1px solid var(--primary-color);
   border-radius: 999px;
@@ -1156,22 +1156,22 @@ const confirmDeleteSelectedShares = () => {
   }
 }
 
-.share-page-content {
+.link-page-content {
   width: 100%;
 }
 
-.share-data + .share-data {
+.link-section + .link-section {
   margin-top: 8px;
 }
 
-.share-nav-action-layer {
+.link-nav-action-layer {
   @include centered-fixed-container;
   top: 0;
   z-index: 21;
   pointer-events: none;
 }
 
-.share-top-selection-toggle {
+.link-top-selection-toggle {
   position: absolute;
   left: 46px;
   transform: translateY(-50%);
@@ -1188,7 +1188,7 @@ const confirmDeleteSelectedShares = () => {
   justify-content: center;
 }
 
-.share-top-create-button {
+.link-top-create-button {
   position: absolute;
   left: 80px;
   transform: translateY(-50%);
@@ -1205,24 +1205,24 @@ const confirmDeleteSelectedShares = () => {
   justify-content: center;
 }
 
-.share-top-selection-toggle svg {
+.link-top-selection-toggle svg {
   width: 14px !important;
   height: 14px !important;
   font-size: 14px !important;
 }
 
-.share-top-create-button svg {
+.link-top-create-button svg {
   width: 14px !important;
   height: 14px !important;
   font-size: 14px !important;
 }
 
-.share-top-selection-toggle:focus,
-.share-top-create-button:focus {
+.link-top-selection-toggle:focus,
+.link-top-create-button:focus {
   outline: none;
 }
 
-.share-select-item {
+.link-select-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1235,11 +1235,11 @@ const confirmDeleteSelectedShares = () => {
   }
 }
 
-.share-select-checkbox {
+.link-select-checkbox {
   flex-shrink: 0;
 }
 
-.share-select-item-content {
+.link-select-item-content {
   min-width: 0;
   flex: 1;
   display: flex;
@@ -1250,7 +1250,7 @@ const confirmDeleteSelectedShares = () => {
   }
 }
 
-.share-selection-actions {
+.link-selection-actions {
   @include centered-fixed-container;
   width: calc(100% - 1.5rem);
   max-width: calc(100% - 1.5rem);
@@ -1282,7 +1282,7 @@ const confirmDeleteSelectedShares = () => {
   }
 }
 
-.share-selection-summary {
+.link-selection-summary {
   flex: 1;
   min-width: 0;
   color: var(--primary-text-color);

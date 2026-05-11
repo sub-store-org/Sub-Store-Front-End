@@ -3,7 +3,7 @@
     class="sub-item-wrapper"
     :class="{ disabled: props.disabled, 'is-dual-column': props.isDualColumn }"
     :style="{ padding: itemPadding }"
-    data-testid="share-card"
+    data-testid="link-card"
     @click="onClickPreviews"
   >
     <div
@@ -49,7 +49,7 @@
         </h3>
 
         <div
-          class="share-item-actions"
+          class="link-item-actions"
           :style="{ top: appearanceSetting.isSimpleMode ? '8px' : '0' }"
         >
           <button
@@ -74,8 +74,8 @@
             <font-awesome-icon icon="fa-solid fa-pen-nib" />
           </button>
           <button
-            class="share-sub-link"
-            data-testid="share-delete-button"
+            class="public-link-action"
+            data-testid="link-delete-button"
             :aria-label="t('sharePage.selectMode.delete')"
             :title="t('sharePage.selectMode.delete')"
             :disabled="props.disabled"
@@ -470,14 +470,14 @@ const onClickPreviews = () => {
         margin: 0 2px;
       }
 
-      .share-item-actions {
+      .link-item-actions {
         position: relative;
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
       }
 
-        .share-sub-link,
+        .public-link-action,
         .copy-sub-link,
         .refresh-sub-flow {
         background-color: transparent;

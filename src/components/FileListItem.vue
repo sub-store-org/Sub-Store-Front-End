@@ -75,7 +75,7 @@
             </button>
             <button
               v-if="shareBtnVisible"
-              class="share-sub-link"
+              class="public-link-action"
               @click.stop="onClickShareLink"
             >
               <font-awesome-icon icon="fa-solid fa-share-nodes" />
@@ -697,7 +697,7 @@
           margin: 0 2px;
         }
         .compare-sub-link,
-        .share-sub-link,
+        .public-link-action,
         .copy-sub-link,
         .refresh-sub-flow {
           background-color: transparent;
@@ -792,7 +792,7 @@
         }
 
         .compare-sub-link,
-        .share-sub-link,
+        .public-link-action,
         .copy-sub-link,
         .refresh-sub-flow {
           padding: 0 8px;

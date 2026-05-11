@@ -1,9 +1,9 @@
 <template>
-  <div class="share-exact-datetime-field">
+  <div class="expires-datetime-field">
     <VueDatePicker
       ref="pickerRef"
       v-model="pickerValue"
-      class="share-exact-datetime-picker"
+      class="expires-datetime-picker"
       model-type="timestamp"
       :placeholder="placeholder"
       :locale="locale"
@@ -28,14 +28,14 @@
     >
       <template #trigger>
         <nut-input
-          class="nut-input-text share-exact-datetime-input"
+          class="nut-input-text expires-datetime-input"
           :border="false"
           readonly
           @click-input="openPicker"
         >
           <template #input>
             <div
-              class="share-exact-datetime-display"
+              class="expires-datetime-display"
               :class="{ 'has-value': hasValue, 'is-disabled': disabled }"
               role="button"
               :tabindex="disabled ? -1 : 0"
@@ -44,13 +44,13 @@
               @keydown.enter.prevent="openPicker"
               @keydown.space.prevent="openPicker"
             >
-              <span class="share-exact-datetime-display__text">
+              <span class="expires-datetime-display__text">
                 {{ displayText }}
               </span>
               <button
                 v-if="hasValue"
                 type="button"
-                class="share-exact-datetime-clear"
+                class="expires-datetime-clear"
                 :aria-label="clearText"
                 @click.stop="clearValue"
               >
@@ -62,7 +62,7 @@
       </template>
       <template #calendar-header="{ day, index }">
         <span
-          class="share-exact-datetime-weekday"
+          class="expires-datetime-weekday"
           :class="{ 'is-zh-locale': isChineseLocale }"
         >
           {{ getCalendarHeaderLabel(day, index) }}
@@ -146,7 +146,7 @@ const openPicker = () => {
 </script>
 
 <style lang="scss" scoped>
-.share-exact-datetime-field {
+.expires-datetime-field {
   display: flex;
   align-items: stretch;
   justify-content: flex-end;
@@ -155,7 +155,7 @@ const openPicker = () => {
   width: 100%;
 }
 
-.share-exact-datetime-picker {
+.expires-datetime-picker {
   display: block;
   flex: 1 1 auto;
   min-width: 0;
@@ -214,11 +214,11 @@ const openPicker = () => {
   --dp-scroll-bar-color: var(--lowest-text-color);
 }
 
-.share-exact-datetime-input {
+.expires-datetime-input {
   width: 100%;
 }
 
-.share-exact-datetime-display {
+.expires-datetime-display {
   position: relative;
   display: flex;
   align-items: center;
@@ -231,22 +231,22 @@ const openPicker = () => {
   outline: none;
 }
 
-.share-exact-datetime-display:focus-visible {
+.expires-datetime-display:focus-visible {
   outline: 2px solid var(--main-color);
   outline-offset: 2px;
 }
 
-.share-exact-datetime-display.has-value {
+.expires-datetime-display.has-value {
   padding-right: 26px;
   color: var(--second-text-color);
 }
 
-.share-exact-datetime-display.is-disabled {
+.expires-datetime-display.is-disabled {
   cursor: not-allowed;
   opacity: 0.75;
 }
 
-.share-exact-datetime-display__text {
+.expires-datetime-display__text {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -258,7 +258,7 @@ const openPicker = () => {
   text-overflow: ellipsis;
 }
 
-.share-exact-datetime-clear {
+.expires-datetime-clear {
   position: absolute;
   top: 50%;
   right: 0;
@@ -278,7 +278,7 @@ const openPicker = () => {
   cursor: pointer;
 }
 
-.share-exact-datetime-clear:hover {
+.expires-datetime-clear:hover {
   color: var(--second-text-color);
 }
 
@@ -310,19 +310,19 @@ const openPicker = () => {
   color: inherit;
 }
 
-:deep(.share-exact-datetime-weekday) {
+:deep(.expires-datetime-weekday) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 1.25em;
 }
 
-:deep(.share-exact-datetime-weekday.is-zh-locale) {
+:deep(.expires-datetime-weekday.is-zh-locale) {
   font-weight: 500;
 }
 
 @media (max-width: 640px) {
-  .share-exact-datetime-field {
+  .expires-datetime-field {
     width: 100%;
   }
 }

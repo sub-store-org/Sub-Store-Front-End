@@ -1,19 +1,19 @@
 <template>
-  <div class="share-editor-page">
-    <section v-if="isLoading" class="share-editor-state">
-      <div class="share-editor-state-card">
+  <div class="link-editor-page">
+    <section v-if="isLoading" class="link-editor-state">
+      <div class="link-editor-state-card">
         <h3>{{ $t("globalNotify.refresh.loading") }}</h3>
       </div>
     </section>
 
-    <section v-else-if="hasLoadError" class="share-editor-state">
+    <section v-else-if="hasLoadError" class="link-editor-state">
       <nut-empty image="error">
         <template #description>
           <h3>{{ $t("sharePage.editor.loadFailed.title") }}</h3>
           <p>{{ $t("sharePage.editor.loadFailed.desc") }}</p>
         </template>
       </nut-empty>
-      <div class="share-editor-state-actions">
+      <div class="link-editor-state-actions">
         <nut-button plain shape="round" @click="loadEditorData">
           {{ $t("sharePage.editor.loadFailed.retry") }}
         </nut-button>
@@ -34,7 +34,7 @@
             @click="showIconPopup"
           />
         </div>
-        <nut-form ref="ruleForm" class="form share-editor-form" :model-value="form">
+        <nut-form ref="ruleForm" class="form link-editor-form" :model-value="form">
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.source.label`)"
             prop="source"
@@ -257,7 +257,7 @@
           >
             <nut-input
               v-model="form.shareUrl"
-              class="nut-input-text share-url-input"
+              class="nut-input-text public-url-input"
               :border="false"
               :placeholder="$t(`sharePage.createShare.shareUrl.placeholder`)"
               type="text"
@@ -1403,7 +1403,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.share-editor-page {
+.link-editor-page {
   width: 100%;
 }
 
@@ -1532,7 +1532,7 @@ watch(
   }
 }
 
-.share-editor-state {
+.link-editor-state {
   width: min(100%, 640px);
   margin: 18px auto 0;
   padding: 0 var(--safe-area-side);
@@ -1553,7 +1553,7 @@ watch(
   }
 }
 
-.share-editor-state-card {
+.link-editor-state-card {
   padding: 20px 18px 24px;
   border-radius: var(--item-card-radios);
   background: var(--background-color);
@@ -1564,7 +1564,7 @@ watch(
   }
 }
 
-.share-editor-state-actions {
+.link-editor-state-actions {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1573,7 +1573,7 @@ watch(
   margin-top: 16px;
 }
 
-.share-editor-form {
+.link-editor-form {
   width: 100%;
 }
 
@@ -1581,7 +1581,7 @@ watch(
   opacity: 0.7;
 }
 
-.share-url-input {
+.public-url-input {
   :deep(.nut-input-value),
   :deep(.nut-input__text--readonly),
   :deep(.nut-input-box),
@@ -1644,7 +1644,7 @@ watch(
 }
 
 @media (max-width: 640px) {
-  .share-editor-state-actions {
+  .link-editor-state-actions {
     flex-direction: column;
   }
 }
