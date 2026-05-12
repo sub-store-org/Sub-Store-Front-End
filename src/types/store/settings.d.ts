@@ -21,6 +21,7 @@ interface SettingsPostData {
   githubProxy?: string;
   githubApiUrl?: string;
   githubApiTimeout?: string;
+  artifactSyncBatchSize?: string;
   githubProxyRegex?: string;
   githubUser?: string;
   defaultProxy?: string;

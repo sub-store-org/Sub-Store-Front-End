@@ -658,6 +658,7 @@ export default {
       githubProxy: '请输入 GitHub 加速代理',
       githubApiUrl: 'GitHub API 地址(默认: https://api.github.com)',
       githubApiTimeout: 'GitHub API 请求超时(单位: 毫秒, 默认: 10000)',
+      artifactSyncBatchSize: '同步上传分批大小(默认: 10)',
       githubProxyRegex: '请输入 GitHub 加速代理匹配正则',
       defaultUserAgent: '请输入默认 User-Agent',
       defaultFlowUserAgent: '请输入默认查询订阅流量信息 的 User-Agent',
