@@ -115,7 +115,7 @@
         <div v-if="filterdSubsCount > 0" class="subs-list-content">
           <div class="title-wrappers">
             <p class="list-title" @click="toggleFold('sub')">
-              <p>{{ `${$t(`specificWord.singleSub`)  }(${filterdSubsCount})` }}</p>
+              <span class="list-title-text">{{ `${$t(`specificWord.singleSub`)  }(${filterdSubsCount})` }}</span>
               <nut-icon v-if="!isFold('sub')" name="rect-down" size="12px"></nut-icon>
               <nut-icon v-else name="rect-right" size="12px"></nut-icon>
             </p>
@@ -158,7 +158,7 @@
         <div v-if="filterdColsCount > 0" class="subs-list-content">
           <div class="title-wrappers">
             <p class="list-title" @click="toggleFold('col')">
-              <p>{{ `${$t(`specificWord.collectionSub`)  }(${filterdColsCount})`}}</p>
+              <span class="list-title-text">{{ `${$t(`specificWord.collectionSub`)  }(${filterdColsCount})`}}</span>
               <nut-icon v-if="!isFold('col')" name="rect-down" size="12px"></nut-icon>
               <nut-icon v-else name="rect-right" size="12px"></nut-icon>
             </p>
@@ -742,7 +742,7 @@ const importTips = () => {
   padding-left: 8px;
   font-weight: bold;
   //padding-left: var(--safe-area-side);
-  p {
+  .list-title-text {
     margin-right: 6px;
   }
   :deep(.nut-icon) {

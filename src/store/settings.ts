@@ -98,6 +98,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       githubProxy: "",
       githubApiUrl: "",
       githubApiTimeout: "",
+      artifactSyncBatchSize: "",
       githubProxyRegex: "",
       githubUser: "",
       defaultUserAgent: "",
@@ -203,6 +204,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubProxy = res.data.data.githubProxy || "";
         this.githubApiUrl = normalizeSettingInputValue(res.data.data.githubApiUrl);
         this.githubApiTimeout = normalizeSettingInputValue(res.data.data.githubApiTimeout);
+        this.artifactSyncBatchSize = normalizeSettingInputValue(res.data.data.artifactSyncBatchSize);
         this.githubProxyRegex = res.data.data.githubProxyRegex || "";
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";
@@ -245,6 +247,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.githubProxy = res.data.data.githubProxy || "";
         this.githubApiUrl = normalizeSettingInputValue(res.data.data.githubApiUrl);
         this.githubApiTimeout = normalizeSettingInputValue(res.data.data.githubApiTimeout);
+        this.artifactSyncBatchSize = normalizeSettingInputValue(res.data.data.artifactSyncBatchSize);
         this.githubProxyRegex = res.data.data.githubProxyRegex || "";
         this.githubUser = res.data.data.githubUser || "";
         this.defaultProxy = res.data.data.defaultProxy || "";

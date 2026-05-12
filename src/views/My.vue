@@ -207,6 +207,17 @@
           />
           <nut-input
             class="input"
+            v-model="artifactSyncBatchSizeInput"
+            :disabled="!isGitHubConfigEditing"
+            :placeholder="$t(`myPage.placeholder.artifactSyncBatchSize`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconConcurrency"
+            right-icon="tips"
+            @click-right-icon="artifactSyncBatchSizeTips"
+          />
+          <nut-input
+            class="input"
             v-model="githubProxyInput"
             :disabled="!isGitHubConfigEditing"
             :placeholder="$t(`myPage.placeholder.githubProxy`)"
@@ -596,7 +607,7 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubApiTimeout, githubProxyRegex, gistUpload } =
+const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubApiTimeout, artifactSyncBatchSize, githubProxyRegex, gistUpload } =
   storeToRefs(settingsStore);
 
 const DEFAULT_GITHUB_API_URL = "https://api.github.com";
@@ -709,6 +720,7 @@ const tokenInput = ref("");
 const githubProxyInput = ref("");
 const githubApiUrlInput = ref("");
 const githubApiTimeoutInput = ref("");
+const artifactSyncBatchSizeInput = ref("");
 const githubProxyRegexInput = ref("");
 const uaInput = ref("");
 const flowUaInput = ref("");
@@ -741,6 +753,7 @@ const toggleEditMode = async (type) => {
         githubProxy: githubProxyInput.value,
         githubApiUrl: githubApiUrlInput.value,
         githubApiTimeout: githubApiTimeoutInput.value,
+        artifactSyncBatchSize: artifactSyncBatchSizeInput.value,
         githubProxyRegex: githubProxyRegexInput.value,
         defaultUserAgent: uaInput.value,
         defaultFlowUserAgent: flowUaInput.value,
@@ -769,6 +782,7 @@ const toggleEditMode = async (type) => {
       githubProxyInput.value = githubProxy.value;
       githubApiUrlInput.value = githubApiUrl.value || "";
       githubApiTimeoutInput.value = githubApiTimeout.value || "";
+      artifactSyncBatchSizeInput.value = artifactSyncBatchSize.value || "";
       githubProxyRegexInput.value = githubProxyRegex.value;
       uaInput.value = defaultUserAgent.value;
       flowUaInput.value = defaultFlowUserAgent.value || "";
@@ -889,6 +903,7 @@ const setDisplayInfo = () => {
   githubProxyInput.value = githubProxy.value || "";
   githubApiUrlInput.value = githubApiUrl.value || "";
   githubApiTimeoutInput.value = githubApiTimeout.value || "";
+  artifactSyncBatchSizeInput.value = artifactSyncBatchSize.value || "";
   githubProxyRegexInput.value = githubProxyRegex.value || "";
   tokenInput.value = gistToken.value || "";
   uaInput.value = defaultUserAgent.value || "";
@@ -1107,6 +1122,18 @@ const githubApiTimeoutTips = () => {
   Dialog({
       title: 'GitHub API 请求超时',
       content: 'GitHub API 请求可能比较慢, 可单独设置更长的超时时间。\n\n1. 单位为毫秒, 默认 10000\n\n2. 仅影响 GitHub/Gist API 请求\n\n3. 与请求配置里的默认超时相互独立',
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const artifactSyncBatchSizeTips = () => {
+  Dialog({
+      title: '同步上传分批大小',
+      content: '同步全部配置时, 每批上传几个配置文件。\n\n1. 默认 10\n\n2. 较小的值可降低 Gist 兼容 API 的单次请求压力, 但会增加请求次数',
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
