@@ -76,6 +76,7 @@
         'masque',
         'anytls',
         'trusttunnel',
+        'openvpn',
         'tailscale',
         'wireguard',
         'ssh',

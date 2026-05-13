@@ -542,6 +542,7 @@ export default {
             "MASQUE",
             "AnyTLS",
             'TrustTunnel',
+            'OpenVPN',
             'Tailscale',
             "WireGuard",
             "SSH",
