@@ -179,7 +179,15 @@
         type === "sub" ? "" : "collection/"
         }${encodeURIComponent(name)}${Object.keys(query).length > 0 ? `?${Object.entries(query).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&')}` : ''}`; 
     }
-    return preview ? `/preview?url=${encodeURIComponent(previewUrl)}&name=${encodeURIComponent(displayName || name)}` : previewUrl
+    if (!preview) {
+      return previewUrl;
+    }
+
+    return buildUrlWithQuery('/preview', {
+      url: previewUrl,
+      name: displayName || name,
+      api: host.value,
+    });
   }
   const targetCopy = async (path: string) => {
     const url = getUrl(path);
