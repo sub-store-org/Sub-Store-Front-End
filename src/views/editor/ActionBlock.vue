@@ -38,7 +38,7 @@
         ghostClass: 'ghost',
         chosenClass: 'chosen',
         dragClass: 'dragging',
-        delay: 150,
+        delay: 0,
         handle: '.drag-handler',
       }"
       @end="drag = false"
