@@ -7,7 +7,10 @@
       <nut-radiogroup direction="horizontal" v-model="value">
         <nut-radio v-for="(key, index) in opt[type]" :label="key" :key="index"
           >
-          <div class="input-wrapper" v-if="type === 'Resolve Domain Operator' && value==='Custom' && key==='Custom'">
+          <div
+            class="input-wrapper compact-input-wrapper compact-input-wrapper--custom"
+            v-if="type === 'Resolve Domain Operator' && value==='Custom' && key==='Custom'"
+          >
             <nut-input placeholder="目前仅支持 DoH" v-model="rdoUrl" />
           </div>
           <div v-else>
@@ -19,11 +22,21 @@
       </nut-radiogroup>
     </div>
     <template v-if="type === 'Resolve Domain Operator' && rdoNewVersion">
-      <div class="radio-wrapper options-radio">
+      <div class="radio-wrapper options-radio edns-input-option">
         <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DoH 会携带此参数, 可能会影响解析结果)</p>
-        <div class="input-wrapper">
-            <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
-          </div>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--edns">
+          <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
+        </div>
+      </div>
+      <div class="radio-wrapper options-radio inline-input-option">
+        <p class="des-label">{{ $t(`editorPage.subConfig.nodeActions['${type}'].concurrency`) }}</p>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--concurrency">
+          <nut-input
+            type="number"
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].concurrencyPlaceholder`)"
+            v-model="rdoConcurrency"
+          />
+        </div>
       </div>
       <div class="radio-wrapper options-radio">
         <p class="des-label" style="cursor: pointer" @click="rdoTypeInfo">解析类型(IPv6 兼容 IP4P <font-awesome-icon icon="fa-solid fa-circle-question"/>)</p>
@@ -133,6 +146,16 @@
   const rdoCache = ref('enabled');
   const rdoUrl = ref('');
   const rdoEdns = ref('');
+  const rdoConcurrency = ref('');
+
+  const normalizeRdoConcurrency = () => {
+    const value = `${rdoConcurrency.value ?? ''}`.trim();
+    return value || undefined;
+  };
+
+  const getInitialRdoConcurrency = (value) => {
+    return `${value ?? ''}`.trim();
+  };
 
   const showTwTips = () => {
     Toast.text('免责声明: 本操作仅将 Emoji 旗帜进行替换以便于显示, 不包含任何政治意味');
@@ -180,13 +203,14 @@
           rdoCache.value = item.args?.cache ?? 'enabled';
           rdoUrl.value = item.args?.url ?? '';
           rdoEdns.value = item.args?.edns;
+          rdoConcurrency.value = getInitialRdoConcurrency(item.args?.concurrency);
           break;
       }
     }
   });
 
   // 值变化时实时修改 form 的数据
-  watch([value, rdoFilter, rdoCache, rdoUrl, rdoEdns, rdoType, foTw], () => {
+  watch([value, rdoFilter, rdoCache, rdoUrl, rdoEdns, rdoConcurrency, rdoType, foTw], () => {
     if (['IPv6', 'IP4P'].includes(rdoType.value) && ['IP-API'].includes(value.value)) {
       showNotify({
         title: `${value.value} 不支持 ${rdoType.value}`,
@@ -212,6 +236,7 @@
           cache: rdoCache.value,
           url: rdoUrl.value,
           edns: rdoEdns.value,
+          concurrency: normalizeRdoConcurrency(),
         };
         break;
     }
@@ -253,6 +278,66 @@
       margin-right: 16px;
       border-bottom: 1px solid var(--lowest-text-color);
       color: var(--second-text-color);
+    }
+  }
+  .compact-input-wrapper {
+    > view.nut-input {
+      min-height: 26px;
+      height: 26px;
+      padding: 2px 8px;
+      margin-right: 0;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    :deep(.nut-input) {
+      min-height: 26px;
+      height: 26px;
+      padding: 2px 8px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    :deep(.nut-input-inner),
+    :deep(.nut-input-value),
+    :deep(.nut-input-box),
+    :deep(.nut-input-text),
+    :deep(input) {
+      min-height: 20px;
+      height: 20px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+  .compact-input-wrapper--custom {
+    max-width: 220px;
+  }
+  .compact-input-wrapper--edns {
+    max-width: 520px;
+  }
+  .compact-input-wrapper--concurrency {
+    flex: 0 1 280px;
+    max-width: 280px;
+  }
+  .edns-input-option {
+    .des-label {
+      margin-bottom: 2px;
+    }
+  }
+  .inline-input-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 0 6px;
+
+    .des-label {
+      flex: 0 0 auto;
+      margin-bottom: 0;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      min-width: 0;
     }
   }
 </style>

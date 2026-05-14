@@ -500,6 +500,8 @@ export default {
             "IPv6 Only",
           ],
           cache: ["Enabled", "Disabled"],
+          concurrency: "Request Concurrency",
+          concurrencyPlaceholder: "Default 15. Keep proxy apps at 20 or less",
           tipsTitle: "domain Tips",
           tipsDes: "Operation instructions for node domain name resolution",
         },
