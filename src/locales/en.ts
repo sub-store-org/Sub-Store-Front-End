@@ -533,6 +533,7 @@ export default {
             "VLESS",
             "Trojan",
             "HTTP(s)",
+            "HTTP/2 CONNECT",
             "SOCKS5",
             "Snell",
             "TUIC",

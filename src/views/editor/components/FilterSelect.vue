@@ -65,6 +65,7 @@
         'vless',
         'trojan',
         'http',
+        'h2-connect',
         'socks5',
         'snell',
         'tuic',
