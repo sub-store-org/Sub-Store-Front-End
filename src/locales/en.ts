@@ -546,6 +546,7 @@ export default {
             "AnyTLS",
             'TrustTunnel',
             'OpenVPN',
+            'GOST Relay',
             'Tailscale',
             "WireGuard",
             "SSH",

@@ -78,6 +78,7 @@
         'anytls',
         'trusttunnel',
         'openvpn',
+        'gost-relay',
         'tailscale',
         'wireguard',
         'ssh',
