@@ -113,12 +113,50 @@
                 ></nut-checkbox>
                 <span @click="toggleActionSwitch(element.id)">{{ $t(`editorPage.subConfig.actions.enable`) }}</span>
               </div>
-              <div class="preview-switch">
+              <div
+                v-if="isPreviewSwitchDisabled(element)"
+                class="preview-switch-popover"
+                @mouseenter="showPreviewTooltip(element.id)"
+                @mouseleave="hidePreviewTooltip(element.id)"
+                @focusin="showPreviewTooltip(element.id)"
+                @focusout="hidePreviewTooltip(element.id)"
+              >
+                <nut-popover
+                  v-model:visible="previewTooltipVisible[element.id]"
+                  location="top"
+                  theme="dark"
+                  custom-class="preview-switch-nut-popover"
+                  :overlay="false"
+                  :close-on-click-outside="true"
+                >
+                  <template #reference>
+                    <div
+                      class="preview-switch preview-switch--disabled"
+                      @click.stop="showPreviewTooltip(element.id)"
+                    >
+                      <nut-checkbox
+                        v-model="getItem(element.id)[1]"
+                        disabled
+                        class="my-switch"
+                      ></nut-checkbox>
+                      <span>
+                        {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
+                      </span>
+                    </div>
+                  </template>
+                  <template #content>
+                    <span class="preview-switch-tooltip">
+                      {{ $t(`editorPage.subConfig.basic.previewDisabledResponseOnlyTips`) }}
+                    </span>
+                  </template>
+                </nut-popover>
+              </div>
+              <div v-else class="preview-switch">
                 <nut-checkbox
                   v-model="getItem(element.id)[1]"
                   class="my-switch"
                 ></nut-checkbox>
-                <span @click="togglePreviewSwitch(element.id)">
+                <span @click="togglePreviewSwitch(element)">
                   {{ $t(`editorPage.subConfig.basic.previewSwitch`) }}
                 </span>
               </div>
@@ -237,7 +275,7 @@ let items = types.map(type => {
 });
 
 if (sourceType === 'file') {
-  items = items.filter(item => ['Script Operator'].includes(item.value));
+  items = items.filter(item => ['Script Operator', 'Response Transformer'].includes(item.value));
 }
 const columns = ref(items);
 if(isCollapsed.value) {
@@ -354,12 +392,21 @@ const emit = defineEmits(['addAction', 'deleteAction', 'updateCustomNameModeFlag
 const toggleActionSwitch = (id: string) => {
   emit('toggleAction', id);
 };
+const isPreviewSwitchDisabled = (element) => element.type === 'Response Transformer';
+const previewTooltipVisible = reactive<Record<string, boolean>>({});
+const showPreviewTooltip = (id: string) => {
+  previewTooltipVisible[id] = true;
+};
+const hidePreviewTooltip = (id: string) => {
+  previewTooltipVisible[id] = false;
+};
 // 获取绑定的对应预览开关
 const getItem = (id: string) => {
   return checked.find(item => item[0] === id);
 };
-const togglePreviewSwitch = (id: string) => {
-  const item = getItem(id);
+const togglePreviewSwitch = (element) => {
+  if (isPreviewSwitchDisabled(element)) return;
+  const item = getItem(element.id);
   return item[1] = !item[1];
 };
 
@@ -683,6 +730,37 @@ defineExpose({ exitAllEditName });
             font-size: 16px;
           }
         }
+        &--disabled {
+          color: var(--comment-text-color);
+          opacity: 0.48;
+          filter: grayscale(1);
+          cursor: help;
+
+          span {
+            color: var(--comment-text-color);
+          }
+        }
+      }
+      .preview-switch-popover {
+        display: flex;
+        align-items: center;
+
+        :deep(.nut-popover-wrapper) {
+          display: flex;
+          align-items: center;
+        }
+
+        :deep(.preview-switch-nut-popover) {
+          position: fixed;
+          z-index: 2200;
+        }
+      }
+      .preview-switch-tooltip {
+        display: block;
+        max-width: 220px;
+        padding: 2px 4px;
+        line-height: 1.45;
+        white-space: normal;
       }
       .icon-button {
         padding: 0 8px;

@@ -693,7 +693,7 @@ watchEffect(() => {
     if (sourceData.process.length > 0) {
       form.process.forEach((item) => {
         const { type, id, customName, disabled } = item;
-        actionsChecked.push([id, true]);
+        actionsChecked.push([id, type !== "Response Transformer"]);
         const action = {
           type,
           id,
@@ -704,6 +704,7 @@ watchEffect(() => {
         };
         switch (type) {
           case "Script Operator":
+          case "Response Transformer":
             action.component = shallowRef(Script);
             break;
           default:

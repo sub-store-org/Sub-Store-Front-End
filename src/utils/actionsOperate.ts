@@ -16,6 +16,7 @@ export const addItem = (
   const type = selectedOptions[0].value;
   const args = selectedOptions[0].args;
   const enabled = true;
+  const previewEnabled = type !== 'Response Transformer';
   const customName = selectedOptions[0].customName || "";
   const obj = {
     id,
@@ -26,7 +27,7 @@ export const addItem = (
     enabled,
   };
 
-  actionsChecked.push([id, true]);
+  actionsChecked.push([id, previewEnabled]);
   switch (type) {
     case 'Flag Operator':
     case 'Sort Operator':
@@ -66,6 +67,7 @@ export const addItem = (
       break;
     case 'Script Filter':
     case 'Script Operator':
+    case 'Response Transformer':
       obj.component = shallowRef(Script);
       form.process.push({
         id,

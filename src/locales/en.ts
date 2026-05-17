@@ -279,6 +279,7 @@ export default {
       basic: {
         label: "Subscription Config",
         previewSwitch: "Preview",
+        previewDisabledResponseOnlyTips: "Modify Response runs only before sending the download response. Instant preview does not execute it.",
         nodeActionsHelp: "Node Actions Help",
         name: {
           label: "Name",
@@ -636,6 +637,29 @@ export default {
           openEditorBtn: "Open Code Editor",
           tipsTitle: "Script Operator Tips",
           tipsDes: "Use a JavaScript script to modify node information",
+          paramsEdit: 'Edit Parameters',
+          noCache: 'noCache',
+          insecure: 'insecure',
+          helpTitle: 'Tips',
+          noCacheTips: 'When the cache is turned off, the script is refetched for each request.',
+          insecureTips: 'When the insecure is turned on, the server certificate will not be verified.',
+          paramsEditTips: 'Visual parameter editor, duplicate key names will adopt the principle of prioritizing the latter value.',
+          paramsAdd: 'Add',
+          paramsDelete: 'Delete',
+          paramsOptions: 'Options',
+          paramsEmpty: 'No parameters',
+          duplicateKeyWarning: 'Duplicate key names',
+        },
+        "Response Transformer": {
+          label: "Modify Response",
+          options: ["Remote Link", "Local Content"],
+          des: ["Type", "Content"],
+          placeholder:
+            "Input Script Link or Internal File like /api/file/name. In addition to the parameters of the script itself, there is support for additional parameters: noCache - do not use cache, insecure - do not verify the server certificate. For example: http://a.com#a=1&b=2#noCache&insecure",
+          openEditorBtn: "Open Code Editor",
+          tipsTitle: "Modify Response Tips",
+          tipsDes:
+            "Use a JavaScript script to modify the status code, headers, or body before sending the download response. Instant preview does not execute it.",
           paramsEdit: 'Edit Parameters',
           noCache: 'noCache',
           insecure: 'insecure',

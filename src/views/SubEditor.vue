@@ -910,7 +910,7 @@ watchEffect(() => {
       const { type, id, customName, disabled } = item;
 
       if (!ignoreList.includes(type)) {
-        actionsChecked.push([id, true]);
+        actionsChecked.push([id, type !== "Response Transformer"]);
         const action = {
           type,
           id,
@@ -940,6 +940,7 @@ watchEffect(() => {
             break;
           case "Script Filter":
           case "Script Operator":
+          case "Response Transformer":
             action.component = shallowRef(Script);
             break;
           default:

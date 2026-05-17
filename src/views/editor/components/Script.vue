@@ -331,7 +331,22 @@ const handleLinkValueChange = () => {
   }
 };
 let placeholders
-if(sourceType === "file") {
+if (type === 'Response Transformer') {
+  placeholders = `// Modify Response
+// 1. shortcut script
+$res.status = 200
+$res.header['X-Custom'] = 'new'
+$res.header['X-Powered-By'] = undefined // removeHeader
+$res.body = $res.body
+
+// 2. transform function
+async function transformFunction(res, context) {
+  // res.status: HTTP status code
+  // res.header / res.headers: response headers
+  // res.body: response body
+  return res
+}`
+} else if(sourceType === "file") {
   placeholders = `// Example:
 // $files: ['0', '1']
 // $content: '0\\n1'
