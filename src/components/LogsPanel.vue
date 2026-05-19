@@ -160,7 +160,7 @@
         </div>
       </div>
       <nut-empty
-        v-else-if="hasLoadedLogs && !isLoading && logs.length === 0"
+        v-else-if="hasLoadedLogs && logs.length === 0"
         image="empty"
         :description="$t('logsPage.empty')"
       />
