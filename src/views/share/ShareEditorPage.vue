@@ -345,6 +345,7 @@ import IconPopup from "@/views/icon/IconPopup.vue";
 import { useShareApi } from "@/api/share";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from "@/hooks/useHostAPI";
+import { getLocaleConfig, normalizeLocale } from "@/locales/languages";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
@@ -480,7 +481,7 @@ const isDatetimeInputDarkTheme = computed(() => {
   return label ? label === "dark" : preferredDark.value;
 });
 const datetimePickerLocale = computed(() => {
-  return locale.value === "zh" ? "zh-CN" : "en-US";
+  return getLocaleConfig(normalizeLocale(locale.value)).datePickerLocale;
 });
 
 const currentTag = computed(() => form.tag || "");

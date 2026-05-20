@@ -28,14 +28,14 @@
       </div>
       <nut-cell
         v-for="lang in langList"
-        :key="lang"
-        :title="t(`navBar.langSwitcher.${lang}`)"
-        :class="{ selected: lang === currentLocale }"
-        @click="changeLang(lang)"
+        :key="lang.key"
+        :title="t(lang.labelKey)"
+        :class="{ selected: lang.key === currentLocale }"
+        @click="changeLang(lang.key)"
       >
         <template #icon>
           <font-awesome-icon
-            v-if="lang === currentLocale"
+            v-if="lang.key === currentLocale"
             class="fa-lg"
             icon="fa-solid fa-check"
           />
@@ -48,6 +48,12 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+
+import {
+  SUPPORTED_LOCALES,
+  normalizeLocale,
+  type SupportedLocale,
+} from "@/locales/languages";
 
 const props = withDefaults(
   defineProps<{
@@ -62,14 +68,13 @@ const props = withDefaults(
 
 const { t, locale } = useI18n();
 const showLangSwitchPopup = ref(false);
-const langList = ["zh", "en"];
+const langList = SUPPORTED_LOCALES;
 
 const currentLocale = computed(() => {
-  const normalizedLocale = String(locale.value || "").slice(0, 2);
-  return langList.includes(normalizedLocale) ? normalizedLocale : "zh";
+  return normalizeLocale(String(locale.value || ""));
 });
 
-const changeLang = (type: string) => {
+const changeLang = (type: SupportedLocale) => {
   locale.value = type;
   localStorage.setItem("locale", type);
   showLangSwitchPopup.value = false;

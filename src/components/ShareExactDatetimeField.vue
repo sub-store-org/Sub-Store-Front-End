@@ -111,7 +111,14 @@ const defaultStartTime = Object.freeze({
 const chineseWeekdayLabels = Object.freeze(["一", "二", "三", "四", "五", "六", "日"]);
 const displayFormat = "yyyy-MM-dd HH:mm";
 const isChineseLocale = computed(() => props.locale.toLowerCase().startsWith("zh"));
-const clearText = computed(() => (isChineseLocale.value ? "清空日期时间" : "Clear date and time"));
+const isRussianLocale = computed(() =>
+  props.locale.toLowerCase().startsWith("ru"),
+);
+const clearText = computed(() => {
+  if (isChineseLocale.value) return "清空日期时间";
+  if (isRussianLocale.value) return "Очистить дату и время";
+  return "Clear date and time";
+});
 const formattedModelValue = computed(() => formatShareTimestamp(props.modelValue));
 const hasValue = computed(() => Boolean(formattedModelValue.value));
 const displayText = computed(() => formattedModelValue.value || props.placeholder);

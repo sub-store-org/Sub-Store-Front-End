@@ -57,10 +57,11 @@ export default {
   // 顶部标题栏
   navBar: {
     langSwitcher: {
-      cellTitle: 'Tap a language to switch',
+      cellTitle: '轻点语言以切换',
       zh: '简体中文',
       en: 'English',
-      language: "Language",
+      ru: 'Русский',
+      language: "语言",
     },
     listView: {
       switchToSingle: '切换为单列',
@@ -496,13 +497,13 @@ export default {
           insecure: '不验证服务器证书',
           helpTitle: '温馨提示',
           noCacheTips: '关闭缓存后, 每次请求都会重新获取脚本内容',
+          insecureTips: '开启后，将不对服务器证书进行验证。',
           paramsEditTips: '可视化参数编辑器，重复键名将采用后值优先原则',
           paramsAdd: '添加参数',
           paramsDelete: '删除',
           paramsOptions: '操作',
           paramsEmpty: '暂无参数数据',
           duplicateKeyWarning: '重复的键名',
-          insecureTips: '开启后，将不对服务器证书进行验证。',
         },
         'Response Transformer': {
           label: '修改响应',
@@ -517,13 +518,13 @@ export default {
           insecure: '不验证服务器证书',
           helpTitle: '温馨提示',
           noCacheTips: '关闭缓存后, 每次请求都会重新获取脚本内容',
+          insecureTips: '开启后，将不对服务器证书进行验证。',
           paramsEditTips: '可视化参数编辑器，重复键名将采用后值优先原则',
           paramsAdd: '添加参数',
           paramsDelete: '删除',
           paramsOptions: '操作',
           paramsEmpty: '暂无参数数据',
           duplicateKeyWarning: '重复的键名',
-          insecureTips: '开启后，将不对服务器证书进行验证。',
         },
         'Flag Operator': {
           label: '旗帜操作',
@@ -659,6 +660,7 @@ export default {
           insecure: '不验证服务器证书',
           helpTitle: '温馨提示',
           noCacheTips: '关闭缓存后, 每次请求都会重新获取脚本内容',
+          insecureTips: '开启后，将不对服务器证书进行验证。',
           paramsEditTips: '可视化参数编辑器，重复键名将采用后值优先原则',
           paramsAdd: '添加参数',
           paramsDelete: '删除',
@@ -1044,6 +1046,7 @@ export default {
     emptyShare: {
       title: '你还没有创建分享',
       desc: '创建分享后开始使用',
+      emptyTips: '请到订阅、文件管理页添加分享',
       btn: '立即创建',
     },
     deleteShare: {
