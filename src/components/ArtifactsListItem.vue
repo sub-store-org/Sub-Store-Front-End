@@ -31,7 +31,7 @@
           </h3>
           <div class="title-right-wrapper" v-if="!appearanceSetting.isSimpleMode">
             <button
-              v-if="!appearanceSetting.isShowIcon && artifact.url"
+              v-if="!appearanceSetting.isShowIcon && artifactUrl"
               class="copy-sub-link"
               @click.stop="openUrl"
             >
@@ -40,7 +40,7 @@
             <button
               class="copy-sub-link"
               style="padding: 0 12px"
-              v-if="artifact.url"
+              v-if="artifactUrl"
               @click.stop="onClickCopyLink"
             >
               <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
@@ -78,14 +78,14 @@
               <div v-if="appearanceSetting.isSimpleMode">
                 <div class="simple-actions">
                 <button
-                  v-if="!appearanceSetting.isShowIcon && artifact.url"
+                  v-if="!appearanceSetting.isShowIcon && artifactUrl"
                   class="copy-sub-link"
                   @click.stop="openUrl"
                 >
                   <font-awesome-icon icon="fa-solid fa-eye" />
                 </button>
                 <button
-                  v-if="artifact.url"
+                  v-if="artifactUrl"
                   class="copy-sub-link"
                   style="padding: 0 12px"
                   @click.stop="onClickCopyLink"
@@ -250,6 +250,9 @@ const artifact = computed(() => {
   return artifacts.value.find((item) => item.name === props.name);
 });
 const emit = defineEmits(["edit"]);
+const artifactUrl = computed(() => {
+  return artifact.value?.upload === false ? "" : artifact.value?.url || "";
+});
 
 const displayName = computed(() => {
   return (
@@ -354,8 +357,8 @@ const sourceUrl = computed(() => {
 });
 
 const openUrl = () => {
-  if (artifact.value.url) {
-    window.open(artifact.value.url);
+  if (artifactUrl.value) {
+    window.open(artifactUrl.value);
   }
 };
 
@@ -540,15 +543,15 @@ const swipeController = () => {
 
 const onClickCopyLink = async () => {
   if (isSupported) {
-    await copy(encodeURI(artifact.value.url));
+    await copy(encodeURI(artifactUrl.value));
   } else {
-    await copyFallback(encodeURI(artifact.value.url));
+    await copyFallback(encodeURI(artifactUrl.value));
   }
   showNotify({ title: t("syncPage.copyNotify.succeed"), type: "success" });
 };
 
 const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {
-  const shouldShowToast = artifact.value.updated
+  const shouldShowToast = Boolean(artifactUrl.value);
   if (shouldShowToast) {
     Toast.loading("正在删除...", {
       cover: true,

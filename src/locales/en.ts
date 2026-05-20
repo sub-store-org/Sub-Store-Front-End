@@ -14,6 +14,7 @@ export default {
     or: "or",
     type: "Type",
     none: "None",
+    confirm: "Confirm",
   },
   globalNotify: {
     refresh: {
@@ -877,13 +878,13 @@ export default {
     },
     detail: {
       firstLine: "Type: {type}, Source: {name}",
-      secondLine: "Last Time: {time}",
-      notSync: "Not sync yet",
+      secondLine: "Last run: {time}",
+      notSync: "Not run yet",
     },
     deleteArt: {
       title: "Delete Sync Configuration",
-      desc: "Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been synced before, an attempt will be made to delete gist files with the original filename and the encoded filename.",
-      archiveExtra: "⚠️ If this sync configuration has been synced before, the original filename and encoded filename will still be removed from gist when possible.",
+      desc: "Are you sure to delete sync configuration {displayName}? \nDeleted cannot be restored!\n\n⚠️ If the current item has been uploaded before, an attempt will be made to delete gist files with the original filename and the encoded filename.",
+      archiveExtra: "⚠️ If this sync configuration has been uploaded before, the original filename and encoded filename will still be removed from gist when possible.",
       succeedNotify: "Successfully deleted!",
       remotePlaceholderNotice: "The remote configuration file was deleted, and a placeholder file was kept to prevent the Gist from becoming empty.",
       remoteDeleteFailedNotice: "The sync configuration was deleted, but deleting the remote configuration file failed. Check logs for details.",
@@ -916,6 +917,14 @@ export default {
         label: "Source",
         isRequired: "Source is required",
         placeholder: "Please select a source",
+      },
+      upload: {
+        label: "Upload Artifact",
+        tips: {
+          title: "Upload Artifact",
+          content:
+            "Requires backend >= 2.23.16.\n\nWhen enabled, scheduled sync uploads the generated artifact to the current sync storage, such as Gist.\n\nWhen disabled, scheduled sync only runs artifact generation and updates the last run time. It does not upload or create a new Gist URL. Use this to refresh caches, or to run custom upload/backup logic in subscriptions/files, such as uploading to another Gist or backing up/restoring via WebDAV.\n\nReferences:\nhttps://t.me/zhetengsha/1428\nhttps://t.me/zhetengsha/5261",
+        },
       },
       includeUnsupportedProxy: {
         label: "Includes unsupported protocols",

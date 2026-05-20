@@ -1738,7 +1738,7 @@ const handleEditGlobalClick = () => {
   .label-with-tip {
     display: inline-flex;
     align-items: center;
-    gap: 2px;
+    gap: 6px;
     cursor: pointer;
 
     :deep(.nut-icon) {

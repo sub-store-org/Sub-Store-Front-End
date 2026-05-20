@@ -14,6 +14,7 @@ export default {
     or: '或',
     type: '类型',
     none: '无',
+    confirm: '确定',
   },
   globalNotify: {
     refresh: {
@@ -868,13 +869,13 @@ export default {
     },
     detail: {
       firstLine: '类型：{type}，来源：{name}',
-      secondLine: '上次同步：{time}',
-      notSync: '从未同步',
+      secondLine: '上次执行：{time}',
+      notSync: '从未执行',
     },
     deleteArt: {
       title: '删除同步配置',
-      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置进行过同步, 将尝试原文件名和编码后的文件名对应的文件',
-      archiveExtra: '⚠️ 若当前同步配置进行过同步, 仍会继续尝试删除原文件名和编码后的文件名对应的文件',
+      desc: '是否确认删除同步配置 {displayName}？删除后不可恢复！\n\n⚠️ 若当前同步配置上传过, 将尝试原文件名和编码后的文件名对应的文件',
+      archiveExtra: '⚠️ 若当前同步配置上传过, 仍会继续尝试删除原文件名和编码后的文件名对应的文件',
       succeedNotify: '删除同步配置成功！',
       remotePlaceholderNotice: '远端配置文件已删除，并保留占位文件防止 Gist 被删空',
       remoteDeleteFailedNotice: '同步配置已删除，但远端配置文件删除失败，详情请查看日志',
@@ -910,6 +911,13 @@ export default {
       platform: {
         label: '目标平台',
         isRequired: '目标平台不能为空',
+      },
+      upload: {
+        label: '上传产物',
+        tips: {
+          title: '上传产物',
+          content: '后端需 >= 2.23.16\n\n开启后，定时同步会在生成产物后上传到当前同步仓库（如 Gist）。\n\n关闭后，定时同步只执行产物生成并更新上次执行时间，不上传，也不会生成新的 Gist 链接。适合刷新缓存，或在订阅/文件脚本中执行自己的上传、备份逻辑，例如上传到其他 Gist，或通过 WebDAV 备份/恢复数据。\n\n参考:\nhttps://t.me/zhetengsha/1428\nhttps://t.me/zhetengsha/5261',
+        },
       },
       includeUnsupportedProxy: {
         label: '包含不支持的协议(详见文档)',

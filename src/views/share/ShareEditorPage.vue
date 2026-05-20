@@ -1473,7 +1473,7 @@ watch(
       }
 
       .nut-input-left-icon {
-        margin-right: 10px;
+        margin-right: 6px;
       }
 
       .nut-input-right-icon {

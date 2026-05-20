@@ -401,17 +401,17 @@
 
       .label {
         color: var(--comment-text-color);
-        display: flex;
-        justify-content: space-between;
+        display: inline-flex;
         align-items: center;
+        gap: 6px;
+
         p {
           margin: 0;
           text-align: left;
-          padding-right: 20px;
         }
+
         .nut-icon {
           flex-shrink: 0;
-          margin-right: 6px;
         }
       }
 

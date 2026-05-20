@@ -140,6 +140,18 @@
           />
         </nut-form-item>
 
+        <nut-form-item class="upload-wrapper">
+          <template #label>
+            <div class="label" @click="uploadTips">
+              <p>{{ $t(`syncPage.addArtForm.upload.label`) }}</p>
+              <nut-icon name="tips"></nut-icon>
+            </div>
+          </template>
+          <div class="switch-wrapper">
+            <nut-switch v-model="form.upload" />
+          </div>
+        </nut-form-item>
+
         <template
           v-if="
             sourceInput &&
@@ -295,6 +307,7 @@ const form = reactive<any>({
   type: "file",
   platform: "Stash",
   sync: false,
+  upload: true,
   includeUnsupportedProxy: false,
   prettyYaml: false,
 });
@@ -425,6 +438,7 @@ watchEffect(() => {
   form.type = sourceData.type;
   form.platform = sourceData.platform || "Stash";
   form.sync = sourceData.sync ?? false;
+  form.upload = sourceData.upload !== false;
   form.includeUnsupportedProxy = sourceData.includeUnsupportedProxy ?? false;
   form.prettyYaml = sourceData.prettyYaml ?? false;
   form.updated = sourceData.updated;
@@ -467,6 +481,17 @@ const includeUnsupportedProxyTips = () => {
   window.open(
     "https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"
   );
+};
+
+const uploadTips = () => {
+  Dialog({
+    title: t("syncPage.addArtForm.upload.tips.title"),
+    content: t("syncPage.addArtForm.upload.tips.content"),
+    popClass: "auto-dialog",
+    noCancelBtn: true,
+    okText: t("specificWord.confirm"),
+    closeOnClickOverlay: true,
+  });
 };
 
 const qxTips = () => {
@@ -626,7 +651,8 @@ const submit = () => {
     }
   }
 
-  .include-unsupported-proxy-wrapper {
+  .include-unsupported-proxy-wrapper,
+  .upload-wrapper {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -638,19 +664,17 @@ const submit = () => {
 
     .label {
       color: var(--comment-text-color);
-      display: flex;
-      justify-content: space-between;
+      display: inline-flex;
       align-items: center;
+      gap: 6px;
 
       p {
         margin: 0;
         text-align: left;
-        padding-right: 20px;
       }
 
       .nut-icon {
         flex-shrink: 0;
-        margin-right: 6px;
       }
     }
   }
