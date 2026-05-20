@@ -32,7 +32,7 @@ jobs:
       - name: build
         run: |
           pnpm build
-      - uses: amondnet/vercel-action@v25 #deploy
+      - uses: amondnet/vercel-action@v42 #deploy
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
           # github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
@@ -47,14 +47,14 @@ jobs:
       - id: tag
         name: Generate release tag
         run: |
-          SUB_STORE_RELEASE=`node --eval="process.stdout.write(require('./package.json').version)"`
-          echo "release_tag=$SUB_STORE_RELEASE" >> $GITHUB_OUTPUT
+          SUB_STORE_RELEASE="$(node --eval='process.stdout.write(require("./package.json").version)')"
+          echo "release_tag=$SUB_STORE_RELEASE" >> "$GITHUB_OUTPUT"
       - name: Prepare release
         run: |
           pnpm i -D conventional-changelog-cli
           pnpm run changelog
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: ${{ success() }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -186,7 +186,9 @@ import { useGlobalStore } from "@/store/global";
 import { useListViewMode } from "@/hooks/useListViewMode";
 import { useSystemStore } from "@/store/system";
 import { useSettingsStore } from '@/store/settings';
+import { useArchiveStore } from "@/store/archive";
 import { useLogsOverlayStore } from "@/store/logsOverlay";
+import { useSubsStore } from "@/store/subs";
 import { storeToRefs } from "pinia";
 import { Dialog } from "@nutui/nutui";
 import { initStores } from "@/utils/initApp";
@@ -204,12 +206,16 @@ const route = useRoute();
 const methodStore = useMethodStore()
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
+const archiveStore = useArchiveStore();
 const logsOverlayStore = useLogsOverlayStore();
 const settingsStore = useSettingsStore();
+const subsStore = useSubsStore();
 const listSearchStore = useListSearchStore();
 const { changeAppearanceSetting } = settingsStore;
 const { appearanceSetting } = storeToRefs(settingsStore);
+const { hasEntries: hasArchiveEntries } = storeToRefs(archiveStore);
 const { isOpen: isLogsOverlayOpen } = storeToRefs(logsOverlayStore);
+const { hasShares } = storeToRefs(subsStore);
 const {
   effectiveListViewMode,
   isListViewModeLockedBySelection,
@@ -283,6 +289,30 @@ const listSearchQuery = computed({
 });
 const navLeftButtonLeft = computed<Record<string, string>>(() => {
   if (isNeedBack.value) {
+    if (route.path === "/shares") {
+      if (!hasShares.value) {
+        return {
+          search: "42px",
+        };
+      }
+
+      return {
+        search: appearanceSetting.value.showFloatingAddButton ? "80px" : "114px",
+      };
+    }
+
+    if (route.path === "/archives") {
+      if (!hasArchiveEntries.value) {
+        return {
+          search: "42px",
+        };
+      }
+
+      return {
+        search: "80px",
+      };
+    }
+
     return {
       search: "42px",
     };
