@@ -283,18 +283,6 @@ const listSearchQuery = computed({
 });
 const navLeftButtonLeft = computed<Record<string, string>>(() => {
   if (isNeedBack.value) {
-    if (route.path === "/shares") {
-      return {
-        search: appearanceSetting.value.showFloatingAddButton ? "80px" : "114px",
-      };
-    }
-
-    if (route.path === "/archives") {
-      return {
-        search: "80px",
-      };
-    }
-
     return {
       search: "42px",
     };

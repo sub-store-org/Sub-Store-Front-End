@@ -444,6 +444,7 @@
 
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.label`)"
+          class="failure-mode-trigger"
           prop="ignoreFailedRemoteSub"
         >
           <nut-input
@@ -1808,9 +1809,20 @@ const handleEditGlobalClick = () => {
 .failure-mode-input {
   cursor: pointer;
 
+  :deep(.nut-input),
   :deep(.nut-input-value),
   :deep(.nut-input-inner),
+  :deep(.nut-input-box),
+  :deep(.input-text),
+  :deep(.nut-input__text--readonly),
   :deep(.nut-input-right-icon) {
+    cursor: pointer;
+  }
+}
+
+.failure-mode-trigger {
+  :deep(.nut-form-item__body),
+  :deep(.nut-cell__value) {
     cursor: pointer;
   }
 }

@@ -164,19 +164,31 @@ img.auto-reverse {
 .nut-input-text {
   color: var(--second-text-color) !important;
 }
-:-moz-placeholder {
-  color: var(--comment-text-color);
+
+input::placeholder,
+textarea::placeholder,
+.nut-input__placeholder {
+  color: var(--comment-text-color) !important;
+  opacity: 1;
 }
-::-moz-placeholder {
-  color: var(--comment-text-color);
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: var(--comment-text-color) !important;
+  opacity: 1;
+}
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: var(--comment-text-color) !important;
+  opacity: 1;
 }
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: var(--comment-text-color);
+  color: var(--comment-text-color) !important;
 }
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
   color: var(--comment-text-color) !important;
+  opacity: 1;
 }
 
 .Toastify__close-button {
