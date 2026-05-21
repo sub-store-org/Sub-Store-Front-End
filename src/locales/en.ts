@@ -956,6 +956,15 @@ export default {
             "Requires backend >= 2.23.16.\n\nWhen enabled, scheduled sync uploads the generated artifact to the current sync storage, such as Gist.\n\nWhen disabled, scheduled sync only runs artifact generation and updates the last run time. It does not upload or create a new Gist URL. Use this to refresh caches, or to run custom upload/backup logic in subscriptions/files, such as uploading to another Gist or backing up/restoring via WebDAV.\n\nReferences:\nhttps://t.me/zhetengsha/1428\nhttps://t.me/zhetengsha/5261",
         },
       },
+      cron: {
+        label: "Custom Cron",
+        placeholder: "See the ℹ️ info on the left",
+        tips: {
+          title: "Custom Cron",
+          content:
+            "Requires backend >= 2.23.18.\n\nExample: 55 23 * * *\n\nNode environment: when set, this sync configuration runs independently on this cron and no longer follows the global cron. Leave it empty to keep following the global cron.\n\nNon-Node environments: the built-in custom cron does not run. Use any scheduled request method to trigger sync yourself, for example schedule Shortcuts to request GET https://sub.store/api/sync/artifact/name. To keep it independent, turn off this item's sync switch and rely only on that request.",
+        },
+      },
       includeUnsupportedProxy: {
         label: "Includes unsupported protocols",
         tips: {

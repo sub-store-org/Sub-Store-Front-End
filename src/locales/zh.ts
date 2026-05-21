@@ -921,6 +921,14 @@ export default {
           content: '后端需 >= 2.23.16\n\n开启后，定时同步会在生成产物后上传到当前同步仓库（如 Gist）。\n\n关闭后，定时同步只执行产物生成并更新上次执行时间，不上传，也不会生成新的 Gist 链接。适合刷新缓存，或在订阅/文件脚本中执行自己的上传、备份逻辑，例如上传到其他 Gist，或通过 WebDAV 备份/恢复数据。\n\n参考:\nhttps://t.me/zhetengsha/1428\nhttps://t.me/zhetengsha/5261',
         },
       },
+      cron: {
+        label: '独立 Cron',
+        placeholder: '请查看左侧 ℹ️ 说明',
+        tips: {
+          title: '独立 Cron',
+          content: '后端需 >= 2.23.18。\n\n示例: 55 23 * * *\n\nNode 环境：填写后，这条同步配置会按此 cron 独立执行，不再跟随全局 cron；留空则继续跟随全局 cron。\n\n非 Node 环境：内置独立 cron 不生效，可自己使用任何定时请求的方式触发定时，例如快捷指令定时请求 GET https://sub.store/api/sync/artifact/name。若想独立定时，可关掉这条的同步开关，仅靠此请求触发。',
+        },
+      },
       includeUnsupportedProxy: {
         label: '包含不支持的协议(详见文档)',
         tips: {

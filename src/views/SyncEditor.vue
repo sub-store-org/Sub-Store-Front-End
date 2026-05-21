@@ -152,6 +152,24 @@
           </div>
         </nut-form-item>
 
+        <nut-form-item class="cron-wrapper" prop="cron">
+          <template #label>
+            <div class="form-label-with-tips" @click="cronTips">
+              <p>{{ $t(`syncPage.addArtForm.cron.label`) }}</p>
+              <nut-icon name="tips"></nut-icon>
+            </div>
+          </template>
+          <nut-input
+            :border="false"
+            input-align="right"
+            class="nut-input-text"
+            :placeholder="$t(`syncPage.addArtForm.cron.placeholder`)"
+            v-model.trim="form.cron"
+            :disabled="isCronInputDisabled"
+            type="text"
+          />
+        </nut-form-item>
+
         <template
           v-if="
             sourceInput &&
@@ -256,6 +274,7 @@ import { useArtifactsStore } from "@/store/artifacts";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useBackend } from "@/hooks/useBackend";
 import { resolveArtifactIcon } from "@/utils/artifactIcon";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { Dialog, Toast } from "@nutui/nutui";
@@ -274,6 +293,7 @@ const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const { showNotify } = useAppNotifyStore();
+const { env } = useBackend();
 const { bottomSafeArea } = storeToRefs(globalStore);
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
@@ -288,6 +308,9 @@ const sourceInput = ref("");
 const sourceModel = ref<string[]>([]);
 const tagPopupVisible = ref(false);
 const iconPopupVisible = ref(false);
+const isCronInputDisabled = computed(() => {
+  return Boolean(env.value?.backend && env.value.backend !== "Node");
+});
 
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
@@ -307,6 +330,7 @@ const form = reactive<any>({
   type: "file",
   platform: "Stash",
   sync: false,
+  cron: "",
   upload: true,
   includeUnsupportedProxy: false,
   prettyYaml: false,
@@ -438,6 +462,7 @@ watchEffect(() => {
   form.type = sourceData.type;
   form.platform = sourceData.platform || "Stash";
   form.sync = sourceData.sync ?? false;
+  form.cron = sourceData.cron || "";
   form.upload = sourceData.upload !== false;
   form.includeUnsupportedProxy = sourceData.includeUnsupportedProxy ?? false;
   form.prettyYaml = sourceData.prettyYaml ?? false;
@@ -487,6 +512,17 @@ const uploadTips = () => {
   Dialog({
     title: t("syncPage.addArtForm.upload.tips.title"),
     content: t("syncPage.addArtForm.upload.tips.content"),
+    popClass: "auto-dialog",
+    noCancelBtn: true,
+    okText: t("specificWord.confirm"),
+    closeOnClickOverlay: true,
+  });
+};
+
+const cronTips = () => {
+  Dialog({
+    title: t("syncPage.addArtForm.cron.tips.title"),
+    content: t("syncPage.addArtForm.cron.tips.content"),
     popClass: "auto-dialog",
     noCancelBtn: true,
     okText: t("specificWord.confirm"),
@@ -566,6 +602,10 @@ const submit = () => {
       ),
     ];
     data["display-name"] = data.displayName;
+    data.cron = `${data.cron || ""}`.trim();
+    if (!data.cron) {
+      delete data.cron;
+    }
 
     Toast.loading(t("syncPage.addArtForm.submitLoading"), {
       cover: true,
@@ -648,6 +688,22 @@ const submit = () => {
       .nut-input-right-icon {
         margin-left: 10px;
       }
+    }
+  }
+
+  .form-label-with-tips {
+    color: var(--comment-text-color);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    p {
+      margin: 0;
+      text-align: left;
+    }
+
+    .nut-icon {
+      flex-shrink: 0;
     }
   }
 

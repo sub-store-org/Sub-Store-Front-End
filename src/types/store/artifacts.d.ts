@@ -31,6 +31,7 @@ interface Artifact {
   platform: ArtifactsPlatform;
   tag?: string[];
   sync?: boolean;
+  cron?: string;
   upload?: boolean;
   includeUnsupportedProxy?: boolean;
   prettyYaml?: boolean;
@@ -47,6 +48,7 @@ interface ArtifactForm {
   platform: ArtifactsPlatform;
   tag?: string[];
   sync?: boolean;
+  cron?: string;
   upload?: boolean;
   includeUnsupportedProxy?: boolean;
   prettyYaml?: boolean;
