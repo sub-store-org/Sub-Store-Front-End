@@ -862,6 +862,8 @@ export default {
   },
   syncPage: {
     title: '同步配置',
+    globalCronTip: '全局 Cron：{cron}',
+    globalCronUnsetTip: '全局 Cron：未设置',
     syncSwitcher: '定时',
     syncAllSucceed: '同步成功',
     emptySub: {

@@ -57,7 +57,16 @@
 
       <div class="subs-list-container" :style="{ paddingTop: `${radioWrapperHeight ? radioWrapperHeight : (radioWrapperHeight+10)}px` }">
         <div class="sticky-title-wrapper sync-title">
-          <p class="list-title">{{ $t(`syncPage.title`) }}</p>
+          <div v-if="isNodeBackend" class="sync-title-main">
+            <div
+              class="global-cron-tip"
+              :title="globalSyncCronText"
+            >
+              <font-awesome-icon icon="fa-solid fa-clock" />
+              <span>{{ globalSyncCronText }}</span>
+            </div>
+          </div>
+          <p v-else class="list-title">{{ $t(`syncPage.title`) }}</p>
           <div class="actions-wrapper">
             <nut-button
               v-if="artifacts.length > 0"
@@ -246,6 +255,15 @@ const sortFailed = ref(false);
 const touchStartY = ref(null);
 const touchStartX = ref(null);
 const { t } = useI18n();
+const isNodeBackend = computed(() => env.value?.backend === "Node");
+const globalSyncCron = computed(() => {
+  return `${env.value?.meta?.node?.env?.SUB_STORE_BACKEND_SYNC_CRON || ""}`.trim();
+});
+const globalSyncCronText = computed(() => {
+  return globalSyncCron.value
+    ? t("syncPage.globalCronTip", { cron: globalSyncCron.value })
+    : t("syncPage.globalCronUnsetTip");
+});
 const getTag = () => {
   return localStorage.getItem("artifact-tag") || "all";
 };
@@ -508,7 +526,40 @@ const filteredArtifacts = useFilteredDraggableList(artifacts, shouldShowElement)
   display: flex;
   justify-content: space-between;
 
+  .sync-title-main {
+    min-width: 0;
+    flex: 1;
+    padding-left: 8px;
+  }
+
+  .global-cron-tip {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 32px;
+    gap: 8px;
+    color: var(--comment-text-color);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+
+    svg {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+    }
+
+    span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
   .actions-wrapper {
+    flex: 0 0 auto;
     margin-right: 16px;
 
     .btn:not(:last-child) {

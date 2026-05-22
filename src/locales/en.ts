@@ -899,6 +899,8 @@ export default {
   },
   syncPage: {
     title: "Sync Artifacts",
+    globalCronTip: "Global Cron: {cron}",
+    globalCronUnsetTip: "Global Cron: Not set",
     syncSwitcher: "Enable Sync",
     syncAllSucceed: "Sync succeed",
     emptySub: {

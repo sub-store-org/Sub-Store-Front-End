@@ -9,6 +9,7 @@ import {
   faArrowLeft,
   faBan,
   faCheck,
+  faClock,
   faCircleQuestion,
   faCircleXmark,
   faXmark,
@@ -61,6 +62,7 @@ library.add(faList);
 library.add(faListCheck);
 library.add(faTableColumns);
 library.add(faCheck);
+library.add(faClock);
 library.add(faPlus);
 library.add(faReply);
 library.add(faArrowUpRightFromSquare);

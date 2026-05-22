@@ -947,6 +947,8 @@ export default {
   },
   "syncPage": {
     "title": "Синхронизация артефактов",
+    "globalCronTip": "Глобальный Cron: {cron}",
+    "globalCronUnsetTip": "Глобальный Cron: не задан",
     "syncSwitcher": "Включить синхронизацию",
     "syncAllSucceed": "Синхронизация успешна",
     "emptySub": {
