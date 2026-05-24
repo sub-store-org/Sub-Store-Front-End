@@ -344,6 +344,11 @@ async function transformFunction(res, context) {
   // res.status: HTTP status code
   // res.header / res.headers: response headers
   // res.body: response body
+  // context is shared by response transformers in this run.
+  // Use context.process to control later response transformers by customName.
+  // This control does not cross with Script Operator/File Script context.process.
+  // context.process = { type: 'disable', customNames: ['branch-b'] }
+  // type: 'disable' skips listed customName; type: 'enable' only runs listed customName.
   return res
 }`
 } else if(sourceType === "file") {
@@ -402,6 +407,11 @@ $content = JSON.stringify({}, null, 2)
 
 // { $content, $files, $options } will be passed to the next operator
 // $content is the final content of the file
+// context is shared by later operators in this run.
+// Use context.process to control later actions by customName.
+// This control does not cross with Response Transformer context.process.
+// context.process = { type: 'disable', customNames: ['branch-b'] }
+// type: 'disable' skips listed customName; type: 'enable' only runs listed customName.
 `
 } else if (type === 'Script Operator') {
   placeholders = `// Example:
@@ -412,6 +422,11 @@ $server.ecn = true
 $server['test-url'] = 'http://1.0.0.1/generate_204'
 // 2. operator function
 async function operator(proxies, targetPlatform, context) {
+  // context is shared by later operators in this run.
+  // Use context.process to control later actions by customName.
+  // This control does not cross with Response Transformer context.process.
+  // context.process = { type: 'disable', customNames: ['branch-b'] }
+  // type: 'disable' skips listed customName; type: 'enable' only runs listed customName.
   // if ($options) {
   //   const { headers, url, path } = $options?._req || {}
   //   const ua = headers?.['user-agent'] || headers?.['User-Agent']

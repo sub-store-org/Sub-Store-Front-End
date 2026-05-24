@@ -106,6 +106,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           ],
         },
         workbox: {
+          maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           navigateFallbackDenylist: [/(^|\/.+)\/(api|download|share)\/.+/],
           // globPatterns: ['**/*.{css,js,gz,eot,html,svg,png,ico,ttf,woff2}'],
           runtimeCaching: [
