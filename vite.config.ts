@@ -169,8 +169,30 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       rollupOptions: {
         output: {
           entryFileNames: "[name].js",
-          chunkFileNames: "[name].js",
-          assetFileNames: "[name].[ext]",
+          chunkFileNames: "chunks/[name]-[hash].js",
+          assetFileNames: (assetInfo) => {
+            const ext = assetInfo.name?.split('.').pop()?.toLowerCase() ?? '';
+            if (/^(png|jpe?g|svg|webp|avif|gif|ico)$/.test(ext)) return 'images/[name].[ext]';
+            if (/^(woff2?|ttf|eot|otf)$/.test(ext)) return 'fonts/[name].[ext]';
+            if (ext === 'css') return 'css/[name].[ext]';
+            return '[name].[ext]';
+          },
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('@nutui/nutui') || (id.includes('@nutui') && !id.includes('@nutui/icons'))) return 'nutui';
+              if (
+                id.includes('/codemirror/') ||
+                id.includes('@codemirror/') ||
+                id.includes('@lezer/') ||
+                id.includes('@replit/codemirror') ||
+                id.includes('js-beautify')
+              ) return 'editor';
+              if (id.includes('vue-i18n') || id.includes('@intlify/')) return 'i18n';
+              if (id.includes('@fortawesome/')) return 'icons';
+              if (id.includes('@vuepic/vue-datepicker')) return 'datepicker';
+              if (id.includes('/vue/') || id.includes('/vue-router/') || id.includes('/pinia/') || id.includes('@vue/') || id.includes('@vueuse/')) return 'vue-vendor';
+            }
+          },
         },
       },
       terserOptions: {

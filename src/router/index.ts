@@ -7,32 +7,18 @@ import AppLayout from '@/layout/AppLayout.vue';
 import { useGlobalStore } from '@/store/global';
 import { initStores } from '@/utils/initApp';
 import My from '@/views/My.vue';
-import NotFound from '@/views/NotFound.vue';
 
 import File from '@/views/File.vue';
-import FileEditor from '@/views/FileEditor.vue';
-import FilePreview from '@/views/FilePreview.vue';
-// import editScript from '@/views/editCode/editScript.vue';
-
 import Sub from '@/views/Sub.vue';
-import SubEditor from '@/views/SubEditor.vue';
-
 import Sync from '@/views/Sync.vue';
-import SyncEditor from '@/views/SyncEditor.vue';
 
-import ShareManage from '@/views/share/Share.vue';
-import ShareEditorPage from '@/views/share/ShareEditorPage.vue';
-import Archive from '@/views/archive/Archive.vue';
-import Logs from '@/views/Logs.vue';
-
+// import editScript from '@/views/editCode/editScript.vue';
 // import themeSetting from '@/views/themeSetting.vue';
-import moreSetting from '@/views/settings/moreSetting.vue';
+
 import { Toast } from '@nutui/nutui';
 import { toRaw } from 'vue';
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
-import aboutUs from '@/views/settings/AboutUs.vue';
-import APISetting from '@/views/settings/APISetting.vue';
 
 // import { SwipeBack } from 'vue-swipe-back'
 
@@ -174,7 +160,7 @@ const router = createRouter({
         },
         {
           path: '/shares',
-          component: ShareManage,
+          component: () => import('@/views/share/Share.vue'),
           meta: {
             title: 'shareManage',
             needTabBar: false,
@@ -186,7 +172,7 @@ const router = createRouter({
         },
         {
           path: '/edit/shares/:name',
-          component: ShareEditorPage,
+          component: () => import('@/views/share/ShareEditorPage.vue'),
           meta: {
             title: 'shareEditor',
             needTabBar: false,
@@ -196,7 +182,7 @@ const router = createRouter({
         },
         {
           path: '/archives',
-          component: Archive,
+          component: () => import('@/views/archive/Archive.vue'),
           meta: {
             title: 'archive',
             needTabBar: false,
@@ -208,7 +194,7 @@ const router = createRouter({
         },
         {
           path: '/logs',
-          component: Logs,
+          component: () => import('@/views/Logs.vue'),
           meta: {
             title: 'logs',
             needTabBar: false,
@@ -227,7 +213,7 @@ const router = createRouter({
         // },
         {
           path: '/preview',
-          component: FilePreview,
+          component: () => import('@/views/FilePreview.vue'),
           meta: {
             title: 'preview',
             needTabBar: false,
@@ -236,7 +222,7 @@ const router = createRouter({
         },
         {
           path: '/edit/:editType(files)/:id',
-          component: FileEditor,
+          component: () => import('@/views/FileEditor.vue'),
           meta: {
             title: 'fileEditor',
             needTabBar: false,
@@ -245,7 +231,7 @@ const router = createRouter({
         },
         {
           path: '/edit/:editType(subs|collections)/:id',
-          component: SubEditor,
+          component: () => import('@/views/SubEditor.vue'),
           meta: {
             title: 'subEditor',
             needTabBar: false,
@@ -254,7 +240,7 @@ const router = createRouter({
         },
         {
           path: '/edit/sync/:id',
-          component: SyncEditor,
+          component: () => import('@/views/SyncEditor.vue'),
           meta: {
             title: 'syncEditor',
             needTabBar: false,
@@ -272,7 +258,7 @@ const router = createRouter({
         // },
         {
           path: '/settings/more',
-          component: moreSetting,
+          component: () => import('@/views/settings/moreSetting.vue'),
           meta: {
             title: 'moreSetting',
             needTabBar: false,
@@ -282,7 +268,7 @@ const router = createRouter({
         },
         {
           path: '/settings/api',
-          component: APISetting,
+          component: () => import('@/views/settings/APISetting.vue'),
           meta: {
             title: 'apiSetting',
             needTabBar: false,
@@ -292,7 +278,7 @@ const router = createRouter({
         },
         {
           path: '/aboutUs',
-          component: aboutUs,
+          component: () => import('@/views/settings/AboutUs.vue'),
           meta: {
             title: 'aboutUs',
             needTabBar: false,
@@ -304,7 +290,7 @@ const router = createRouter({
     },
     {
       path: '/404',
-      component: NotFound,
+      component: () => import('@/views/NotFound.vue'),
       meta: {
         title: 'notFound',
         needTabBar: false,
@@ -313,7 +299,7 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)',
-      component: NotFound,
+      component: () => import('@/views/NotFound.vue'),
       meta: {
         title: 'notFound',
         needTabBar: false,
