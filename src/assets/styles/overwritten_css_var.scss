@@ -33,6 +33,13 @@
 .nut-popup {
   -webkit-user-select: none;
   user-select: none;
+  // NutUI popups are teleported to body, so scoped pop-class styles on pages
+  // cannot reliably theme the popup root after CSS code splitting. The doubled
+  // selector keeps this override stable when Vite dev injects NutUI styles later.
+  &.nut-popup {
+    background-color: var(--popup-color);
+    color: var(--primary-text-color);
+  }
 
   &.popup-bottom {
     @include popup-centered;
