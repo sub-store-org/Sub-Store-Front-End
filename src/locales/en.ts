@@ -737,6 +737,7 @@ export default {
       logsMaxCount: 'Max stored logs, default: 0=off',
       concurrency: 'Concurrency Limit(default: 3)',
       apiCheckTimeout: 'API Check Timeout, default: 3000(ms)',
+      apiRequestTimeout: 'Front-End Request Timeout, default: 50000(ms)',
       noGithubUser: "Not set GitHub username",
       noGistToken: "Not set GitHub Token",
       noGithubProxy: "Not set GitHub Proxy",

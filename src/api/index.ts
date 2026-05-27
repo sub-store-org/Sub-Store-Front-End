@@ -8,6 +8,13 @@ const notifyConfig: { type: 'danger'; duration: number } = {
   type: 'danger',
   duration: 2500,
 };
+const DEFAULT_API_REQUEST_TIMEOUT = 50000;
+
+const getApiRequestTimeout = () => {
+  const timeout = Number(localStorage.getItem('apiRequestTimeout'));
+
+  return Number.isFinite(timeout) && timeout > 0 ? timeout : DEFAULT_API_REQUEST_TIMEOUT;
+};
 
 const getText = (value: unknown) => {
   if (typeof value === 'string') {
@@ -74,7 +81,7 @@ const getResponseContent = (e: AxiosError<ErrorResponse>) => {
 // 配置新建一个 axios 实例
 const service = axios.create({
   baseURL: getHostAPIUrl(),
-  timeout: 50000,
+  timeout: getApiRequestTimeout(),
   headers: { 'Content-Type': 'application/json' },
 });
 

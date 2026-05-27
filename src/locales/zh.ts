@@ -701,6 +701,7 @@ export default {
       logsMaxCount: '最大保存日志条数(默认: 0=关闭)',
       concurrency: '并发数(默认: 3)',
       apiCheckTimeout: 'API 检测超时(单位: 毫秒, 默认: 3000)',
+      apiRequestTimeout: '前端请求超时(单位: 毫秒, 默认: 50000)',
       noGithubUser: '未配置 GitHub 用户名',
       noGistToken: '未配置 GitHub 令牌',
       noGithubProxy: '未配置 GitHub 加速代理',

@@ -493,6 +493,17 @@
             right-icon="tips"
             @click-right-icon="apiCheckTimeoutTips"
           />
+          <nut-input
+            class="input"
+            v-model="apiRequestTimeoutInput"
+            :disabled="!isFrontEndConfigEditing"
+            :placeholder="$t(`myPage.placeholder.apiRequestTimeout`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconTimeout"
+            right-icon="tips"
+            @click-right-icon="apiRequestTimeoutTips"
+          />
         
         </div>
       </div>
@@ -733,6 +744,7 @@ const scriptCacheTtlInput = ref("");
 const logsMaxCountInput = ref("");
 const concurrencyInput = ref("");
 const apiCheckTimeoutInput = ref("");
+const apiRequestTimeoutInput = ref("");
 const isGitHubConfigEditing = ref(false);
 const isRequestConfigEditing = ref(false);
 const isCacheConfigEditing = ref(false);
@@ -808,6 +820,19 @@ const toggleEditMode = async (type) => {
         console.log(`清除超时设置`)
         localStorage.removeItem('timeout');
       }
+      const apiRequestTimeout = Number(apiRequestTimeoutInput.value);
+      if (!isNaN(apiRequestTimeout)) {
+        if (apiRequestTimeout > 0) {
+          console.log(`设置前端请求超时 ${apiRequestTimeout}`)
+          localStorage.setItem('apiRequestTimeout', apiRequestTimeout.toString());
+        } else {
+          console.log(`清除前端请求超时设置`)
+          localStorage.removeItem('apiRequestTimeout');
+        }
+      } else {
+        console.log(`清除前端请求超时设置`)
+        localStorage.removeItem('apiRequestTimeout');
+      }
       const concurrency = parseInt(concurrencyInput.value, 10);
       if (!isNaN(concurrency)) {
         if (concurrency >= 1) {
@@ -830,6 +855,12 @@ const toggleEditMode = async (type) => {
         apiCheckTimeoutInput.value = storedTimeout;
       } else {
         apiCheckTimeoutInput.value = '';
+      }
+      const storedApiRequestTimeout = localStorage.getItem('apiRequestTimeout');
+      if (storedApiRequestTimeout) {
+        apiRequestTimeoutInput.value = storedApiRequestTimeout;
+      } else {
+        apiRequestTimeoutInput.value = '';
       }
       const storedConcurrency = localStorage.getItem('concurrency');
       if (storedConcurrency) {
@@ -1274,6 +1305,17 @@ const apiCheckTimeoutTips = () => {
   Dialog({
       title: 'API 检测超时',
       content: '某些版本的 Mac 上 QX https://sub.store/api/utils/env 可能会超时, JS 一直活跃中, 可设为 8000',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const apiRequestTimeoutTips = () => {
+  Dialog({
+      title: '前端请求超时',
+      content: '控制前端 axios 请求后端接口的超时时间。默认 50000 毫秒，设为大于 0 的值后保存并刷新生效。',
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,

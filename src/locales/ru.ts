@@ -786,6 +786,7 @@ export default {
       "logsMaxCount": "Макс. количество логов, 0 = отключено",
       "concurrency": "Лимит параллельных запросов (по умолчанию: 3)",
       "apiCheckTimeout": "Таймаут проверки API, по умолчанию: 3000 (мс)",
+      "apiRequestTimeout": "Таймаут запросов интерфейса, по умолчанию: 50000 (мс)",
       "noGithubUser": "Не задано имя пользователя GitHub",
       "noGistToken": "Не задан токен GitHub Gist",
       "noGithubProxy": "Прокси для GitHub не используется",
