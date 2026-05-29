@@ -702,36 +702,6 @@ const importTips = () => {
   }
 }
 
-.empty-state-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  h3 {
-    font-size: 18px;
-    margin-bottom: 12px;
-    color: var(--primary-text-color);
-  }
-
-  p {
-    font-size: 14px;
-    color: var(--comment-text-color);
-  }
-
-  a {
-    font-size: 14px;
-    margin: 24px 0 12px 0;
-    color: var(--comment-text-color);
-
-    span {
-      margin-right: 4px;
-    }
-  }
-}
-
 .list-title {
   -webkit-user-select: none;
   user-select: none;
