@@ -9,7 +9,7 @@ export const isShareType = (value: unknown): value is 'sub' | 'col' | 'file' => 
 export const SHARE_EDITOR_CREATE_ID = 'UNTITLED';
 export const SHARE_EXPIRATION_DATETIME_BACKEND_VERSION = '2.22.6';
 
-export type ShareExpirationMode = 'duration' | 'datetime';
+export type ShareExpirationMode = 'duration' | 'datetime' | 'count';
 export type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year';
 
 const DEFAULT_SHARE_EXPIRATION_MODE: ShareExpirationMode = 'duration';
@@ -66,7 +66,7 @@ export interface ShareDisplayIconState {
 }
 
 export const isShareExpirationMode = (value: unknown): value is ShareExpirationMode => {
-  return value === 'duration' || value === 'datetime';
+  return value === 'duration' || value === 'datetime' || value === 'count';
 };
 
 const getValidTimestamp = (value?: number | string | null) => {
@@ -224,16 +224,30 @@ const getExactDatetimeState = (exactCutoff: number): ShareExpirationFormState =>
   };
 };
 
+const getCountState = (count?: number | null): ShareExpirationFormState => {
+  const normalizedCount = count == null ? Number.NaN : Number(count);
+  return {
+    mode: 'count',
+    expiresValue: Number.isSafeInteger(normalizedCount) && normalizedCount > 0
+      ? String(normalizedCount)
+      : '',
+    expiresUnit: DEFAULT_SHARE_EXPIRATION_UNIT,
+    exactDatetime: null,
+  };
+};
+
 export const getShareExpirationFormState = ({
   mode,
   expiresAt,
   expiresIn,
   exp,
+  count,
 }: {
   mode?: ShareExpirationMode | null;
   expiresAt?: number | null;
   expiresIn?: string | null;
   exp?: number | null;
+  count?: number | null;
 }): ShareExpirationFormState => {
   const nextExpiresAt = expiresAt == null ? Number.NaN : Number(expiresAt);
   const nextExp = exp == null ? Number.NaN : Number(exp);
@@ -253,6 +267,10 @@ export const getShareExpirationFormState = ({
       ...createDefaultShareExpirationFormState(),
       mode: 'datetime',
     };
+  }
+
+  if (nextMode === 'count') {
+    return getCountState(count);
   }
 
   if (expiresIn) {

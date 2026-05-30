@@ -973,15 +973,18 @@ export default {
     title: "分享编辑",
     noOriginalTips: "跳转失败, 检查源数据是否已删除",
     leftTime: "剩余",
+    leftCount: "剩余次数",
+    countUsage: "次数",
     expired: "已过期",
     expiredLabel: "过期：",
     createTimeLabel: "创建：",
     magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH 必须以 / 开头，当前分享链接异常，请检查运行环境",
     createShare: {
       expirationMode: {
-        label: "到期方式",
+        label: "失效方式",
         duration: "按时长",
-        datetime: "指定日期时间",
+        datetime: "按日期时间",
+        count: "按次数",
       },
       expiresValue: {
         label: "有效期时长",
@@ -999,6 +1002,18 @@ export default {
         invalid: "请选择有效的到期日期时间",
         confirm: "确定",
         cancel: "取消",
+      },
+      countValue: {
+        label: "总次数",
+        placeholder: "请输入总次数",
+        regex: "请输入 1-9007199254740991 范围内的整数",
+        empty: "总次数不可为空",
+      },
+      usedCountValue: {
+        label: "已用次数",
+        placeholder: "请输入已用次数",
+        regex: "请输入 0-9007199254740991 范围内且不大于总次数的整数",
+        empty: "已用次数不可为空",
       },
       token: {
         label: "自定义 Token",

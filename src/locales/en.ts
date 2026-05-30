@@ -1017,15 +1017,18 @@ export default {
     title: "Share",
     noOriginalTips: "Failed to jump, check if the source data has been deleted.",
     leftTime: "Remaining: ",
+    leftCount: "Remaining uses:",
+    countUsage: "Uses",
     expired: "Expired",
     expiredLabel: "Expires: ",
     createTimeLabel: "Created: ",
     magicPathErrorNotify: "SUB_STORE_FRONTEND_BACKEND_PATH should start with /, please check the configuration!",
     createShare: {
       expirationMode: {
-        label: "Expiration Mode",
-        duration: "Duration",
-        datetime: "Exact DateTime",
+        label: "Invalidation Mode",
+        duration: "By Duration",
+        datetime: "By DateTime",
+        count: "By Count",
       },
       expiresValue: {
         label: "Valid for",
@@ -1043,6 +1046,18 @@ export default {
         invalid: "Please enter a valid expiration date and time",
         confirm: "Confirm",
         cancel: "Cancel",
+      },
+      countValue: {
+        label: "Total Uses",
+        placeholder: "Enter total uses",
+        regex: "Please enter an integer from 1 to 9007199254740991",
+        empty: "Total uses cannot be empty",
+      },
+      usedCountValue: {
+        label: "Used Uses",
+        placeholder: "Enter used uses",
+        regex: "Please enter an integer from 0 to 9007199254740991 that is not greater than total uses",
+        empty: "Used uses cannot be empty",
       },
       token: {
         label: "Custom Token",

@@ -78,7 +78,7 @@
             </div>
           </nut-form-item>
 
-          <template v-if="!isExactExpirationMode">
+          <template v-if="isDurationExpirationMode">
             <nut-form-item
               :label="$t(`sharePage.createShare.expiresValue.label`)"
               prop="expiresValue"
@@ -121,6 +121,63 @@
                   </nut-radio>
                 </nut-radiogroup>
               </div>
+            </nut-form-item>
+          </template>
+
+          <template v-else-if="isCountExpirationMode">
+            <nut-form-item
+              :label="$t(`sharePage.createShare.countValue.label`)"
+              prop="expiresValue"
+              required
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`sharePage.createShare.countValue.empty`),
+                },
+                {
+                  validator: validateCountValue,
+                  message: $t(`sharePage.createShare.countValue.regex`),
+                },
+              ]"
+            >
+              <nut-input
+                v-model="form.expiresValue"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.countValue.placeholder`)"
+                type="number"
+                input-align="right"
+                :max-length="SHARE_COUNT_MAX_LENGTH"
+                format-trigger="onBlur"
+                @blur="customerBlurValidate('expiresValue')"
+              />
+            </nut-form-item>
+            <nut-form-item
+              :label="$t(`sharePage.createShare.usedCountValue.label`)"
+              prop="usedCount"
+              required
+              :rules="[
+                {
+                  required: true,
+                  message: $t(`sharePage.createShare.usedCountValue.empty`),
+                },
+                {
+                  validator: validateUsedCountValue,
+                  message: $t(`sharePage.createShare.usedCountValue.regex`),
+                },
+              ]"
+            >
+              <nut-input
+                v-model="form.usedCount"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t(`sharePage.createShare.usedCountValue.placeholder`)"
+                type="number"
+                input-align="right"
+                :max-length="SHARE_COUNT_MAX_LENGTH"
+                format-trigger="onBlur"
+                @blur="customerBlurValidate('usedCount')"
+              />
             </nut-form-item>
           </template>
 
@@ -418,12 +475,15 @@ const sourceInput = ref("");
 const sourceModel = ref<string[]>([]);
 const latestLoadRequestId = ref(0);
 const isRetryingCreateAfterDelete = ref(false);
+const MAX_SHARE_COUNT = Number.MAX_SAFE_INTEGER;
+const SHARE_COUNT_MAX_LENGTH = String(MAX_SHARE_COUNT).length;
 
 const form = reactive({
   sourceType: "" as ShareSourceType | "",
   sourceName: "",
   expirationMode: "duration" as ShareExpirationMode,
   expiresValue: "",
+  usedCount: "",
   expiresUnit: "day",
   exactDatetime: null as number | null,
   remark: "",
@@ -460,6 +520,8 @@ const submitButtonLabel = computed(() => {
     : t("sharePage.editor.edit.submit");
 });
 const isExactExpirationMode = computed(() => form.expirationMode === "datetime");
+const isDurationExpirationMode = computed(() => form.expirationMode === "duration");
+const isCountExpirationMode = computed(() => form.expirationMode === "count");
 const shouldShowShareUrlRow = computed(() => isEditMode.value);
 const shouldShowShareQrCode = computed(() => {
   return isEditMode.value && Boolean(form.shareUrl);
@@ -591,6 +653,10 @@ const expirationModeList = computed(() => [
     label: t("sharePage.createShare.expirationMode.datetime"),
     value: "datetime",
   },
+  {
+    label: t("sharePage.createShare.expirationMode.count"),
+    value: "count",
+  },
 ]);
 const expiresUnitList = computed(() => [
   {
@@ -643,6 +709,7 @@ const resetFormState = () => {
   form.sourceName = "";
   form.expirationMode = "duration";
   form.expiresValue = "";
+  form.usedCount = "";
   form.expiresUnit = "day";
   form.exactDatetime = null;
   form.remark = "";
@@ -695,9 +762,13 @@ const hydrateForm = () => {
     expiresAt: activeSource.expiresAt,
     expiresIn: activeSource.expiresIn,
     exp: activeSource.exp,
+    count: activeSource.count,
   });
   form.expirationMode = expirationState.mode;
   form.expiresValue = expirationState.expiresValue;
+  form.usedCount = activeSource.mode === "count"
+    ? String(activeSource.usedCount ?? 0)
+    : "";
   form.expiresUnit = expirationState.expiresUnit;
   form.exactDatetime = expirationState.exactDatetime;
 
@@ -995,6 +1066,26 @@ const validateExactDatetime = (value: number | null) => {
   return value == null || isValidShareExactDatetime(value);
 };
 
+const validateCountValue = (value: string) => {
+  const count = parseShareCountValue(value);
+  return count != null && count > 0;
+};
+
+const validateUsedCountValue = (value: string) => {
+  const count = parseShareCountValue(form.expiresValue);
+  const usedCount = parseShareCountValue(value);
+  return count != null && usedCount != null && usedCount <= count;
+};
+
+const parseShareCountValue = (value: string) => {
+  if (!/^(?:0|[1-9]\d*)$/.test(value)) {
+    return null;
+  }
+
+  const count = Number(value);
+  return Number.isSafeInteger(count) ? count : null;
+};
+
 const customerBlurValidate = (prop: string) => {
   ruleForm.value?.validate?.(prop);
 };
@@ -1107,6 +1198,34 @@ const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | n
   };
 };
 
+const getCountExpirationOptions = (): ShareToken["options"] | null => {
+  if (!form.expiresValue) {
+    Toast.warn(t("sharePage.createShare.countValue.empty"));
+    return null;
+  }
+
+  if (!validateCountValue(form.expiresValue)) {
+    Toast.warn(t("sharePage.createShare.countValue.regex"));
+    return null;
+  }
+
+  if (form.usedCount === "") {
+    Toast.warn(t("sharePage.createShare.usedCountValue.empty"));
+    return null;
+  }
+
+  if (!validateUsedCountValue(form.usedCount)) {
+    Toast.warn(t("sharePage.createShare.usedCountValue.regex"));
+    return null;
+  }
+
+  return {
+    mode: "count",
+    count: Number(form.expiresValue),
+    usedCount: Number(form.usedCount),
+  };
+};
+
 const handleCopyShare = async (isNotify: boolean = true) => {
   if (!form.shareUrl) {
     return;
@@ -1143,9 +1262,14 @@ const getSubmitParams = async (): Promise<ShareToken | null> => {
     return null;
   }
 
-  const options = isExactExpirationMode.value
-    ? await getDatetimeExpirationOptions()
-    : getDurationExpirationOptions();
+  let options: ShareToken["options"] | null;
+  if (isExactExpirationMode.value) {
+    options = await getDatetimeExpirationOptions();
+  } else if (isCountExpirationMode.value) {
+    options = getCountExpirationOptions();
+  } else {
+    options = getDurationExpirationOptions();
+  }
   if (!options) {
     return null;
   }
@@ -1372,6 +1496,23 @@ watch(
 );
 
 watch(
+  () => form.expirationMode,
+  (mode) => {
+    if (
+      isHydratingForm.value
+      || routeMode.value !== "create"
+      || mode !== "count"
+      || form.usedCount !== ""
+    ) {
+      return;
+    }
+
+    form.usedCount = "0";
+  },
+  { immediate: true },
+);
+
+watch(
   [sourceOptions, () => form.sourceType, () => form.sourceName],
   () => {
     updateSourceInput();
@@ -1385,6 +1526,7 @@ watch(
     form.sourceName,
     form.expirationMode,
     form.expiresValue,
+    form.usedCount,
     form.expiresUnit,
     form.exactDatetime,
     form.token,

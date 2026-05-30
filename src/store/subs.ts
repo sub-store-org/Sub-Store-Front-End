@@ -16,6 +16,8 @@ const shareApi = useShareApi();
 const normalizeShare = (share: Share): Share => {
   const expiresAt = share?.expiresAt == null ? null : Number(share.expiresAt);
   const exp = share?.exp == null ? null : Number(share.exp);
+  const count = share?.count == null ? null : Number(share.count);
+  const usedCount = share?.usedCount == null ? null : Number(share.usedCount);
   const mode = isShareExpirationMode(share?.mode) ? share.mode : null;
 
   return {
@@ -24,6 +26,8 @@ const normalizeShare = (share: Share): Share => {
     mode,
     expiresAt: Number.isFinite(expiresAt) ? expiresAt : null,
     exp: Number.isFinite(exp) ? exp : null,
+    count: Number.isSafeInteger(count) ? count : null,
+    usedCount: Number.isSafeInteger(usedCount) ? usedCount : null,
   };
 };
 

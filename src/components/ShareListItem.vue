@@ -204,6 +204,17 @@ const createTime = computed(() => {
   return formatShareTimestamp(props?.data?.createdAt);
 });
 const leftTime = computed(() => {
+  if (props?.data?.mode === "count") {
+    const count = Number(props?.data?.count);
+    const usedCount = props?.data?.usedCount == null ? 0 : Number(props?.data?.usedCount);
+    return Number.isSafeInteger(count)
+      && count > 0
+      && Number.isSafeInteger(usedCount)
+      && usedCount >= 0
+      ? `${t("sharePage.countUsage")} ${Math.min(usedCount, count)}/${count}`
+      : t("sharePage.expired");
+  }
+
   return props?.data?.exp
     ? dayjs(props?.data?.exp).diff(dayjs(), "second") > 0
       ? `${t("sharePage.leftTime")} ${dayjs(props?.data?.exp).diff(dayjs(), "day", true).toFixed(0)} ${t("sharePage.createShare.unit.day")}`

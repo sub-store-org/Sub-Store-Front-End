@@ -100,10 +100,12 @@ interface Share {
   icon?: string | null;
   isIconColor?: boolean | null;
   token?: string | null;
-  mode?: 'duration' | 'datetime' | null;
+  mode?: 'duration' | 'datetime' | 'count' | null;
   expiresIn?: string | null;
   expiresAt?: number | null;
   exp?: number | null;
+  count?: number | null;
+  usedCount?: number | null;
   createdAt?: number | null;
 }
 
@@ -123,7 +125,9 @@ interface ShareToken {
   options?: {
     expiresIn?: number | string | undefined;
     exp?: number | string | null | undefined;
-    mode?: 'duration' | 'datetime' | undefined;
+    count?: number | string | undefined;
+    usedCount?: number | string | undefined;
+    mode?: 'duration' | 'datetime' | 'count' | undefined;
   }
 }
 
