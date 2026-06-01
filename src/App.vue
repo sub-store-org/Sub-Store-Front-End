@@ -119,40 +119,42 @@ const processUrlApiConfig = async () => {
 
   // 处理URL参数中的后端配置
   const result = await handleUrlQuery({
-    errorCb: async () => {
-      try {
-        // 检查用户是否跳过了当前连接检测周期
-        const skippedCycle = parseInt(sessionStorage.getItem('skippedConnectionCycle') || '0');
+    errorCb: hasUrlParams
+      ? async () => {
+        try {
+          // 检查用户是否跳过了当前连接检测周期
+          const skippedCycle = parseInt(sessionStorage.getItem('skippedConnectionCycle') || '0');
 
-        // 尝试初始化stores，获取后端环境信息
-        await initStores(true, true, false);
+          // 尝试初始化stores，获取后端环境信息
+          await initStores(true, true, false);
 
-        // 检查是否有环境信息
-        const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
+          // 检查是否有环境信息
+          const hasBackendEnv = Object.keys(globalStore.env).length > 0 && globalStore.env.backend;
 
-        if (hasBackendEnv) {
-          showMagicPathDialog.value = false;
-          localStorage.setItem('backendConfigured', 'true');
-          globalStore.setFetchResult(true);
-        } else {
+          if (hasBackendEnv) {
+            showMagicPathDialog.value = false;
+            localStorage.setItem('backendConfigured', 'true');
+            globalStore.setFetchResult(true);
+          } else {
+            globalStore.setFetchResult(false);
+
+            if (route.path === '/subs' && skippedCycle !== connectionCheckCycle.value) {
+              showMagicPathDialog.value = true;
+            }
+          }
+        } catch (e) {
+          console.error('Error initializing stores:', e);
           globalStore.setFetchResult(false);
+
+          // 检查用户是否跳过了当前连接检测周期
+          const skippedCycle = parseInt(sessionStorage.getItem('skippedConnectionCycle') || '0');
 
           if (route.path === '/subs' && skippedCycle !== connectionCheckCycle.value) {
             showMagicPathDialog.value = true;
           }
         }
-      } catch (e) {
-        console.error('Error initializing stores:', e);
-        globalStore.setFetchResult(false);
-
-        // 检查用户是否跳过了当前连接检测周期
-        const skippedCycle = parseInt(sessionStorage.getItem('skippedConnectionCycle') || '0');
-
-        if (route.path === '/subs' && skippedCycle !== connectionCheckCycle.value) {
-          showMagicPathDialog.value = true;
-        }
       }
-    },
+      : undefined,
   });
 
   if (result) {

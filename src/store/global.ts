@@ -184,9 +184,10 @@ export const useGlobalStore = defineStore('globalStore', {
       }
       this.istabBar2 = istabBar2;
     },
-    async setHostAPI(hostApi: string) {
+    async setHostAPI(hostApi: string, options?: { skipInit?: boolean }) {
       this.ishostApi = hostApi;
       service.defaults.baseURL = hostApi;
+      if (options?.skipInit) return;
       await initStores(true, true, true);
     },
     async setEnv(options?: { bypassCache?: boolean; strict?: boolean }) {

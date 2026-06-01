@@ -37,6 +37,7 @@ export const useHostAPI = () => {
   const { showNotify } = useAppNotifyStore();
   const apis = ref(getHostAPI().apis);
   const currentName = ref(getHostAPI().current);
+  let skipNextCurrentInit = false;
   const currentUrl = computed(() => {
     const url = apis.value.find(api => api.name === currentName.value)?.url ?? defaultAPI
     return url.startsWith('/') ? `${window.location.origin}${url}` : url;
@@ -44,6 +45,9 @@ export const useHostAPI = () => {
 
   const stopWatchCurrent = watch(currentName, async (newName, oldName) => {
     if (newName !== oldName) {
+      const skipInit = skipNextCurrentInit;
+      skipNextCurrentInit = false;
+
       // 保存新的API配置
       setHostAPI({
         ...getHostAPI(),
@@ -59,7 +63,7 @@ export const useHostAPI = () => {
       globalStore.setFetchResult(false);
 
       // 设置新的API URL并初始化stores
-      await globalStore.setHostAPI(url);
+      await globalStore.setHostAPI(url, { skipInit });
     }
   });
   const stopWatchApis = watch(
@@ -77,9 +81,12 @@ export const useHostAPI = () => {
     stopWatchApis();
   });
 
-  const setCurrent = (name: string) => {
+  const setCurrent = (name: string, options?: { skipInit?: boolean }) => {
     if (name !== '' && !apis.value.find(api => api.name === name)) {
       return;
+    }
+    if (options?.skipInit && currentName.value !== name) {
+      skipNextCurrentInit = true;
     }
     currentName.value = name;
   };
@@ -269,7 +276,7 @@ export const useHostAPI = () => {
         globalStore.setFetchResult(false);
 
         // 切换到新API
-        setCurrent(isExist.name);
+        setCurrent(isExist.name, { skipInit: true });
 
         // 设置已配置标志，表示用户已通过URL参数成功配置了后端
         localStorage.setItem('backendConfigured', 'true');
@@ -285,7 +292,7 @@ export const useHostAPI = () => {
         const addResult = await addApi({ name, url }, true);
         if (addResult) {
           // 设置为当前API
-          setCurrent(name);
+          setCurrent(name, { skipInit: true });
 
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
@@ -386,7 +393,7 @@ export const useHostAPI = () => {
         globalStore.setFetchResult(false);
 
         // 切换到新API
-        setCurrent(isExist.name);
+        setCurrent(isExist.name, { skipInit: true });
 
         // 设置已配置标志
         localStorage.setItem('magicPathConfigured', 'true');
@@ -403,7 +410,7 @@ export const useHostAPI = () => {
         const addResult = await addApi({ name, url: apiUrl }, true);
         if (addResult) {
           // 设置为当前API
-          setCurrent(name);
+          setCurrent(name, { skipInit: true });
 
           // 清除旧的连接状态
           globalStore.setFetchResult(false);
