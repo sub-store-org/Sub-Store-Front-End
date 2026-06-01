@@ -694,6 +694,8 @@ export default {
       defaultFlowUserAgent: '请输入默认查询订阅流量信息 的 User-Agent',
       defaultProxy: '请输入默认代理/策略',
       defaultTimeout: '默认超时(单位: 毫秒, 默认: 8000)',
+      backendRequestConcurrency: '后端请求并发数(默认: 15)',
+      backendRequestConcurrencyWaitTime: '后端请求并发等待时间(单位: 毫秒, 默认: 0)',
       cacheThreshold: '缓存阈值(单位: KB, 默认: 1024)',
       resourceCacheTtl: '资源缓存(单位: 秒, 默认: 3600)',
       headersCacheTtl: '响应头缓存(单位: 秒, 默认: 60)',

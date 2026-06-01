@@ -730,6 +730,8 @@ export default {
       defaultFlowUserAgent: "Please input Default Flow User-Agent",
       defaultProxy: "Please input Default Proxy/Policy",
       defaultTimeout: "Default Timeout (in ms, default: 8000)",
+      backendRequestConcurrency: "Backend Request Concurrency (default: 15)",
+      backendRequestConcurrencyWaitTime: "Backend Request Concurrency Wait Time (in ms, default: 0)",
       cacheThreshold: "Cache Threshold (in KB, default: 1024)",
       resourceCacheTtl: 'Resource Cache TTL, default: 3600(s)',
       headersCacheTtl: 'Headers Cache TTL, default: 60(s)',
