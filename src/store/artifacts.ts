@@ -1,6 +1,7 @@
 import { useArtifactsApi } from '@/api/artifacts';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
+import { runFrontendRequestTask } from '@/utils/requestConcurrency';
 import { defineStore } from 'pinia';
 
 const { t } = i18n.global;
@@ -15,7 +16,7 @@ export const useArtifactsStore = defineStore('artifactsStore', {
   getters: {},
   actions: {
     async fetchArtifactsData() {
-      const { data } = await artifactsApi.getArtifacts();
+      const { data } = await runFrontendRequestTask(() => artifactsApi.getArtifacts(), 'artifacts.getArtifacts');
       if (data.status === 'success') {
         this.artifacts = data.data;
       }

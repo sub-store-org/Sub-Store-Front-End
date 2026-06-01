@@ -194,6 +194,24 @@ export const useHostAPI = () => {
         }
       }
     }
+    // 处理 concurrencyWaitTime 参数
+    const concurrencyWaitTime = query
+      .slice(1)
+      .split('&')
+      .map(i => i.split('='))
+      .find(i => i[0] === 'concurrencyWaitTime');
+    if (concurrencyWaitTime) {
+      const value = parseInt(concurrencyWaitTime[1], 10);
+      if (!isNaN(value)) {
+        if (value > 0) {
+          console.log(`设置并发等待时间 ${value}`)
+          localStorage.setItem('concurrencyWaitTime', value.toString());
+        } else {
+          console.log(`清除并发等待时间设置`)
+          localStorage.removeItem('concurrencyWaitTime');
+        }
+      }
+    }
     // 处理 timeout 参数
     const timeout = query
       .slice(1)

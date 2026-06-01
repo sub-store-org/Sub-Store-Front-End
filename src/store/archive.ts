@@ -6,6 +6,7 @@ import { useAppNotifyStore } from '@/store/appNotify';
 import { useArtifactsStore } from '@/store/artifacts';
 import { useSubsStore } from '@/store/subs';
 import { normalizeArchiveEntry } from '@/utils/archive';
+import { runFrontendRequestTask } from '@/utils/requestConcurrency';
 
 const archiveApi = useArchiveApi();
 const { t } = i18n.global;
@@ -22,7 +23,7 @@ export const useArchiveStore = defineStore('archiveStore', {
   actions: {
     async fetchEntries() {
       try {
-        const res = await archiveApi.getEntries();
+        const res = await runFrontendRequestTask(() => archiveApi.getEntries(), 'archive.getEntries');
         if (res?.data?.status === 'success') {
           this.entries = (res.data.data || []).map(normalizeArchiveEntry);
           return true;

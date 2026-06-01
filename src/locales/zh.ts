@@ -700,6 +700,7 @@ export default {
       scriptCacheTtl: '脚本缓存(单位: 秒, 默认: 172800)',
       logsMaxCount: '最大保存日志条数(默认: 0=关闭)',
       concurrency: '并发数(默认: 3)',
+      concurrencyWaitTime: '并发等待时间(单位: 毫秒, 默认: 0)',
       apiCheckTimeout: 'API 检测超时(单位: 毫秒, 默认: 3000)',
       apiRequestTimeout: '前端请求超时(单位: 毫秒, 默认: 50000)',
       noGithubUser: '未配置 GitHub 用户名',

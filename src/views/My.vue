@@ -484,6 +484,17 @@
           />
           <nut-input
             class="input"
+            v-model="concurrencyWaitTimeInput"
+            :disabled="!isFrontEndConfigEditing"
+            :placeholder="$t(`myPage.placeholder.concurrencyWaitTime`)"
+            type="number"
+            input-align="left"
+            :left-icon="iconTimeout"
+            right-icon="tips"
+            @click-right-icon="concurrencyWaitTimeTips"
+          />
+          <nut-input
+            class="input"
             v-model="apiCheckTimeoutInput"
             :disabled="!isFrontEndConfigEditing"
             :placeholder="$t(`myPage.placeholder.apiCheckTimeout`)"
@@ -743,6 +754,7 @@ const headersCacheTtlInput = ref("");
 const scriptCacheTtlInput = ref("");
 const logsMaxCountInput = ref("");
 const concurrencyInput = ref("");
+const concurrencyWaitTimeInput = ref("");
 const apiCheckTimeoutInput = ref("");
 const apiRequestTimeoutInput = ref("");
 const isGitHubConfigEditing = ref(false);
@@ -846,6 +858,19 @@ const toggleEditMode = async (type) => {
         console.log(`清除并发数设置`)
         localStorage.removeItem('concurrency');
       }
+      const concurrencyWaitTime = parseInt(concurrencyWaitTimeInput.value, 10);
+      if (!isNaN(concurrencyWaitTime)) {
+        if (concurrencyWaitTime > 0) {
+          console.log(`设置并发等待时间 ${concurrencyWaitTime}`)
+          localStorage.setItem('concurrencyWaitTime', concurrencyWaitTime.toString());
+        } else {
+          console.log(`清除并发等待时间设置`)
+          localStorage.removeItem('concurrencyWaitTime');
+        }
+      } else {
+        console.log(`清除并发等待时间设置`)
+        localStorage.removeItem('concurrencyWaitTime');
+      }
       setTimeout(() => {
         window.location.reload();
       }, 100);
@@ -867,6 +892,12 @@ const toggleEditMode = async (type) => {
         concurrencyInput.value = storedConcurrency;
       } else {
         concurrencyInput.value = '';
+      }
+      const storedConcurrencyWaitTime = localStorage.getItem('concurrencyWaitTime');
+      if (storedConcurrencyWaitTime) {
+        concurrencyWaitTimeInput.value = storedConcurrencyWaitTime;
+      } else {
+        concurrencyWaitTimeInput.value = '';
       }
     }
     if (type === 'github' && !isGitHubConfigEditing.value) {
@@ -1294,6 +1325,17 @@ const concurrencyTips = () => {
   Dialog({
       title: '并发数',
       content: 'Shadowrocket 并发可能会爆内存, 可设为 1',
+      popClass: 'auto-dialog',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const concurrencyWaitTimeTips = () => {
+  Dialog({
+      title: '并发等待时间',
+      content: '每个受并发限制的前端请求拿到并发槽后，等待指定毫秒数再发出。默认 0 毫秒。',
       popClass: 'auto-dialog',
       okText: 'OK',
       noCancelBtn: true,

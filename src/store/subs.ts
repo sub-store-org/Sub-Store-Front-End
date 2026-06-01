@@ -4,6 +4,7 @@ import { useShareApi } from '@/api/share';
 import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
+import { isAbortError, runFrontendRequestTask } from '@/utils/requestConcurrency';
 import { isShareExpirationMode } from '@/utils/share';
 import { normalizeTagArray } from '@/utils/shareTags';
 import { defineStore } from 'pinia';
@@ -12,6 +13,57 @@ const { t } = i18n.global;
 const subsApi = useSubsApi();
 const filesApi = useFilesApi();
 const shareApi = useShareApi();
+
+const fetchFlowsAbortControllers = new Set<AbortController>();
+const fetchFlowAbortControllers = new Map<string, AbortController>();
+const latestFlowRequestVersions = new Map<string, number>();
+let flowRequestSequence = 0;
+
+const canFetchFlowsForCurrentPage = () => window.location.pathname === '/subs';
+
+const createFlowRequestState = (flowKey: string, parentSignal: AbortSignal) => {
+  fetchFlowAbortControllers.get(flowKey)?.abort();
+
+  const version = ++flowRequestSequence;
+  const abortController = new AbortController();
+  const abortCurrentFlow = () => abortController.abort();
+
+  fetchFlowAbortControllers.set(flowKey, abortController);
+  latestFlowRequestVersions.set(flowKey, version);
+
+  if (parentSignal.aborted) {
+    abortController.abort();
+  } else {
+    parentSignal.addEventListener('abort', abortCurrentFlow, { once: true });
+  }
+
+  return {
+    signal: abortController.signal,
+    version,
+    clear: () => {
+      parentSignal.removeEventListener('abort', abortCurrentFlow);
+      if (fetchFlowAbortControllers.get(flowKey) === abortController) {
+        fetchFlowAbortControllers.delete(flowKey);
+      }
+      clearFlowRequestVersion(flowKey, version);
+    },
+  };
+};
+
+const isLatestFlowRequest = (flowKey: string, version: number, signal?: AbortSignal) => {
+  return !signal?.aborted && latestFlowRequestVersions.get(flowKey) === version;
+};
+
+const clearFlowRequestVersion = (flowKey: string, version: number) => {
+  if (latestFlowRequestVersions.get(flowKey) === version) {
+    latestFlowRequestVersions.delete(flowKey);
+  }
+};
+
+type FetchFlowsOptions = {
+  cancelPrevious?: boolean;
+  priority?: number;
+};
 
 const normalizeShare = (share: Share): Share => {
   const expiresAt = share?.expiresAt == null ? null : Number(share.expiresAt);
@@ -188,48 +240,6 @@ type ShareUpdateResult =
 //     return this.#resolvePromises(this.#results);
 //   }
 // }
-function executeAsyncTasks(tasks, { wrap = false, result = false, concurrency = 1 } = {}) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let running = 0
-      const results = []
-
-      let index = 0
-
-      function executeNextTask() {
-        while (index < tasks.length && running < concurrency) {
-          const taskIndex = index++
-          const currentTask = tasks[taskIndex]
-          running++
-
-          currentTask()
-            .then(data => {
-              if (result) {
-                results[taskIndex] = wrap ? { data } : data
-              }
-            })
-            .catch(error => {
-              if (result) {
-                results[taskIndex] = wrap ? { error } : error
-              }
-            })
-            .finally(() => {
-              running--
-              executeNextTask()
-            })
-        }
-
-        if (running === 0) {
-          return resolve(result ? results : undefined)
-        }
-      }
-
-      await executeNextTask()
-    } catch (e) {
-      reject(e)
-    }
-  })
-}
 export const useSubsStore = defineStore('subsStore', {
   state: (): SubsStoreState => {
     return {
@@ -264,32 +274,42 @@ export const useSubsStore = defineStore('subsStore', {
   },
   actions: {
     async fetchSubsData() {
-      await Promise.all([subsApi.getSubs(), subsApi.getCollections(), filesApi.getWholeFiles(), shareApi.getShares()]).then(res => {
-        if ('data' in res[0].data) {
-          this.subs = res[0].data.data.map(i => {
-            if (!Array.isArray(i.tag)) {
-              i.tag = []
-            }
-            return i
-          });
-        }
-        if ('data' in res[1].data) {
-          this.collections = res[1].data.data.map(i => {
-            if (!Array.isArray(i.tag)) {
-              i.tag = []
-            }
-            return i
-          });
-        }
-        if ('data' in res[2].data) {
-          this.files = res[2].data.data;
-        }
-        if ('data' in res[3].data) {
-          this.shares = res[3].data.data.map(normalizeShare);
-        }
-      }).catch((err) => {
-        console.log('fetchSubsData err', err);
-      });
+      await Promise.allSettled([
+        runFrontendRequestTask(async () => {
+          const res = await subsApi.getSubs();
+          if ('data' in res.data) {
+            this.subs = res.data.data.map(i => {
+              if (!Array.isArray(i.tag)) {
+                i.tag = []
+              }
+              return i
+            });
+          }
+        }, 'subs.getSubs'),
+        runFrontendRequestTask(async () => {
+          const res = await subsApi.getCollections();
+          if ('data' in res.data) {
+            this.collections = res.data.data.map(i => {
+              if (!Array.isArray(i.tag)) {
+                i.tag = []
+              }
+              return i
+            });
+          }
+        }, 'subs.getCollections'),
+        runFrontendRequestTask(async () => {
+          const res = await filesApi.getWholeFiles();
+          if ('data' in res.data) {
+            this.files = res.data.data;
+          }
+        }, 'files.getWholeFiles'),
+        runFrontendRequestTask(async () => {
+          const res = await shareApi.getShares();
+          if ('data' in res.data) {
+            this.shares = res.data.data.map(normalizeShare);
+          }
+        }, 'share.getShares'),
+      ]);
     },
     setOneData(type: string, name: string, data: any) {
       const index = this[type].findIndex(item => item.name === name);
@@ -315,21 +335,78 @@ export const useSubsStore = defineStore('subsStore', {
         console.log('updateOneData error', error);
       }
     },
-    async fetchFlows(sub?: Sub[]) {
+    cancelFetchFlows() {
+      if (
+        fetchFlowsAbortControllers.size === 0
+        && fetchFlowAbortControllers.size === 0
+        && latestFlowRequestVersions.size === 0
+      ) return;
+
+      fetchFlowsAbortControllers.forEach(controller => controller.abort());
+      fetchFlowsAbortControllers.clear();
+      fetchFlowAbortControllers.forEach(controller => controller.abort());
+      fetchFlowAbortControllers.clear();
+      latestFlowRequestVersions.clear();
+      console.log('[frontend-request-concurrency] cancel fetchFlows');
+    },
+    async fetchFlows(sub?: Sub[], options: FetchFlowsOptions = {}) {
       type FlowUrlItem = [string, string, boolean, boolean, boolean];
-      const asyncGetFlow = async ([url, name, noFlow, hideExpire, showRemaining], index) => {
+      if (!canFetchFlowsForCurrentPage()) {
+        this.cancelFetchFlows();
+        console.log('[frontend-request-concurrency] skip fetchFlows outside /subs');
+        return;
+      }
+
+      const isTargetedFetch = Boolean(sub);
+      const {
+        cancelPrevious = !isTargetedFetch,
+        priority = isTargetedFetch ? 100 : 0,
+      } = options;
+
+      if (cancelPrevious) {
+        this.cancelFetchFlows();
+      }
+
+      const abortController = new AbortController();
+      fetchFlowsAbortControllers.add(abortController);
+      const { signal } = abortController;
+
+      const asyncGetFlow = async (
+        [url, name, noFlow, hideExpire, showRemaining],
+        index,
+        requestVersion: number,
+        requestSignal: AbortSignal,
+        clearRequest: () => void,
+      ) => {
         console.log(`[START] ${index} ${url}fetching flow`)
-        if (noFlow) {
-          this.flows[url] = { status:'noFlow' };
-        } else {
-          try {
-            const { data } = await subsApi.getFlow(name);
-            this.flows[url] = {...data, hideExpire, showRemaining };
-          } catch (e) {
+        try {
+          if (!isLatestFlowRequest(url, requestVersion, requestSignal)) {
+            console.log(`[SKIP] ${index} ${url} stale flow`)
+            return;
           }
+
+          if (noFlow) {
+            this.flows[url] = { status:'noFlow' };
+          } else {
+            const res = await subsApi.getFlow(name, requestSignal);
+            if (!isLatestFlowRequest(url, requestVersion, requestSignal)) {
+              console.log(`[SKIP] ${index} ${url} stale flow`)
+              return;
+            }
+
+            const data = res?.data;
+            if (data) {
+              this.flows[url] = {...data, hideExpire, showRemaining };
+            }
+          }
+        } catch (e) {
+          if (isAbortError(e) || requestSignal.aborted) {
+            throw e;
+          }
+        } finally {
+          clearRequest();
+          console.log(`[END] ${index} ${url} fetching flow`)
         }
-        // await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log(`[END] ${index} ${url} fetching flow`)
       };
       // const subs = sub || this.subs;
       // getFlowsUrlList(subs).forEach(asyncGetFlow);
@@ -345,21 +422,47 @@ export const useSubsStore = defineStore('subsStore', {
       //   waitTime: 0,
       // });
 
-      const flowTasks = [] as Array<() => Promise<void>>;
+      const flowTasks = [] as Array<{ label: string; signal: AbortSignal; task: () => Promise<void> }>;
 
       flowsUrlList.forEach((item, index) => {
         const [url, , noFlow] = item;
+        const requestState = createFlowRequestState(url, signal);
         if (noFlow) {
-          this.flows[url] = { status:'noFlow' };
+          if (isLatestFlowRequest(url, requestState.version, requestState.signal)) {
+            this.flows[url] = { status:'noFlow' };
+          }
+          requestState.clear();
           return;
         }
-        flowTasks.push(() => asyncGetFlow(item, index));
+        flowTasks.push({
+          label: `subs.getFlow:${item[1]}`,
+          signal: requestState.signal,
+          task: () => asyncGetFlow(
+            item,
+            index,
+            requestState.version,
+            requestState.signal,
+            requestState.clear,
+          ),
+        });
       });
 
-      await executeAsyncTasks(
-        flowTasks,
-        { concurrency: localStorage.getItem('concurrency') ? parseInt(localStorage.getItem('concurrency') as string, 10) : 3 }
-      )
+      try {
+        await Promise.all(flowTasks.map(({ label, signal: flowSignal, task }) => (
+          runFrontendRequestTask(task, label, { priority, signal: flowSignal })
+            .catch((error) => {
+              if (!isAbortError(error) && !flowSignal.aborted) {
+                throw error;
+              }
+            })
+        )))
+      } catch (error) {
+        if (!isAbortError(error) && !signal.aborted) {
+          throw error;
+        }
+      } finally {
+        fetchFlowsAbortControllers.delete(abortController);
+      }
   
       // const batches = [];
 
@@ -402,9 +505,9 @@ export const useSubsStore = defineStore('subsStore', {
       return false;
     },
     async fetchFiles() {
-      Promise.all([filesApi.getWholeFiles()]).then(res => {
-        if ('data' in res[0].data) {
-          this.files = res[0].data.data;
+      await runFrontendRequestTask(() => filesApi.getWholeFiles(), 'files.getWholeFiles').then(res => {
+        if ('data' in res.data) {
+          this.files = res.data.data;
         }
       }).catch((err) => {
         console.log('fetchFiles err', err);
@@ -437,9 +540,9 @@ export const useSubsStore = defineStore('subsStore', {
       return false;
     },
     async fetchShareData() {
-      await Promise.all([shareApi.getShares()]).then((res) => {
-        if ("data" in res[0].data) {
-          this.shares = res[0].data.data.map(normalizeShare);
+      await runFrontendRequestTask(() => shareApi.getShares(), 'share.getShares').then((res) => {
+        if ("data" in res.data) {
+          this.shares = res.data.data.map(normalizeShare);
         }
       }).catch((err) => {
         console.log('fetchShareData err', err);

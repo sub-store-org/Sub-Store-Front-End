@@ -736,6 +736,7 @@ export default {
       scriptCacheTtl: 'Script Cache TTL, default: 172800(s)',
       logsMaxCount: 'Max stored logs, default: 0=off',
       concurrency: 'Concurrency Limit(default: 3)',
+      concurrencyWaitTime: 'Concurrency Wait Time, default: 0(ms)',
       apiCheckTimeout: 'API Check Timeout, default: 3000(ms)',
       apiRequestTimeout: 'Front-End Request Timeout, default: 50000(ms)',
       noGithubUser: "Not set GitHub username",

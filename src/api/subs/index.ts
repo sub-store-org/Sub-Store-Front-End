@@ -28,10 +28,11 @@ export function useSubsApi() {
         method: 'get',
       });
     },
-    getFlow: (name: string): AxiosPromise<MyAxiosRes> => {
+    getFlow: (name: string, signal?: AbortSignal): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/sub/flow/${encodeURIComponent(name)}`,
         method: 'get',
+        signal,
       });
     },
     getSubInfo: (data: NodeInfo): AxiosPromise<MyAxiosRes> => {

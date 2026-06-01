@@ -5,6 +5,7 @@ import { useFilesApi } from '@/api/files';
 
 import AppLayout from '@/layout/AppLayout.vue';
 import { useGlobalStore } from '@/store/global';
+import { useSubsStore } from '@/store/subs';
 import { initStores } from '@/utils/initApp';
 import My from '@/views/My.vue';
 
@@ -335,6 +336,9 @@ router.afterEach(async (to, from) => {
 router.beforeEach((to, from) => {
   document.title = 'Sub Store';
   // console.log(`beforeEach ${from.path} => ${to.path}`)
+  if (to?.path !== '/subs') {
+    useSubsStore().cancelFetchFlows();
+  }
   if (!globalStore) {
     globalStore = useGlobalStore();
   }
