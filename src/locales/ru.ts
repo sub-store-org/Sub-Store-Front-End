@@ -518,7 +518,7 @@ export default {
             "Отключено"
           ],
           "concurrency": "Конкурентность запросов",
-          "concurrencyPlaceholder": "По умолчанию 15. Рекомендуется ставить не более 20",
+          "concurrencyPlaceholder": "По умолчанию 10. Рекомендуется ставить не более 20",
           "tipsTitle": "Подсказки по резолву",
           "tipsDes": "Инструкции по разрешению доменных имен узлов в IP-адреса"
         },
@@ -779,6 +779,8 @@ export default {
       "defaultFlowUserAgent": "Введите User-Agent для трафика по умолчанию",
       "defaultProxy": "Укажите дефолтный прокси/политику бэкенда",
       "defaultTimeout": "Таймаут по умолчанию (в мс, по умолчанию: 8000)",
+      "backendRequestConcurrency": "Параллельные запросы бэкенда (по умолчанию: 10)",
+      "backendRequestConcurrencyWaitTime": "Ожидание параллельных запросов бэкенда (в мс, по умолчанию: 0)",
       "cacheThreshold": "Порог кэширования (в КБ, по умолчанию: 1024)",
       "resourceCacheTtl": "TTL кэша ресурсов, по умолчанию: 3600 (сек)",
       "headersCacheTtl": "TTL кэша заголовков, по умолчанию: 60 (сек)",
