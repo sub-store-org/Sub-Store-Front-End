@@ -78,6 +78,14 @@ const getResponseContent = (e: AxiosError<ErrorResponse>) => {
   return [statusLine, getText(e.message)].filter(Boolean).join('\n') || undefined;
 };
 
+const isCanceledRequestError = (error: AxiosError<ErrorResponse>) => {
+  return error.name === 'AbortError'
+    || error.name === 'CanceledError'
+    || error.code === 'ERR_CANCELED'
+    || error.message === 'canceled'
+    || axios.isCancel(error);
+};
+
 // 配置新建一个 axios 实例
 const service = axios.create({
   baseURL: getHostAPIUrl(),
@@ -93,6 +101,9 @@ service.interceptors.response.use(
   (e: AxiosError<ErrorResponse>): AxiosPromise<ErrorResponse | undefined> => {
     // console.log(e.config.url);
     const requestUrl = e.config?.url || '';
+
+    if (isCanceledRequestError(e))
+      return Promise.reject(e);
 
     // 流量信息接口的报错,不通知，直接返回
     if (requestUrl.startsWith('/api/sub/flow') || requestUrl.startsWith('https://api.github.com/'))

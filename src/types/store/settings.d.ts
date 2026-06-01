@@ -28,6 +28,8 @@ interface SettingsPostData {
   defaultUserAgent?: string;
   defaultFlowUserAgent?: string;
   defaultTimeout?: string;
+  backendRequestConcurrency?: string;
+  backendRequestConcurrencyWaitTime?: string;
   cacheThreshold?: string;
   resourceCacheTtl?: string;
   headersCacheTtl?: string;

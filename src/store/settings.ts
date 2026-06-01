@@ -106,6 +106,8 @@ export const useSettingsStore = defineStore("settingsStore", {
       defaultFlowUserAgent: "",
       defaultProxy: "",
       defaultTimeout: "",
+      backendRequestConcurrency: "",
+      backendRequestConcurrencyWaitTime: "",
       cacheThreshold: "",
       resourceCacheTtl: "",
       headersCacheTtl: "",
@@ -212,6 +214,8 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
+        this.backendRequestConcurrency = normalizeSettingInputValue(res.data.data.backendRequestConcurrency);
+        this.backendRequestConcurrencyWaitTime = normalizeSettingInputValue(res.data.data.backendRequestConcurrencyWaitTime);
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
         this.headersCacheTtl = res.data.data.headersCacheTtl || "";
@@ -255,6 +259,8 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.defaultUserAgent = res.data.data.defaultUserAgent || "";
         this.defaultFlowUserAgent = res.data.data.defaultFlowUserAgent || "";
         this.defaultTimeout = res.data.data.defaultTimeout || "";
+        this.backendRequestConcurrency = normalizeSettingInputValue(res.data.data.backendRequestConcurrency);
+        this.backendRequestConcurrencyWaitTime = normalizeSettingInputValue(res.data.data.backendRequestConcurrencyWaitTime);
         this.cacheThreshold = res.data.data.cacheThreshold || "";
         this.resourceCacheTtl = res.data.data.resourceCacheTtl || "";
         this.headersCacheTtl = res.data.data.headersCacheTtl || "";
