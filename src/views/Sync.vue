@@ -26,13 +26,22 @@
           }"
         >
           <div
+            v-if="appearanceSetting.showFloatingRefreshButton"
+            class="drag-btn refresh"
+            @click="refresh"
+          >
+            <font-awesome-icon icon="fa-solid fa-arrow-rotate-right" />
+          </div>
+
+          <div
             v-if="appearanceSetting.showFloatingAddButton"
-            class="drag-btn"
             @touchmove="onTa"
             @touchend="enTa"
             @click="onclickAddArtifact"
           >
-            <font-awesome-icon icon="fa-solid fa-plus" />
+            <div class="drag-btn">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+            </div>
           </div>
         </nut-drag>
       </div>
@@ -516,6 +525,37 @@ const filteredArtifacts = useFilteredDraggableList(artifacts, shouldShowElement)
 </script>
 
 <style lang="scss" scoped>
+.drag-btn-wrapper {
+  position: relative;
+  z-index: 999;
+
+  .drag-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-image: linear-gradient(
+      to bottom right,
+      var(--primary-color),
+      var(--primary-color-end)
+    );
+    box-shadow: 0 4px 8px #0003;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.refresh {
+      background: var(--second-color);
+      margin-bottom: 12px;
+    }
+
+    > svg {
+      width: 20px;
+      height: 20px;
+      color: #fffb;
+    }
+  }
+}
+
 .list-title {
   padding-left: 8px;
   font-weight: bold;
