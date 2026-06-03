@@ -118,6 +118,25 @@
             <nut-switch v-model="form.isIconColor" />
           </div>
         </nut-form-item>
+        <nut-form-item prop="age-public-key">
+          <template #label>
+            <span class="label-with-tip" @click="ageOutputTips">
+              <span>{{ $t("ageKey.publicKey.label") }}</span>
+              <nut-icon name="tips"></nut-icon>
+            </span>
+          </template>
+          <div class="age-key-field">
+            <nut-input
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form['age-public-key']"
+              :placeholder="$t('ageKey.publicKey.placeholder')"
+              type="text"
+              input-align="right"
+            />
+            <AgeKeyHelper v-model="form['age-public-key']" />
+          </div>
+        </nut-form-item>
         <template v-if="editType === 'subs'">
           <!-- source -->
           <nut-form-item
@@ -559,6 +578,7 @@ import Regex from "@/views/editor/components/Regex.vue";
 import Script from "@/views/editor/components/Script.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import TagPopup from "@/components/TagPopup.vue";
+import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
 import DesktopPicker from "@/components/DesktopPicker.vue";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
@@ -866,6 +886,7 @@ watchEffect(() => {
   }
   form.ignoreFailedRemoteSub = ignoreFailedRemoteSub;
   form.passThroughUA = sourceData.passThroughUA;
+  form["age-public-key"] = sourceData["age-public-key"] || "";
   form.name = sourceData.name;
   form.displayName = sourceData.displayName || sourceData["display-name"];
   form.remark = sourceData.remark;
@@ -1162,6 +1183,14 @@ const submit = () => {
     });
     // 如果验证成功，开始保存/修改
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    const agePublicKey = `${data["age-public-key"] || ""}`.trim();
+    if (agePublicKey) {
+      data["age-public-key"] = agePublicKey;
+    } else if (configName === "UNTITLED") {
+      delete data["age-public-key"];
+    } else {
+      data["age-public-key"] = null;
+    }
     data.tag = [
       ...new Set(
         (data.tag || "")
@@ -1354,6 +1383,18 @@ const urlValidator = (val: string): Promise<boolean> => {
     Dialog({
         title: t('editorPage.subConfig.basic.url.tips.title'),
         content: t('editorPage.subConfig.basic.url.tips.content'),
+        popClass: 'auto-dialog',
+        textAlign: 'left',
+        okText: 'OK',
+        noCancelBtn: true,
+        closeOnPopstate: true,
+        lockScroll: false,
+      });
+  };
+  const ageOutputTips = () => {
+    Dialog({
+        title: t('ageKey.publicKey.tips.title'),
+        content: t('ageKey.publicKey.tips.content'),
         popClass: 'auto-dialog',
         textAlign: 'left',
         okText: 'OK',
@@ -1745,6 +1786,17 @@ const handleEditGlobalClick = () => {
     :deep(.nut-icon) {
       color: inherit;
     }
+
+    :deep(.nut-icon-tips) {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 20px;
+    }
   }
   :deep(.nut-form-item__label) {
     width: auto;
@@ -1845,6 +1897,14 @@ const handleEditGlobalClick = () => {
   :deep(.include-subs-trigger-input .nut-input-inner .nut-input-right-icon) {
     margin-left: 14px;
   }
+}
+
+.age-key-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
 }
 
 .include-subs-wrapper {

@@ -233,6 +233,26 @@
             />
           </nut-form-item>
 
+          <nut-form-item prop="age-public-key">
+            <template #label>
+              <span class="label-with-tip" @click="ageOutputTips">
+                <span>{{ $t("ageKey.publicKey.label") }}</span>
+                <nut-icon name="tips"></nut-icon>
+              </span>
+            </template>
+            <div class="age-key-field">
+              <nut-input
+                v-model.trim="form['age-public-key']"
+                class="nut-input-text"
+                :border="false"
+                :placeholder="$t('ageKey.publicKey.placeholder')"
+                type="text"
+                input-align="right"
+              />
+              <AgeKeyHelper v-model="form['age-public-key']" />
+            </div>
+          </nut-form-item>
+
           <nut-form-item
             :label="$t(`sharePage.createShare.displayName.label`)"
             prop="displayName"
@@ -385,7 +405,7 @@
 </template>
 
 <script setup lang="ts">
-import { Toast } from "@nutui/nutui";
+import { Dialog, Toast } from "@nutui/nutui";
 import { useClipboard, usePreferredDark } from "@vueuse/core";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
 import { storeToRefs } from "pinia";
@@ -396,6 +416,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
+import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
 import ShareExactDatetimeField from "@/components/ShareExactDatetimeField.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
@@ -489,6 +510,7 @@ const form = reactive({
   remark: "",
   token: "",
   displayName: "",
+  "age-public-key": "",
   tag: "",
   icon: "",
   isIconColor: true,
@@ -715,6 +737,7 @@ const resetFormState = () => {
   form.remark = "";
   form.token = "";
   form.displayName = "";
+  form["age-public-key"] = "";
   form.tag = "";
   form.icon = "";
   form.isIconColor = true;
@@ -774,6 +797,9 @@ const hydrateForm = () => {
 
   form.remark = activeSource.remark || "";
   form.token = activeSource.token || "";
+  form["age-public-key"] = routeMode.value === "edit"
+    ? activeSource["age-public-key"] || ""
+    : "";
   form.displayName = routeMode.value === "create"
     ? getSourceDefaultDisplayName(activeSource)
     : activeSource.displayName || "";
@@ -1058,6 +1084,18 @@ const setIcon = (icon: { url?: string | null }) => {
   form.icon = icon?.url || "";
 };
 
+const ageOutputTips = () => {
+  Dialog({
+    title: t("ageKey.publicKey.tips.title"),
+    content: t("ageKey.publicKey.tips.content"),
+    popClass: "auto-dialog",
+    textAlign: "left",
+    noCancelBtn: true,
+    okText: t("specificWord.confirm"),
+    closeOnClickOverlay: true,
+  });
+};
+
 const validateExpiresValue = (value: string) => {
   return /^(?:0\.0[1-9]\d*|[1-9]\d{0,4}(?:\.\d*)?|0\.[1-9]\d*)$/.test(value);
 };
@@ -1281,6 +1319,12 @@ const getSubmitParams = async (): Promise<ShareToken | null> => {
     remark: form.remark || "",
     tag: normalizeTagArray(form.tag),
   };
+  const agePublicKey = form["age-public-key"].trim();
+  if (agePublicKey) {
+    payload["age-public-key"] = agePublicKey;
+  } else if (routeMode.value === "edit") {
+    payload["age-public-key"] = null;
+  }
 
   if (normalizedFormIcon.value) {
     payload.icon = normalizedFormIcon.value;
@@ -1530,6 +1574,7 @@ watch(
     form.expiresUnit,
     form.exactDatetime,
     form.token,
+    form["age-public-key"],
     form.displayName,
     form.remark,
     form.tag,
@@ -1600,6 +1645,28 @@ watch(
 
   :deep(.nut-form-item__body__slots) {
     width: 100%;
+  }
+
+  .label-with-tip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+
+    :deep(.nut-icon) {
+      color: inherit;
+    }
+
+    :deep(.nut-icon-tips) {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 20px;
+    }
   }
 
   :deep(.nut-input-text) {
@@ -1733,6 +1800,14 @@ watch(
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+
+.age-key-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
 }
 
 .qrcode-wrapper {

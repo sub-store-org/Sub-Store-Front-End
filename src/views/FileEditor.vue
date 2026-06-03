@@ -117,6 +117,25 @@
               <nut-switch v-model="form.isIconColor" />
             </div>
           </nut-form-item>
+          <nut-form-item prop="age-public-key">
+            <template #label>
+              <span class="label-with-tip" @click="ageOutputTips">
+                <span>{{ $t("ageKey.publicKey.label") }}</span>
+                <nut-icon name="tips"></nut-icon>
+              </span>
+            </template>
+            <div class="age-key-field">
+              <nut-input
+                :border="false"
+                class="nut-input-text"
+                v-model.trim="form['age-public-key']"
+                :placeholder="$t('ageKey.publicKey.placeholder')"
+                type="text"
+                input-align="right"
+              />
+              <AgeKeyHelper v-model="form['age-public-key']" />
+            </div>
+          </nut-form-item>
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
             prop="subInfoUrl"
@@ -229,7 +248,6 @@
             <nut-form-item
               required
               v-if="form.source === 'remote'"
-              :label="$t(`editorPage.subConfig.basic.url.label`)"
               prop="url"
               :rules="[
                 {
@@ -242,6 +260,14 @@
                 },
               ]"
             >
+              <template #label>
+                <span class="label-tips" @click="fileUrlTips">
+                  <p>{{ $t(`editorPage.subConfig.basic.url.label`) }}</p>
+                  <span class="tips">
+                    <span>{{ $t(`editorPage.subConfig.basic.url.tips.label`) }}</span>
+                  </span>
+                </span>
+              </template>
               <nut-textarea
                 class="textarea-wrapper"
                 @blur="customerBlurValidate('url')"
@@ -449,6 +475,7 @@ import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
 import TagPopup from "@/components/TagPopup.vue";
+import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
 import DesktopPicker from "@/components/DesktopPicker.vue";
@@ -665,6 +692,7 @@ watchEffect(() => {
     form.remark = sourceData.remark;
     form.icon = sourceData.icon;
     form.isIconColor = sourceData.isIconColor !== false;
+    form["age-public-key"] = sourceData["age-public-key"] || "";
     form.source = sourceData.source || "local";
     form.type = sourceData.type || 'file';
     form.sourceType = sourceData.sourceType || 'collection';
@@ -880,6 +908,14 @@ const submit = () => {
     Toast.loading("...", { id: "submits", cover: true, duration: 1500 });
     // 如果验证成功，开始保存/修改
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    const agePublicKey = `${data["age-public-key"] || ""}`.trim();
+    if (agePublicKey) {
+      data["age-public-key"] = agePublicKey;
+    } else if (["UNTITLED", "UNTITLED-mihomoProfile"].includes(configName)) {
+      delete data["age-public-key"];
+    } else {
+      data["age-public-key"] = null;
+    }
     data.tag = [
       ...new Set(
         (data.tag || "")
@@ -942,6 +978,30 @@ const subInfoUrlTips = () => {
   Dialog({
     title: t(`editorPage.subConfig.basic.subInfoUrl.tips.title`),
     content: t(`editorPage.subConfig.basic.subInfoUrl.tips.content`),
+    popClass: "auto-dialog",
+    textAlign: "left",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+};
+const fileUrlTips = () => {
+  Dialog({
+    title: t("filePage.url.tips.title"),
+    content: t("filePage.url.tips.content"),
+    popClass: "auto-dialog",
+    textAlign: "left",
+    okText: "OK",
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+};
+const ageOutputTips = () => {
+  Dialog({
+    title: t("ageKey.publicKey.tips.title"),
+    content: t("ageKey.publicKey.tips.content"),
     popClass: "auto-dialog",
     textAlign: "left",
     okText: "OK",
@@ -1091,6 +1151,28 @@ const handleEditGlobalClick = () => {
       }
     }
   }
+
+  .label-with-tip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+
+    :deep(.nut-icon) {
+      color: inherit;
+    }
+
+    :deep(.nut-icon-tips) {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
 }
 .actions-title-wrapper {
   display: flex;
@@ -1214,6 +1296,14 @@ const handleEditGlobalClick = () => {
       }
     }
   }
+}
+
+.age-key-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
 }
 
 .empty-tips {

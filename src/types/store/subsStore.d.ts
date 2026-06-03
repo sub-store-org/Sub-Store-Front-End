@@ -43,6 +43,7 @@ interface Sub {
   mergeSources?: string;
   subUserinfo?: string;
   tag?: string[];
+  'age-public-key'?: string;
   process: Process[];
 }
 
@@ -59,6 +60,7 @@ interface Collection {
   icon?: string;
   isIconColor?: boolean;
   tag?: string[];
+  'age-public-key'?: string;
 }
 
 interface Artifacts {
@@ -100,6 +102,7 @@ interface Share {
   icon?: string | null;
   isIconColor?: boolean | null;
   token?: string | null;
+  'age-public-key'?: string | null;
   mode?: 'duration' | 'datetime' | 'count' | null;
   expiresIn?: string | null;
   expiresAt?: number | null;
@@ -118,6 +121,7 @@ interface SharePayload {
   icon?: string | null;
   isIconColor?: boolean | null;
   token?: string | null;
+  'age-public-key'?: string | null;
 }
 
 interface ShareToken {

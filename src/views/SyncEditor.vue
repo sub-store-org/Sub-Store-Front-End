@@ -140,6 +140,26 @@
           />
         </nut-form-item>
 
+        <nut-form-item prop="age-public-key">
+          <template #label>
+            <div class="form-label-with-tips" @click="ageOutputTips">
+              <p>{{ $t("ageKey.publicKey.label") }}</p>
+              <nut-icon name="tips"></nut-icon>
+            </div>
+          </template>
+          <div class="age-key-field">
+            <nut-input
+              :border="false"
+              input-align="right"
+              class="nut-input-text"
+              :placeholder="$t('ageKey.publicKey.placeholder')"
+              v-model.trim="form['age-public-key']"
+              type="text"
+            />
+            <AgeKeyHelper v-model="form['age-public-key']" />
+          </div>
+        </nut-form-item>
+
         <nut-form-item class="upload-wrapper">
           <template #label>
             <div class="label" @click="uploadTips">
@@ -268,6 +288,7 @@
 
 <script lang="ts" setup>
 import TagPopup from "@/components/TagPopup.vue";
+import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";
@@ -460,6 +481,7 @@ watchEffect(() => {
   form.isIconColor = sourceData.isIconColor !== false;
   form.source = sourceData.source;
   form.type = sourceData.type;
+  form["age-public-key"] = sourceData["age-public-key"] || "";
   form.platform = sourceData.platform || "Stash";
   form.sync = sourceData.sync ?? false;
   form.cron = sourceData.cron || "";
@@ -530,6 +552,18 @@ const cronTips = () => {
   });
 };
 
+const ageOutputTips = () => {
+  Dialog({
+    title: t("ageKey.publicKey.tips.title"),
+    content: t("ageKey.publicKey.tips.content"),
+    popClass: "auto-dialog",
+    textAlign: "left",
+    noCancelBtn: true,
+    okText: t("specificWord.confirm"),
+    closeOnClickOverlay: true,
+  });
+};
+
 const qxTips = () => {
   Toast.warn(
     "由于 QX 资源解析器对 QX 格式的输入支持不完善, 请勿对 Sub-Store 链接启用资源解析器. 如果一定要用资源解析器, 请手动选择 V2Ray 输出, 将形如 ?target=V2Ray 的链接填入 QX",
@@ -593,6 +627,14 @@ const submit = () => {
     }
 
     const data: any = JSON.parse(JSON.stringify(toRaw(form)));
+    const agePublicKey = `${data["age-public-key"] || ""}`.trim();
+    if (agePublicKey) {
+      data["age-public-key"] = agePublicKey;
+    } else if (isEditMode.value) {
+      data["age-public-key"] = null;
+    } else {
+      delete data["age-public-key"];
+    }
     data.tag = [
       ...new Set(
         (form.tag || "")
@@ -702,8 +744,19 @@ const submit = () => {
       text-align: left;
     }
 
-    .nut-icon {
+    :deep(.nut-icon) {
       flex-shrink: 0;
+    }
+
+    :deep(.nut-icon-tips) {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 20px;
     }
   }
 
@@ -729,8 +782,19 @@ const submit = () => {
         text-align: left;
       }
 
-      .nut-icon {
+      :deep(.nut-icon) {
         flex-shrink: 0;
+      }
+
+      :deep(.nut-icon-tips) {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        line-height: 20px;
       }
     }
   }
@@ -748,6 +812,14 @@ const submit = () => {
 .switch-wrapper {
   display: flex;
   justify-content: flex-end;
+}
+
+.age-key-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
 }
 
 .bottom-btn-wrapper {

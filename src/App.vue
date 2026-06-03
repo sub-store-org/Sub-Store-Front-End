@@ -239,9 +239,11 @@ useThemes();
 
 // 设置流量刷新状态
 watchEffect(() => {
-  allLength.value = getFlowsUrlList(subs.value).length;
-  const currentLength = Object.keys(flows.value).length;
-  globalStore.setFlowFetching(allLength.value !== currentLength);
+  const flowKeys = getFlowsUrlList(subs.value).map(([url]) => url);
+  allLength.value = flowKeys.length;
+  globalStore.setFlowFetching(
+    flowKeys.some(url => !(url in flows.value)),
+  );
 });
 
 watchEffect(() => {

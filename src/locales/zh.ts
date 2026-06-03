@@ -150,7 +150,12 @@ export default {
     },
     url: {
       label: '链接',
-      placeholder: '支持换行混写三种格式: 1. 完整远程链接 2. 类似 /api/file/name 的内部文件调用路径 3. 本地文件的绝对路径. 支持参数: noCache 不使用缓存; cacheTtl: 缓存时长(秒); insecure 不验证服务器证书; headers 自定义请求头(单行 JSON 字符串). 例: http://a.com#noCache&insecure',
+      placeholder: '支持换行混写远程链接、内部文件调用路径、本地文件绝对路径. 支持 noCache、cacheTtl、insecure、headers、age-secret-key 等参数, 点击使用说明查看详情',
+      tips: {
+        label: '使用说明',
+        title: '文件链接',
+        content: '支持使用换行混写三种格式:\n1. 完整远程链接\n2. 类似 /api/file/name 的内部文件调用路径\n3. 本地文件的绝对路径\n\n支持以下参数\n\nheaders: 自定义请求头(单行 JSON 字符串)\ninsecure: 不验证服务器证书\nnoCache: 不使用缓存\ncacheTtl: 缓存时长(秒)\n\nage-secret-key: age 解密私钥, 对应 mihomo proxy-providers 中的 age-secret-key, 用于解密远程链接获取到的 age armor 内容. 仅支持 age 原生 X25519 和 MLKEM768-X25519 key\n\n例: http://a.com#noCache&insecure',
+      },
       isEmpty: '链接不能为空',
       isIllegal: '链接格式非法',
     },
@@ -256,6 +261,10 @@ export default {
     },
     panel: {
       general: '通用订阅',
+      options: {
+        includeUnsupportedProxy: '含不支持的协议',
+        prettyYaml: '更易读的 YAML',
+      },
       tips: {
         ok: '查看文档',
         cancel: '取消',
@@ -359,7 +368,7 @@ export default {
             fullScreenEditCancel: '取消全屏',
             label: '使用说明',
             title: '订阅链接',
-            content: '支持使用换行混写三种格式:\n1. 完整远程链接\n2. 类似 /api/file/name 的内部文件调用路径\n3. 本地文件的绝对路径\n\n支持以下参数\n\nheaders: 自定义请求头(单行 JSON 字符串)\ninsecure: 不验证服务器证书\ncacheKey: 设置乐观缓存的名称. 适合经常拉取失败的订阅. 开启后也可自行在持久化缓存中管理(前缀为 "sub-store-cached-custom-")\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowHeaders: 查询流量时使用的自定义请求头(单行 JSON 字符串)\nflowUrl: 自定义查询流量的 URL(优先响应体, 也支持响应头)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\ncacheTtl: 缓存时长(秒)\nheadersCacheTtl: 响应头缓存时长(秒)\nnoCache: 不使用缓存\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
+            content: '支持使用换行混写三种格式:\n1. 完整远程链接\n2. 类似 /api/file/name 的内部文件调用路径\n3. 本地文件的绝对路径\n\n支持以下参数\n\nheaders: 自定义请求头(单行 JSON 字符串)\ninsecure: 不验证服务器证书\ncacheKey: 设置乐观缓存的名称. 适合经常拉取失败的订阅. 开启后也可自行在持久化缓存中管理(前缀为 "sub-store-cached-custom-")\nvalidCheck: 过期或无剩余流量时报错\nflowUserAgent: 查询流量时使用的 User-Agent\nflowHeaders: 查询流量时使用的自定义请求头(单行 JSON 字符串)\nflowUrl: 自定义查询流量的 URL(优先响应体, 也支持响应头)\nnoFlow: 不查询流量\nhideExpire: 隐藏到期\nshowRemaining: 显示剩余流量而不是已用流量\nnoCache: 不使用缓存\ncacheTtl: 缓存时长(秒)\nheadersCacheTtl: 响应头缓存时长(秒)\nresetDay: 每月流量重置日\nstartDate: 订阅开始日期\ncycleDays: 订阅重置周期(单位: 天)\n\nage-secret-key: age 解密私钥, 对应 mihomo proxy-providers 中的 age-secret-key, 用于解密远程链接获取到的 age armor 内容. 仅支持 age 原生 X25519 和 MLKEM768-X25519 key\n\n例: http://a.com?token=1#cycleDays=31&startDate=2024-06-04\n或 http://a.com?token=1#resetDay=15',
           },
           isEmpty: '订阅链接不能为空',
           isIllegal: '订阅链接格式非法',
@@ -1326,6 +1335,37 @@ export default {
     },
     changelogs: {
       title: '更新日志',
+    },
+  },
+  ageKey: {
+    publicKey: {
+      label: 'age 加密公钥',
+      placeholder: '请输入 age 加密公钥',
+      tips: {
+        title: 'age 输出加密',
+        content: '后端 >= 2.24.1\n代理 App 中运行可能会缺环境 暂未进行完整测试\n分享/同步配置中配置的优先\n由于设置后加密输出不方便查看结果, 建议仅在分享/同步配置中配置\n可点击右侧按钮生成',
+      },
+    },
+    secretKey: {
+      label: 'age 解密私钥',
+      placeholder: '可粘贴 AGE-SECRET-KEY-1... 或 AGE-SECRET-KEY-PQ-1... 用于推导 age 加密公钥',
+    },
+    helper: {
+      open: '生成',
+      title: 'age key helper',
+      type: '类型',
+      generate: '一键生成',
+      applyPublic: '一键填入',
+      derive: '从私钥生成',
+      copyPublic: '复制',
+      copySecret: '复制',
+      close: '关闭',
+      clearPublic: '清空 age 加密公钥',
+      clearSecret: '清空 age 解密私钥',
+      copied: '已复制',
+      filled: '已填入',
+      error: 'age key 操作失败',
+      tips: '只支持 age 原生 X25519 和 MLKEM768-X25519 key. 生成的 age 解密私钥只在此弹窗显示, 请妥善保存; age 加密公钥可写入配置字段用于加密最终输出.',
     },
   },
   magicPath: {

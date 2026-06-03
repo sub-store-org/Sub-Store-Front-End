@@ -857,6 +857,8 @@ const openPreviewPanel = () => {
       type: props.type,
       general: t("subPage.panel.general"),
       notify: t("subPage.copyNotify.succeed"),
+      includeUnsupportedProxyLabel: t("subPage.panel.options.includeUnsupportedProxy"),
+      prettyYamlLabel: t("subPage.panel.options.prettyYaml"),
       tipsTitle: t(`subPage.panel.tips.title`),
       tipsContent: `${t("subPage.panel.tips.content")}\n${t(
         "syncPage.addArtForm.includeUnsupportedProxy.tips.content",

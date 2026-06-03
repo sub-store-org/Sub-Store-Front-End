@@ -35,6 +35,7 @@ interface Artifact {
   upload?: boolean;
   includeUnsupportedProxy?: boolean;
   prettyYaml?: boolean;
+  'age-public-key'?: string;
   updated?: number;
   url?: string;
 }
@@ -52,6 +53,7 @@ interface ArtifactForm {
   upload?: boolean;
   includeUnsupportedProxy?: boolean;
   prettyYaml?: boolean;
+  'age-public-key'?: string;
   updated?: number;
   url?: string;
 }

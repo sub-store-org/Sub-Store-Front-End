@@ -7,7 +7,7 @@
     <div class="preview-options">
       <div class="preview-option-item">
         <input type="checkbox" id="includeUnsupportedProxy" name="includeUnsupportedProxy" value="includeUnsupportedProxy" v-model="includeUnsupportedProxy">
-        <label for="includeUnsupportedProxy">含不支持的协议</label>
+        <label for="includeUnsupportedProxy">{{ includeUnsupportedProxyLabel }}</label>
       </div>
       <div class="preview-option-item">
         <input
@@ -17,7 +17,7 @@
           value="prettyYaml"
           v-model="prettyYaml"
         >
-        <label for="prettyYaml">更易读的 YAML</label>
+        <label for="prettyYaml">{{ prettyYamlLabel }}</label>
       </div>
     </div>
     <ul class="preview-list">
@@ -90,13 +90,29 @@
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
   const { showNotify } = useAppNotifyStore();
-  const { name, displayName, type, url, general, notify, tipsTitle, tipsContent, desc,tipsCancelText, tipsOkText } = defineProps<{
+  const {
+    name,
+    displayName,
+    type,
+    url,
+    general,
+    notify,
+    tipsTitle,
+    tipsContent,
+    desc,
+    tipsCancelText,
+    tipsOkText,
+    includeUnsupportedProxyLabel,
+    prettyYamlLabel,
+  } = defineProps<{
     name: string;
     displayName?: string;
     type: 'sub' | 'collection';
     general: string;
     notify: string;
     desc: string;
+    includeUnsupportedProxyLabel: string;
+    prettyYamlLabel: string;
     url?: string;
     tipsTitle?: string;
     tipsContent?: string;
@@ -142,7 +158,6 @@
   watch(prettyYaml, (value) => {
     setLocalStorageBoolean(PREVIEW_PRETTY_YAML_KEY, value);
   });
-
   const buildUrlWithQuery = (url: string, query: Record<string, string | boolean>): string => {
     if (!url) {
       return '';
@@ -302,17 +317,22 @@
 
 <style lang="scss" scoped>
   .preview-options {
-    margin: 4px 0;
+    width: max-content;
+    max-width: 100%;
+    margin: 6px auto 4px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 24px;
+    column-gap: 18px;
+    row-gap: 8px;
+    flex-wrap: wrap;
 
     .preview-option-item {
       display: flex;
       align-items: center;
       font-size: 12px;
       gap: 4px;
+      white-space: nowrap;
     }
 
     input {

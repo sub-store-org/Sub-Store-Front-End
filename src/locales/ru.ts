@@ -146,7 +146,12 @@ export default {
     },
     "url": {
       "label": "URL",
-      "placeholder": "Поддерживается объединение трех типов форматов с переносом строки: 1. Полный удаленный URL 2. Внутренняя ссылка на файл вида /api/file/name 3. Абсолютный путь к локальному файлу. Поддерживаемые параметры: noCache — не использовать кэш; cacheTtl — время жизни кэша (сек); insecure — не проверять сертификат сервера; headers — кастомные заголовки запроса (однострочная JSON-строка). Пример: http://a.com#noCache&insecure",
+      "placeholder": "Поддерживаются удаленные URL, внутренние ссылки на файлы и локальные абсолютные пути. Параметры: noCache, cacheTtl, insecure, headers, age-secret-key. Подробности в разделе Использование.",
+      "tips": {
+        "label": "Использование",
+        "title": "URL файлов",
+        "content": "Поддерживается смешивание трех типов форматов с переносом строки:\n1. Полный удаленный URL\n2. Ссылка на внутренний файл вида /api/file/name\n3. Абсолютный путь к локальному файлу\n\nПоддерживаемые параметры:\n\nheaders: Кастомные заголовки запроса (однострочный JSON)\ninsecure: не проверять SSL-сертификат сервера\nnoCache: игнорировать кэш\ncacheTtl: время жизни кэша (сек)\nage-secret-key: age decryption secret key, соответствует age-secret-key в mihomo proxy-providers, используется для расшифровки полученного удаленного age armor содержимого. Поддерживаются только AGE-SECRET-KEY-1... X25519 и AGE-SECRET-KEY-PQ-1... MLKEM768-X25519. SSH/passphrase/plugin keys не поддерживаются. Это не ключ шифрования финального вывода; не публикуйте его и не записывайте в публичные логи.\n\nПример: http://a.com#noCache&insecure"
+      },
       "isEmpty": "URL не может быть пустым",
       "isIllegal": "Некорректный URL"
     },
@@ -251,6 +256,10 @@ export default {
     },
     "panel": {
       "general": "Общие",
+      "options": {
+        "includeUnsupportedProxy": "Неподдерживаемые протоколы",
+        "prettyYaml": "Читаемый YAML"
+      },
       "tips": {
         "ok": "Документация",
         "cancel": "Отмена",
@@ -349,7 +358,7 @@ export default {
             "fullScreenEditCancel": "Выйти из полноэкранного режима",
             "label": "Использование",
             "title": "URL подписок",
-            "content": "Поддерживается смешивание трех типов форматов с переносом строки:\n1. Полный удаленный URL\n2. Ссылка на внутренний файл вида /api/file/name\n3. Абсолютный путь к локальному файлу\n\nПоддерживаемые параметры:\n\nheaders: Кастомные заголовки запроса (однострочный JSON)\ninsecure: не проверять SSL-сертификат сервера\ncacheKey: задать имя оптимистичного кэша. Подходит для подписок, которые часто не удается обновить. После включения им также можно управлять в persistent store (префикс: \"sub-store-cached-custom-\").\n\nvalidCheck: выдаст ошибку, если подписка просрочена или закончился трафик\n\nflowUserAgent: User-Agent для запроса данных о трафике\n\nflowHeaders: заголовки для запроса данных о трафике (однострочный JSON)\n\nflowUrl: кастомный URL для запроса трафика (парсит тело или заголовки ответа)\n\nshowRemaining: показывать оставшийся трафик вместо использованного\n\nnoFlow: не опрашивать информацию о трафике\n\nhideExpire: скрыть дату истечения\n\nnoCache: игнорировать кэш\n\ncacheTtl: время жизни кэша (сек)\n\nheadersCacheTtl: время жизни кэша заголовков (сек)\n\nresetDay: день ежемесячного обнуления трафика\n\nstartDate: дата начала подписки\n\ncycleDays: цикл сброса лимитов (в днях).\n\nПример: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nили http://a.com?token=1#resetDay=15"
+            "content": "Поддерживается смешивание трех типов форматов с переносом строки:\n1. Полный удаленный URL\n2. Ссылка на внутренний файл вида /api/file/name\n3. Абсолютный путь к локальному файлу\n\nПоддерживаемые параметры:\n\nheaders: Кастомные заголовки запроса (однострочный JSON)\ninsecure: не проверять SSL-сертификат сервера\ncacheKey: задать имя оптимистичного кэша. Подходит для подписок, которые часто не удается обновить. После включения им также можно управлять в persistent store (префикс: \"sub-store-cached-custom-\").\n\nvalidCheck: выдаст ошибку, если подписка просрочена или закончился трафик\n\nflowUserAgent: User-Agent для запроса данных о трафике\n\nflowHeaders: заголовки для запроса данных о трафике (однострочный JSON)\n\nflowUrl: кастомный URL для запроса трафика (парсит тело или заголовки ответа)\n\nshowRemaining: показывать оставшийся трафик вместо использованного\n\nnoFlow: не опрашивать информацию о трафике\n\nhideExpire: скрыть дату истечения\n\nnoCache: игнорировать кэш\n\ncacheTtl: время жизни кэша (сек)\n\nheadersCacheTtl: время жизни кэша заголовков (сек)\n\nresetDay: день ежемесячного обнуления трафика\n\nstartDate: дата начала подписки\n\ncycleDays: цикл сброса лимитов (в днях).\n\nage-secret-key: age decryption secret key, соответствует age-secret-key в mihomo proxy-providers, используется для расшифровки полученного удаленного age armor содержимого. Поддерживаются только AGE-SECRET-KEY-1... X25519 и AGE-SECRET-KEY-PQ-1... MLKEM768-X25519. SSH/passphrase/plugin keys не поддерживаются. Это не ключ шифрования финального вывода; не публикуйте его и не записывайте в публичные логи.\n\nПример: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nили http://a.com?token=1#resetDay=15"
           },
           "isEmpty": "URL не может быть пустым",
           "isIllegal": "Некорректный URL"
@@ -1405,6 +1414,37 @@ export default {
     },
     "changelogs": {
       "title": "История изменений"
+    }
+  },
+  "ageKey": {
+    "publicKey": {
+      "label": "age encryption public key",
+      "placeholder": "Введите age encryption public key",
+      "tips": {
+        "title": "age шифрование вывода",
+        "content": "Backend >= 2.24.1\nВ среде proxy app может не хватать нужных API; полное тестирование пока не проводилось.\nКлюч, заданный в share или sync artifact, имеет приоритет.\nПосле включения шифрования вывод неудобно проверять, поэтому рекомендуется задавать этот ключ только в share или sync artifact.\nНажмите кнопку справа, чтобы создать ключи."
+      }
+    },
+    "secretKey": {
+      "label": "age decryption secret key",
+      "placeholder": "Вставьте AGE-SECRET-KEY-1... или AGE-SECRET-KEY-PQ-1..., чтобы получить age encryption public key"
+    },
+    "helper": {
+      "open": "Создать",
+      "title": "age key helper",
+      "type": "Тип",
+      "generate": "Создать",
+      "applyPublic": "Заполнить",
+      "derive": "Из secret",
+      "copyPublic": "Копировать",
+      "copySecret": "Копировать",
+      "close": "Закрыть",
+      "clearPublic": "Очистить age encryption public key",
+      "clearSecret": "Очистить age decryption secret key",
+      "copied": "Скопировано",
+      "filled": "Заполнено",
+      "error": "Ошибка операции age key",
+      "tips": "Поддерживаются только нативные age ключи X25519 и MLKEM768-X25519. Созданный age decryption secret key показывается только в этом окне; сохраните его безопасно. Age encryption public key можно записать в поле конфигурации для шифрования финального вывода."
     }
   },
   "magicPath": {

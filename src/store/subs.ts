@@ -62,6 +62,7 @@ const clearFlowRequestVersion = (flowKey: string, version: number) => {
 
 type FetchFlowsOptions = {
   cancelPrevious?: boolean;
+  missingOnly?: boolean;
   priority?: number;
 };
 
@@ -360,6 +361,7 @@ export const useSubsStore = defineStore('subsStore', {
       const isTargetedFetch = Boolean(sub);
       const {
         cancelPrevious = !isTargetedFetch,
+        missingOnly = false,
         priority = isTargetedFetch ? 100 : 0,
       } = options;
 
@@ -411,7 +413,8 @@ export const useSubsStore = defineStore('subsStore', {
       // const subs = sub || this.subs;
       // getFlowsUrlList(subs).forEach(asyncGetFlow);
       // 多次反复开启 容易爆内存 尝试分批请求 3/100ms
-      const flowsUrlList = getFlowsUrlList(sub || this.subs) as FlowUrlItem[];
+      const flowsUrlList = (getFlowsUrlList(sub || this.subs) as FlowUrlItem[])
+        .filter(([url]) => !missingOnly || !(url in this.flows));
       // const processor = new TaskProcessor();
       // await processor.runTasks({
       //   tasks: flowsUrlList.map((item, index) => async() => {

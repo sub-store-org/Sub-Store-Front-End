@@ -421,7 +421,17 @@ const { tagBarRef: radioWrapperRef, tagBarHeight: radioWrapperHeight } = useTagB
 
 onMounted(() => {
   methodStore.registerMethod("addSub", addSub);
+  refreshMissingFlows();
 });
+
+const refreshMissingFlows = async () => {
+  if (route.path !== "/subs" || isLoading.value || !fetchResult.value) return;
+  try {
+    await subsStore.fetchFlows(undefined, { missingOnly: true });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 let dragData = null;
 const changeSort = async (

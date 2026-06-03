@@ -152,7 +152,13 @@ export default {
     url: {
       label: "URL",
       placeholder:
-        'Supports mixing three types of formats with line breaks: 1. Full remote URL 2. Internal file reference like /api/file/name 3. Absolute path for local file. Supported parameters: noCache - do not use cache;  cacheTtl - cache ttl (seconds); insecure - do not verify the server certificate; headers - custom request headers (single-line JSON string). For example: http://a.com#noCache&insecure',
+        "Supports remote URLs, internal file references, and local absolute paths. Supported parameters include noCache, cacheTtl, insecure, headers, age-secret-key. Open Usage for details.",
+      tips: {
+        label: "Usage",
+        title: "File URL(s)",
+        content:
+          "Supports mixing three types of formats with line breaks:\n1. Full remote URL\n2. Internal file reference like /api/file/name\n3. Absolute path for local file\n\nSupported parameters:\n\nheaders: Custom request headers(single-line JSON string)\ninsecure: https requests will not verify the server certificate\nnoCache: do not use cache\ncacheTtl: cache ttl (seconds)\nage-secret-key: age decryption secret key, corresponding to age-secret-key in mihomo proxy-providers, for decrypting fetched remote age armor content. Only AGE-SECRET-KEY-1... X25519 and AGE-SECRET-KEY-PQ-1... MLKEM768-X25519 keys are supported. SSH/passphrase/plugin keys are not supported. This is not the final output encryption key; do not share it or put it in public logs.\n\nFor example: http://a.com#noCache&insecure",
+      },
       isEmpty: "URL cannot be empty",
       isIllegal: "Invalid URL",
     },
@@ -260,6 +266,10 @@ export default {
     },
     panel: {
       general: "General",
+      options: {
+        includeUnsupportedProxy: "Unsupported protocols",
+        prettyYaml: "Readable YAML",
+      },
       tips: {
         ok: "View Document",
         cancel: "Cancel",
@@ -368,7 +378,7 @@ export default {
             label: "Usage",
             title: "Subscription URL(s)",
             content:
-              "Supports mixing three types of formats with line breaks:\n1. Full remote URL\n2. Internal file reference like /api/file/name 3.\nAbsolute path for local file\n\nSupported parameters:\n\nheaders: Custom request headers(single-line JSON string)\ninsecure: https requests will not verify the server certificate\ncacheKey: Set the name of the optimistic cache. Suitable for subscriptions that often fail to fetch. When enabled, you can also manage it yourself in the persistent store(prefix: \"sub-store-cached-custom-\").\n\nvalidCheck: error will be reported when expired or there is no remaining traffic\n\nflowUserAgent: the User-Agent for fetching subscription usage info\n\nflowHeaders: custom request headers for fetching subscription usage info(single-line JSON string)\n\nflowUrl: the URL for fetching subscription usage info(using the content of the response body or response headers)\n\nshowRemaining: show remaining traffic instead of usage\n\nnoFlow: do not query for flow\n\nhideExpire: hide expiration time\n\nnoCache: do not use cache\n\ncacheTtl: cache ttl (seconds)\n\nheadersCacheTtl: headers cache ttl (seconds)\n\nresetDay: the day when monthly data usage resets\n\nstartDate: subscription start date\n\ncycleDays: reset cycle (in days).\n\nFor example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nor http://a.com?token=1#resetDay=15",
+              "Supports mixing three types of formats with line breaks:\n1. Full remote URL\n2. Internal file reference like /api/file/name\n3. Absolute path for local file\n\nSupported parameters:\n\nheaders: Custom request headers(single-line JSON string)\ninsecure: https requests will not verify the server certificate\ncacheKey: Set the name of the optimistic cache. Suitable for subscriptions that often fail to fetch. When enabled, you can also manage it yourself in the persistent store(prefix: \"sub-store-cached-custom-\").\n\nvalidCheck: error will be reported when expired or there is no remaining traffic\n\nflowUserAgent: the User-Agent for fetching subscription usage info\n\nflowHeaders: custom request headers for fetching subscription usage info(single-line JSON string)\n\nflowUrl: the URL for fetching subscription usage info(using the content of the response body or response headers)\n\nshowRemaining: show remaining traffic instead of usage\n\nnoFlow: do not query for flow\n\nhideExpire: hide expiration time\n\nnoCache: do not use cache\n\ncacheTtl: cache ttl (seconds)\n\nheadersCacheTtl: headers cache ttl (seconds)\n\nresetDay: the day when monthly data usage resets\n\nstartDate: subscription start date\n\ncycleDays: reset cycle (in days).\n\nage-secret-key: age decryption secret key, corresponding to age-secret-key in mihomo proxy-providers, for decrypting fetched remote age armor content. Only AGE-SECRET-KEY-1... X25519 and AGE-SECRET-KEY-PQ-1... MLKEM768-X25519 keys are supported. SSH/passphrase/plugin keys are not supported. This is not the final output encryption key; do not share it or put it in public logs.\n\nFor example: http://a.com?token=1#cycleDays=31&startDate=2024-06-04 \nor http://a.com?token=1#resetDay=15",
           },
           isEmpty: "URL cannot be empty",
           isIllegal: "Invalid URL",
@@ -1370,6 +1380,40 @@ export default {
     },
     changelogs: {
       title: "Changelogs",
+    },
+  },
+  ageKey: {
+    publicKey: {
+      label: "age encryption public key",
+      placeholder: "Enter age encryption public key",
+      tips: {
+        title: "age Output Encryption",
+        content:
+          "Backend >= 2.24.1\nProxy app runtimes may lack required APIs; complete testing has not been done yet.\nThe key configured in a share or sync artifact takes priority.\nBecause encrypted output is inconvenient to inspect after this is set, it is recommended to configure it only in shares or sync artifacts.\nClick the button on the right to generate keys.",
+      },
+    },
+    secretKey: {
+      label: "age decryption secret key",
+      placeholder:
+        "Paste AGE-SECRET-KEY-1... or AGE-SECRET-KEY-PQ-1... to derive an age encryption public key",
+    },
+    helper: {
+      open: "Generate",
+      title: "age key helper",
+      type: "Type",
+      generate: "Generate",
+      applyPublic: "Fill in",
+      derive: "From secret",
+      copyPublic: "Copy",
+      copySecret: "Copy",
+      close: "Close",
+      clearPublic: "Clear age encryption public key",
+      clearSecret: "Clear age decryption secret key",
+      copied: "Copied",
+      filled: "Filled in",
+      error: "age key operation failed",
+      tips:
+        "Only native age X25519 and MLKEM768-X25519 keys are supported. The generated age decryption secret key is shown only in this dialog; save it securely. The age encryption public key can be written to the config field to encrypt final output.",
     },
   },
   magicPath: {
