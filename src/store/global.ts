@@ -73,6 +73,16 @@ export const useGlobalStore = defineStore('globalStore', {
           value:
             "https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/ligeicon.json",
         },
+        {
+          text: "fmz200/wool_scripts",
+          value:
+            "https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/icons-all.json",
+        },
+        {
+          text: "luestr/IconResource",
+          value:
+            "https://raw.githubusercontent.com/luestr/IconResource/main/KeLee_icon.json",
+        }
       ],
       customIconCollections: localStorage.getItem("customIconCollections")
         ? JSON.parse(localStorage.getItem("customIconCollections"))
