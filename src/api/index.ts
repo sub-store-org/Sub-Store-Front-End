@@ -1,19 +1,13 @@
 import { useAppNotifyStore } from '@/store/appNotify';
 import axios, { AxiosError, AxiosPromise, AxiosResponse } from 'axios';
 import { getHostAPIUrl } from '@/hooks/useHostAPI';
+import { getApiRequestTimeout } from '@/utils/requestTimeout';
 
 let appNotifyStore = null;
 
 const notifyConfig: { type: 'danger'; duration: number } = {
   type: 'danger',
   duration: 2500,
-};
-const DEFAULT_API_REQUEST_TIMEOUT = 50000;
-
-const getApiRequestTimeout = () => {
-  const timeout = Number(localStorage.getItem('apiRequestTimeout'));
-
-  return Number.isFinite(timeout) && timeout > 0 ? timeout : DEFAULT_API_REQUEST_TIMEOUT;
 };
 
 const getText = (value: unknown) => {

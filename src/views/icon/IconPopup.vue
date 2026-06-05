@@ -158,6 +158,7 @@ import { useI18n } from "vue-i18n";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
+import { getApiRequestTimeout } from "@/utils/requestTimeout";
 
 const props = defineProps({
   visible: {
@@ -254,7 +255,9 @@ const fetchIcons = async () => {
       id: "icon-collection",
     });
     fetchStatus.value = "loading";
-    const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl));
+    const { data } = await axios.get(rewriteGithubUrl(form.iconCollectionUrl), {
+      timeout: getApiRequestTimeout(),
+    });
     const collectionKey = form.iconListKey || "icons";
     const iconUrlKey = form.iconItemUrlKey || "url";
     iconList.value = data[collectionKey];
