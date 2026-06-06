@@ -24,8 +24,30 @@
     </section>
 
     <div v-else class="page-wrapper">
+      <div
+        v-if="editorTabsEnabled"
+        class="editor-section-tabs"
+        :style="{ top: navBarHeight }"
+        role="tablist"
+      >
+        <button
+          v-for="tab in SHARE_EDITOR_TABS"
+          :key="tab"
+          type="button"
+          class="editor-section-tab"
+          :class="{ current: activeEditorTab === tab }"
+          role="tab"
+          :aria-selected="activeEditorTab === tab"
+          @click="activeEditorTab = tab"
+        >
+          {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+        </button>
+      </div>
       <div class="form-block-wrapper">
-        <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
+        <div
+          v-if="appearanceSetting.isShowIcon && (!editorTabsEnabled || activeEditorTab === 'display')"
+          class="sticky-title-icon-container"
+        >
           <nut-image
             :class="{ 'sub-item-customer-icon': !shareDisplayIsIconColor }"
             :src="shareDisplayIcon"
@@ -35,6 +57,7 @@
           />
         </div>
         <nut-form ref="ruleForm" class="form link-editor-form" :model-value="form">
+          <div v-show="!editorTabsEnabled || activeEditorTab === 'content'" class="editor-tab-content">
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.source.label`)"
             prop="source"
@@ -252,7 +275,9 @@
               <AgeKeyHelper v-model="form['age-public-key']" />
             </div>
           </nut-form-item>
+          </div>
 
+          <div v-show="!editorTabsEnabled || activeEditorTab === 'display'" class="editor-tab-content">
           <nut-form-item
             :label="$t(`sharePage.createShare.displayName.label`)"
             prop="displayName"
@@ -351,6 +376,7 @@
               alt="QR Code"
             />
           </div>
+          </div>
         </nut-form>
       </div>
 
@@ -428,6 +454,11 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useSystemStore } from "@/store/system";
+import {
+  getEditorActiveTab,
+  setEditorActiveTab,
+} from "@/utils/editorTabState";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import {
   findShareByRouteIdentity,
@@ -468,12 +499,17 @@ const shareThemeLabelMap = Object.keys(shareThemeModules).reduce((map, path) => 
 
 const route = useRoute();
 const router = useRouter();
+const SHARE_EDITOR_TAB_STORAGE_KEY = "share-editor-active-tab";
+const SHARE_EDITOR_TABS = ["display", "content"] as const;
+type ShareEditorTab = (typeof SHARE_EDITOR_TABS)[number];
 const { t, locale } = useI18n();
 const shareApi = useShareApi();
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { navBarHeight } = storeToRefs(systemStore);
 const { appearanceSetting, githubProxy, githubProxyRegex, theme } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
@@ -482,6 +518,58 @@ const { copy, isSupported } = useClipboard();
 const preferredDark = usePreferredDark();
 const { toClipboard: copyFallback } = useV3Clipboard();
 const padding = computed(() => `${bottomSafeArea.value}px`);
+
+const getRouteParam = (value: string | string[] | null | undefined) => {
+  return Array.isArray(value) ? value[0] || "" : value || "";
+};
+
+const routeNameParam = computed(() => getRouteParam(route.params.name));
+const routeIdentity = computed(() => {
+  return parseShareEditorRouteIdentity({
+    name: routeNameParam.value,
+    queryType: getRouteParam(route.query.type),
+    queryToken: getRouteParam(route.query.token),
+  });
+});
+const routeMode = computed<EditorMode>(() => routeIdentity.value.mode);
+const isEditMode = computed(() => routeMode.value === "edit");
+const editorGroupingMode = computed<EditorGroupingMode>(() => appearanceSetting.value.editorGroupingMode || "edit-only");
+const editorTabsEnabled = computed(() => {
+  if (editorGroupingMode.value === "disabled") return false;
+  if (editorGroupingMode.value === "always") return true;
+  return isEditMode.value;
+});
+const shareEditorRouteKey = computed(() => route.fullPath);
+const getShareEditorActiveTab = (routeKey: string) => {
+  if (!isEditMode.value) {
+    return "display";
+  }
+
+  return getEditorActiveTab(
+    SHARE_EDITOR_TAB_STORAGE_KEY,
+    routeKey,
+    SHARE_EDITOR_TABS,
+    "display",
+  );
+};
+const activeEditorTab = ref(getShareEditorActiveTab(shareEditorRouteKey.value));
+watch(
+  [shareEditorRouteKey, isEditMode],
+  ([routeKey]) => {
+    activeEditorTab.value = getShareEditorActiveTab(routeKey);
+  },
+  { immediate: true },
+);
+watch(activeEditorTab, (tab) => {
+  if (!isEditMode.value) return;
+
+  setEditorActiveTab(SHARE_EDITOR_TAB_STORAGE_KEY, shareEditorRouteKey.value, tab);
+});
+const setActiveShareEditorTab = (tab: ShareEditorTab) => {
+  if (!editorTabsEnabled.value) return;
+
+  activeEditorTab.value = tab;
+};
 
 const ruleForm = ref<any>(null);
 const isLoading = ref(true);
@@ -517,20 +605,6 @@ const form = reactive({
   shareUrl: "",
 });
 
-const getRouteParam = (value: string | string[] | null | undefined) => {
-  return Array.isArray(value) ? value[0] || "" : value || "";
-};
-
-const routeNameParam = computed(() => getRouteParam(route.params.name));
-const routeIdentity = computed(() => {
-  return parseShareEditorRouteIdentity({
-    name: routeNameParam.value,
-    queryType: getRouteParam(route.query.type),
-    queryToken: getRouteParam(route.query.token),
-  });
-});
-const routeMode = computed<EditorMode>(() => routeIdentity.value.mode);
-const isEditMode = computed(() => routeMode.value === "edit");
 const routeShareType = computed(() => routeIdentity.value.type);
 const routeShareName = computed(() => routeIdentity.value.name);
 const routeToken = computed(() => routeIdentity.value.token);
@@ -1128,6 +1202,10 @@ const customerBlurValidate = (prop: string) => {
   ruleForm.value?.validate?.(prop);
 };
 
+const focusShareContentTab = () => {
+  setActiveShareEditorTab("content");
+};
+
 const handleExactDatetimeClosed = () => {
   customerBlurValidate("exactDatetime");
 };
@@ -1137,6 +1215,7 @@ const validateTokenBeforeSubmit = () => {
     return true;
   }
 
+  focusShareContentTab();
   customerBlurValidate("token");
   Toast.warn(t("sharePage.createShare.token.isExist"));
   return false;
@@ -1168,11 +1247,13 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
 
 const getDurationExpirationOptions = (): ShareToken["options"] | null => {
   if (!form.expiresValue) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.expiresValue.empty"));
     return null;
   }
 
   if (!validateExpiresValue(form.expiresValue)) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.expiresValue.regex"));
     return null;
   }
@@ -1184,11 +1265,13 @@ const getDurationExpirationOptions = (): ShareToken["options"] | null => {
 
 const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | null> => {
   if (form.exactDatetime == null) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.exactDatetime.empty"));
     return null;
   }
 
   if (!isValidShareExactDatetime(form.exactDatetime)) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.exactDatetime.invalid"));
     return null;
   }
@@ -1203,6 +1286,7 @@ const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | n
     });
   } catch (error) {
     console.error(error);
+    focusShareContentTab();
     showNotify({
       title: t("sharePage.editor.datetimeBackendCheckFailed.title"),
       content: t("sharePage.editor.datetimeBackendCheckFailed.desc"),
@@ -1213,6 +1297,7 @@ const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | n
   }
 
   if (!supportsShareExpirationDatetime(verifiedEnv?.version)) {
+    focusShareContentTab();
     showNotify({
       title: t("sharePage.editor.datetimeBackendRequired.title"),
       content: t("sharePage.editor.datetimeBackendRequired.desc", {
@@ -1226,6 +1311,7 @@ const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | n
   }
 
   if (!isValidShareExactDatetime(form.exactDatetime)) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.exactDatetime.invalid"));
     return null;
   }
@@ -1238,21 +1324,25 @@ const getDatetimeExpirationOptions = async (): Promise<ShareToken["options"] | n
 
 const getCountExpirationOptions = (): ShareToken["options"] | null => {
   if (!form.expiresValue) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.countValue.empty"));
     return null;
   }
 
   if (!validateCountValue(form.expiresValue)) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.countValue.regex"));
     return null;
   }
 
   if (form.usedCount === "") {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.usedCountValue.empty"));
     return null;
   }
 
   if (!validateUsedCountValue(form.usedCount)) {
+    focusShareContentTab();
     Toast.warn(t("sharePage.createShare.usedCountValue.regex"));
     return null;
   }
@@ -1292,6 +1382,7 @@ const handleCopyShare = async (isNotify: boolean = true) => {
 
 const getSubmitParams = async (): Promise<ShareToken | null> => {
   if (!selectedSourceType.value || !normalizedSourceName.value) {
+    focusShareContentTab();
     Toast.warn(t("syncPage.addArtForm.source.isRequired"));
     return null;
   }

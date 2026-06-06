@@ -2,6 +2,7 @@ type CreateItemPosition = 'top' | 'bottom';
 type ListPageViewMode = 'single-column' | 'dual-column';
 type EditorCommonDisplayMode = 'expanded' | 'collapsed' | 'hidden';
 type EditorSectionFoldMode = 'expanded' | 'collapsed';
+type EditorGroupingMode = 'edit-only' | 'disabled' | 'always';
 
 type SettingsStoreState = SettingsBase & SettingsPostData;
 
@@ -51,6 +52,7 @@ interface SettingsPostData {
     isEditorCommon?: boolean; // 展示编辑页常用配置(旧版兼容)
     editorCommonDisplayMode?: EditorCommonDisplayMode; // 编辑页常用配置展示模式
     manualSubscriptionsDisplayMode?: EditorSectionFoldMode; // 手动选择的订阅展示模式
+    editorGroupingMode?: EditorGroupingMode; // 详情页分组模式
     isSimpleReicon?: boolean; // 展示订阅刷新按钮
     isSimpleShowRemark?: boolean; // 展示简洁模式下的备注
     isSubItemMenuFold?: boolean; // 订阅项菜单折叠

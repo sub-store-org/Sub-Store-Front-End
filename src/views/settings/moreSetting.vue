@@ -66,6 +66,15 @@
             @change="setDisplayPreviewInWebPage" />
         </template>
       </nut-cell>
+      <nut-cell class="cell-item" :title="$t(`moreSettingPage.editorGrouping.title`)" :desc="editorGroupingModeName"
+        @click="()=>{showEditorGroupingModePicker=true}" is-link>
+      </nut-cell>
+      <DesktopPicker v-model="editorGroupingModeValue" v-model:visible="showEditorGroupingModePicker" :columns="[
+        { text: $t(`moreSettingPage.editorGrouping.editOnly`), value: 'edit-only' },
+        { text: $t(`moreSettingPage.editorGrouping.disabled`), value: 'disabled' },
+        { text: $t(`moreSettingPage.editorGrouping.always`), value: 'always' }
+      ]" :title="$t(`moreSettingPage.editorGrouping.title`)" @confirm="editorGroupingModeConfirm">
+      </DesktopPicker>
       <nut-cell class="cell-item" :title="$t(`moreSettingPage.editorCommon.title`)" :desc="editorCommonDisplayModeName"
         @click="()=>{showEditorCommonDisplayModePicker=true}" is-link>
       </nut-cell>
@@ -229,6 +238,7 @@
   const gistUploadValue = ref(['base64']);
   const editorCommonDisplayModeValue = ref<EditorCommonDisplayMode[]>(['collapsed']);
   const manualSubscriptionsDisplayModeValue = ref<EditorSectionFoldMode[]>(['collapsed']);
+  const editorGroupingModeValue = ref<EditorGroupingMode[]>(['edit-only']);
 
   const pickerType = ref('');
   const autoSwitch = ref(false);
@@ -238,6 +248,7 @@
   const showCreateItemPositionPicker = ref(false);
   const showEditorCommonDisplayModePicker = ref(false);
   const showManualSubscriptionsDisplayModePicker = ref(false);
+  const showEditorGroupingModePicker = ref(false);
   const shareBtnVisible = computed(() => {
     return env.value?.feature?.share;
   });
@@ -281,6 +292,17 @@
       ...appearanceSetting.value,
       editorCommonDisplayMode,
       isEditorCommon: editorCommonDisplayMode !== 'hidden',
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const editorGroupingModeName = computed(() => {
+    const localeKey = editorGroupingModeValue.value[0] === 'edit-only' ? 'editOnly' : editorGroupingModeValue.value[0] || 'editOnly';
+    return t(`moreSettingPage.editorGrouping.${localeKey}`);
+  });
+  const editorGroupingModeConfirm = ({ selectedValue }) => {
+    const data = {
+      ...appearanceSetting.value,
+      editorGroupingMode: selectedValue[0] || 'edit-only',
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -600,6 +622,7 @@
     gistUploadValue.value = [gistUpload.value];
     editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];
     manualSubscriptionsDisplayModeValue.value = [appearanceSetting.value.manualSubscriptionsDisplayMode || 'collapsed'];
+    editorGroupingModeValue.value = [appearanceSetting.value.editorGroupingMode || 'edit-only'];
     // SimpleSwitch.value = isSimpleMode.value;
     // LeftRight.value = isLeftRight.value;
     // awIconColor.value = isIconColor.value;

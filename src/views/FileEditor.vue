@@ -1,9 +1,34 @@
 <template>
   <div v-if="isDis">
     <div class="page-wrapper" @click="handleEditGlobalClick">
+      <div
+        v-if="editorTabsEnabled"
+        class="editor-section-tabs"
+        :style="{ top: navBarHeight }"
+        role="tablist"
+      >
+        <button
+          v-for="tab in FILE_EDITOR_TABS"
+          :key="tab"
+          type="button"
+          class="editor-section-tab"
+          :class="{ current: activeEditorTab === tab }"
+          role="tab"
+          :aria-selected="activeEditorTab === tab"
+          @click="activeEditorTab = tab"
+        >
+          {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+        </button>
+      </div>
       <!-- 基础表单 -->
-      <div class="form-block-wrapper">
-        <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
+      <div
+        v-show="isFileFormTabActive"
+        class="form-block-wrapper"
+      >
+        <div
+          v-if="appearanceSetting.isShowIcon && (!editorTabsEnabled || activeEditorTab === 'display')"
+          class="sticky-title-icon-container"
+        >
           <nut-image
             :class="{ 'sub-item-customer-icon': !isIconColor }"
             :src="fileIcon"
@@ -13,6 +38,7 @@
           />
         </div>
         <nut-form class="form" :model-value="form" ref="ruleForm">
+          <div v-show="!editorTabsEnabled || activeEditorTab === 'display'" class="editor-tab-content">
           <!-- name -->
           <nut-form-item
             required
@@ -68,15 +94,6 @@
               max-length="100"
             />
           </nut-form-item>
-          <nut-form-item
-            :label="$t(`filePage.download.label`)"
-            prop="download"
-            class="ignore-failed-wrapper"
-          >
-            <div class="switch-wrapper">
-              <nut-switch v-model="form.download" />
-            </div>
-          </nut-form-item>
         <!-- tag -->
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.tag.label`)"
@@ -117,25 +134,8 @@
               <nut-switch v-model="form.isIconColor" />
             </div>
           </nut-form-item>
-          <nut-form-item prop="age-public-key">
-            <template #label>
-              <span class="label-with-tip" @click="ageOutputTips">
-                <span>{{ $t("ageKey.publicKey.label") }}</span>
-                <nut-icon name="tips"></nut-icon>
-              </span>
-            </template>
-            <div class="age-key-field">
-              <nut-input
-                :border="false"
-                class="nut-input-text"
-                v-model.trim="form['age-public-key']"
-                :placeholder="$t('ageKey.publicKey.placeholder')"
-                type="text"
-                input-align="right"
-              />
-              <AgeKeyHelper v-model="form['age-public-key']" />
-            </div>
-          </nut-form-item>
+          </div>
+          <div v-show="!editorTabsEnabled || activeEditorTab === 'content'" class="editor-tab-content">
           <nut-form-item
             :label="$t(`editorPage.subConfig.basic.subInfoUrl.label`)"
             prop="subInfoUrl"
@@ -363,38 +363,82 @@
                 </nut-radiogroup>
               </div>
             </nut-form-item>
-            <nut-form-item
-              :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
-              prop="ignoreFailedRemoteFile"
-            >
-              <nut-input
-                :model-value="fileFailureModeLabel"
-                :border="false"
-                class="nut-input-text failure-mode-input"
-                readonly
-                input-align="right"
-                right-icon="rect-right"
-                @click="openFileFailureModePicker"
-                @click-right-icon="openFileFailureModePicker"
-              />
-            </nut-form-item>
           </template>
+
+          <nut-form-item
+            :label="$t(`filePage.download.label`)"
+            prop="download"
+            class="ignore-failed-wrapper"
+          >
+            <div class="switch-wrapper">
+              <nut-switch v-model="form.download" />
+            </div>
+          </nut-form-item>
+          <nut-form-item prop="age-public-key">
+            <template #label>
+              <span class="label-with-tip" @click="ageOutputTips">
+                <span>{{ $t("ageKey.publicKey.label") }}</span>
+                <nut-icon name="tips"></nut-icon>
+              </span>
+            </template>
+            <div class="age-key-field">
+              <nut-input
+                :border="false"
+                class="nut-input-text"
+                v-model.trim="form['age-public-key']"
+                :placeholder="$t('ageKey.publicKey.placeholder')"
+                type="text"
+                input-align="right"
+              />
+              <AgeKeyHelper v-model="form['age-public-key']" />
+            </div>
+          </nut-form-item>
+          <nut-form-item
+            :label="$t(`filePage.ignoreFailedRemoteFile.label`)"
+            prop="ignoreFailedRemoteFile"
+          >
+            <nut-input
+              :model-value="fileFailureModeLabel"
+              :border="false"
+              class="nut-input-text failure-mode-input"
+              readonly
+              input-align="right"
+              right-icon="rect-right"
+              @click="openFileFailureModePicker"
+              @click-right-icon="openFileFailureModePicker"
+            />
+          </nut-form-item>
+          </div>
         </nut-form>
+        <div
+          v-show="(!editorTabsEnabled || activeEditorTab === 'content') && form.type === 'mihomoProfile'"
+          class="editor-tab-content"
+        >
+          <div class="sticky-title-wrapper actions-title-wrapper">
+            <p>{{ $t(`filePage.type.mihomoProfileTips2`) }}</p>
+            <small class="doc"><a href="https://mihomo.party/docs/guide/override">{{ $t("subPage.panel.tips.ok") }}</a></small>
+          </div>
+        </div>
       </div>
-      <div class="sticky-title-wrapper actions-title-wrapper" v-if="form.type === 'mihomoProfile'">
-        <p>{{ $t(`filePage.type.mihomoProfileTips2`) }}</p>
-        <small class="doc"><a href="https://mihomo.party/docs/guide/override">{{ $t("subPage.panel.tips.ok") }}</a></small>
+      <div
+        v-show="!editorTabsEnabled || activeEditorTab === 'actions'"
+        class="editor-tab-content editor-actions-content"
+        :class="{
+          'editor-tab-fixed-offset': editorTabsEnabled,
+          'file-actions-tab-offset': editorTabsEnabled,
+        }"
+      >
+        <ActionBlock
+          ref="actionBlockRef"
+          :checked="actionsChecked"
+          :list="actionsList"
+          sourceType="file"
+          @updateCustomNameModeFlag="updateCustomNameModeFlag"
+          @addAction="addAction"
+          @deleteAction="deleteAction"
+          @toggleAction="toggleAction"
+        />
       </div>
-      <ActionBlock
-        ref="actionBlockRef"
-        :checked="actionsChecked"
-        :list="actionsList"
-        sourceType="file"
-        @updateCustomNameModeFlag="updateCustomNameModeFlag"
-        @addAction="addAction"
-        @deleteAction="deleteAction"
-        @toggleAction="toggleAction"
-      />
     </div>
 
     <div class="bottom-btn-wrapper">
@@ -470,6 +514,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useSystemStore } from "@/store/system";
 import ActionBlock from "@/views/editor/ActionBlock.vue";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
@@ -480,6 +525,11 @@ import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
 import DesktopPicker from "@/components/DesktopPicker.vue";
 import { initStores } from "@/utils/initApp";
+import {
+  getEditorActiveTab,
+  setEditorActiveTab,
+} from "@/utils/editorTabState";
+import { getEditorTabForValidationErrors } from "@/utils/editorTabValidation";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
 import {
@@ -504,6 +554,30 @@ const isDis = ref(true);
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const FILE_EDITOR_TAB_STORAGE_KEY = "file-editor-active-tab";
+const FILE_EDITOR_TABS = ["display", "content", "actions"] as const;
+type FileEditorTab = (typeof FILE_EDITOR_TABS)[number];
+const FILE_EDITOR_PROP_TO_TAB: Partial<Record<string, FileEditorTab>> = {
+  name: "display",
+  displayName: "display",
+  remark: "display",
+  tag: "display",
+  icon: "display",
+  isIconColor: "display",
+  subInfoUrl: "content",
+  subInfoUserAgent: "content",
+  type: "content",
+  source: "content",
+  sourceName: "content",
+  url: "content",
+  content: "content",
+  ua: "content",
+  proxy: "content",
+  mergeSources: "content",
+  download: "content",
+  "age-public-key": "content",
+  ignoreFailedRemoteFile: "content",
+};
 const subsApi = useSubsApi();
 const filesApi = useFilesApi();
 const configName = route.params.id as string;
@@ -511,11 +585,60 @@ const subsStore = useSubsStore();
 const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { navBarHeight } = storeToRefs(systemStore);
 const { subs, collections } = storeToRefs(subsStore);
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 const padding = bottomSafeArea.value + "px";
+const routeConfigName = computed(() => route.params.id as string);
+const isEditMode = computed(() => !["UNTITLED", "UNTITLED-mihomoProfile"].includes(routeConfigName.value));
+const editorGroupingMode = computed<EditorGroupingMode>(() => appearanceSetting.value.editorGroupingMode || "edit-only");
+const editorTabsEnabled = computed(() => {
+  if (editorGroupingMode.value === "disabled") return false;
+  if (editorGroupingMode.value === "always") return true;
+  return isEditMode.value;
+});
+const getFileEditorActiveTab = (path: string) => {
+  if (!isEditMode.value) {
+    return "display";
+  }
+
+  return getEditorActiveTab(
+    FILE_EDITOR_TAB_STORAGE_KEY,
+    path,
+    FILE_EDITOR_TABS,
+    "display",
+  );
+};
+const activeEditorTab = ref(getFileEditorActiveTab(route.path));
+const isFileFormTabActive = computed(() => {
+  return !editorTabsEnabled.value || ["display", "content"].includes(activeEditorTab.value);
+});
+watch(
+  [() => route.path, isEditMode],
+  ([path]) => {
+    activeEditorTab.value = getFileEditorActiveTab(path);
+  },
+  { immediate: true },
+);
+watch(activeEditorTab, (tab) => {
+  if (!isEditMode.value) return;
+
+  setEditorActiveTab(FILE_EDITOR_TAB_STORAGE_KEY, route.path, tab);
+});
+const setActiveFileEditorTab = (tab: FileEditorTab) => {
+  if (!editorTabsEnabled.value) return;
+
+  activeEditorTab.value = tab;
+};
+const focusValidationErrorTab = (errors: unknown) => {
+  const tab = getEditorTabForValidationErrors(errors, FILE_EDITOR_PROP_TO_TAB);
+  if (tab) {
+    setActiveFileEditorTab(tab);
+  }
+};
 
 let scrollTop = 0;
 
@@ -809,6 +932,7 @@ const compare = () => {
   ruleForm.value.validate().then(async ({ valid, errors }: any) => {
     // 如果验证失败
     if (!valid) {
+      focusValidationErrorTab(errors);
       Dialog({
         title: t(`editorPage.subConfig.pop.errorTitle`),
         content: errors[0].message,
@@ -894,6 +1018,7 @@ const submit = () => {
     // 如果验证失败
     if (!valid) {
       isget.value = false;
+      focusValidationErrorTab(errors);
       Dialog({
         title: t(`editorPage.subConfig.pop.errorTitle`),
         content: errors[0].message,
@@ -1184,6 +1309,11 @@ const handleEditGlobalClick = () => {
     color: var(--primary-text-color);
   }
 }
+
+.file-actions-tab-offset {
+  padding-top: 45px;
+}
+
 .bottom-btn-wrapper {
   position: fixed;
   display: flex;

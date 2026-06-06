@@ -67,6 +67,10 @@ const isEditorSectionFoldMode = (value: unknown): value is EditorSectionFoldMode
   return value === "expanded" || value === "collapsed";
 };
 
+const isEditorGroupingMode = (value: unknown): value is EditorGroupingMode => {
+  return value === "edit-only" || value === "disabled" || value === "always";
+};
+
 const normalizeEditorCommonDisplayMode = (
   appearanceSetting?: SettingsPostData["appearanceSetting"],
 ): EditorCommonDisplayMode => {
@@ -89,6 +93,16 @@ const normalizeManualSubscriptionsDisplayMode = (
   }
 
   return "collapsed";
+};
+
+const normalizeEditorGroupingMode = (
+  appearanceSetting?: SettingsPostData["appearanceSetting"],
+): EditorGroupingMode => {
+  if (isEditorGroupingMode(appearanceSetting?.editorGroupingMode)) {
+    return appearanceSetting.editorGroupingMode;
+  }
+
+  return "edit-only";
 };
 
 export const useSettingsStore = defineStore("settingsStore", {
@@ -130,6 +144,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isEditorCommon: true,
         editorCommonDisplayMode: "collapsed",
         manualSubscriptionsDisplayMode: "collapsed",
+        editorGroupingMode: "edit-only",
         isSimpleReicon: false,
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
@@ -161,6 +176,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       );
       const editorCommonDisplayMode = normalizeEditorCommonDisplayMode(appearanceSetting);
       const manualSubscriptionsDisplayMode = normalizeManualSubscriptionsDisplayMode(appearanceSetting);
+      const editorGroupingMode = normalizeEditorGroupingMode(appearanceSetting);
 
       this.appearanceSetting.isSimpleMode = appearanceSetting?.isSimpleMode ?? true;
       this.appearanceSetting.isLeftRight = appearanceSetting?.isLeftRight ?? "";
@@ -170,6 +186,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.isSimpleShowRemark = appearanceSetting?.isSimpleShowRemark ?? "";
       this.appearanceSetting.editorCommonDisplayMode = editorCommonDisplayMode;
       this.appearanceSetting.manualSubscriptionsDisplayMode = manualSubscriptionsDisplayMode;
+      this.appearanceSetting.editorGroupingMode = editorGroupingMode;
       this.appearanceSetting.isEditorCommon = editorCommonDisplayMode !== "hidden";
       this.appearanceSetting.isSimpleReicon = appearanceSetting?.isSimpleReicon ?? "";
       this.appearanceSetting.isSubItemMenuFold = appearanceSetting?.isSubItemMenuFold ?? true;
@@ -299,6 +316,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       const editorCommonDisplayMode = hasLocalEditorCommonSetting
         ? (isEditorCommon ? "expanded" : "hidden")
         : "collapsed";
+      const editorGroupingMode = this.appearanceSetting.editorGroupingMode || "edit-only";
       const data = {
         isSimpleMode: isSimpleMode ?? false,
         isLeftRight: isLeftRight ?? false,
@@ -307,6 +325,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isEditorCommon: editorCommonDisplayMode !== "hidden",
         editorCommonDisplayMode,
         manualSubscriptionsDisplayMode: "collapsed",
+        editorGroupingMode,
         isSimpleReicon: isSimpleReicon ?? false,
         showFloatingRefreshButton: showFloatingRefreshButton ?? false,
         istabBar: istabBar ?? false,

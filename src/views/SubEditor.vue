@@ -1,9 +1,34 @@
 <template>
   <div v-if="isDis">
   <div class="page-wrapper" @click="handleEditGlobalClick">
+    <div
+      v-if="editorTabsEnabled"
+      class="editor-section-tabs"
+      :style="{ top: navBarHeight }"
+      role="tablist"
+    >
+      <button
+        v-for="tab in SUB_EDITOR_TABS"
+        :key="tab"
+        type="button"
+        class="editor-section-tab"
+        :class="{ current: activeEditorTab === tab }"
+        role="tab"
+        :aria-selected="activeEditorTab === tab"
+        @click="activeEditorTab = tab"
+      >
+        {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+      </button>
+    </div>
     <!-- 基础表单 -->
-    <div class="form-block-wrapper">
-      <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
+    <div
+      v-show="isSubFormTabActive"
+      class="form-block-wrapper"
+    >
+      <div
+        v-if="appearanceSetting.isShowIcon && (!editorTabsEnabled || activeEditorTab === 'display')"
+        class="sticky-title-icon-container"
+      >
         <nut-image
           :class="{ 'sub-item-customer-icon': !form.isIconColor }"
           :src="subIcon"
@@ -16,6 +41,7 @@
         <p>{{ $t(`editorPage.subConfig.basic.label`) }}</p>
       </div> -->
       <nut-form class="form" :model-value="form" ref="ruleForm">
+        <div v-show="!editorTabsEnabled || activeEditorTab === 'display'" class="editor-tab-content">
         <!-- name -->
         <nut-form-item
           required
@@ -118,25 +144,8 @@
             <nut-switch v-model="form.isIconColor" />
           </div>
         </nut-form-item>
-        <nut-form-item prop="age-public-key">
-          <template #label>
-            <span class="label-with-tip" @click="ageOutputTips">
-              <span>{{ $t("ageKey.publicKey.label") }}</span>
-              <nut-icon name="tips"></nut-icon>
-            </span>
-          </template>
-          <div class="age-key-field">
-            <nut-input
-              :border="false"
-              class="nut-input-text"
-              v-model.trim="form['age-public-key']"
-              :placeholder="$t('ageKey.publicKey.placeholder')"
-              type="text"
-              input-align="right"
-            />
-            <AgeKeyHelper v-model="form['age-public-key']" />
-          </div>
-        </nut-form-item>
+        </div>
+        <div v-show="!editorTabsEnabled || activeEditorTab === 'content'" class="editor-tab-content">
         <template v-if="editType === 'subs'">
           <!-- source -->
           <nut-form-item
@@ -457,9 +466,29 @@
                 input-align="right"
                 left-icon="tips"
                 @click-left-icon="proxyTips"
-              />
-            </nut-form-item>
+            />
+          </nut-form-item>
         </template>
+
+        <nut-form-item prop="age-public-key">
+          <template #label>
+            <span class="label-with-tip" @click="ageOutputTips">
+              <span>{{ $t("ageKey.publicKey.label") }}</span>
+              <nut-icon name="tips"></nut-icon>
+            </span>
+          </template>
+          <div class="age-key-field">
+            <nut-input
+              :border="false"
+              class="nut-input-text"
+              v-model.trim="form['age-public-key']"
+              :placeholder="$t('ageKey.publicKey.placeholder')"
+              type="text"
+              input-align="right"
+            />
+            <AgeKeyHelper v-model="form['age-public-key']" />
+          </div>
+        </nut-form-item>
 
         <nut-form-item
           :label="$t(`editorPage.subConfig.basic.ignoreFailedRemoteSub.label`)"
@@ -477,22 +506,37 @@
             @click-right-icon="openSubFailureModePicker"
           />
         </nut-form-item>
+        </div>
       </nut-form>
     </div>
 
     <!-- 常用配置 -->
-    <CommonBlock v-if="showEditorCommonBlock" :default-folded="editorCommonDefaultFolded" />
+    <div
+      v-show="(!editorTabsEnabled || activeEditorTab === 'actions') && showEditorCommonBlock"
+      class="editor-tab-content editor-common-content"
+      :class="{ 'editor-tab-fixed-offset': editorTabsEnabled }"
+    >
+      <CommonBlock :default-folded="editorCommonDefaultFolded" />
+    </div>
 
     <!-- 节点操作 -->
-    <ActionBlock
-      ref="actionBlockRef"
-      :checked="actionsChecked"
-      :list="actionsList"
-      @updateCustomNameModeFlag="updateCustomNameModeFlag"
-      @addAction="addAction"
-      @deleteAction="deleteAction"
-      @toggleAction="toggleAction"
-    />
+    <div
+      v-show="!editorTabsEnabled || activeEditorTab === 'actions'"
+      class="editor-tab-content editor-actions-content"
+      :class="{
+        'editor-tab-fixed-offset': editorTabsEnabled && !showEditorCommonBlock,
+      }"
+    >
+      <ActionBlock
+        ref="actionBlockRef"
+        :checked="actionsChecked"
+        :list="actionsList"
+        @updateCustomNameModeFlag="updateCustomNameModeFlag"
+        @addAction="addAction"
+        @deleteAction="deleteAction"
+        @toggleAction="toggleAction"
+      />
+    </div>
   </div>
 
   <div class="bottom-btn-wrapper">
@@ -557,6 +601,7 @@ import { useAppNotifyStore } from "@/store/appNotify";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from '@/store/settings';
 import { useSubsStore } from "@/store/subs";
+import { useSystemStore } from "@/store/system";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import {
@@ -566,6 +611,11 @@ import {
   setEditorFoldState,
   setEditorRouteValue,
 } from "@/utils/editorFoldState";
+import {
+  getEditorActiveTab,
+  setEditorActiveTab,
+} from "@/utils/editorTabState";
+import { getEditorTabForValidationErrors } from "@/utils/editorTabValidation";
 import { initStores } from "@/utils/initApp";
 import draggable from "vuedraggable";
 import CompareTable from "@/views/CompareTable.vue";
@@ -602,6 +652,7 @@ const isDis = ref(true)
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const SUB_EDITOR_TAB_STORAGE_KEY = "sub-editor-active-tab";
 const MANUAL_SUBSCRIPTIONS_FOLD_STORAGE_KEY = "manual-subscriptions-fold";
 const MANUAL_SUBSCRIPTIONS_GROUP_STORAGE_KEY = "manual-subscriptions-group";
 const subsApi = useSubsApi();
@@ -611,8 +662,10 @@ const subsStore = useSubsStore();
 const { showNotify } = useAppNotifyStore();
 
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
+const { navBarHeight } = storeToRefs(systemStore);
 
 const {
     bottomSafeArea,
@@ -632,6 +685,81 @@ const editorCommonDisplayMode = computed<EditorCommonDisplayMode>(() => {
 });
 const showEditorCommonBlock = computed(() => editorCommonDisplayMode.value !== "hidden");
 const editorCommonDefaultFolded = computed(() => editorCommonDisplayMode.value === "collapsed");
+const routeConfigName = computed(() => route.params.id as string);
+const isEditMode = computed(() => routeConfigName.value !== "UNTITLED");
+const editorGroupingMode = computed<EditorGroupingMode>(() => appearanceSetting.value.editorGroupingMode || "edit-only");
+const editorTabsEnabled = computed(() => {
+  if (editorGroupingMode.value === "disabled") return false;
+  if (editorGroupingMode.value === "always") return true;
+  return isEditMode.value;
+});
+const SUB_EDITOR_TABS = ["display", "content", "actions"] as const;
+type SubEditorTab = (typeof SUB_EDITOR_TABS)[number];
+const SUB_EDITOR_PROP_TO_TAB: Partial<Record<string, SubEditorTab>> = {
+  name: "display",
+  displayName: "display",
+  remark: "display",
+  tag: "display",
+  icon: "display",
+  isIconColor: "display",
+  source: "content",
+  url: "content",
+  content: "content",
+  passThroughUA: "content",
+  ua: "content",
+  subUserinfo: "content",
+  proxy: "content",
+  mergeSources: "content",
+  subscriptionTags: "content",
+  firstSubFlow: "content",
+  "age-public-key": "content",
+  ignoreFailedRemoteSub: "content",
+};
+const availableEditorTabs = computed(() => [...SUB_EDITOR_TABS]);
+const getSubEditorActiveTab = (
+  path: string,
+  tabs: readonly (typeof SUB_EDITOR_TABS)[number][],
+) => {
+  const defaultTab = tabs[0] || "display";
+
+  if (!isEditMode.value) {
+    return defaultTab;
+  }
+
+  return getEditorActiveTab(
+    SUB_EDITOR_TAB_STORAGE_KEY,
+    path,
+    tabs,
+    defaultTab,
+  );
+};
+const activeEditorTab = ref(getSubEditorActiveTab(route.path, availableEditorTabs.value));
+const isSubFormTabActive = computed(() => {
+  return !editorTabsEnabled.value || ["display", "content"].includes(activeEditorTab.value);
+});
+watch(
+  [() => route.path, availableEditorTabs, isEditMode],
+  ([path, tabs]) => {
+    activeEditorTab.value = getSubEditorActiveTab(path, tabs);
+  },
+  { immediate: true },
+);
+watch(activeEditorTab, (tab) => {
+  if (!isEditMode.value) return;
+
+  setEditorActiveTab(SUB_EDITOR_TAB_STORAGE_KEY, route.path, tab);
+});
+const setActiveSubEditorTab = (tab: SubEditorTab) => {
+  if (!editorTabsEnabled.value) return;
+
+  activeEditorTab.value = tab;
+};
+const focusValidationErrorTab = (errors: unknown) => {
+  const tab = getEditorTabForValidationErrors(errors, SUB_EDITOR_PROP_TO_TAB);
+  if (tab) {
+    setActiveSubEditorTab(tab);
+  }
+};
 const manualSubscriptionsDefaultFolded = computed(() => {
   return (appearanceSetting.value.manualSubscriptionsDisplayMode || "collapsed") === "collapsed";
 });
@@ -1110,6 +1238,7 @@ const openComparePanel = () => {
 const compare = () => {
   ruleForm.value.validate().then(async ({ valid, errors }: any) => {
     if (!valid) {
+      focusValidationErrorTab(errors);
       Dialog({
         title: t(`editorPage.subConfig.pop.errorTitle`),
         content: errors[0].message,
@@ -1165,6 +1294,7 @@ const submit = () => {
     // 如果验证失败
     if (!valid) {
       isget.value = false;
+      focusValidationErrorTab(errors);
       Dialog({
         title: t(`editorPage.subConfig.pop.errorTitle`),
         content: errors[0].message,

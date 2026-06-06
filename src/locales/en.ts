@@ -286,6 +286,16 @@ export default {
         compare: "Preview",
         save: "Save",
       },
+      editorTabs: {
+        basic: "Basic",
+        source: "Source",
+        content: "Content",
+        common: "Common",
+        actions: "Actions",
+        sync: "Sync",
+        expiration: "Expiration",
+        display: "Display",
+      },
       pop: {
         helpTitle: "Help",
         helpContent:
@@ -1334,6 +1344,12 @@ export default {
     isEditorCommon: "Editor common settings",
     editorCommon: {
       title: "Editor common settings",
+    },
+    editorGrouping: {
+      title: "Use grouping on detail pages",
+      editOnly: "Edit pages only",
+      disabled: "Disabled",
+      always: "Always",
     },
     manualSubscriptions: {
       title: "Manually selected subscriptions",

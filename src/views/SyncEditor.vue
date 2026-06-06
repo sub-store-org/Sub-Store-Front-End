@@ -1,7 +1,29 @@
 <template>
   <div class="page-wrapper">
+    <div
+      v-if="editorTabsEnabled"
+      class="editor-section-tabs"
+      :style="{ top: navBarHeight }"
+      role="tablist"
+    >
+      <button
+        v-for="tab in SYNC_EDITOR_TABS"
+        :key="tab"
+        type="button"
+        class="editor-section-tab"
+        :class="{ current: activeEditorTab === tab }"
+        role="tab"
+        :aria-selected="activeEditorTab === tab"
+        @click="activeEditorTab = tab"
+      >
+        {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+      </button>
+    </div>
     <div class="form-block-wrapper">
-      <div v-if="appearanceSetting.isShowIcon" class="sticky-title-icon-container">
+      <div
+        v-if="appearanceSetting.isShowIcon && (!editorTabsEnabled || activeEditorTab === 'display')"
+        class="sticky-title-icon-container"
+      >
         <nut-image
           :class="{ 'sub-item-customer-icon': !form.isIconColor }"
           :src="syncIcon"
@@ -11,6 +33,7 @@
         />
       </div>
       <nut-form class="form" :model-value="form" ref="ruleForm">
+        <div v-show="!editorTabsEnabled || activeEditorTab === 'display'" class="editor-tab-content">
         <nut-form-item
           :label="$t(`syncPage.addArtForm.name.label`)"
           prop="name"
@@ -114,6 +137,8 @@
             <nut-switch v-model="form.isIconColor" />
           </div>
         </nut-form-item>
+        </div>
+        <div v-show="!editorTabsEnabled || activeEditorTab === 'content'" class="editor-tab-content">
 
         <nut-form-item
           :label="$t(`syncPage.addArtForm.source.label`)"
@@ -248,6 +273,7 @@
             </nut-radiogroup>
           </nut-form-item>
         </template>
+        </div>
       </nut-form>
     </div>
 
@@ -295,8 +321,14 @@ import { useArtifactsStore } from "@/store/artifacts";
 import { useGlobalStore } from "@/store/global";
 import { useSettingsStore } from "@/store/settings";
 import { useSubsStore } from "@/store/subs";
+import { useSystemStore } from "@/store/system";
 import { useBackend } from "@/hooks/useBackend";
 import { resolveArtifactIcon } from "@/utils/artifactIcon";
+import {
+  getEditorActiveTab,
+  setEditorActiveTab,
+} from "@/utils/editorTabState";
+import { getEditorTabForValidationErrors } from "@/utils/editorTabValidation";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { Dialog, Toast } from "@nutui/nutui";
 import { storeToRefs } from "pinia";
@@ -307,19 +339,78 @@ import { useRoute, useRouter } from "vue-router";
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const SYNC_EDITOR_TAB_STORAGE_KEY = "sync-editor-active-tab";
+const SYNC_EDITOR_TABS = ["display", "content"] as const;
+type SyncEditorTab = (typeof SYNC_EDITOR_TABS)[number];
+const SYNC_EDITOR_PROP_TO_TAB: Partial<Record<string, SyncEditorTab>> = {
+  name: "display",
+  displayName: "display",
+  remark: "display",
+  tag: "display",
+  icon: "display",
+  isIconColor: "display",
+  source: "content",
+  "age-public-key": "content",
+  cron: "content",
+};
 const configName = route.params.id as string;
 
 const artifactsStore = useArtifactsStore();
 const subsStore = useSubsStore();
 const globalStore = useGlobalStore();
+const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
 const { showNotify } = useAppNotifyStore();
 const { env } = useBackend();
 const { bottomSafeArea } = storeToRefs(globalStore);
+const { navBarHeight } = storeToRefs(systemStore);
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
 
 const padding = bottomSafeArea.value + "px";
-const isEditMode = computed(() => configName !== "UNTITLED");
+const routeConfigName = computed(() => route.params.id as string);
+const isEditMode = computed(() => routeConfigName.value !== "UNTITLED");
+const editorGroupingMode = computed<EditorGroupingMode>(() => appearanceSetting.value.editorGroupingMode || "edit-only");
+const editorTabsEnabled = computed(() => {
+  if (editorGroupingMode.value === "disabled") return false;
+  if (editorGroupingMode.value === "always") return true;
+  return isEditMode.value;
+});
+const getSyncEditorActiveTab = (path: string) => {
+  if (!isEditMode.value) {
+    return "display";
+  }
+
+  return getEditorActiveTab(
+    SYNC_EDITOR_TAB_STORAGE_KEY,
+    path,
+    SYNC_EDITOR_TABS,
+    "display",
+  );
+};
+const activeEditorTab = ref(getSyncEditorActiveTab(route.path));
+watch(
+  [() => route.path, isEditMode],
+  ([path]) => {
+    activeEditorTab.value = getSyncEditorActiveTab(path);
+  },
+  { immediate: true },
+);
+watch(activeEditorTab, (tab) => {
+  if (!isEditMode.value) return;
+
+  setEditorActiveTab(SYNC_EDITOR_TAB_STORAGE_KEY, route.path, tab);
+});
+const setActiveSyncEditorTab = (tab: SyncEditorTab) => {
+  if (!editorTabsEnabled.value) return;
+
+  activeEditorTab.value = tab;
+};
+const focusValidationErrorTab = (errors: unknown) => {
+  const tab = getEditorTabForValidationErrors(errors, SYNC_EDITOR_PROP_TO_TAB);
+  if (tab) {
+    setActiveSyncEditorTab(tab);
+  }
+};
 const isInit = ref(false);
 const fetchReady = ref(!isEditMode.value);
 const isSubmitting = ref(false);
@@ -615,6 +706,7 @@ const submit = () => {
     isSubmitting.value = true;
     if (!valid) {
       isSubmitting.value = false;
+      focusValidationErrorTab(errors);
       Dialog({
         title: t(`syncPage.addArtForm.pop.errorTitle`),
         content: errors[0].message,

@@ -280,6 +280,16 @@ export default {
         compare: '即时预览',
         save: '保存',
       },
+      editorTabs: {
+        basic: '基础',
+        source: '来源',
+        content: '内容',
+        common: '常用',
+        actions: '操作',
+        sync: '同步',
+        expiration: '有效期',
+        display: '显示',
+      },
       pop: {
         helpTitle: '节点操作帮助',
         helpContent:
@@ -1288,6 +1298,12 @@ export default {
     isEditorCommon: '编辑页常用配置',
     editorCommon: {
       title: '编辑页常用配置',
+    },
+    editorGrouping: {
+      title: '详情页使用分组',
+      editOnly: '仅编辑页',
+      disabled: '不使用',
+      always: '总是使用',
     },
     manualSubscriptions: {
       title: '手动选择的订阅',

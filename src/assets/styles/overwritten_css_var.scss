@@ -20,6 +20,66 @@
   }
 }
 
+.editor-section-tabs {
+  box-sizing: border-box;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  overflow: hidden;
+  padding: 10px;
+  background: var(--nav-bar-color);
+  backdrop-filter: blur(var(--nav-bar-blur));
+  -webkit-backdrop-filter: blur(var(--nav-bar-blur));
+  color: var(--primary-text-color);
+
+  @media screen and (min-width: 600px) {
+    max-width: 85%;
+  }
+
+  @media screen and (min-width: 768px) {
+    max-width: 630px;
+    border-radius: var(--item-card-radios);
+  }
+
+  @media screen and (min-width: 900px) {
+    max-width: 700px;
+  }
+
+  @media screen and (min-width: 1200px) {
+    max-width: 900px;
+  }
+
+  .editor-section-tab {
+    margin: 0 5px;
+    padding: 7.5px 2.5px 4px;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    color: var(--second-text-color);
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .editor-section-tab.current {
+    border-bottom-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+}
+
+.editor-section-tabs + .form-block-wrapper {
+  padding-top: 51px;
+}
+
+.editor-tab-fixed-offset {
+  padding-top: 40px;
+}
+
 // sticky title 顶部粘性定位标题
 .sticky-title-wrapper {
   margin-top: var(--safe-area-side);
