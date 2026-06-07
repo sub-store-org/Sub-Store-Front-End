@@ -27,7 +27,8 @@
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   width: 100%;
   overflow: hidden;
   padding: 10px;
@@ -53,6 +54,13 @@
     max-width: 900px;
   }
 
+  .editor-section-tab-list {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
   .editor-section-tab {
     margin: 0 5px;
     padding: 7.5px 2.5px 4px;
@@ -69,6 +77,33 @@
   .editor-section-tab.current {
     border-bottom-color: var(--primary-color);
     color: var(--primary-color);
+  }
+
+  .editor-grouping-tips-button {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    margin: 0 5px 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--second-text-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover,
+    &:focus {
+      color: var(--primary-color);
+      outline: none;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 }
 

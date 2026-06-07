@@ -281,6 +281,13 @@ export default {
     },
   },
   editorPage: {
+    groupingTips: {
+      open: "Detail page grouping tips",
+      title: "Detail page grouping",
+      content: "If you do not like grouping, change it in My / More settings / Use grouping on detail pages.",
+      goSettings: "Go to settings",
+      cancel: "Cancel",
+    },
     subConfig: {
       btn: {
         compare: "Preview",

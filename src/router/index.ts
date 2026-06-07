@@ -178,7 +178,6 @@ const router = createRouter({
             title: 'shareEditor',
             needTabBar: false,
             needNavBack: true,
-            hideSideBarInWideScreenNarrowMode: true,
           },
         },
         {

@@ -275,6 +275,13 @@ export default {
     },
   },
   editorPage: {
+    groupingTips: {
+      open: '详情页分组说明',
+      title: '详情页分组',
+      content: '若不喜欢分组功能可在 我的/更多设置/详情页使用分组 中修改',
+      goSettings: '去修改',
+      cancel: '取消',
+    },
     subConfig: {
       btn: {
         compare: '即时预览',

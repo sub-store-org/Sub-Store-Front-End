@@ -5,20 +5,22 @@
         v-if="editorTabsEnabled"
         class="editor-section-tabs"
         :style="{ top: navBarHeight }"
-        role="tablist"
       >
-        <button
-          v-for="tab in FILE_EDITOR_TABS"
-          :key="tab"
-          type="button"
-          class="editor-section-tab"
-          :class="{ current: activeEditorTab === tab }"
-          role="tab"
-          :aria-selected="activeEditorTab === tab"
-          @click="activeEditorTab = tab"
-        >
-          {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
-        </button>
+        <div class="editor-section-tab-list" role="tablist">
+          <button
+            v-for="tab in FILE_EDITOR_TABS"
+            :key="tab"
+            type="button"
+            class="editor-section-tab"
+            :class="{ current: activeEditorTab === tab }"
+            role="tab"
+            :aria-selected="activeEditorTab === tab"
+            @click="activeEditorTab = tab"
+          >
+            {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+          </button>
+        </div>
+        <EditorGroupingTips />
       </div>
       <!-- 基础表单 -->
       <div
@@ -521,6 +523,7 @@ import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
+import EditorGroupingTips from "@/components/EditorGroupingTips.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import FilePreview from "@/views/FilePreview.vue";
 import DesktopPicker from "@/components/DesktopPicker.vue";

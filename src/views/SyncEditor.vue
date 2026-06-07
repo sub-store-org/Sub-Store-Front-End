@@ -4,20 +4,22 @@
       v-if="editorTabsEnabled"
       class="editor-section-tabs"
       :style="{ top: navBarHeight }"
-      role="tablist"
     >
-      <button
-        v-for="tab in SYNC_EDITOR_TABS"
-        :key="tab"
-        type="button"
-        class="editor-section-tab"
-        :class="{ current: activeEditorTab === tab }"
-        role="tab"
-        :aria-selected="activeEditorTab === tab"
-        @click="activeEditorTab = tab"
-      >
-        {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
-      </button>
+      <div class="editor-section-tab-list" role="tablist">
+        <button
+          v-for="tab in SYNC_EDITOR_TABS"
+          :key="tab"
+          type="button"
+          class="editor-section-tab"
+          :class="{ current: activeEditorTab === tab }"
+          role="tab"
+          :aria-selected="activeEditorTab === tab"
+          @click="activeEditorTab = tab"
+        >
+          {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+        </button>
+      </div>
+      <EditorGroupingTips />
     </div>
     <div class="form-block-wrapper">
       <div
@@ -315,6 +317,7 @@
 <script lang="ts" setup>
 import TagPopup from "@/components/TagPopup.vue";
 import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
+import EditorGroupingTips from "@/components/EditorGroupingTips.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useArtifactsStore } from "@/store/artifacts";

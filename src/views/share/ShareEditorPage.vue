@@ -28,20 +28,22 @@
         v-if="editorTabsEnabled"
         class="editor-section-tabs"
         :style="{ top: navBarHeight }"
-        role="tablist"
       >
-        <button
-          v-for="tab in SHARE_EDITOR_TABS"
-          :key="tab"
-          type="button"
-          class="editor-section-tab"
-          :class="{ current: activeEditorTab === tab }"
-          role="tab"
-          :aria-selected="activeEditorTab === tab"
-          @click="activeEditorTab = tab"
-        >
-          {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
-        </button>
+        <div class="editor-section-tab-list" role="tablist">
+          <button
+            v-for="tab in SHARE_EDITOR_TABS"
+            :key="tab"
+            type="button"
+            class="editor-section-tab"
+            :class="{ current: activeEditorTab === tab }"
+            role="tab"
+            :aria-selected="activeEditorTab === tab"
+            @click="activeEditorTab = tab"
+          >
+            {{ $t(`editorPage.subConfig.editorTabs.${tab}`) }}
+          </button>
+        </div>
+        <EditorGroupingTips />
       </div>
       <div class="form-block-wrapper">
         <div
@@ -443,6 +445,7 @@ import { useRoute, useRouter } from "vue-router";
 import logoIcon from "@/assets/icons/logo.png";
 import logoRedIcon from "@/assets/icons/logo-red.png";
 import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
+import EditorGroupingTips from "@/components/EditorGroupingTips.vue";
 import ShareExactDatetimeField from "@/components/ShareExactDatetimeField.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import IconPopup from "@/views/icon/IconPopup.vue";
