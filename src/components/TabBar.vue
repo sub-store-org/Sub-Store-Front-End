@@ -8,10 +8,15 @@
       size="22px"
     >
       <nut-tabbar-item class="tabbar-item" to="/subs" icon="link" />
-      <nut-tabbar-item v-show="!appearanceSetting.istabBar2" class="tabbar-item" to="/files" icon="category" />
+      <nut-tabbar-item
+        v-show="!shouldHideFilesTab"
+        class="tabbar-item"
+        to="/files"
+        icon="category"
+      />
 
       <nut-tabbar-item
-        v-show="!appearanceSetting.istabBar"
+        v-show="!shouldHideSyncTab"
         class="tabbar-item"
         to="/sync"
         icon="refresh2"
@@ -27,7 +32,7 @@
   import { useGlobalStore } from '@/store/global';
   import { useSettingsStore } from '@/store/settings';
   import { storeToRefs } from 'pinia';
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
   const route = useRoute();
@@ -39,7 +44,29 @@
 
   const globalStore = useGlobalStore();
   const settingsStore = useSettingsStore();
-  const { appearanceSetting } = storeToRefs(settingsStore);
+  const { appearanceSetting, hasFetchedSettings, hasCachedAppearanceNavigationSetting } = storeToRefs(settingsStore);
+  const shouldHideFilesTab = computed(() => {
+    if (hasCachedAppearanceNavigationSetting.value) {
+      return !!appearanceSetting.value.istabBar2;
+    }
+
+    if (!hasFetchedSettings.value) {
+      return false;
+    }
+
+    return !!appearanceSetting.value.istabBar2;
+  });
+  const shouldHideSyncTab = computed(() => {
+    if (hasCachedAppearanceNavigationSetting.value) {
+      return !!appearanceSetting.value.istabBar;
+    }
+
+    if (!hasFetchedSettings.value) {
+      return false;
+    }
+
+    return !!appearanceSetting.value.istabBar;
+  });
 
   const {
     bottomSafeArea,

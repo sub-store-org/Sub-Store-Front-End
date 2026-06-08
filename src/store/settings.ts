@@ -13,6 +13,8 @@ const { t } = i18n.global;
 const LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewMode";
 const NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewModeInWideScreenNarrowMode";
 const WIDE_SCREEN_NARROW_MODE_STORAGE_KEY = "appearanceSetting.useNarrowModeOnWideScreen";
+const TAB_BAR_CACHE_STORAGE_KEY = "appearanceSetting.istabBar";
+const TAB_BAR2_CACHE_STORAGE_KEY = "appearanceSetting.istabBar2";
 const LEGACY_APPEARANCE_STORAGE_KEYS = [
   "isSimpleMode",
   "isLr",
@@ -45,6 +47,29 @@ const syncCachedListPageViewMode = (storageKey: string, mode?: ListPageViewMode)
   } else {
     localStorage.removeItem(storageKey);
   }
+};
+
+const getCachedAppearanceBoolean = (storageKey: string, legacyStorageKey: string) => {
+  const cachedValue = localStorage.getItem(storageKey);
+  if (cachedValue === "1") return true;
+  if (cachedValue === "0") return false;
+
+  const legacyValue = localStorage.getItem(legacyStorageKey);
+  if (legacyValue === "1") return true;
+
+  return undefined;
+};
+
+const hasCachedAppearanceNavigationSetting = () => {
+  return getCachedAppearanceBoolean(TAB_BAR_CACHE_STORAGE_KEY, "istabBar") !== undefined
+    || getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") !== undefined;
+};
+
+const syncCachedAppearanceNavigationSetting = (
+  appearanceSetting: SettingsPostData["appearanceSetting"],
+) => {
+  localStorage.setItem(TAB_BAR_CACHE_STORAGE_KEY, appearanceSetting?.istabBar ? "1" : "0");
+  localStorage.setItem(TAB_BAR2_CACHE_STORAGE_KEY, appearanceSetting?.istabBar2 ? "1" : "0");
 };
 
 const getCachedWideScreenNarrowMode = () => {
@@ -152,8 +177,8 @@ export const useSettingsStore = defineStore("settingsStore", {
         createItemPosition: "bottom",
         displayPreviewInWebPage: true,
         invalidShareFakeNode: false,
-        istabBar: false,
-        istabBar2: false,
+        istabBar: getCachedAppearanceBoolean(TAB_BAR_CACHE_STORAGE_KEY, "istabBar") ?? false,
+        istabBar2: getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") ?? false,
         subProgressStyle: "hidden",
         listPageViewMode: getCachedListPageViewMode(LIST_PAGE_VIEW_MODE_STORAGE_KEY),
         listPageViewModeInWideScreenNarrowMode: getCachedListPageViewMode(NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY),
@@ -165,6 +190,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       artifactStoreStatus: "",
       hasFetchedSettings: false,
       hasRemoteAppearanceSetting: false,
+      hasCachedAppearanceNavigationSetting: hasCachedAppearanceNavigationSetting(),
       // ishostApi: localStorage.getItem('hostApi'),
     };
   },
@@ -214,6 +240,9 @@ export const useSettingsStore = defineStore("settingsStore", {
       } else {
         localStorage.removeItem(WIDE_SCREEN_NARROW_MODE_STORAGE_KEY);
       }
+
+      syncCachedAppearanceNavigationSetting(this.appearanceSetting);
+      this.hasCachedAppearanceNavigationSetting = true;
     },
     async fetchSettings() {
       const { showNotify } = useAppNotifyStore();

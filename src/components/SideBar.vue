@@ -12,7 +12,7 @@
         </div>
 
         <div 
-          v-show="!appearanceSetting.istabBar2"
+          v-show="!shouldHideFilesTab"
           class="menu-item" 
           :class="{ active: activeTab === 1 }" 
           @click="router.push('/files')"
@@ -22,7 +22,7 @@
         </div>
 
         <div 
-          v-show="!appearanceSetting.istabBar"
+          v-show="!shouldHideSyncTab"
           class="menu-item" 
           :class="{ active: activeTab === 2 }" 
           @click="router.push('/sync')"
@@ -111,9 +111,31 @@ const globalStore = useGlobalStore();
 const settingsStore = useSettingsStore();
 const systemStore = useSystemStore();
 
-const { appearanceSetting } = storeToRefs(settingsStore);
+const { appearanceSetting, hasFetchedSettings, hasCachedAppearanceNavigationSetting } = storeToRefs(settingsStore);
 const { env } = storeToRefs(globalStore);
 const { navBarHeight } = storeToRefs(systemStore);
+const shouldHideFilesTab = computed(() => {
+  if (hasCachedAppearanceNavigationSetting.value) {
+    return !!appearanceSetting.value.istabBar2;
+  }
+
+  if (!hasFetchedSettings.value) {
+    return false;
+  }
+
+  return !!appearanceSetting.value.istabBar2;
+});
+const shouldHideSyncTab = computed(() => {
+  if (hasCachedAppearanceNavigationSetting.value) {
+    return !!appearanceSetting.value.istabBar;
+  }
+
+  if (!hasFetchedSettings.value) {
+    return false;
+  }
+
+  return !!appearanceSetting.value.istabBar;
+});
 
 </script>
 

@@ -13,6 +13,7 @@ interface SettingsBase {
   artifactStoreStatus?: string;
   hasFetchedSettings: boolean;
   hasRemoteAppearanceSetting: boolean;
+  hasCachedAppearanceNavigationSetting: boolean;
   // ishostApi: string;
 }
 
