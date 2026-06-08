@@ -1,43 +1,56 @@
 <template>
   <div class="editor-action-card">
-    <p class="des-label">
-      {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
+    <div class="type-row">
+      <button
+        type="button"
+        class="content-fold-toggle"
+        :aria-expanded="!isContentFolded"
+        :aria-label="
+          isContentFolded
+            ? $t('moreSettingPage.editorDisplayMode.expanded')
+            : $t('moreSettingPage.editorDisplayMode.collapsed')
+        "
+        @click="toggleContentFold"
+      >
+        <nut-icon
+          :name="isContentFolded ? 'rect-right' : 'rect-down'"
+          size="12px"
+        />
+        <span>
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].des[0]`) }}
+        </span>
+      </button>
       <a
+        class="doc-link"
         href="https://github.com/sub-store-org/Sub-Store/wiki/%E8%84%9A%E6%9C%AC%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"
         target="_blank"
       >
         {{ $t("subPage.panel.tips.ok") }}
       </a>
-    </p>
-    <nut-radiogroup v-model="value.mode" direction="horizontal">
-      <nut-radio v-for="(key, index) in modeList" :key="index" :label="key">
-        {{
-          $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
-        }}
-      </nut-radio>
-    </nut-radiogroup>
-
-    <div v-if="value.mode === 'link'" class="input-wrapper">
-      <nut-textarea
-        v-model="value.content"
-        :placeholder="
-          $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
-        "
-        :rows="5"
-        autosize
-        @blur="handleLinkValueChange"
-      />
     </div>
-    <div
-      v-if="value.mode === 'script'"
-      style="
-        margin-left: -16px;
-        margin-right: -16px;
-        max-height: 80vh;
-        overflow: auto;
-      "
-    >
-      <cmView :id="id" :is-read-only="false" />
+    <div v-show="!isContentFolded">
+      <nut-radiogroup v-model="value.mode" direction="horizontal">
+        <nut-radio v-for="(key, index) in modeList" :key="index" :label="key">
+          {{
+            $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
+          }}
+        </nut-radio>
+      </nut-radiogroup>
+
+      <div v-if="value.mode === 'link'" class="input-wrapper">
+        <nut-textarea
+          v-model="value.content"
+          :placeholder="
+            $t(`editorPage.subConfig.nodeActions['${type}'].placeholder`)
+          "
+          :rows="5"
+          autosize
+          @blur="handleLinkValueChange"
+        />
+      </div>
+      <div v-if="value.mode === 'script'" class="local-content-section">
+        <cmView :id="id" :is-read-only="false" />
+      </div>
     </div>
 
     <!-- 参数编辑控制部分 -->
@@ -96,10 +109,15 @@
 import { Dialog } from "@nutui/nutui";
 import { inject, onMounted, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 import ParamsEditor from "@/components/ParamsEditor.vue";
 import { usePopupRoute } from "@/hooks/usePopupRoute";
 import { useCodeStore } from "@/store/codeStore";
+import {
+  getEditorIsFolded,
+  setEditorFoldState,
+} from "@/utils/editorFoldState";
 import cmView from "@/views/editCode/cmView.vue";
 
 const { type, id, sourceType } = defineProps<{
@@ -111,10 +129,33 @@ const { type, id, sourceType } = defineProps<{
 const cmStore = useCodeStore();
 
 const { t } = useI18n();
+const route = useRoute();
 
 const form = inject<Sub | Collection>("form");
 
 const modeList = ["link", "script"];
+const SCRIPT_CONTENT_FOLD_STORAGE_KEY = "script-local-content-fold";
+
+const getContentFoldPath = (path = route.path) => {
+  return [path, sourceType || "default", type, id].join(":");
+};
+
+const isContentFolded = ref(
+  getEditorIsFolded(
+    SCRIPT_CONTENT_FOLD_STORAGE_KEY,
+    getContentFoldPath(),
+    false,
+  ),
+);
+
+const toggleContentFold = () => {
+  isContentFolded.value = !isContentFolded.value;
+  setEditorFoldState(
+    SCRIPT_CONTENT_FOLD_STORAGE_KEY,
+    getContentFoldPath(),
+    isContentFolded.value,
+  );
+};
 
 const showKeyValue = ref(false);
 
@@ -588,6 +629,17 @@ watch(
 );
 
 watch(
+  () => route.path,
+  (path) => {
+    isContentFolded.value = getEditorIsFolded(
+      SCRIPT_CONTENT_FOLD_STORAGE_KEY,
+      getContentFoldPath(path),
+      false,
+    );
+  },
+);
+
+watch(
   () => cmStore.EditCode[id],
   (newCode) => {
     value.code = newCode;
@@ -596,17 +648,37 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.des-label {
-  font-size: 12px;
+.type-row {
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.content-fold-toggle {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: var(--comment-text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
 
-  &:not(:first-child) {
-    margin-top: 16px;
+  &:focus {
+    outline: none;
   }
-  a {
-    color: var(--primary-color);
+
+  svg {
+    color: var(--unimportant-icon-color);
   }
+}
+.doc-link {
+  color: var(--primary-color);
+  font-size: 12px;
 }
 
 .nut-radiogroup {
@@ -630,6 +702,12 @@ watch(
       color: inherit;
     }
   }
+}
+.local-content-section {
+  margin-left: -16px;
+  margin-right: -16px;
+  max-height: 80vh;
+  overflow: auto;
 }
 .input-wrapper-title {
   display: flex;
