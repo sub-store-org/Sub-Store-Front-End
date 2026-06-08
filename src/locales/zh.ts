@@ -846,6 +846,7 @@ export default {
       title: '保留的节点',
       beforeIndicator: '操作前',
       afterIndicator: '操作后',
+      indicatorDisabledTips: '{side}无可显示数据',
     },
     nodeNames: {
       entry: '全部节点名',

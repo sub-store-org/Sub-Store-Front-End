@@ -33,15 +33,38 @@
           <!--指示器说明-->
           <div class="compare-des">      
             <span class="indicator-group">
-              <span
-                @click="toggleOriginalVisible"
-                class="original-item indicator"
-                >{{ $t(`comparePage.remain.beforeIndicator`) }}</span
-              >
               <button
                 type="button"
-                class="node-names-action"
-                :title="$t('comparePage.nodeNames.entry')"
+                :aria-disabled="!hasOriginalData"
+                :aria-pressed="isOriginalVisible"
+                :title="
+                  !hasOriginalData
+                    ? $t('comparePage.remain.indicatorDisabledTips', {
+                        side: $t('comparePage.remain.beforeIndicator'),
+                      })
+                    : ''
+                "
+                :class="[
+                  'original-item',
+                  'indicator',
+                  !hasOriginalData && 'is-disabled',
+                  isOriginalVisible ? 'is-active' : 'is-inactive',
+                ]"
+                @click="toggleOriginalVisible"
+              >
+                {{ $t(`comparePage.remain.beforeIndicator`) }}
+              </button>
+              <button
+                type="button"
+                :aria-disabled="!hasOriginalData"
+                :class="['node-names-action', !hasOriginalData && 'is-disabled']"
+                :title="
+                  !hasOriginalData
+                    ? $t('comparePage.remain.indicatorDisabledTips', {
+                        side: $t('comparePage.remain.beforeIndicator'),
+                      })
+                    : $t('comparePage.nodeNames.entry')
+                "
                 @click.stop="openNodeNamesDialog('before')"
               >
                 <font-awesome-icon icon="fa-solid fa-clone" />
@@ -50,15 +73,38 @@
             </span>
 
             <span class="indicator-group">
-              <span
-                @click="toggleProcessedVisible"
-                class="processed-item indicator"
-                >{{ $t(`comparePage.remain.afterIndicator`) }}</span
-              >
               <button
                 type="button"
-                class="node-names-action"
-                :title="$t('comparePage.nodeNames.entry')"
+                :aria-disabled="!hasProcessedData"
+                :aria-pressed="isProcessedVisible"
+                :title="
+                  !hasProcessedData
+                    ? $t('comparePage.remain.indicatorDisabledTips', {
+                        side: $t('comparePage.remain.afterIndicator'),
+                      })
+                    : ''
+                "
+                :class="[
+                  'processed-item',
+                  'indicator',
+                  !hasProcessedData && 'is-disabled',
+                  isProcessedVisible ? 'is-active' : 'is-inactive',
+                ]"
+                @click="toggleProcessedVisible"
+              >
+                {{ $t(`comparePage.remain.afterIndicator`) }}
+              </button>
+              <button
+                type="button"
+                :aria-disabled="!hasProcessedData"
+                :class="['node-names-action', !hasProcessedData && 'is-disabled']"
+                :title="
+                  !hasProcessedData
+                    ? $t('comparePage.remain.indicatorDisabledTips', {
+                        side: $t('comparePage.remain.afterIndicator'),
+                      })
+                    : $t('comparePage.nodeNames.entry')
+                "
                 @click.stop="openNodeNamesDialog('after')"
               >
                 <font-awesome-icon icon="fa-solid fa-clone" />
@@ -75,7 +121,13 @@
           </ul>
 
           <!--表格内容-->
-          <table class="compare-table-body">
+          <table
+            class="compare-table-body"
+            :class="{
+              'compare-table-body--paired':
+                isProcessedVisible && isOriginalVisible,
+            }"
+          >
             <template v-for="[processed = {}, original = {}] in data" :key="processed.id">
               <tr
                 v-if="isProcessedVisible"
@@ -281,7 +333,7 @@
   import { useLogsOverlayStore } from '@/store/logsOverlay';
   import { useSubsStore } from '@/store/subs';
   import { extractPreviewNodeInfos, PreviewNodeNameSide } from '@/utils/previewNodeNames';
-  import { computed, ref, toRaw } from 'vue';
+  import { computed, ref, toRaw, watch } from 'vue';
 
   const { getSubInfo } = useSubsApi();
   const logsOverlayStore = useLogsOverlayStore();
@@ -299,7 +351,7 @@
   const emit = defineEmits(['closeCompare', 'refresh']);
 
   const filterRef = ref(null);
-  const isOriginalVisible = ref(true);
+  const isOriginalVisible = ref(false);
   const isProcessedVisible = ref(true);
 
   const nodeInfoIsVisible = ref(false);
@@ -316,32 +368,62 @@
     return sub?.displayName || sub?.['display-name'] || props.name;
   });
 
-  const toggleProcessedVisible = () => {
-    if (isProcessedVisible.value && !isOriginalVisible.value) {
-      isOriginalVisible.value = true;
-    } else if (isProcessedVisible.value && isOriginalVisible.value) {
-      isOriginalVisible.value = false;
-    } else if (!isProcessedVisible.value && isOriginalVisible.value) {
-      isProcessedVisible.value = true;
-      isOriginalVisible.value = false;
+  const toggleVisibility = (
+    currentVisible: { value: boolean },
+    otherVisible: { value: boolean },
+    hasData: boolean,
+  ) => {
+    if (currentVisible.value) {
+      if (!otherVisible.value) {
+        return;
+      }
+
+      currentVisible.value = false;
+      return;
     }
+
+    if (!hasData) {
+      return;
+    }
+
+    currentVisible.value = true;
+  };
+
+  const toggleProcessedVisible = () => {
+    toggleVisibility(
+      isProcessedVisible,
+      isOriginalVisible,
+      processedData.value.length > 0,
+    );
   };
 
   const toggleOriginalVisible = () => {
-    if (!isProcessedVisible.value && isOriginalVisible.value) {
-      isProcessedVisible.value = true;
-    } else if (isProcessedVisible.value && isOriginalVisible.value) {
-      isProcessedVisible.value = false;
-    } else if (isProcessedVisible.value && !isOriginalVisible.value) {
-      isProcessedVisible.value = false;
-      isOriginalVisible.value = true;
-    }
+    toggleVisibility(
+      isOriginalVisible,
+      isProcessedVisible,
+      originalData.value.length > 0,
+    );
   };
 
   const processedData = computed(() => props.compareData?.processed || []);
   const originalData = computed(() => props.compareData?.original || []);
+  const hasProcessedData = computed(() => processedData.value.length > 0);
+  const hasOriginalData = computed(() => originalData.value.length > 0);
+
+  watch(
+    () => props.compareData,
+    () => {
+      isOriginalVisible.value = hasOriginalData.value;
+      isProcessedVisible.value = hasProcessedData.value;
+    },
+    { immediate: true },
+  );
+
   const processedNodeInfos = computed(() => extractPreviewNodeInfos(processedData.value));
   const originalNodeInfos = computed(() => extractPreviewNodeInfos(originalData.value));
+  const hasNodeNamesData = (side: PreviewNodeNameSide) => {
+    return side === 'after' ? hasProcessedData.value : hasOriginalData.value;
+  };
   const activeNodeInfos = computed(() => {
     return nodeNamesDialogSide.value === 'after'
       ? processedNodeInfos.value
@@ -400,6 +482,10 @@
   };
 
   const openNodeNamesDialog = (side: PreviewNodeNameSide) => {
+    if (!hasNodeNamesData(side)) {
+      return;
+    }
+
     nodeNamesDialogSide.value = side;
     nodeNamesDialogVisible.value = true;
   };
@@ -507,15 +593,21 @@
   .compare-table-body {
     width: 100%;
 
-    .processed-tr {
+    .compare-table-row {
       padding-top: 20px;
-      padding-bottom: 0;
-    }
-
-    .original-tr {
-      padding-top: 10px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--divider-color);
+    }
+
+    &--paired {
+      .processed-tr {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .original-tr {
+        padding-top: 10px;
+      }
     }
   }
 
@@ -596,8 +688,46 @@
   }
 
   .indicator {
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    padding: 4px 8px;
+    border: none;
+    border-radius: var(--item-card-radios);
+    background: transparent;
+    color: var(--comment-text-color);
+    font: inherit;
+    line-height: 1;
     cursor: pointer;
     flex-shrink: 0;
+
+    &.is-active {
+      background: var(--compare-item-background-color);
+      box-shadow: inset 0 0 0 1px var(--divider-color);
+    }
+
+    &.is-inactive {
+      opacity: 0.45;
+    }
+
+    &.is-disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    &.original-item.is-active {
+      color: var(--primary-color);
+    }
+
+    &.processed-item.is-active {
+      color: var(--third-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
   }
 
   .node-names-action {
@@ -614,6 +744,11 @@
     font-size: 12px;
     line-height: 1;
     white-space: nowrap;
+
+    &.is-disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
 
     :deep(svg) {
       width: 12px;

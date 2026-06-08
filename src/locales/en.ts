@@ -883,6 +883,7 @@ export default {
       title: "remain nodes",
       beforeIndicator: "before",
       afterIndicator: "after",
+      indicatorDisabledTips: "No data available for {side}",
     },
     nodeNames: {
       entry: "All names",

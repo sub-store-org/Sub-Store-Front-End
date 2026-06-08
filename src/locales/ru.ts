@@ -930,7 +930,8 @@ export default {
     "remain": {
       "title": "оставшиеся узлы",
       "beforeIndicator": "до",
-      "afterIndicator": "после"
+      "afterIndicator": "после",
+      "indicatorDisabledTips": "Нет данных для {side}"
     },
     "nodeNames": {
       "entry": "Все имена",
