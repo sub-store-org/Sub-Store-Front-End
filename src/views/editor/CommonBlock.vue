@@ -1,12 +1,15 @@
 <template>
   <div class="form-block-wrapper">
     <div class="sticky-title-wrapper">
-      <div class="title" @click="toggleFold">
-        <p>
-          {{ $t(`editorPage.subConfig.commonOptions.label`) }}
-        </p>
-        <nut-icon v-if="!isFold" name="rect-down" size="12px"></nut-icon>
-        <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+      <div class="common-title-row">
+        <div class="title" @click="toggleFold">
+          <p>
+            {{ $t(`editorPage.subConfig.commonOptions.label`) }}
+          </p>
+          <nut-icon v-if="!isFold" name="rect-down" size="12px"></nut-icon>
+          <nut-icon v-else name="rect-right" size="12px"></nut-icon>
+        </div>
+        <EditorCommonTips />
       </div>
     </div>
     <nut-form v-if="!isFold" class="form">
@@ -141,6 +144,7 @@
 </template>
 
 <script lang="ts" setup>
+  import EditorCommonTips from '@/components/EditorCommonTips.vue';
   import { useRoute } from 'vue-router';
   import { inject, watchEffect, ref, watch } from 'vue';
   import {
@@ -210,10 +214,19 @@
 <style lang="scss" scoped>
   .form-block-wrapper {
     .sticky-title-wrapper {
+      .common-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
       .title {
         display: flex;
+        flex: 1;
         justify-content: flex-start;
         align-items: center;
+        min-width: 0;
         cursor: pointer;
         p {
           margin-right: 6px;

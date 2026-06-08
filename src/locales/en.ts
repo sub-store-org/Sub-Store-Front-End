@@ -288,6 +288,13 @@ export default {
       goSettings: "Go to settings",
       cancel: "Cancel",
     },
+    commonTips: {
+      open: "Detail page common settings tips",
+      title: "Detail page common settings",
+      content: "You can adjust the display mode in My / More settings / Detail page common settings.",
+      goSettings: "Go to settings",
+      cancel: "Cancel",
+    },
     subConfig: {
       btn: {
         compare: "Preview",
@@ -1349,9 +1356,9 @@ export default {
     isDefaultIcon: "Restore default icon",
     isShowIcon: 'Show icon',
     isSubItemMenuFold: "Fold sub item menu",
-    isEditorCommon: "Editor common settings",
+    isEditorCommon: "Detail page common settings",
     editorCommon: {
-      title: "Editor common settings",
+      title: "Detail page common settings",
     },
     editorGrouping: {
       title: "Use grouping on detail pages",
