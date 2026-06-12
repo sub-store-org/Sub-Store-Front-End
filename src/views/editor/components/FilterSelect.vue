@@ -75,6 +75,7 @@
         'mieru',
         'sudoku',
         'masque',
+        'naive',
         'anytls',
         'trusttunnel',
         'openvpn',

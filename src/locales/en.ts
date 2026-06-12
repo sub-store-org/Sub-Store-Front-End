@@ -608,6 +608,7 @@ export default {
             "mieru",
             "sudoku",
             "MASQUE",
+            "NaïveProxy",
             "AnyTLS",
             'TrustTunnel',
             'OpenVPN',
