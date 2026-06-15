@@ -1082,11 +1082,13 @@ export default {
     editor: {
       create: {
         submit: "创建分享",
-        succeedNotify: "创建分享成功！",
+        succeedNotify: "创建分享成功",
+        succeedAndCopyNotify: "创建分享成功，链接已复制",
       },
       edit: {
         submit: "保存修改",
-        succeedNotify: "分享更新成功！",
+        succeedNotify: "分享更新成功",
+        succeedAndCopyNotify: "分享更新成功，链接已复制",
       },
       loadFailed: {
         title: "无法载入分享编辑页",

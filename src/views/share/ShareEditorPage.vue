@@ -1359,7 +1359,7 @@ const getCountExpirationOptions = (): ShareToken["options"] | null => {
 
 const handleCopyShare = async (isNotify: boolean = true) => {
   if (!form.shareUrl) {
-    return;
+    return false;
   }
 
   try {
@@ -1374,13 +1374,15 @@ const handleCopyShare = async (isNotify: boolean = true) => {
     } catch (fallbackError) {
       console.error(error);
       console.error(fallbackError);
-      return;
+      return false;
     }
   }
 
   if (isNotify) {
     showNotify({ title: t("sharePage.copyShare.succeedNotify") });
   }
+
+  return true;
 };
 
 const getSubmitParams = async (): Promise<ShareToken | null> => {
@@ -1502,11 +1504,12 @@ const finalizeSuccessfulSave = async (
   shareName: string,
   nextToken: string,
   notifyKey: string,
+  copiedNotifyKey: string,
   submitRouteSnapshot: ReturnType<typeof getSubmitRouteSnapshot>,
 ) => {
   form.shareUrl = buildShareUrl(shareType, shareName, nextToken, true);
-  showNotify({ title: t(notifyKey) });
-  await handleCopyShare(false);
+  const copied = await handleCopyShare(false);
+  showNotify({ title: t(copied ? copiedNotifyKey : notifyKey) });
   await refreshShares();
   await syncEditorRouteToShare(shareType, shareName, nextToken, submitRouteSnapshot);
 };
@@ -1537,6 +1540,7 @@ const handleCreate = async () => {
     params.payload.name,
     nextToken,
     "sharePage.editor.create.succeedNotify",
+    "sharePage.editor.create.succeedAndCopyNotify",
     submitRouteSnapshot,
   );
 };
@@ -1561,6 +1565,7 @@ const handleEdit = async () => {
       params.payload.name,
       retryToken,
       "sharePage.editor.edit.succeedNotify",
+      "sharePage.editor.edit.succeedAndCopyNotify",
       submitRouteSnapshot,
     );
     return;
@@ -1590,6 +1595,7 @@ const handleEdit = async () => {
     params.payload.name,
     updateResult.token,
     "sharePage.editor.edit.succeedNotify",
+    "sharePage.editor.edit.succeedAndCopyNotify",
     submitRouteSnapshot,
   );
 };

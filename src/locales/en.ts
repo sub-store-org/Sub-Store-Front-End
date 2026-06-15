@@ -1127,11 +1127,13 @@ export default {
     editor: {
       create: {
         submit: "Create Share",
-        succeedNotify: "Share created successfully!",
+        succeedNotify: "Share created successfully",
+        succeedAndCopyNotify: "Share created and link copied",
       },
       edit: {
         submit: "Save Changes",
-        succeedNotify: "Share updated successfully!",
+        succeedNotify: "Share updated successfully",
+        succeedAndCopyNotify: "Share updated and link copied",
       },
       loadFailed: {
         title: "This share page could not be loaded",
