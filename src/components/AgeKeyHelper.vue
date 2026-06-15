@@ -317,7 +317,7 @@ const copyValue = async (value: string) => {
     min-height: 26px;
     padding: 0 7px !important;
     font-size: 11px;
-    line-height: 1.2;
+    line-height: 1;
   }
 }
 
