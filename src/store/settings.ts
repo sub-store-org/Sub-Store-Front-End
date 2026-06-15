@@ -15,6 +15,7 @@ const NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageV
 const WIDE_SCREEN_NARROW_MODE_STORAGE_KEY = "appearanceSetting.useNarrowModeOnWideScreen";
 const TAB_BAR_CACHE_STORAGE_KEY = "appearanceSetting.istabBar";
 const TAB_BAR2_CACHE_STORAGE_KEY = "appearanceSetting.istabBar2";
+const TAB_BAR3_CACHE_STORAGE_KEY = "appearanceSetting.istabBar3";
 const LEGACY_APPEARANCE_STORAGE_KEYS = [
   "isSimpleMode",
   "isLr",
@@ -62,7 +63,8 @@ const getCachedAppearanceBoolean = (storageKey: string, legacyStorageKey: string
 
 const hasCachedAppearanceNavigationSetting = () => {
   return getCachedAppearanceBoolean(TAB_BAR_CACHE_STORAGE_KEY, "istabBar") !== undefined
-    || getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") !== undefined;
+    || getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") !== undefined
+    || getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3") !== undefined;
 };
 
 const syncCachedAppearanceNavigationSetting = (
@@ -70,6 +72,7 @@ const syncCachedAppearanceNavigationSetting = (
 ) => {
   localStorage.setItem(TAB_BAR_CACHE_STORAGE_KEY, appearanceSetting?.istabBar ? "1" : "0");
   localStorage.setItem(TAB_BAR2_CACHE_STORAGE_KEY, appearanceSetting?.istabBar2 ? "1" : "0");
+  localStorage.setItem(TAB_BAR3_CACHE_STORAGE_KEY, appearanceSetting?.istabBar3 ? "1" : "0");
 };
 
 const getCachedWideScreenNarrowMode = () => {
@@ -77,7 +80,8 @@ const getCachedWideScreenNarrowMode = () => {
 };
 
 const hasLocalAppearanceSetting = () => {
-  return LEGACY_APPEARANCE_STORAGE_KEYS.some((key) => localStorage.getItem(key) !== null);
+  return LEGACY_APPEARANCE_STORAGE_KEYS.some((key) => localStorage.getItem(key) !== null)
+    || getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3") !== undefined;
 };
 
 const hasRemoteAppearanceSetting = (appearanceSetting?: SettingsPostData["appearanceSetting"]) => {
@@ -179,6 +183,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         invalidShareFakeNode: false,
         istabBar: getCachedAppearanceBoolean(TAB_BAR_CACHE_STORAGE_KEY, "istabBar") ?? false,
         istabBar2: getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") ?? false,
+        istabBar3: getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3") ?? false,
         subProgressStyle: "hidden",
         listPageViewMode: getCachedListPageViewMode(LIST_PAGE_VIEW_MODE_STORAGE_KEY),
         listPageViewModeInWideScreenNarrowMode: getCachedListPageViewMode(NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY),
@@ -223,6 +228,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.invalidShareFakeNode = appearanceSetting?.invalidShareFakeNode ?? false;
       this.appearanceSetting.istabBar = appearanceSetting?.istabBar ?? "";
       this.appearanceSetting.istabBar2 = appearanceSetting?.istabBar2 ?? "";
+      this.appearanceSetting.istabBar3 = appearanceSetting?.istabBar3 ?? false;
       this.appearanceSetting.subProgressStyle = appearanceSetting?.subProgressStyle ?? "hidden";
       this.appearanceSetting.listPageViewMode = appearanceSetting?.listPageViewMode;
       this.appearanceSetting.listPageViewModeInWideScreenNarrowMode =
@@ -342,6 +348,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         subProgressStyle,
       } = globalStore;
       const hasLocalEditorCommonSetting = localStorage.getItem('iseditorCommon') !== null;
+      const cachedHideShareTab = getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3");
       const editorCommonDisplayMode = hasLocalEditorCommonSetting
         ? (isEditorCommon ? "expanded" : "hidden")
         : "collapsed";
@@ -359,6 +366,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         showFloatingRefreshButton: showFloatingRefreshButton ?? false,
         istabBar: istabBar ?? false,
         istabBar2: istabBar2 ?? false,
+        istabBar3: cachedHideShareTab ?? this.appearanceSetting.istabBar3 ?? false,
         subProgressStyle: subProgressStyle ?? "hidden",
       };
       if (!hasLocalAppearanceSetting()) {

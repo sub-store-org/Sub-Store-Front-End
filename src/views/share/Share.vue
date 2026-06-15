@@ -8,7 +8,7 @@
           v-if="!appearanceSetting.showFloatingAddButton"
           type="button"
           class="link-top-create-button"
-          :style="{ top: shareTopSelectionOffset }"
+          :style="{ top: shareTopSelectionOffset, left: shareTopCreateLeft }"
           :aria-label="$t(`sharePage.emptyShare.btn`)"
           :title="$t(`sharePage.emptyShare.btn`)"
           @click="addShare"
@@ -18,7 +18,7 @@
         <button
           type="button"
           class="link-top-selection-toggle"
-          :style="{ top: shareTopSelectionOffset }"
+          :style="{ top: shareTopSelectionOffset, left: shareTopSelectionLeft }"
           :aria-label="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
           :title="isSelectionMode ? $t(`sharePage.selectMode.cancel`) : $t(`sharePage.selectMode.enter`)"
           @click="toggleSelectionMode"
@@ -439,7 +439,7 @@
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref, toRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import draggable from "vuedraggable";
 import ShareListItem from "@/components/ShareListItem.vue";
 import { useShareApi } from "@/api/share";
@@ -476,6 +476,7 @@ const shareTypeLabelKeyMap: Record<ShareGroupKey, "singleSub" | "collectionSub" 
 };
 
 const router = useRouter();
+const route = useRoute();
 
 const { env } = useBackend();
 const isArchiveEnabled = computed(() => {
@@ -508,6 +509,25 @@ const shareTopSelectionOffset = computed(() => {
   const navBarHeightNum = Number.parseFloat(navBarHeight.value || "56");
   const navBarTopNum = Number.parseFloat(navBartop.value || "0");
   return `${(navBarHeightNum + navBarTopNum) / 2}px`;
+});
+const isShareTabMode = computed(() => {
+  return route.meta.needNavBack === false;
+});
+const NAV_BAR_LEFT_BUTTON_BASE_LEFT = 7;
+const NAV_BAR_LEFT_BUTTON_STEP = 30;
+const shareTopSelectionLeft = computed(() => {
+  if (isShareTabMode.value) {
+    return `${NAV_BAR_LEFT_BUTTON_BASE_LEFT + NAV_BAR_LEFT_BUTTON_STEP * 2}px`;
+  }
+
+  return "46px";
+});
+const shareTopCreateLeft = computed(() => {
+  if (isShareTabMode.value) {
+    return `${NAV_BAR_LEFT_BUTTON_BASE_LEFT + NAV_BAR_LEFT_BUTTON_STEP * 3}px`;
+  }
+
+  return "80px";
 });
 
 const refresh = () => {

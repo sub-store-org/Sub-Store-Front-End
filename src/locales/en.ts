@@ -1390,6 +1390,7 @@ export default {
     invalidShareFakeNode: "Invalid share returns fake info(to prevent caching)",
     tabBar: 'Hide "Sync" Page',
     tabBar2: 'Hide "File" Page',
+    tabBar3: 'Hide "Share" Page',
     auto2: "MoreSetting Key",
     hostapi: "Custom Backend API",
     currentHostApi: "Current Backend API",

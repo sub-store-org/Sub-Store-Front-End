@@ -164,8 +164,8 @@ const router = createRouter({
           component: () => import('@/views/share/Share.vue'),
           meta: {
             title: 'shareManage',
-            needTabBar: false,
-            needNavBack: true,
+            needTabBar: true,
+            needNavBack: false,
             supportsListViewMode: true,
             supportsListSearch: true,
             hideSideBarInWideScreenNarrowMode: true,

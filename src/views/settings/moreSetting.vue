@@ -129,6 +129,11 @@
           <nut-switch class="my-switch" v-model="awtabBar2" size="mini" @change="settabBar2" />
         </template>
       </nut-cell>
+      <nut-cell :title="$t(`moreSettingPage.tabBar3`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="awtabBar3" size="mini" @change="settabBar3" />
+        </template>
+      </nut-cell>
       <nut-cell :title="$t(`moreSettingPage.tabBar`)" class="cell-item">
         <template v-slot:link>
           <nut-switch class="my-switch" v-model="awtabBar" size="mini" @change="settabBar" />
@@ -232,6 +237,7 @@
   const invalidShareFakeNode = ref(false);
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
+  const awtabBar3 = ref(false);
   // const isEditing = ref(false);
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
@@ -426,6 +432,13 @@
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
+  const settabBar3 = (istabBar3: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      istabBar3: istabBar3
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
 
   
   
@@ -495,7 +508,8 @@
         try {
             const res = await useSettingsApi().restoreSettings({ content: JSON.stringify({
               settings: {
-                istabBar2: false
+                istabBar2: false,
+                istabBar3: false
               }
             }) });
             if (res?.data?.status === "success") {
@@ -618,6 +632,7 @@
     invalidShareFakeNode.value = appearanceSetting.value.invalidShareFakeNode;
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
+    awtabBar3.value = appearanceSetting.value.istabBar3 ?? false;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
     gistUploadValue.value = [gistUpload.value];
     editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];

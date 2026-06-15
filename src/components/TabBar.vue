@@ -21,6 +21,18 @@
         to="/sync"
         icon="refresh2"
       />
+      <nut-tabbar-item
+        v-show="shouldShowShareTab"
+        class="tabbar-item"
+        to="/shares"
+      >
+        <template #icon>
+          <font-awesome-icon
+            class="tabbar-share-icon"
+            icon="fa-solid fa-share-nodes"
+          />
+        </template>
+      </nut-tabbar-item>
 
       <nut-tabbar-item class="tabbar-item" to="/my" icon="setting" :dot="env.hasNewVersion"/>
     </nut-tabbar>
@@ -36,7 +48,7 @@
   import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
   const route = useRoute();
-  const routeList = ['/subs', '/files', '/sync', '/my'];
+  const routeList = ['/subs', '/files', '/sync', '/shares', '/my'];
   const activeTab = ref(routeList.indexOf(route.path));
   const { isWideScreenNarrowModeActive } = useWideScreenNarrowMode();
 
@@ -66,6 +78,20 @@
     }
 
     return !!appearanceSetting.value.istabBar;
+  });
+  const shouldHideShareTab = computed(() => {
+    if (hasCachedAppearanceNavigationSetting.value) {
+      return !!appearanceSetting.value.istabBar3;
+    }
+
+    if (!hasFetchedSettings.value) {
+      return false;
+    }
+
+    return !!appearanceSetting.value.istabBar3;
+  });
+  const shouldShowShareTab = computed(() => {
+    return !!env.value?.feature?.share && !shouldHideShareTab.value;
   });
 
   const {
@@ -117,12 +143,20 @@
 
     :deep(.tabbar-item) {
       cursor: pointer;
+
       &.nut-tabbar-item__icon--unactive {
         color: var(--lowest-text-color);
       }
+
       & > .nut-tabbar-item_icon-box > .nut-tabbar-item_icon-box_nav-word {
         margin-top: 8px;
         font-weight: 600;
+      }
+
+      .tabbar-share-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 22px;
       }
     }
   }
