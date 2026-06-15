@@ -740,9 +740,6 @@ const submit = () => {
     ];
     data["display-name"] = data.displayName;
     data.cron = `${data.cron || ""}`.trim();
-    if (!data.cron) {
-      delete data.cron;
-    }
 
     Toast.loading(t("syncPage.addArtForm.submitLoading"), {
       cover: true,
