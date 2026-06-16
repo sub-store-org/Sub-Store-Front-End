@@ -27,8 +27,9 @@
         <h3
           v-if="!appearanceSetting.isSimpleMode"
           class="sub-item-title archives-item-title"
+          :title="displayName"
         >
-          {{ displayName }}
+          <span class="sub-item-name">{{ displayName }}</span>
           <span
             v-for="item in tags"
             :key="item"
@@ -41,8 +42,9 @@
           v-else
           class="sub-item-title archives-item-title"
           style="color: var(--primary-text-color); font-size: 16px"
+          :title="displayName"
         >
-          {{ displayName }}
+          <span class="sub-item-name">{{ displayName }}</span>
           <span
             v-for="item in tags"
             :key="item"
@@ -447,21 +449,29 @@ const nonSimpleSecondLine = computed(() => {
 }
 
 .sub-item-title {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  word-wrap: break-word;
-  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
   overflow: hidden;
   color: var(--primary-text-color);
   font-size: 16px;
   line-height: 1.4;
 
   .tag {
+    display: inline-flex;
+    flex: 0 0 auto;
     margin: 0 2px;
   }
+}
+
+.sub-item-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .archives-item-actions {

@@ -31,8 +31,12 @@
     </div>
     <div class="sub-item-content">
       <div class="sub-item-title-wrapper">
-        <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-          {{ displayName || name }}
+        <h3
+          v-if="!appearanceSetting.isSimpleMode"
+          class="sub-item-title"
+          :title="displayName || name"
+        >
+          <span class="sub-item-name">{{ displayName || name }}</span>
           <span v-for="item in shareTags" :key="item" class="tag">
             <nut-tag>{{ item }}</nut-tag>
           </span>
@@ -41,8 +45,9 @@
           v-else
           class="sub-item-title"
           style="color: var(--primary-text-color); font-size: 16px"
+          :title="displayName || name"
         >
-          {{ displayName || name }}
+          <span class="sub-item-name">{{ displayName || name }}</span>
           <span v-for="item in shareTags" :key="item" class="tag">
             <nut-tag>{{ item }}</nut-tag>
           </span>
@@ -467,19 +472,27 @@ const onClickPreviews = () => {
       gap: 8px;
 
       .sub-item-title {
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        word-wrap: break-word;
-        word-break: break-all;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
         overflow: hidden;
         font-size: 16px;
         color: var(--primary-text-color);
       }
 
+      .sub-item-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       .tag {
+        display: inline-flex;
+        flex: 0 0 auto;
         margin: 0 2px;
       }
 

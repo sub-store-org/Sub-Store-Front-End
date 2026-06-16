@@ -47,14 +47,23 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ displayName }}
+          <h3
+            v-if="!appearanceSetting.isSimpleMode"
+            class="sub-item-title"
+            :title="displayName"
+          >
+            <span class="sub-item-name">{{ displayName }}</span>
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
           </h3>
-          <h3 v-else class="sub-item-title" style="color: var(--primary-text-color); font-size: 16px">
-            {{ displayName }}
+          <h3
+            v-else
+            class="sub-item-title"
+            style="color: var(--primary-text-color); font-size: 16px"
+            :title="displayName"
+          >
+            <span class="sub-item-name">{{ displayName }}</span>
             <span v-for="i in tag" :key="i" class="tag">
               <nut-tag>{{ i }}</nut-tag>
             </span>
@@ -681,19 +690,26 @@
         gap: 8px;
 
         .sub-item-title {
-          flex: 1;
+          flex: 1 1 auto;
           min-width: 0;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 1;
-          word-wrap: break-word;
-          word-break: break-all;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          white-space: nowrap;
           overflow: hidden;
           font-size: 16px;
           color: var(--primary-text-color);
           vertical-align: middle;
         }
+        .sub-item-name {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .tag {
+          display: inline-flex;
+          flex: 0 0 auto;
           margin: 0 2px;
         }
         .compare-sub-link,

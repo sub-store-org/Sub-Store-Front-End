@@ -56,8 +56,12 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 v-if="!appearanceSetting.isSimpleMode" class="sub-item-title">
-            {{ displayName }}
+          <h3
+            v-if="!appearanceSetting.isSimpleMode"
+            class="sub-item-title"
+            :title="displayName"
+          >
+            <span class="sub-item-name">{{ displayName }}</span>
             <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span> -->
@@ -69,8 +73,9 @@
             v-else
             class="sub-item-title"
             style="color: var(--primary-text-color); font-size: 16px"
+            :title="displayName"
           >
-            {{ displayName }}
+            <span class="sub-item-name">{{ displayName }}</span>
             <!-- <span v-if="appOpenBtnVisible" class="app-url" @click.stop="openAppUrl" :title="typeof flow === 'object' ? flow.appUrl : ''">
               <font-awesome-icon icon="fa-solid fa-square-arrow-up-right" />
             </span> -->
@@ -1050,22 +1055,30 @@ const refreshSubFlowsIfNeeded = async () => {
       gap: 8px;
 
       .sub-item-title {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-        word-wrap: break-word;
-        word-break: break-all;
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
         overflow: hidden;
         font-size: 16px;
         color: var(--primary-text-color);
         vertical-align: middle;
+      }
+      .sub-item-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .app-url {
         font-size: 14px !important;
         margin: 0 2px;
       }
       .tag {
+        display: inline-flex;
+        flex: 0 0 auto;
         margin: 0 2px;
       }
       .sub-item-menu {
