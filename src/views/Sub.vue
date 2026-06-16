@@ -805,6 +805,7 @@ const importTips = () => {
     backdrop-filter: blur(var(--nav-bar-blur));
     -webkit-backdrop-filter: blur(var(--nav-bar-blur));
     background: var(--nav-bar-color);
+    pointer-events: none;
     @include centered-fixed-container;
       @media screen and (min-width: 768px) {
         border-radius: var(--item-card-radios);
@@ -816,6 +817,7 @@ const importTips = () => {
       margin: 0px 5px;
       padding: 7.5px 2.5px 4px;
       cursor: pointer;
+      pointer-events: auto;
       -webkit-user-select: none;
       user-select: none;
       border-bottom: 1px solid transparent;
