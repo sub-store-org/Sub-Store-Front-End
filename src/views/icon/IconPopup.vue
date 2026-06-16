@@ -295,8 +295,8 @@ const fetchIcons = async () => {
     } else {
       iconList.value = [];
     }
-    // 在加载完图标后初始化搜索结果
-    searchResult.value = iconList.value;
+    // 新图标集加载完成后，沿用当前筛选条件重新计算结果。
+    performSearch();
     fetchStatus.value = "success";
     Toast.hide("icon-collection");
   } catch (error) {
