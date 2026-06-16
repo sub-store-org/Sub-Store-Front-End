@@ -39,11 +39,6 @@ export const useGlobalStore = defineStore('globalStore', {
             "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
         },
         {
-          text: "Koolson/QureColor-All",
-          value:
-            "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor-All.json",
-        },
-        {
           text: "Orz-3/mini",
           value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini.json",
         },
@@ -82,6 +77,11 @@ export const useGlobalStore = defineStore('globalStore', {
           text: "luestr/IconResource",
           value:
             "https://raw.githubusercontent.com/luestr/IconResource/main/KeLee_icon.json",
+        },
+        {
+          text: "shindgew/WHATSINStash",
+          value:
+            "https://raw.githubusercontent.com/shindgew/WHATSINStash/refs/heads/main/icon/iconset.json",
         }
       ],
       customIconCollections: localStorage.getItem("customIconCollections")
