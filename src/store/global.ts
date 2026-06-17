@@ -39,6 +39,11 @@ export const useGlobalStore = defineStore('globalStore', {
             "https://raw.githubusercontent.com/Koolson/Qure/master/Other/QureColor.json",
         },
         {
+          text: "xream/Qure Additions",
+          value:
+            "https://raw.githubusercontent.com/xream/Qure/refs/heads/master/xream/iconset.json",
+        },
+        {
           text: "Orz-3/mini",
           value: "https://raw.githubusercontent.com/Orz-3/mini/master/mini.json",
         },
