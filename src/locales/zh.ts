@@ -24,6 +24,10 @@ export default {
       loading: '刷新数据中...',
       rePwa: '重置 PWA 缓存成功，即将刷新页面...',
       rePwaing: '重置 PWA 缓存中...',
+      dynamicImportFailedTitle: '前端已更新',
+      dynamicImportFailedContent: '请刷新后继续操作',
+      reloadNow: '刷新前端',
+      backHome: '返回首页',
     },
     share: {
       title: '分享',
