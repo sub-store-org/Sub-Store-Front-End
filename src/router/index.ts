@@ -6,8 +6,11 @@ import { useFilesApi } from '@/api/files';
 import AppLayout from '@/layout/AppLayout.vue';
 import { useGlobalStore } from '@/store/global';
 import { useSubsStore } from '@/store/subs';
+import { useAppNotifyStore } from '@/store/appNotify';
 import { initStores } from '@/utils/initApp';
+import { isDynamicImportFailure, resetPwaCacheAndReload } from '@/utils/pwa';
 import My from '@/views/My.vue';
+import i18n from '@/locales';
 
 import File from '@/views/File.vue';
 import Sub from '@/views/Sub.vue';
@@ -16,7 +19,7 @@ import Sync from '@/views/Sync.vue';
 // import editScript from '@/views/editCode/editScript.vue';
 // import themeSetting from '@/views/themeSetting.vue';
 
-import { Toast } from '@nutui/nutui';
+import { Dialog, Toast } from '@nutui/nutui';
 import { toRaw } from 'vue';
 import 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -24,6 +27,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 // import { SwipeBack } from 'vue-swipe-back'
 
 let globalStore = null;
+let pwaRefreshDialogVisible = false;
+const { t: i18nGlobal } = i18n.global;
 
 const scrollContainers = ['#app', '.app-layout-wrapper', '.page-body'];
 
@@ -307,6 +312,37 @@ const router = createRouter({
       },
     },
   ],
+});
+
+router.onError((error) => {
+  if (!isDynamicImportFailure(error) || pwaRefreshDialogVisible) {
+    return;
+  }
+
+  pwaRefreshDialogVisible = true;
+  Dialog({
+    title: i18nGlobal("globalNotify.refresh.dynamicImportFailedTitle"),
+    content: i18nGlobal("globalNotify.refresh.dynamicImportFailedContent"),
+    popClass: "auto-dialog",
+    textAlign: "left",
+    okText: i18nGlobal("globalNotify.refresh.reloadNow"),
+    cancelText: i18nGlobal("globalNotify.refresh.backHome"),
+    closeOnPopstate: true,
+    closeOnClickOverlay: false,
+    lockScroll: false,
+    onClosed: () => {
+      pwaRefreshDialogVisible = false;
+    },
+    onCancel: async () => {
+      await router.replace("/");
+    },
+    onOk: async () => {
+      await resetPwaCacheAndReload({
+        notify: useAppNotifyStore().showNotify,
+        t: i18nGlobal,
+      });
+    },
+  });
 });
 
 // 全局前置守卫

@@ -24,6 +24,10 @@ export default {
       loading: "Refreshing Data...",
       rePwaing: 'Resetting PWA cache...',
       rePwa: 'PWA cache reset successfully. The page will refresh soon...',
+      dynamicImportFailedTitle: 'Frontend updated',
+      dynamicImportFailedContent: 'Please refresh before continuing.',
+      reloadNow: 'Refresh frontend',
+      backHome: 'Back home',
     },
     share: {
       title: 'Share',
