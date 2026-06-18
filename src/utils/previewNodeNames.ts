@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import { parse } from 'yaml';
 
 export type PreviewNodeNameSide = 'before' | 'after';
 
@@ -102,7 +102,7 @@ const parseStructuredText = (value: string) => {
   }
 
   try {
-    return yaml.load(text);
+    return parse(text);
   } catch (e) {
     return null;
   }

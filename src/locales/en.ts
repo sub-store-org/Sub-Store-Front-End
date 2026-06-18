@@ -16,6 +16,20 @@ export default {
     none: "None",
     confirm: "Confirm",
   },
+  editorLanguage: {
+    auto: "Auto",
+    javascript: "JavaScript",
+    json: "JSON",
+    json5: "JSON5",
+    yaml: "YAML",
+    ini: "INI",
+    plaintext: "Plain Text",
+    detect: {
+      auto: "Auto detect language",
+      cancel: "Cancel auto detection",
+      retry: "Retry auto detection",
+    },
+  },
   globalNotify: {
     refresh: {
       succeed: "Refresh Completed",
@@ -422,7 +436,7 @@ export default {
           tips: {
             title: "The content of the subscription",
             content:
-              "Subscription content:\n\n1. Multiple single-line proxy protocols/JSON5/YAML/URI\n\n2. Complete Base64/YAML",
+              "1. Multiple single-line proxy protocols/JSON/JSON5/YAML/URI  2. Complete Base64/YAML",
           },
         },
         icon: {

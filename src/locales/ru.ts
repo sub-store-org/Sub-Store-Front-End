@@ -15,6 +15,20 @@ export default {
     "none": "Нет",
     "confirm": "Подтвердить"
   },
+  "editorLanguage": {
+    "auto": "Авто",
+    "javascript": "JavaScript",
+    "json": "JSON",
+    "json5": "JSON5",
+    "yaml": "YAML",
+    "ini": "INI",
+    "plaintext": "Обычный текст",
+    "detect": {
+      "auto": "Автоопределение языка",
+      "cancel": "Отменить автоопределение",
+      "retry": "Повторить автоопределение"
+    }
+  },
   "globalNotify": {
     "refresh": {
       "succeed": "Обновление завершено",
@@ -401,7 +415,7 @@ export default {
           "placeholder": "",
           "tips": {
             "title": "Содержимое подписки",
-            "content": "Формат данных:\n\n1. Набор однострочных прокси-протоколов / JSON5 / YAML / URI-ссылок\n\n2. Сплошной Base64 или готовый YAML-конфиг"
+            "content": "1. Однострочные прокси-протоколы/JSON/JSON5/YAML/URI  2. Полный Base64/YAML"
           }
         },
         "icon": {

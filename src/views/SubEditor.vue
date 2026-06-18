@@ -1,5 +1,4 @@
 <template>
-  <div v-if="isDis">
   <div class="page-wrapper" @click="handleEditGlobalClick">
     <div
       v-if="editorTabsEnabled"
@@ -218,24 +217,14 @@
               "
               type="text"
             /> -->
-            <button class="cimg-button" @click="isDis = false">
-              <font-awesome-icon icon="fa-solid fa-maximize" />
-              {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
-              <!-- 测试 后续再改效果 -->
-            </button>
-            <input type="file" ref="fileInput" @change="fileChange" style="display: none">
-            <button class="cimg-button" @click="upload">
-              <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
-              {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
-            </button>
-            <span class="button-tips" @click="contentTips">
-                <span class="tips">
-                  <span>{{$t(`editorPage.subConfig.basic.url.tips.label`)}}</span>
-                  <!-- <nut-icon name="tips"></nut-icon> -->
-                </span>
-              </span>
             <div style="margin-left: -15px; margin-right: -15px;max-height: 60vh;overflow: auto;">
-              <cmView :isReadOnly="false" id="SubEditer"/>
+              <cmView
+                :isReadOnly="false"
+                id="SubEditer"
+                :placeholder="$t(`editorPage.subConfig.basic.content.tips.content`)"
+                :editor-language="form.editorLanguage"
+                @update:editor-language="setEditorLanguage"
+              />
             </div>
           </nut-form-item>
           <!-- ua -->
@@ -556,14 +545,6 @@
       {{ $t("editorPage.subConfig.btn.save") }}
     </nut-button>
   </div>
-</div>
-<div v-else style="width: 100%;max-height: 95vh;">
-    <button class="cimg-button" @click="isDis = true">
-      <font-awesome-icon icon="fa-solid fa-minimize" />
-      {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEditCancel`) }}
-    </button>
-    <cmView :isReadOnly="false" id="SubEditer" />
-  </div>
   <CompareTable
     v-if="compareTableIsVisible"
     :name="configName"
@@ -651,7 +632,6 @@ import cmView from "@/views/editCode/cmView.vue";
 import { useCodeStore } from "@/store/codeStore";
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 const cmStore = useCodeStore();
-const isDis = ref(true)
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -950,7 +930,6 @@ const ruleForm = ref<any>(null);
 const actionsChecked = reactive([]);
 const actionsList = reactive([]);
 const isget = ref(false);
-const fileInput = ref(null);
 const form = reactive<any>({
   name: "",
   displayName: "",
@@ -1023,6 +1002,7 @@ watchEffect(() => {
   form.remark = sourceData.remark;
   form.icon = sourceData.icon;
   form.isIconColor = sourceData.isIconColor !== false;
+  form.editorLanguage = sourceData.editorLanguage;
   form.process = newProcess;
   form.subUserinfo = sourceData.subUserinfo;
   form.proxy = sourceData.proxy;
@@ -1112,6 +1092,10 @@ const addAction = (val) => {
   addItem(form, actionsList, actionsChecked, val, t);
 };
 
+const setEditorLanguage = (language) => {
+  form.editorLanguage = language || null;
+};
+
 const deleteAction = (id) => {
   deleteItem(form, actionsList, actionsChecked, id);
 };
@@ -1136,35 +1120,6 @@ const closeCompare = () => {
   });
 
   router.back();
-};
-const upload = async() => {
-  try {
-    fileInput.value.click()
-  } catch (e) {
-    console.error(e);
-  }
-}
-const fileChange = async (event) => {
-  const file = event.target.files[0];
-  if(!file) return
-  try {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = () => {
-      cmStore.setEditCode("SubEditer", String(reader.result));
-    }
-
-    reader.onerror = e => {
-      throw e
-    }
-    
-  } catch (e) {
-    showNotify({
-      type: "danger",
-      title: '文件导入失败',
-    });
-    console.error(e);
-  }
 };
 const fetchCompareData = async () => {
   Toast.loading("生成节点对比中...", {
@@ -1528,18 +1483,6 @@ const urlValidator = (val: string): Promise<boolean> => {
     Dialog({
         title: t('ageKey.publicKey.tips.title'),
         content: t('ageKey.publicKey.tips.content'),
-        popClass: 'auto-dialog',
-        textAlign: 'left',
-        okText: 'OK',
-        noCancelBtn: true,
-        closeOnPopstate: true,
-        lockScroll: false,
-      });
-  };
-  const contentTips = () => {
-    Dialog({
-        title: t('editorPage.subConfig.basic.content.tips.title'),
-        content: t('editorPage.subConfig.basic.content.tips.content'),
         popClass: 'auto-dialog',
         textAlign: 'left',
         okText: 'OK',

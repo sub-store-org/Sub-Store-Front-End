@@ -1,6 +1,4 @@
 import { EditorView } from '@codemirror/view';
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
-import { tags } from '@lezer/highlight';
 
 const config = {
     name: 'darkCode',
@@ -58,6 +56,12 @@ const  darkCodeTheme = EditorView.theme({
         border: 'none'
     },
     '.cm-activeLineGutter': { backgroundColor: config.background },
+    '.cm-line span:not(.cm-shiki-token)': {
+        color: 'inherit !important'
+    },
+    '.cm-shiki-token *': {
+        color: 'inherit !important'
+    },
     '.cm-foldPlaceholder': {
         backgroundColor: 'transparent',
         border: 'none',
@@ -83,31 +87,8 @@ const  darkCodeTheme = EditorView.theme({
         }
     }
 }, { dark: config.dark });
-const  darkCodeHighlightStyle = HighlightStyle.define([
-    { tag: tags.keyword, color: config.keyword },
-    { tag: [tags.name, tags.deleted, tags.character, tags.macroName], color: config.variable },
-    { tag: [tags.propertyName], color: config.function },
-    { tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)], color: config.string },
-    { tag: [tags.function(tags.variableName), tags.labelName], color: config.function },
-    { tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)], color: config.constant },
-    { tag: [tags.definition(tags.name), tags.separator], color: config.variable },
-    { tag: [tags.className], color: config.class },
-    { tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace], color: config.number },
-    { tag: [tags.typeName], color: config.type, fontStyle: config.type },
-    { tag: [tags.operator, tags.operatorKeyword], color: config.keyword },
-    { tag: [tags.url, tags.escape, tags.regexp, tags.link], color: config.regexp },
-    { tag: [tags.meta, tags.comment], color: config.comment },
-    { tag: tags.strong, fontWeight: 'bold' },
-    { tag: tags.emphasis, fontStyle: 'italic' },
-    { tag: tags.link, textDecoration: 'underline' },
-    { tag: tags.heading, fontWeight: 'bold', color: config.heading },
-    { tag: [tags.atom, tags.bool, tags.special(tags.variableName)], color: config.variable },
-    { tag: tags.invalid, color: config.invalid },
-    { tag: tags.strikethrough, textDecoration: 'line-through' },
-]);
 const darkCode = [
      darkCodeTheme,
-    syntaxHighlighting( darkCodeHighlightStyle),
 ];
 
-export { config,  darkCode,  darkCodeHighlightStyle,  darkCodeTheme };
+export { config,  darkCode,  darkCodeTheme };

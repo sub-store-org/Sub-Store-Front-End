@@ -198,11 +198,18 @@
       return previewUrl;
     }
 
-    return buildUrlWithQuery('/preview', {
+    const previewQuery = {
       url: previewUrl,
       name: displayName || name,
       api: host.value,
-    });
+    } as Record<string, string | boolean>;
+
+    if (type === "sub" || type === "collection") {
+      previewQuery.sourceType = type;
+      previewQuery.sourceName = name;
+    }
+
+    return buildUrlWithQuery('/preview', previewQuery);
   }
   const targetCopy = async (path: string) => {
     const url = getUrl(path);

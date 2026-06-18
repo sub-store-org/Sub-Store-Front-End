@@ -49,7 +49,12 @@
         />
       </div>
       <div v-if="value.mode === 'script'" class="local-content-section">
-        <cmView :id="id" :is-read-only="false" />
+        <cmView
+          :id="id"
+          :is-read-only="false"
+          :editor-language="scriptEditorLanguage"
+          @update:editor-language="setScriptEditorLanguage"
+        />
       </div>
     </div>
 
@@ -169,6 +174,21 @@ const params = reactive({
 });
 
 const paramsArguments = ref([]);
+const scriptEditorLanguage = ref();
+
+const getActionItem = () => form.process.find((item) => item.id === id);
+
+const setScriptEditorLanguage = (language) => {
+  scriptEditorLanguage.value = language;
+  const item = getActionItem();
+  if (!item?.args) return;
+
+  if (language) {
+    item.args.editorLanguage = language;
+  } else {
+    delete item.args.editorLanguage;
+  }
+};
 
 const hasArguments = (args) => {
   return !!args && typeof args === "object" && Object.keys(args).length > 0;
@@ -501,8 +521,10 @@ async function filter(proxies, targetPlatform) {
 }`
 }
 onMounted(() => {
-  const item = form.process.find((item) => item.id === id);
+  const item = getActionItem();
   if (item) {
+    item.args = item.args || {};
+    scriptEditorLanguage.value = item.args.editorLanguage;
     value.mode = item.args.mode;
     if (item.args.mode === "script") {
       value.code = item.args.content;
@@ -556,7 +578,7 @@ watch(
 );
 
 watch(value, () => {
-  const item = form.process.find((item) => item.id === id);
+  const item = getActionItem();
   item.args.mode = value.mode;
 
   if (item.args.mode === "script") {
@@ -570,6 +592,8 @@ watch(value, () => {
 
     item.args.arguments = params.arguments;
   } else {
+    delete item.args.editorLanguage;
+    scriptEditorLanguage.value = undefined;
     item.args.content = value.content;
 
     const parsedParams = parseUrlParams(value.content);

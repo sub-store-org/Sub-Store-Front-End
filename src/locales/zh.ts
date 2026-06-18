@@ -16,6 +16,20 @@ export default {
     none: '无',
     confirm: '确定',
   },
+  editorLanguage: {
+    auto: '自动',
+    javascript: 'JavaScript',
+    json: 'JSON',
+    json5: 'JSON5',
+    yaml: 'YAML',
+    ini: 'INI',
+    plaintext: '纯文本',
+    detect: {
+      auto: '自动检测语言',
+      cancel: '取消自动检测',
+      retry: '重试自动检测',
+    },
+  },
   globalNotify: {
     refresh: {
       succeed: '数据刷新完成',
@@ -411,7 +425,7 @@ export default {
           placeholder: '',
           tips: {
             title: '本地订阅节点',
-            content: '填入订阅内容:\n\n1. 换行输入多个单行的代理协议/JSON5/YAML/URI\n\n2. 完整 Base64/YAML',
+            content: '1. 换行输入多个单行的代理协议/JSON/JSON5/YAML/URI  2. 完整 Base64/YAML',
           },
         },
         icon: {

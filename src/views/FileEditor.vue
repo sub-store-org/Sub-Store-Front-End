@@ -1,5 +1,4 @@
 <template>
-  <div v-if="isDis">
     <div class="page-wrapper" @click="handleEditGlobalClick">
       <div
         v-if="editorTabsEnabled"
@@ -293,21 +292,6 @@
               type="text"
             /> -->
 
-              <button class="cimg-button" @click="isDis = false">
-                <font-awesome-icon icon="fa-solid fa-maximize" />
-                {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEdit`) }}
-                <!-- 测试 后续再改效果 -->
-              </button>
-              <input
-                type="file"
-                ref="fileInput"
-                @change="fileChange"
-                style="display: none"
-              />
-              <button class="cimg-button" @click="upload">
-              <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
-                {{ $t(`editorPage.subConfig.basic.url.tips.importFromFile`) }}
-              </button>
               <div
                 style="
                   margin-left: -15px;
@@ -316,7 +300,12 @@
                   overflow: auto;
                 "
               >
-                <cmView :isReadOnly="false" id="FileEditer" />
+                <cmView
+                  :isReadOnly="false"
+                  id="FileEditer"
+                  :editor-language="form.editorLanguage"
+                  @update:editor-language="setEditorLanguage"
+                />
               </div>
             </nut-form-item>
             <!-- ua -->
@@ -453,15 +442,6 @@
         {{ $t("editorPage.subConfig.btn.save") }}
       </nut-button>
     </div>
-  </div>
-
-  <div v-else style="width: 100%; height: 95vh">
-    <button class="cimg-button" @click="isDis = true">
-      <font-awesome-icon icon="fa-solid fa-minimize" />
-      {{ $t(`editorPage.subConfig.basic.url.tips.fullScreenEditCancel`) }}
-    </button>
-    <cmView :isReadOnly="false" id="FileEditer" />
-  </div>
   <FilePreview
     v-if="filePreviewIsVisible"
     :name="configName"
@@ -553,7 +533,6 @@ import clashmetaIcon from '@/assets/icons/clashmeta_color.png';
 import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 
 const cmStore = useCodeStore();
-const isDis = ref(true);
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -654,7 +633,6 @@ const ruleForm = ref<any>(null);
 const actionsChecked = reactive([]);
 const actionsList = reactive([]);
 const isget = ref(false);
-const fileInput = ref(null);
 const hasUntagged = ref(false);
 const tags = computed(() => {
   if(!subsStore.files || subsStore.files.length === 0) return []
@@ -818,6 +796,7 @@ watchEffect(() => {
     form.remark = sourceData.remark;
     form.icon = sourceData.icon;
     form.isIconColor = sourceData.isIconColor !== false;
+    form.editorLanguage = sourceData.editorLanguage;
     form["age-public-key"] = sourceData["age-public-key"] || "";
     form.source = sourceData.source || "local";
     form.type = sourceData.type || 'file';
@@ -878,6 +857,10 @@ const addAction = (val) => {
   addItem(form, actionsList, actionsChecked, val, t);
 };
 
+const setEditorLanguage = (language) => {
+  form.editorLanguage = language || null;
+};
+
 const deleteAction = (id) => {
   deleteItem(form, actionsList, actionsChecked, id);
 };
@@ -902,34 +885,6 @@ const closePreview = () => {
   });
 
   router.back();
-};
-const upload = async () => {
-  try {
-    fileInput.value.click();
-  } catch (e) {
-    console.error(e);
-  }
-};
-const fileChange = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  try {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = () => {
-      cmStore.setEditCode("FileEditer", String(reader.result));
-    };
-
-    reader.onerror = (e) => {
-      throw e;
-    };
-  } catch (e) {
-    showNotify({
-      type: "danger",
-      title: "文件导入失败",
-    });
-    console.error(e);
-  }
 };
 const compare = () => {
   ruleForm.value.validate().then(async ({ valid, errors }: any) => {

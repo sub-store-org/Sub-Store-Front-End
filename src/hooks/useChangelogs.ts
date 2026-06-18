@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import yaml from 'js-yaml';
+import { parse } from 'yaml';
 import dayjs from 'dayjs';
 
 type Meta = {
@@ -15,7 +15,7 @@ export const useChangelogs = () => {
     .map(changelog => {
       const [meta, md] = changelog.split('---\n').slice(1);
 
-      const { date, ...rest } = yaml.load(meta) as Meta;
+      const { date, ...rest } = parse(meta) as Meta;
       const dayjsDate = dayjs(date);
 
       const htmlContent = marked.parse(md);
