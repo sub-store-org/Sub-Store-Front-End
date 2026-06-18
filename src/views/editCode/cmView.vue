@@ -76,13 +76,10 @@
             v-if="isToolbarActionEnabled('language')"
             class="language-select-wrap"
           >
-            <span class="language-select-display" aria-hidden="true">
-              {{ selectedLanguageDisplayLabel }}
-            </span>
             <select
               v-model="selectedLanguage"
               class="language-select"
-              :title="selectedLanguageTitle"
+              :title="activeLanguageTitle"
               aria-label="Editor language"
               @change="onLanguageChange"
             >
@@ -304,9 +301,7 @@ const getLanguageLabel = (language) => {
   return t(`editorLanguage.${normalizedLanguage}`);
 };
 
-const selectedLanguageDisplayLabel = computed(() =>
-  getLanguageLabel(selectedLanguage.value)
-);
+const activeLanguageTitle = computed(() => getLanguageLabel(activeLanguage.value));
 const canFormatActiveLanguage = computed(() =>
   canFormatEditorLanguage(activeLanguage.value)
 );
@@ -357,7 +352,7 @@ const languageOptions = computed(() =>
       ? {
           ...option,
           label: autoDetectedLanguage.value
-            ? `${getLanguageLabel("auto")} · ${getLanguageLabel(autoDetectedLanguage.value)}`
+            ? `${getLanguageLabel(autoDetectedLanguage.value)} · ${getLanguageLabel("auto")}`
             : getLanguageLabel(option.value),
         }
       : {
@@ -366,15 +361,6 @@ const languageOptions = computed(() =>
         }
   )
 );
-const selectedLanguageTitle = computed(() => {
-  if (normalizeEditorLanguage(selectedLanguage.value, "auto") !== "auto") {
-    return selectedLanguageDisplayLabel.value;
-  }
-
-  return autoDetectedLanguage.value
-    ? `${getLanguageLabel("auto")} · ${getLanguageLabel(autoDetectedLanguage.value)}`
-    : getLanguageLabel("auto");
-});
 
 const createShikiHighlight = (language = activeLanguage.value) =>
   shikiHighlight({
@@ -1000,7 +986,6 @@ const pasteNav = async () => {
   position: absolute;
   top: 50%;
   right: 8px;
-  z-index: 3;
   width: 6px;
   height: 6px;
   border-right: 1.5px solid currentColor;
@@ -1010,30 +995,13 @@ const pasteNav = async () => {
   transform: translateY(-65%) rotate(45deg);
 }
 
-.language-select-display {
-  position: absolute;
-  inset: 0 22px 0 8px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  color: currentColor;
-  font-size: 12px;
-  line-height: 22px;
-  pointer-events: none;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .language-select {
   -webkit-appearance: none;
   appearance: none;
   display: block;
-  position: relative;
-  z-index: 2;
   box-sizing: border-box;
   height: 24px;
-  width: 120px;
+  width: 123px;
   max-width: 34vw;
   padding: 0 22px 0 8px;
   border: 1px solid #8b8b8b66;
@@ -1041,13 +1009,13 @@ const pasteNav = async () => {
   background-color: transparent;
   background-image: none;
   box-shadow: none;
-  color: transparent;
+  color: currentColor;
   font-size: 12px;
   line-height: 22px;
   outline: none;
   opacity: 1;
   text-overflow: ellipsis;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: currentColor;
 }
 
 .language-select:focus {
@@ -1057,7 +1025,6 @@ const pasteNav = async () => {
 .language-select option {
   color: #222;
   background-color: #fff;
-  -webkit-text-fill-color: #222;
 }
 
 .cm-img-button button {
@@ -1091,13 +1058,9 @@ const pasteNav = async () => {
   }
 
   .language-select {
-    width: 104px;
+    width: 90px;
     padding-right: 18px;
     padding-left: 7px;
-  }
-
-  .language-select-display {
-    inset: 0 18px 0 7px;
   }
 
   .language-select-wrap::after {
