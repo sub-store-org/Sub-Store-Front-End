@@ -228,6 +228,26 @@
                 @click-right-icon="showSourceName"
               />
             </nut-form-item>
+            <template
+              v-if="['subscription', 'collection'].includes(form.sourceType)"
+            >
+              <nut-form-item class="ignore-failed-wrapper">
+                <template #label>
+                  <span
+                    class="label-with-tip"
+                    @click="includeUnsupportedProxyTips"
+                  >
+                    <span>{{
+                      $t(`syncPage.addArtForm.includeUnsupportedProxy.label`)
+                    }}</span>
+                    <nut-icon name="tips"></nut-icon>
+                  </span>
+                </template>
+                <div class="switch-wrapper">
+                  <nut-switch v-model="form.includeUnsupportedProxy" />
+                </div>
+              </nut-form-item>
+            </template>
           </template>
           <template v-else>
             <nut-form-item
@@ -732,6 +752,7 @@ const form = reactive<any>({
   source: "local",
   sourceType: "collection",
   sourceName: "",
+  includeUnsupportedProxy: false,
   process: [],
   type: configName === 'UNTITLED-mihomoProfile' ? 'mihomoProfile' : 'file',
 });
@@ -802,6 +823,7 @@ watchEffect(() => {
     form.type = sourceData.type || 'file';
     form.sourceType = sourceData.sourceType || 'collection';
     form.sourceName = sourceData.sourceName;
+    form.includeUnsupportedProxy = sourceData.includeUnsupportedProxy === true;
     form.url = sourceData.url;
     form.subInfoUrl = sourceData.subInfoUrl;
     form.subInfoUserAgent = sourceData.subInfoUserAgent;
@@ -1056,6 +1078,11 @@ const proxyTips = () => {
     closeOnPopstate: true,
     lockScroll: false,
   });
+};
+const includeUnsupportedProxyTips = () => {
+  window.open(
+    "https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"
+  );
 };
 const subInfoUrlTips = () => {
   Dialog({
