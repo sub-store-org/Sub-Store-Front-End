@@ -475,6 +475,7 @@ import {
   SHARE_EXPIRATION_DATETIME_BACKEND_VERSION,
   supportsShareExpirationDatetime,
   type ShareExpirationMode,
+  type ShareExpirationUnit,
 } from "@/utils/share";
 import { normalizeTagArray, stringifyTagInput } from "@/utils/shareTags";
 
@@ -596,7 +597,7 @@ const form = reactive({
   expirationMode: "duration" as ShareExpirationMode,
   expiresValue: "",
   usedCount: "",
-  expiresUnit: "day",
+  expiresUnit: "day" as ShareExpirationUnit,
   exactDatetime: null as number | null,
   remark: "",
   token: "",
@@ -861,6 +862,8 @@ const hydrateForm = () => {
     mode: activeSource.mode,
     expiresAt: activeSource.expiresAt,
     expiresIn: activeSource.expiresIn,
+    expiresValue: activeSource.expiresValue,
+    expiresUnit: activeSource.expiresUnit,
     exp: activeSource.exp,
     count: activeSource.count,
   });
@@ -1224,8 +1227,12 @@ const validateTokenBeforeSubmit = () => {
   return false;
 };
 
-const genExpiresIn = (expireValue: string, expireUnit: string) => {
-  const unitMap: Record<string, { multiplier: number; suffix: string }> = {
+const normalizeExpiresValue = (expireValue: string) => {
+  return String(Number(Number.parseFloat(expireValue).toFixed(2)));
+};
+
+const genExpiresIn = (expireValue: string, expireUnit: ShareExpirationUnit) => {
+  const unitMap: Record<ShareExpirationUnit, { multiplier: number; suffix: string }> = {
     day: {
       multiplier: 1,
       suffix: "d",
@@ -1243,8 +1250,8 @@ const genExpiresIn = (expireValue: string, expireUnit: string) => {
       suffix: "d",
     },
   };
-  const value = Number(Number.parseFloat(expireValue).toFixed(2));
-  const unitConfig = unitMap[expireUnit] || unitMap.day;
+  const value = Number(normalizeExpiresValue(expireValue));
+  const unitConfig = unitMap[expireUnit];
   return `${value * unitConfig.multiplier}${unitConfig.suffix}`;
 };
 
@@ -1263,6 +1270,8 @@ const getDurationExpirationOptions = (): ShareToken["options"] | null => {
 
   return {
     expiresIn: genExpiresIn(form.expiresValue, form.expiresUnit),
+    expiresValue: normalizeExpiresValue(form.expiresValue),
+    expiresUnit: form.expiresUnit,
   };
 };
 

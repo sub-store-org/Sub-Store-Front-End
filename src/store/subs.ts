@@ -5,7 +5,7 @@ import i18n from '@/locales';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { getFlowsUrlList } from '@/utils/getFlowsUrlList';
 import { isAbortError, runFrontendRequestTask } from '@/utils/requestConcurrency';
-import { isShareExpirationMode } from '@/utils/share';
+import { isShareExpirationMode, isShareExpirationUnit } from '@/utils/share';
 import { normalizeTagArray } from '@/utils/shareTags';
 import { defineStore } from 'pinia';
 
@@ -72,11 +72,15 @@ const normalizeShare = (share: Share): Share => {
   const count = share?.count == null ? null : Number(share.count);
   const usedCount = share?.usedCount == null ? null : Number(share.usedCount);
   const mode = isShareExpirationMode(share?.mode) ? share.mode : null;
+  const expiresValue = share?.expiresValue == null ? null : Number(share.expiresValue);
+  const expiresUnit = isShareExpirationUnit(share?.expiresUnit) ? share.expiresUnit : null;
 
   return {
     ...share,
     tag: normalizeTagArray(share?.tag),
     mode,
+    expiresValue: Number.isFinite(expiresValue) && expiresValue > 0 ? String(expiresValue) : null,
+    expiresUnit,
     expiresAt: Number.isFinite(expiresAt) ? expiresAt : null,
     exp: Number.isFinite(exp) ? exp : null,
     count: Number.isSafeInteger(count) ? count : null,

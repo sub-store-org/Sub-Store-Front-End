@@ -69,6 +69,10 @@ export const isShareExpirationMode = (value: unknown): value is ShareExpirationM
   return value === 'duration' || value === 'datetime' || value === 'count';
 };
 
+export const isShareExpirationUnit = (value: unknown): value is ShareExpirationUnit => {
+  return value === 'day' || value === 'month' || value === 'season' || value === 'year';
+};
+
 const getValidTimestamp = (value?: number | string | null) => {
   const timestamp = value == null ? Number.NaN : Number(value);
   return Number.isFinite(timestamp) ? timestamp : null;
@@ -204,6 +208,25 @@ const getDurationState = (expiresIn: string): ShareExpirationFormState => {
   return createDefaultShareExpirationFormState();
 };
 
+const getDurationStateFromStoredInput = (
+  expiresValue?: number | string | null,
+  expiresUnit?: string | null,
+): ShareExpirationFormState | null => {
+  const value = expiresValue == null || expiresValue === ''
+    ? Number.NaN
+    : Number(expiresValue);
+  if (!Number.isFinite(value) || value <= 0 || !isShareExpirationUnit(expiresUnit)) {
+    return null;
+  }
+
+  return {
+    mode: 'duration',
+    expiresValue: String(formatDurationValue(value)),
+    expiresUnit,
+    exactDatetime: null,
+  };
+};
+
 const getDurationStateFromExactCutoff = (
   exactCutoff: number,
   now: number,
@@ -240,12 +263,16 @@ export const getShareExpirationFormState = ({
   mode,
   expiresAt,
   expiresIn,
+  expiresValue,
+  expiresUnit,
   exp,
   count,
 }: {
   mode?: ShareExpirationMode | null;
   expiresAt?: number | null;
   expiresIn?: string | null;
+  expiresValue?: number | string | null;
+  expiresUnit?: string | null;
   exp?: number | null;
   count?: number | null;
 }): ShareExpirationFormState => {
@@ -271,6 +298,11 @@ export const getShareExpirationFormState = ({
 
   if (nextMode === 'count') {
     return getCountState(count);
+  }
+
+  const storedDurationState = getDurationStateFromStoredInput(expiresValue, expiresUnit);
+  if (storedDurationState) {
+    return storedDurationState;
   }
 
   if (expiresIn) {

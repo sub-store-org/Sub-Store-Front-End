@@ -105,6 +105,8 @@ interface Share {
   'age-public-key'?: string | null;
   mode?: 'duration' | 'datetime' | 'count' | null;
   expiresIn?: string | null;
+  expiresValue?: string | null;
+  expiresUnit?: 'day' | 'month' | 'season' | 'year' | null;
   expiresAt?: number | null;
   exp?: number | null;
   count?: number | null;
@@ -128,6 +130,8 @@ interface ShareToken {
   payload: SharePayload;
   options?: {
     expiresIn?: number | string | undefined;
+    expiresValue?: number | string | undefined;
+    expiresUnit?: 'day' | 'month' | 'season' | 'year' | undefined;
     exp?: number | string | null | undefined;
     count?: number | string | undefined;
     usedCount?: number | string | undefined;
