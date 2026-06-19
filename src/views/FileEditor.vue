@@ -216,7 +216,7 @@
               ]"
             >
               <nut-input
-                class="nut-input-text"
+                class="nut-input-text source-name-input"
                 :border="false"
                 data-1p-ignore
                 @blur="customerBlurValidate('name')"
@@ -1326,6 +1326,12 @@ const handleEditGlobalClick = () => {
 
   :deep(.nut-input-value),
   :deep(.nut-input-inner),
+  :deep(.nut-input-right-icon) {
+    cursor: pointer;
+  }
+}
+
+.source-name-input {
   :deep(.nut-input-right-icon) {
     cursor: pointer;
   }
