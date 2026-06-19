@@ -7,13 +7,7 @@
       <nut-radiogroup direction="horizontal" v-model="value">
         <nut-radio v-for="(key, index) in opt[type]" :label="key" :key="index"
           >
-          <div
-            class="input-wrapper compact-input-wrapper compact-input-wrapper--custom"
-            v-if="type === 'Resolve Domain Operator' && value==='Custom' && key==='Custom'"
-          >
-            <nut-input placeholder="目前仅支持 DoH" v-model="rdoUrl" />
-          </div>
-          <div v-else>
+          <div>
             {{
             $t(`editorPage.subConfig.nodeActions['${type}'].options[${index}]`)
           }}
@@ -22,8 +16,20 @@
       </nut-radiogroup>
     </div>
     <template v-if="type === 'Resolve Domain Operator' && rdoNewVersion">
+      <div
+        v-if="value === 'Custom'"
+        class="radio-wrapper options-radio custom-dns-input-option"
+      >
+        <p class="des-label">自定义 DNS(全平台支持 DoH, Node.js 额外支持 TCP/UDP DNS)</p>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--custom-dns">
+          <nut-input
+            placeholder="请输入 DoH 或 [udp://]1.1.1.1[:53] 或 tcp://1.1.1.1[:53] (括号内可省略)"
+            v-model="rdoUrl"
+          />
+        </div>
+      </div>
       <div class="radio-wrapper options-radio edns-input-option">
-        <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DoH 会携带此参数, 可能会影响解析结果)</p>
+        <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DNS 会携带此参数, 可能会影响解析结果)</p>
         <div class="input-wrapper compact-input-wrapper compact-input-wrapper--edns">
           <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
         </div>
@@ -309,9 +315,7 @@
       line-height: 18px;
     }
   }
-  .compact-input-wrapper--custom {
-    max-width: 220px;
-  }
+  .compact-input-wrapper--custom-dns,
   .compact-input-wrapper--edns {
     max-width: 520px;
   }
@@ -319,6 +323,7 @@
     flex: 0 1 280px;
     max-width: 280px;
   }
+  .custom-dns-input-option,
   .edns-input-option {
     .des-label {
       margin-bottom: 2px;
