@@ -1385,6 +1385,7 @@ export default {
       "hidden": "Скрытый",
       "background": "Отображать как фоновую заливку карты"
     },
+    "hideOfficialSiteButton": "Скрыть кнопку официального сайта подписки",
     "moreSettingTitle": "Дополнительные настройки",
     "shareManageTitle": "Управление ссылками",
     "archiveTitle": "Архив",

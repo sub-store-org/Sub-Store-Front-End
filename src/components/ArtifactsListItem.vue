@@ -667,7 +667,7 @@ watch(isSyncOpen, async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
 
       .sub-item-title {
         display: -webkit-box;
@@ -680,9 +680,15 @@ watch(isSyncOpen, async () => {
         color: var(--primary-text-color);
 
         .tag {
-          margin-left: 4px;
           display: inline-flex;
+          margin: 0 1px;
           vertical-align: middle;
+
+          :deep(.nut-tag) {
+            padding: 2px 3px;
+            font-size: 11px;
+            line-height: 1.2;
+          }
         }
       }
 
@@ -821,7 +827,7 @@ watch(isSyncOpen, async () => {
 
       .sub-item-detail {
         .second-line-wrapper {
-          gap: 8px;
+          gap: 2px;
         }
 
         p {

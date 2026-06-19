@@ -58,6 +58,12 @@
         { text: $t(`moreSettingPage.subProgress.background`), value: 'background' }
       ]" :title="$t(`moreSettingPage.subProgress.title`)" @confirm="subProgressStyleConfirm">
       </DesktopPicker>
+      <nut-cell :title="$t(`moreSettingPage.hideOfficialSiteButton`)" class="cell-item">
+        <template v-slot:link>
+          <nut-switch class="my-switch" v-model="hidePublicLinkActionButton" size="mini"
+            @change="setHidePublicLinkActionButton" />
+        </template>
+      </nut-cell>
 
 
       <nut-cell :title="$t(`moreSettingPage.displayPreviewInWebPage`)" class="cell-item">
@@ -238,6 +244,7 @@
   const awtabBar = ref(true);
   const awtabBar2 = ref(true);
   const awtabBar3 = ref(false);
+  const hidePublicLinkActionButton = ref(false);
   // const isEditing = ref(false);
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
@@ -406,6 +413,13 @@
     const data = {
       ...appearanceSetting.value,
       displayPreviewInWebPage: displayPreviewInWebPage
+    }
+    changeAppearanceSetting({ appearanceSetting: data });
+  };
+  const setHidePublicLinkActionButton = (value: boolean) => {
+    const data = {
+      ...appearanceSetting.value,
+      hidePublicLinkActionButton: value
     }
     changeAppearanceSetting({ appearanceSetting: data });
   };
@@ -633,6 +647,7 @@
     awtabBar.value = appearanceSetting.value.istabBar;
     awtabBar2.value = appearanceSetting.value.istabBar2;
     awtabBar3.value = appearanceSetting.value.istabBar3 ?? false;
+    hidePublicLinkActionButton.value = appearanceSetting.value.hidePublicLinkActionButton ?? false;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
     gistUploadValue.value = [gistUpload.value];
     editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];

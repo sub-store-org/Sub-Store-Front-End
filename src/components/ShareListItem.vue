@@ -469,14 +469,14 @@ const onClickPreviews = () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
 
       .sub-item-title {
         flex: 1 1 auto;
         min-width: 0;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
         white-space: nowrap;
         overflow: hidden;
         font-size: 16px;
@@ -493,7 +493,13 @@ const onClickPreviews = () => {
       .tag {
         display: inline-flex;
         flex: 0 0 auto;
-        margin: 0 2px;
+        margin: 0 1px;
+
+        :deep(.nut-tag) {
+          padding: 2px 3px;
+          font-size: 11px;
+          line-height: 1.2;
+        }
       }
 
       .link-item-actions {
@@ -508,7 +514,7 @@ const onClickPreviews = () => {
         .refresh-sub-flow {
         background-color: transparent;
         border: none;
-        padding: 0 8px;
+        padding: 0 6px;
         cursor: pointer;
         display: inline-flex;
         justify-content: center;

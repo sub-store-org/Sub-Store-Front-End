@@ -445,7 +445,7 @@ const nonSimpleSecondLine = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
 }
 
 .sub-item-title {
@@ -453,7 +453,7 @@ const nonSimpleSecondLine = computed(() => {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   white-space: nowrap;
   overflow: hidden;
   color: var(--primary-text-color);
@@ -463,7 +463,13 @@ const nonSimpleSecondLine = computed(() => {
   .tag {
     display: inline-flex;
     flex: 0 0 auto;
-    margin: 0 2px;
+    margin: 0 1px;
+
+    :deep(.nut-tag) {
+      padding: 2px 3px;
+      font-size: 11px;
+      line-height: 1.2;
+    }
   }
 }
 
@@ -484,7 +490,7 @@ const nonSimpleSecondLine = computed(() => {
   .refresh-sub-flow {
     background-color: transparent;
     border: none;
-    padding: 0 8px;
+    padding: 0 6px;
     cursor: pointer;
     display: inline-flex;
     justify-content: center;

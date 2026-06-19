@@ -1349,6 +1349,7 @@ export default {
       hidden: "Hidden",
       background: "Show As Background",
     },
+    hideOfficialSiteButton: "Hide subscription official site button",
     moreSettingTitle: "More Setting",
     shareManageTitle: 'Share Management',
     archiveTitle: 'Archived',

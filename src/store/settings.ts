@@ -185,6 +185,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar2: getCachedAppearanceBoolean(TAB_BAR2_CACHE_STORAGE_KEY, "istabBar2") ?? false,
         istabBar3: getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3") ?? false,
         subProgressStyle: "hidden",
+        hidePublicLinkActionButton: false,
         listPageViewMode: getCachedListPageViewMode(LIST_PAGE_VIEW_MODE_STORAGE_KEY),
         listPageViewModeInWideScreenNarrowMode: getCachedListPageViewMode(NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY),
         useNarrowModeOnWideScreen: getCachedWideScreenNarrowMode(),
@@ -230,6 +231,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       this.appearanceSetting.istabBar2 = appearanceSetting?.istabBar2 ?? "";
       this.appearanceSetting.istabBar3 = appearanceSetting?.istabBar3 ?? false;
       this.appearanceSetting.subProgressStyle = appearanceSetting?.subProgressStyle ?? "hidden";
+      this.appearanceSetting.hidePublicLinkActionButton = appearanceSetting?.hidePublicLinkActionButton ?? false;
       this.appearanceSetting.listPageViewMode = appearanceSetting?.listPageViewMode;
       this.appearanceSetting.listPageViewModeInWideScreenNarrowMode =
         appearanceSetting?.listPageViewModeInWideScreenNarrowMode ?? cachedNarrowModeListPageViewMode;

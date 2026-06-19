@@ -66,6 +66,7 @@ interface SettingsPostData {
     istabBar2?: boolean; // 隐藏 "文件" 页
     istabBar3?: boolean; // 隐藏 "分享" 页
     subProgressStyle?: string; // 订阅进度样式
+    hidePublicLinkActionButton?: boolean; // 隐藏 public-link-action 按钮
     listPageViewMode?: ListPageViewMode; // 列表页视图模式
     listPageViewModeInWideScreenNarrowMode?: ListPageViewMode; // 宽屏窄导航下列表页视图模式
     useNarrowModeOnWideScreen?: boolean; // 宽屏下使用窄屏导航模式
