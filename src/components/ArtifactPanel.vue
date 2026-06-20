@@ -132,10 +132,10 @@
           >
             <nut-radio label="Stash">Stash</nut-radio>
             <nut-radio label="Egern">Egern</nut-radio>
-            <nut-radio label="ClashMeta">Mihomo</nut-radio>
+            <nut-radio label="ClashMeta">mihomo</nut-radio>
             <nut-radio label="Surfboard">Surfboard</nut-radio>
             <nut-radio label="Surge">Surge</nut-radio>
-            <nut-radio label="SurgeMac">Surge(macOS) <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" target="_blank">ⓘ</a></nut-radio>
+            <nut-radio label="SurgeMac">Surge Mac <a href="https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E" target="_blank">ⓘ</a></nut-radio>
             <nut-radio label="Loon">Loon</nut-radio>
             <nut-radio label="ShadowRocket">Shadowrocket</nut-radio>
             <nut-radio label="QX">Quantumult X<span name="tips" @click="qxTips">&nbsp;ⓘ</span></nut-radio>
