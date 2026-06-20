@@ -439,23 +439,45 @@ export const getShareEditPath = (
 
 export const getSharePublicUrl = ({
   host,
+  shareBaseUrl,
   secretPath,
   type,
   name,
   token,
 }: {
   host: string;
+  shareBaseUrl?: string | null;
   secretPath: string;
   type: 'sub' | 'col' | 'file';
   name: string;
   token: string;
 }) => {
-  if (!secretPath.startsWith('/')) {
+  const normalizedShareBaseUrl = normalizeShareBaseUrl(shareBaseUrl);
+
+  if (!normalizedShareBaseUrl && !secretPath.startsWith('/')) {
     throw new Error('INVALID_SECRET_PATH');
   }
 
-  return `${host.replace(
-    new RegExp(`${secretPath}$`),
-    '',
-  )}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(token)}`;
+  const publicHost = normalizedShareBaseUrl || host.replace(new RegExp(`${secretPath}$`), '');
+
+  return `${publicHost}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(token)}`;
+};
+
+export const normalizeShareBaseUrl = (value?: string | null) => {
+  return typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
+};
+
+export const isValidShareBaseUrl = (value?: string | null) => {
+  const normalizedValue = normalizeShareBaseUrl(value);
+
+  if (!normalizedValue) {
+    return true;
+  }
+
+  try {
+    const url = new URL(normalizedValue);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
 };

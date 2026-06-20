@@ -155,7 +155,7 @@ const isArchiveEnabled = computed(() => {
 const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { appearanceSetting, githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
-const { currentUrl: host } = useHostAPI();
+const { currentUrl: host, currentShareBaseUrl } = useHostAPI();
 const avatarSize = computed(() => {
   if (appearanceSetting.value.isSimpleMode) return "36";
   return props.isDualColumn ? "40" : "48";
@@ -372,6 +372,7 @@ const getShareUrl = () => {
     }
     return getSharePublicUrl({
       host: host.value,
+      shareBaseUrl: currentShareBaseUrl.value,
       secretPath: secretPath.value,
       type: props.data.type,
       name: props.data.name,

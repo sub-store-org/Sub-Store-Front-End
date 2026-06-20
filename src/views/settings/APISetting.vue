@@ -64,7 +64,23 @@
                 {{ $t(`apiSettingPage.apiList.currentTag`) }}
               </nut-tag>
             </h2>
-            <p>{{ `${api.url.slice(0, 20)}******` }}</p>
+            <p>{{ maskApiUrl(api.url) }}</p>
+            <template v-if="editingApiName === api.name">
+              <nut-input
+                v-model="editShareBaseUrlInput"
+                class="api-share-url-input"
+                type="text"
+                input-align="left"
+                :placeholder="$t(`apiSettingPage.addApi.placeholder.shareBaseUrl`)"
+                :error="!!editShareBaseUrlError"
+                :error-message="editShareBaseUrlError"
+                @click.stop
+                @keyup.enter.stop="saveApiName(api)"
+              />
+            </template>
+            <p v-else-if="api.shareBaseUrl" class="api-share-url">
+              {{ $t(`apiSettingPage.apiList.shareBaseUrl`) }}: {{ api.shareBaseUrl }}
+            </p>
           </div>
           <div class="api-item-right">
             <template v-if="editingApiName === api.name">
@@ -137,6 +153,17 @@
             @blur="validateInput"
             @keyup.enter="addApiHandler"
           />
+          <nut-input
+            v-model="addForm.shareBaseUrl"
+            class="input"
+            :placeholder="$t(`apiSettingPage.addApi.placeholder.shareBaseUrl`)"
+            type="text"
+            input-align="left"
+            :error="!!shareBaseUrlError"
+            :error-message="shareBaseUrlError"
+            @blur="validateShareBaseUrlInput(addForm.shareBaseUrl)"
+            @keyup.enter="addApiHandler"
+          />
 
 
           <div v-if="addForm.url.trim()" class="preview-container">
@@ -203,6 +230,7 @@ import { storeToRefs } from 'pinia';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { useSettingsStore } from '@/store/settings';
 import { createGithubProxyUrlRewriter } from '@/utils/githubProxy';
+import { isValidShareBaseUrl, normalizeShareBaseUrl } from '@/utils/share';
 
 const { t } = useI18n();
 const { copy, isSupported } = useClipboard();
@@ -212,7 +240,7 @@ const { showNotify } = useAppNotifyStore();
 const { icon, env, isEnvReady } = useBackend();
 const settingsStore = useSettingsStore();
 const { githubProxy, githubProxyRegex } = storeToRefs(settingsStore);
-const { defaultAPI, currentName, apis, setCurrent, addApi, editApiName: updateApiName, deleteApi }
+const { defaultAPI, currentName, apis, setCurrent, addApi, editApi, editApiName: updateApiName, deleteApi }
     = useHostAPI();
 const githubUrlRewriter = computed(() => {
   return createGithubProxyUrlRewriter(githubProxy.value, githubProxyRegex.value);
@@ -226,12 +254,16 @@ const backendIcon = computed(() => {
 const addForm = ref<HostAPI>({
   name: '',
   url: '',
+  shareBaseUrl: '',
 });
 const editingApiName = ref('');
 const editApiNameInput = ref('');
+const editShareBaseUrlInput = ref('');
+const editShareBaseUrlError = ref('');
 
 
 const error = ref('');
+const shareBaseUrlError = ref('');
 const checkingAPI = ref(false);
 const switchingAPI = ref(false);
 
@@ -243,27 +275,62 @@ const previewUrl = ref('');
 const currentOrigin = ref(window.location.origin);
 
 const copyApi = async (api: HostAPI) => {
-  const url = `${window.location.origin}?api=${encodeURIComponent(api.url)}`;
-  if (isSupported) {
-    await copy(url);
-  } else {
-    await copyFallback(url);
+  const url = new URL(window.location.origin);
+  url.searchParams.set('api', api.url);
+  if (api.shareBaseUrl) {
+    url.searchParams.set('shareBaseUrl', api.shareBaseUrl);
   }
-  showNotify({ title: url });
+  if (isSupported) {
+    await copy(url.toString());
+  } else {
+    await copyFallback(url.toString());
+  }
+  showNotify({ title: url.toString() });
 };
 
 const startEditApiName = (api: HostAPI) => {
   editingApiName.value = api.name;
   editApiNameInput.value = api.name;
+  editShareBaseUrlInput.value = api.shareBaseUrl || '';
+  editShareBaseUrlError.value = '';
 };
 
 const cancelEditApiName = () => {
   editingApiName.value = '';
   editApiNameInput.value = '';
+  editShareBaseUrlInput.value = '';
+  editShareBaseUrlError.value = '';
+};
+
+const maskApiUrl = (url: string) => {
+  return url.length > 26 ? `${url.slice(0, 20)}******` : url;
+};
+
+const validateShareBaseUrlInput = (value?: string | null, target: 'add' | 'edit' = 'add') => {
+  const normalizedValue = normalizeShareBaseUrl(value);
+  const message = normalizedValue && !isValidShareBaseUrl(normalizedValue)
+    ? t('apiSettingPage.addApi.errors.shareBaseUrlInvalid')
+    : '';
+
+  if (target === 'edit') {
+    editShareBaseUrlError.value = message;
+  } else {
+    shareBaseUrlError.value = message;
+  }
+
+  if (message) {
+    showNotify({
+      title: message,
+      type: 'danger',
+    });
+  }
+
+  return !message;
 };
 
 const saveApiName = async (api: HostAPI) => {
   const nextName = editApiNameInput.value.trim();
+  const nextShareBaseUrl = normalizeShareBaseUrl(editShareBaseUrlInput.value);
 
   if (!nextName) {
     showNotify({
@@ -273,12 +340,17 @@ const saveApiName = async (api: HostAPI) => {
     return;
   }
 
-  if (nextName === api.name) {
+  if (!validateShareBaseUrlInput(nextShareBaseUrl, 'edit')) {
+    return;
+  }
+
+  const currentShareBaseUrl = normalizeShareBaseUrl(api.shareBaseUrl);
+  if (nextName === api.name && nextShareBaseUrl === currentShareBaseUrl) {
     cancelEditApiName();
     return;
   }
 
-  if (apis.value.some(item => item.url !== api.url && item.name === nextName)) {
+  if (nextName !== api.name && apis.value.some(item => item.name === nextName)) {
     showNotify({
       title: t('apiSettingPage.addApi.errors.nameDuplicate'),
       type: 'danger',
@@ -286,7 +358,16 @@ const saveApiName = async (api: HostAPI) => {
     return;
   }
 
-  const result = await updateApiName({ name: nextName, url: api.url });
+  let result = nextName === api.name
+    ? true
+    : await updateApiName({ name: nextName, url: api.url });
+  if (result) {
+    result = editApi({
+      name: nextName,
+      url: api.url,
+      shareBaseUrl: nextShareBaseUrl,
+    });
+  }
   if (result) {
     cancelEditApiName();
     showNotify({ title: t('magicPath.success'), type: 'success' });
@@ -363,9 +444,13 @@ const addApiHandler = async () => {
     });
     return;
   }
+  if (!validateShareBaseUrlInput(addForm.value.shareBaseUrl)) {
+    return;
+  }
   // 使用解析后的完整URL（host:port 类型会被 previewUrl 补全为 http://...）
   const addFormUrl = previewUrl.value || (addForm.value.url && addForm.value.url.trim());
   const addFormName = addForm.value.name && addForm.value.name.trim();
+  const addFormShareBaseUrl = normalizeShareBaseUrl(addForm.value.shareBaseUrl);
   // 默认API地址
   const defaultApiUrl = defaultAPI && defaultAPI.trim();
   
@@ -391,7 +476,12 @@ const addApiHandler = async () => {
           }
         },
         onCancel: async () => {
-          await setApi({ name: addFormName, url: addFormUrl, isEditName: true });
+          await setApi({
+            name: addFormName,
+            url: addFormUrl,
+            shareBaseUrl: addFormShareBaseUrl,
+            isEditName: true,
+          });
         },
         popClass: "auto-dialog",
         noCancelBtn: false,
@@ -404,7 +494,7 @@ const addApiHandler = async () => {
     }
   }
   // 如果没有重复，直接添加
-  await setApi({ name: addFormName, url: addFormUrl });
+  await setApi({ name: addFormName, url: addFormUrl, shareBaseUrl: addFormShareBaseUrl });
 };
 
 // 检查API连通性，成功返回 true，失败自动 showNotify 并返回 false
@@ -461,7 +551,17 @@ const handleSwitchClick = async (name: string) => {
   await switchToApi(name);
 };
 
-const setApi = async ({ name = '', url = '', isEditName = false }) => {
+const setApi = async ({
+  name = '',
+  url = '',
+  shareBaseUrl = '',
+  isEditName = false,
+}: {
+  name?: string;
+  url?: string;
+  shareBaseUrl?: string;
+  isEditName?: boolean;
+}) => {
   // 开始检查后端API连接状态
   checkingAPI.value = true;
 
@@ -477,20 +577,41 @@ const setApi = async ({ name = '', url = '', isEditName = false }) => {
       error.value = t('magicPath.errors.connection');
       return;
     }
+    const normalizedShareBaseUrl = normalizeShareBaseUrl(shareBaseUrl);
 
     let result = null;
     if (isEditName) {
-      result = await updateApiName({ name: apiName, url: apiUrl });
+      const existingApi = apis.value.find(api => api.url === apiUrl);
+      if (!existingApi) {
+        result = false;
+      } else {
+        const nextName = apiName || existingApi.name;
+        result = nextName === existingApi.name
+          ? true
+          : await updateApiName({ name: nextName, url: apiUrl });
+        if (result) {
+          result = editApi({
+            name: nextName,
+            url: apiUrl,
+            shareBaseUrl: normalizedShareBaseUrl,
+          });
+        }
+      }
     } else {
       // 已通过 checkApiConnectivity 验证，跳过 addApi 内部的重复检查
-      result = await addApi({ name: apiName, url: apiUrl }, true);
+      result = await addApi({
+        name: apiName,
+        url: apiUrl,
+        shareBaseUrl: normalizedShareBaseUrl,
+      }, true);
     }
     console.log('result', result);
     if (result) {
       setCurrent(apiName);
       showNotify({ title: t('magicPath.success'), type: 'success' });
-      addForm.value = { name: '', url: '' };
+      addForm.value = { name: '', url: '', shareBaseUrl: '' };
       error.value = '';
+      shareBaseUrlError.value = '';
     }
   } catch (e) {
     error.value = t('magicPath.errors.unknown');
@@ -504,8 +625,10 @@ const resetAddForm = async () => {
   addForm.value = {
     name: '',
     url: '',
+    shareBaseUrl: '',
   };
   error.value = '';
+  shareBaseUrlError.value = '';
 };
 
 watchEffect(() => {
@@ -655,6 +778,25 @@ onMounted(() => {
         > p {
           font-size: 12px;
           color: var(--comment-text-color);
+        }
+
+        .api-share-url {
+          word-break: break-all;
+        }
+
+        .api-share-url-input {
+          width: min(360px, 100%);
+          min-width: 0;
+          padding: 0;
+          background: transparent;
+          color: var(--second-text-color);
+          font-size: 12px;
+
+          :deep(.nut-input-error-message) {
+            color: var(--danger-color);
+            font-size: 12px;
+            padding: 4px 0 0;
+          }
         }
       }
 

@@ -1265,9 +1265,10 @@ export default {
       defaultName: '默认后端',
       currentTag: '当前',
       copy: '复制链接',
-      editName: '编辑名称',
-      saveName: '保存名称',
+      editName: '编辑配置',
+      saveName: '保存配置',
       cancelEditName: '取消编辑',
+      shareBaseUrl: '分享链接服务器地址',
       delete: '删除',
     },
     switchApi: {
@@ -1278,10 +1279,12 @@ export default {
       placeholder: {
         name: '请输入后端名称，必须唯一',
         url: '请输入后端路径或地址',
+        shareBaseUrl: '分享链接服务器地址（可选，例如 https://a.com）',
       },
       errors: {
         nameEmpty: '名称不能为空',
         nameDuplicate: 'API 名称重复',
+        shareBaseUrlInvalid: '分享链接服务器地址必须是完整的 http(s) 地址',
       },
       btn: '添加',
       duplicate: {

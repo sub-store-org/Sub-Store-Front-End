@@ -516,7 +516,7 @@ const { bottomSafeArea } = storeToRefs(globalStore);
 const { navBarHeight } = storeToRefs(systemStore);
 const { appearanceSetting, githubProxy, githubProxyRegex, theme } = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
-const { currentUrl: host } = useHostAPI();
+const { currentUrl: host, currentShareBaseUrl } = useHostAPI();
 const { env } = useBackend();
 const { copy, isSupported } = useClipboard();
 const preferredDark = usePreferredDark();
@@ -788,6 +788,7 @@ const buildShareUrl = (
   try {
     return getSharePublicUrl({
       host: host.value,
+      shareBaseUrl: currentShareBaseUrl.value,
       secretPath: secretPath.value,
       type,
       name,
@@ -1671,6 +1672,23 @@ watch(
     updateSourceInput();
   },
   { deep: true, immediate: true },
+);
+
+watch(
+  [host, currentShareBaseUrl, secretPath],
+  () => {
+    if (
+      isHydratingForm.value
+      || !isEditMode.value
+      || !selectedSourceType.value
+      || !normalizedSourceName.value
+      || !form.token
+    ) {
+      return;
+    }
+
+    form.shareUrl = buildShareUrl(selectedSourceType.value, normalizedSourceName.value, form.token);
+  },
 );
 
 watch(

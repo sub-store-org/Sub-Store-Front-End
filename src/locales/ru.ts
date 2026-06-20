@@ -1347,9 +1347,10 @@ export default {
       "defaultName": "По умолчанию",
       "currentTag": "Активен",
       "copy": "Копировать ссылку",
-      "editName": "Редактировать имя",
-      "saveName": "Сохранить имя",
+      "editName": "Редактировать конфигурацию",
+      "saveName": "Сохранить конфигурацию",
       "cancelEditName": "Отмена",
+      "shareBaseUrl": "URL сервера для ссылок",
       "delete": "Удалить"
     },
     "switchApi": {
@@ -1359,11 +1360,13 @@ export default {
       "title": "Добавить новое подключение к бэкенду",
       "placeholder": {
         "name": "Введите уникальное имя для бэкенда",
-        "url": "Введите путь или адрес бэкенда"
+        "url": "Введите путь или адрес бэкенда",
+        "shareBaseUrl": "URL сервера для share-ссылок (необязательно, например https://a.com)"
       },
       "errors": {
         "nameEmpty": "Имя не может быть пустым",
-        "nameDuplicate": "Бэкенд с таким именем уже существует"
+        "nameDuplicate": "Бэкенд с таким именем уже существует",
+        "shareBaseUrlInvalid": "URL сервера для share-ссылок должен быть полным http(s) URL"
       },
       "btn": "Добавить",
       "duplicate": {

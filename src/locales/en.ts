@@ -1311,9 +1311,10 @@ export default {
       defaultName: "Default",
       currentTag: "Current",
       copy: "Copy link",
-      editName: "Edit name",
-      saveName: "Save name",
+      editName: "Edit config",
+      saveName: "Save config",
       cancelEditName: "Cancel edit",
+      shareBaseUrl: "Share server URL",
       delete: "Delete",
     },
     switchApi: {
@@ -1324,10 +1325,12 @@ export default {
       placeholder: {
         name: "Please input backend name, must be unique",
         url: "Please input backend path or address",
+        shareBaseUrl: "Share link server URL (optional, e.g. https://a.com)",
       },
       errors: {
         nameEmpty: "Name cannot be empty",
         nameDuplicate: "API name already exists",
+        shareBaseUrlInvalid: "Share link server URL must be a complete http(s) URL",
       },
       btn: "Add",
       duplicate: {
