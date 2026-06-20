@@ -737,7 +737,7 @@ export default {
         },
       },
       sourceNamePicker: {
-        title: '输入/选择订阅名称',
+        title: '请选择订阅',
         cancel: '取消',
         confirm: '确定',
         emptyTips: '未找到订阅？点击去添加订阅',

@@ -775,7 +775,7 @@ export default {
         },
       },
       sourceNamePicker: {
-        title: 'Enter/select subscription name',
+        title: 'Select Subscription',
         cancel: 'Cancel',
         confirm: 'Confirm',
         emptyTips: 'Subscription not found? Click to add a subscription',
