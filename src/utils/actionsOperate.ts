@@ -4,6 +4,7 @@ import FilterSelect from '@/views/editor/components/FilterSelect.vue';
 import Regex from '@/views/editor/components/Regex.vue';
 import HandleDuplicate from '@/views/editor/components/HandleDuplicate.vue';
 import Script from '@/views/editor/components/Script.vue';
+import AddProxiesFromSubscription from '@/views/editor/components/AddProxiesFromSubscription.vue';
 
 export const addItem = (
   form,
@@ -75,6 +76,20 @@ export const addItem = (
         args: args ?? {
           content: '',
           mode: 'link',
+        },
+        customName
+      });
+      break;
+    case 'Add Proxies From Subscription Operator':
+      obj.component = shallowRef(AddProxiesFromSubscription);
+      form.process.push({
+        id,
+        type,
+        args: args ?? {
+          sourceType: 'subscription',
+          sourceName: '',
+          includeUnsupportedProxy: false,
+          position: 'replace',
         },
         customName
       });

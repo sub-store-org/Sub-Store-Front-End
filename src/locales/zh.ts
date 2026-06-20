@@ -322,6 +322,7 @@ export default {
         expiration: '有效期',
         display: '显示',
       },
+      sourceNameInputLabel: '输入/选择订阅名称',
       pop: {
         helpTitle: '节点操作帮助',
         helpContent:
@@ -577,6 +578,20 @@ export default {
           paramsEmpty: '暂无参数数据',
           duplicateKeyWarning: '重复的键名',
         },
+        'Add Proxies From Subscription Operator': {
+          label: '从订阅添加节点',
+          tipsTitle: '从订阅添加节点提示',
+          tipsDes: '将单条订阅或组合订阅产出的 Mihomo 节点写入当前 Mihomo 配置的 proxies 字段',
+          des: {
+            source: '来源',
+            sourceName: '订阅',
+            includeUnsupportedProxy: '含不支持的协议',
+            position: '节点添加方式',
+          },
+          sourceOptions: ['单条订阅', '组合订阅'],
+          sourceNamePlaceholder: '输入/选择订阅名称',
+          positionOptions: ['覆盖', '插入到前面', '追加到后面'],
+        },
         'Flag Operator': {
           label: '旗帜操作',
           des: '工作模式',
@@ -722,7 +737,7 @@ export default {
         },
       },
       sourceNamePicker: {
-        title: '选择订阅名称',
+        title: '输入/选择订阅名称',
         cancel: '取消',
         confirm: '确定',
         emptyTips: '未找到订阅？点击去添加订阅',
