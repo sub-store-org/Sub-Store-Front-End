@@ -206,7 +206,7 @@
             <nut-form-item
               v-if="form.sourceType !== 'none'"
               required
-              :label="$t(`tabBar.sub`) + $t(`editorPage.subConfig.basic.name.label`)"
+              :label="$t(`editorPage.subConfig.sourceNameInputLabel`)"
               prop="sourceName"
               :rules="[
                 {
@@ -222,7 +222,7 @@
                 @blur="customerBlurValidate('name')"
                 input-align="right"
                 v-model.trim="form.sourceName"
-                :placeholder="(form.sourceType === 'subscription' ? $t(`specificWord.singleSub`) : $t(`specificWord.collectionSub`))+$t(`editorPage.subConfig.basic.name.label`)"
+                :placeholder="$t(`editorPage.subConfig.sourceNameInputLabel`)"
                 type="text"
                 right-icon="rect-right"
                 @click-right-icon="showSourceName"
@@ -521,6 +521,7 @@ import ActionBlock from "@/views/editor/ActionBlock.vue";
 import { addItem, deleteItem, toggleItem } from "@/utils/actionsOperate";
 import { actionsToProcess } from "@/utils/actionsToPorcess";
 import Script from "@/views/editor/components/Script.vue";
+import AddProxiesFromSubscription from "@/views/editor/components/AddProxiesFromSubscription.vue";
 import TagPopup from "@/components/TagPopup.vue";
 import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
 import EditorGroupingTips from "@/components/EditorGroupingTips.vue";
@@ -759,6 +760,14 @@ const form = reactive<any>({
 provide("form", form);
 // 排除非动作卡片
 const ignoreList = ["Quick Setting Operator"];
+const MIHOMO_ONLY_FILE_ACTION_TYPES = ["Add Proxies From Subscription Operator"];
+const normalizeProcessByFileType = (data: any) => {
+  if (data.type === "mihomoProfile") return;
+
+  data.process = (data.process || []).filter(
+    (item) => !MIHOMO_ONLY_FILE_ACTION_TYPES.includes(item.type),
+  );
+};
 // 订阅名称
 const showSourceNamePicker = ref(false);
 const selectSourceName = computed(() => [form.sourceName]);
@@ -862,6 +871,9 @@ watchEffect(() => {
           case "Response Transformer":
             action.component = shallowRef(Script);
             break;
+          case "Add Proxies From Subscription Operator":
+            action.component = shallowRef(AddProxiesFromSubscription);
+            break;
           default:
             break;
         }
@@ -954,6 +966,7 @@ const fetchPreviewData = async () => {
         }
       }
     });
+    normalizeProcessByFileType(data);
     const res = await subsApi.compareSub("file", data);
     if (res?.data?.status === "success") {
       previewData.value = res.data.data;
@@ -1031,6 +1044,7 @@ const submit = () => {
     ];
     data["display-name"] = data.displayName;
     data.process = actionsToProcess(data.process, actionsList, ignoreList);
+    normalizeProcessByFileType(data);
     if (data.ignoreFailedRemoteFile === "disabled"){
       data.ignoreFailedRemoteFile = false;
     }

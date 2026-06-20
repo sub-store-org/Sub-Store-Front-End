@@ -253,7 +253,7 @@ const showPasteboard = ref(false);
 const drag = ref(true);
 const isCollapsed = ref(localStorage.getItem('actions-block-collapsed') === '1');
 const collapsedElements = ref([]);
-const form = inject<Sub | Collection>('form');
+const form = inject<any>('form');
 // 列表渲染的数据
 // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
 const { checked, list, sourceType } = defineProps<{
@@ -263,21 +263,38 @@ const { checked, list, sourceType } = defineProps<{
 }>();
 
 
-// 通过 i18n 构造 picker 选项
-// const showAddPicker = ref(false);
-// const showAddPicker = ref(true);
-const types = Object.keys(i18nFile.editorPage.subConfig.nodeActions);
-let items = types.map(type => {
+const ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR = 'Add Proxies From Subscription Operator';
+const FILE_ACTION_TYPES = [
+  ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR,
+  'Script Operator',
+  'Response Transformer',
+];
+const isMihomoProfileFile = computed(
+  () => sourceType === 'file' && form?.type === 'mihomoProfile',
+);
+
+const allItems = computed(() => Object.keys(i18nFile.editorPage.subConfig.nodeActions).map(type => {
   return {
     text: t(`editorPage.subConfig.nodeActions['${type}'].label`),
     value: type,
   };
-});
+}));
 
-if (sourceType === 'file') {
-  items = items.filter(item => ['Script Operator', 'Response Transformer'].includes(item.value));
-}
-const columns = ref(items);
+const columns = computed(() => {
+  if (sourceType !== 'file') {
+    return allItems.value.filter(item => item.value !== ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR);
+  }
+
+  const fileActionTypes = isMihomoProfileFile.value
+    ? FILE_ACTION_TYPES
+    : FILE_ACTION_TYPES.filter(
+      type => type !== ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR,
+    );
+
+  return fileActionTypes
+    .map(type => allItems.value.find(item => item.value === type))
+    .filter(Boolean);
+});
 if(isCollapsed.value) {
   collapsedElements.value = list.map((item) => item.id);
 } else {
@@ -360,6 +377,12 @@ const paste = async () => {
   if (item?.data?.id && item?.data?.type) {
     if (item?.source !== sourceType) {
       throw new Error('文件操作与订阅操作不通用')
+    }
+    if (
+      item.data.type === ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR &&
+      !isMihomoProfileFile.value
+    ) {
+      throw new Error('该操作仅适用于 Mihomo 配置文件')
     }
     const data = [{
       ...item.data,
@@ -456,7 +479,8 @@ const pop = (type: string, tipsDes: string) => {
 };
 
 // 操作名称自定义
-const findNameByType = (type) => items.find((item) => item.value === type).text;
+const findNameByType = (type) =>
+  allItems.value.find((item) => item.value === type)?.text || type;
 const generateEditNameItem = (element) => {
   const { tipsDes, component, ...values } = element;
   return {

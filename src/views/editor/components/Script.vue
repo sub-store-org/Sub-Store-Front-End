@@ -62,10 +62,14 @@
     <div class="input-wrapper-title">
       <!-- 参数编辑开关 -->
       <div class="title-label">
-        <nut-switch v-model="showKeyValue" />
-        <span>
+        <nut-checkbox v-model="showKeyValue" class="my-switch" />
+        <button
+          class="switch-label"
+          type="button"
+          @click="toggleShowKeyValue"
+        >
           {{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsEdit`) }}
-        </span>
+        </button>
         <font-awesome-icon
           class="icon"
           icon="fa-solid fa-circle-question"
@@ -74,10 +78,14 @@
       </div>
       <!-- 无缓存开关 - 仅在link模式时显示 -->
       <div v-if="value.mode === 'link'" class="title-label">
-        <nut-switch v-model="params.noCache" />
-        <span>
+        <nut-checkbox v-model="params.noCache" class="my-switch" />
+        <button
+          class="switch-label"
+          type="button"
+          @click="toggleNoCache"
+        >
           {{ $t(`editorPage.subConfig.nodeActions['${type}'].noCache`) }}
-        </span>
+        </button>
         <font-awesome-icon
           class="icon"
           icon="fa-solid fa-circle-question"
@@ -85,10 +93,14 @@
         />
       </div>
       <div v-if="value.mode === 'link'" class="title-label">
-        <nut-switch v-model="params.insecure" />
-        <span>
+        <nut-checkbox v-model="params.insecure" class="my-switch" />
+        <button
+          class="switch-label"
+          type="button"
+          @click="toggleInsecure"
+        >
           {{ $t(`editorPage.subConfig.nodeActions['${type}'].insecure`) }}
-        </span>
+        </button>
         <font-awesome-icon
           class="icon"
           icon="fa-solid fa-circle-question"
@@ -327,6 +339,18 @@ const value = reactive({
 const addParameter = () => {
   const newParamsArguments = [...paramsArguments.value, { key: "", value: "" }];
   paramsArguments.value = newParamsArguments;
+};
+
+const toggleShowKeyValue = () => {
+  showKeyValue.value = !showKeyValue.value;
+};
+
+const toggleNoCache = () => {
+  params.noCache = !params.noCache;
+};
+
+const toggleInsecure = () => {
+  params.insecure = !params.insecure;
 };
 
 // 显示noCache提示
@@ -748,27 +772,49 @@ watch(
   margin-bottom: 8px;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-  line-height: 3.5;
+  gap: 8px 24px;
+  justify-content: flex-start;
+  line-height: 1.5;
+
   .title-label {
     display: flex;
     align-items: center;
     font-size: 14px;
     color: var(--second-text-color);
-    padding-right: 8px;
     flex-shrink: 0;
+
+    .my-switch {
+      width: 18px;
+      margin-right: 0;
+
+      :deep(.nut-icon) {
+        font-size: 16px;
+      }
+
+      :deep(.nut-checkbox__label) {
+        display: none;
+      }
+    }
+
+    .switch-label {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      padding: 0 0 0 4px;
+      user-select: none;
+    }
+
     .icon {
       margin-left: 4px;
       color: var(--unimportant-icon-color);
     }
   }
-  span {
-    font-size: 12px;
-    color: var(--second-text-color);
-    padding-left: 4px;
-  }
+
   .button {
     margin-left: auto;
+
     > div {
       cursor: pointer;
       color: var(--primary-color);

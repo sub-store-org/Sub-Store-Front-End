@@ -328,6 +328,7 @@ export default {
         expiration: "Expiration",
         display: "Display",
       },
+      sourceNameInputLabel: "Enter/select subscription name",
       pop: {
         helpTitle: "Help",
         helpContent:
@@ -757,9 +758,24 @@ export default {
           paramsEmpty: 'No parameters',
           duplicateKeyWarning: 'Duplicate key names',
         },
+        "Add Proxies From Subscription Operator": {
+          label: "Add Nodes From Subscription",
+          tipsTitle: "Add Nodes From Subscription Tips",
+          tipsDes:
+            "Add Mihomo nodes produced by a single subscription or collection subscription to the current Mihomo profile proxies field.",
+          des: {
+            source: "Source",
+            sourceName: "Subscription",
+            includeUnsupportedProxy: "Include unsupported protocols",
+            position: "Node add mode",
+          },
+          sourceOptions: ["Single Subscription", "Collection Subscription"],
+          sourceNamePlaceholder: "Enter/select subscription name",
+          positionOptions: ["Replace", "Insert at Front", "Append at Back"],
+        },
       },
       sourceNamePicker: {
-        title: 'Select Subscription Name',
+        title: 'Enter/select subscription name',
         cancel: 'Cancel',
         confirm: 'Confirm',
         emptyTips: 'Subscription not found? Click to add a subscription',
