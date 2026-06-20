@@ -514,7 +514,12 @@ const settingsStore = useSettingsStore();
 const subsStore = useSubsStore();
 const { bottomSafeArea } = storeToRefs(globalStore);
 const { navBarHeight } = storeToRefs(systemStore);
-const { appearanceSetting, githubProxy, githubProxyRegex, theme } = storeToRefs(settingsStore);
+const {
+  appearanceSetting,
+  githubProxy,
+  githubProxyRegex,
+  theme,
+} = storeToRefs(settingsStore);
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host, currentShareBaseUrl } = useHostAPI();
 const { env } = useBackend();
@@ -1845,6 +1850,21 @@ watch(
   justify-content: flex-end;
   flex-wrap: wrap;
 
+  :deep(.nut-radiogroup) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+  }
+
+  :deep(.nut-radio) {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    line-height: 1;
+  }
+
   :deep(.nut-radio__button.false) {
     background: var(--divider-color);
     border-color: transparent;
@@ -1852,7 +1872,14 @@ watch(
   }
 
   :deep(.nut-radio__button) {
-    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 30px;
+    padding: 0 9px;
+    line-height: 18px;
+    white-space: nowrap;
   }
 }
 

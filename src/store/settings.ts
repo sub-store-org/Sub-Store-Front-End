@@ -13,6 +13,7 @@ const { t } = i18n.global;
 const LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewMode";
 const NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY = "appearanceSetting.listPageViewModeInWideScreenNarrowMode";
 const WIDE_SCREEN_NARROW_MODE_STORAGE_KEY = "appearanceSetting.useNarrowModeOnWideScreen";
+const EDITOR_GROUPING_MODE_STORAGE_KEY = "appearanceSetting.editorGroupingMode";
 const TAB_BAR_CACHE_STORAGE_KEY = "appearanceSetting.istabBar";
 const TAB_BAR2_CACHE_STORAGE_KEY = "appearanceSetting.istabBar2";
 const TAB_BAR3_CACHE_STORAGE_KEY = "appearanceSetting.istabBar3";
@@ -40,6 +41,9 @@ const getSettingsErrorMessage = (data?: MyAxiosRes) => {
 const createAppearanceSettingPatch = (
   next?: SettingsPostData["appearanceSetting"],
   current?: SettingsPostData["appearanceSetting"],
+  options?: {
+    forceEditorGroupingMode?: boolean;
+  },
 ) => {
   if (!next) return next;
 
@@ -49,6 +53,9 @@ const createAppearanceSettingPatch = (
       Object.assign(patch, { [key]: next[key] });
     }
   });
+  if (options?.forceEditorGroupingMode && isEditorGroupingMode(next.editorGroupingMode)) {
+    patch.editorGroupingMode = next.editorGroupingMode;
+  }
 
   return patch;
 };
@@ -67,6 +74,23 @@ const syncCachedListPageViewMode = (storageKey: string, mode?: ListPageViewMode)
     localStorage.setItem(storageKey, mode);
   } else {
     localStorage.removeItem(storageKey);
+  }
+};
+
+const isEditorGroupingMode = (value: unknown): value is EditorGroupingMode => {
+  return value === "edit-only" || value === "disabled" || value === "always";
+};
+
+const getCachedEditorGroupingMode = (): EditorGroupingMode | undefined => {
+  const cachedMode = localStorage.getItem(EDITOR_GROUPING_MODE_STORAGE_KEY);
+  return isEditorGroupingMode(cachedMode) ? cachedMode : undefined;
+};
+
+const syncCachedEditorGroupingMode = (mode?: EditorGroupingMode) => {
+  if (mode) {
+    localStorage.setItem(EDITOR_GROUPING_MODE_STORAGE_KEY, mode);
+  } else {
+    localStorage.removeItem(EDITOR_GROUPING_MODE_STORAGE_KEY);
   }
 };
 
@@ -108,16 +132,16 @@ const hasRemoteAppearanceSetting = (appearanceSetting?: SettingsPostData["appear
   return Boolean(appearanceSetting && Object.keys(appearanceSetting).length > 0);
 };
 
+const hasRemoteEditorGroupingMode = (appearanceSetting?: SettingsPostData["appearanceSetting"]) => {
+  return isEditorGroupingMode(appearanceSetting?.editorGroupingMode);
+};
+
 const isEditorCommonDisplayMode = (value: unknown): value is EditorCommonDisplayMode => {
   return value === "expanded" || value === "collapsed" || value === "hidden";
 };
 
 const isEditorSectionFoldMode = (value: unknown): value is EditorSectionFoldMode => {
   return value === "expanded" || value === "collapsed";
-};
-
-const isEditorGroupingMode = (value: unknown): value is EditorGroupingMode => {
-  return value === "edit-only" || value === "disabled" || value === "always";
 };
 
 const normalizeEditorCommonDisplayMode = (
@@ -151,7 +175,7 @@ const normalizeEditorGroupingMode = (
     return appearanceSetting.editorGroupingMode;
   }
 
-  return "edit-only";
+  return getCachedEditorGroupingMode() ?? "edit-only";
 };
 
 export const useSettingsStore = defineStore("settingsStore", {
@@ -194,7 +218,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isEditorCommon: true,
         editorCommonDisplayMode: "collapsed",
         manualSubscriptionsDisplayMode: "collapsed",
-        editorGroupingMode: "edit-only",
+        editorGroupingMode: getCachedEditorGroupingMode() ?? "edit-only",
         isSimpleReicon: false,
         isSubItemMenuFold: true,
         showFloatingRefreshButton: false,
@@ -217,16 +241,24 @@ export const useSettingsStore = defineStore("settingsStore", {
       artifactStoreStatus: "",
       hasFetchedSettings: false,
       hasRemoteAppearanceSetting: false,
+      hasRemoteEditorGroupingMode: false,
+      hasCachedEditorGroupingMode: getCachedEditorGroupingMode() !== undefined,
       hasCachedAppearanceNavigationSetting: hasCachedAppearanceNavigationSetting(),
       // ishostApi: localStorage.getItem('hostApi'),
     };
   },
   getters: {},
   actions: {
-    applyAppearanceSetting(appearanceSetting?: SettingsPostData["appearanceSetting"]) {
+    applyAppearanceSetting(
+      appearanceSetting?: SettingsPostData["appearanceSetting"],
+      options?: {
+        cacheEditorGroupingMode?: boolean;
+      },
+    ) {
       const cachedNarrowModeListPageViewMode = getCachedListPageViewMode(
         NARROW_MODE_LIST_PAGE_VIEW_MODE_STORAGE_KEY,
       );
+      const hasInputEditorGroupingMode = hasRemoteEditorGroupingMode(appearanceSetting);
       const editorCommonDisplayMode = normalizeEditorCommonDisplayMode(appearanceSetting);
       const manualSubscriptionsDisplayMode = normalizeManualSubscriptionsDisplayMode(appearanceSetting);
       const editorGroupingMode = normalizeEditorGroupingMode(appearanceSetting);
@@ -271,6 +303,10 @@ export const useSettingsStore = defineStore("settingsStore", {
       }
 
       syncCachedAppearanceNavigationSetting(this.appearanceSetting);
+      if (options?.cacheEditorGroupingMode ?? (hasInputEditorGroupingMode || this.hasCachedEditorGroupingMode)) {
+        syncCachedEditorGroupingMode(this.appearanceSetting.editorGroupingMode);
+        this.hasCachedEditorGroupingMode = true;
+      }
       this.hasCachedAppearanceNavigationSetting = true;
     },
     async fetchSettings() {
@@ -309,6 +345,7 @@ export const useSettingsStore = defineStore("settingsStore", {
 
         this.hasFetchedSettings = true;
         this.hasRemoteAppearanceSetting = hasRemoteAppearanceSetting(res.data.data.appearanceSetting);
+        this.hasRemoteEditorGroupingMode = hasRemoteEditorGroupingMode(res.data.data.appearanceSetting);
         this.applyAppearanceSetting(res.data.data.appearanceSetting);
         this.gistUpload = res.data.data?.gistUpload ?? "base64";
       } else {
@@ -378,6 +415,10 @@ export const useSettingsStore = defineStore("settingsStore", {
         ? (isEditorCommon ? "expanded" : "hidden")
         : "collapsed";
       const editorGroupingMode = this.appearanceSetting.editorGroupingMode || "edit-only";
+      const hasLocalLegacyAppearanceSetting = hasLocalAppearanceSetting();
+      const shouldSyncEditorGroupingMode = this.hasCachedEditorGroupingMode
+        && !this.hasRemoteEditorGroupingMode
+        && isEditorGroupingMode(editorGroupingMode);
       const data = {
         isSimpleMode: isSimpleMode ?? false,
         isLeftRight: isLeftRight ?? false,
@@ -394,7 +435,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         istabBar3: cachedHideShareTab ?? this.appearanceSetting.istabBar3 ?? false,
         subProgressStyle: subProgressStyle ?? "hidden",
       };
-      if (!hasLocalAppearanceSetting()) {
+      if (!hasLocalLegacyAppearanceSetting && !shouldSyncEditorGroupingMode) {
         return;
       }
 
@@ -403,14 +444,22 @@ export const useSettingsStore = defineStore("settingsStore", {
       }
 
       if (this.hasRemoteAppearanceSetting) {
-        this.removeLocalAppearanceSetting();
+        if (shouldSyncEditorGroupingMode) {
+          await this.changeAppearanceSetting({ appearanceSetting: { editorGroupingMode } });
+        }
+        if (hasLocalLegacyAppearanceSetting && this.hasRemoteAppearanceSetting) {
+          this.removeLocalAppearanceSetting();
+        }
         return;
       }
 
       // 如果有本地持久化的外观设置且后端还没有外观设置，则将其同步到后端
-      await this.changeAppearanceSetting({ appearanceSetting: data });
-      this.hasRemoteAppearanceSetting = true;
-      this.removeLocalAppearanceSetting();
+      await this.changeAppearanceSetting({
+        appearanceSetting: hasLocalLegacyAppearanceSetting ? data : { editorGroupingMode },
+      });
+      if (hasLocalLegacyAppearanceSetting && this.hasRemoteAppearanceSetting) {
+        this.removeLocalAppearanceSetting();
+      }
     },
     // 清除本地持久化的外观设置
     removeLocalAppearanceSetting() {
@@ -446,17 +495,31 @@ export const useSettingsStore = defineStore("settingsStore", {
     async changeAppearanceSetting(data: SettingsPostData) {
       Toast.loading("保存外观设置中...", { cover: true, id: "theme__loading" });
       const { showNotify } = useAppNotifyStore();
+      const forceEditorGroupingMode = Boolean(
+        data.appearanceSetting
+        && !this.hasRemoteEditorGroupingMode
+        && this.hasCachedEditorGroupingMode
+        && isEditorGroupingMode(data.appearanceSetting.editorGroupingMode)
+      );
       const requestData = data.appearanceSetting
         ? {
             ...data,
-            appearanceSetting: createAppearanceSettingPatch(data.appearanceSetting, this.appearanceSetting),
+            appearanceSetting: createAppearanceSettingPatch(
+              data.appearanceSetting,
+              this.appearanceSetting,
+              { forceEditorGroupingMode },
+            ),
           }
         : data;
       const res = await settingsApi.setSettings(requestData);
       if (res?.data?.status === "success" && res?.data?.data) {
         const hasAppearanceSettingPatch = hasRemoteAppearanceSetting(requestData.appearanceSetting);
-        this.hasRemoteAppearanceSetting = hasRemoteAppearanceSetting(res.data.data.appearanceSetting)
-          || hasAppearanceSettingPatch;
+        const responseHasAppearanceSetting = hasRemoteAppearanceSetting(res.data.data.appearanceSetting);
+        const responseHasEditorGroupingMode = hasRemoteEditorGroupingMode(res.data.data.appearanceSetting);
+        const requestHasEditorGroupingMode = isEditorGroupingMode(requestData.appearanceSetting?.editorGroupingMode);
+        this.hasRemoteAppearanceSetting = this.hasRemoteAppearanceSetting
+          || responseHasAppearanceSetting;
+        this.hasRemoteEditorGroupingMode = responseHasEditorGroupingMode;
         this.applyAppearanceSetting(
           hasAppearanceSettingPatch
             ? {
@@ -464,6 +527,11 @@ export const useSettingsStore = defineStore("settingsStore", {
                 ...requestData.appearanceSetting,
               }
             : res.data.data.appearanceSetting,
+          {
+            cacheEditorGroupingMode: responseHasEditorGroupingMode
+              || requestHasEditorGroupingMode
+              || this.hasCachedEditorGroupingMode,
+          },
         );
       } else {
         showNotify({

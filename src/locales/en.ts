@@ -154,9 +154,10 @@ export default {
   },
   filePage: {
     type: {
-      mihomoProfile: 'Mihomo Profile',
-      mihomoProfileTips: 'Override is supported',
-      mihomoProfileTips2: 'Override(JavaScript/YAML) is supported',
+      mihomoConfig: 'mihomo config',
+      mihomoConfigTips: 'Override is supported',
+      mihomoConfigTips2: 'Override(JavaScript/YAML) is supported',
+      mihomoConfigScriptActionTips: 'Script actions can use JavaScript/YAML overrides',
     },
     addFileTitle: "Create File",
     importFileTitle: "Import File data",
@@ -193,6 +194,11 @@ export default {
     source: {
       local: "Local",
       remote: "Remote",
+    },
+    mode: {
+      label: "Mode",
+      config: "Use as mihomo config",
+      proxy: "Convert to mihomo proxies",
     },
     ignoreFailedRemoteFile: {
       label: "Remote File Failure Handling",
@@ -536,7 +542,7 @@ export default {
       actions: {
         label: "Node Actions",
         addAction: {
-          title: "Add an action",
+          title: "Add action",
           cancel: "Cancel",
           confirm: "Confirm",
         },
@@ -762,7 +768,7 @@ export default {
           label: "Add Nodes From Subscription",
           tipsTitle: "Add Nodes From Subscription Tips",
           tipsDes:
-            "Add Mihomo nodes produced by a single subscription or collection subscription to the current Mihomo profile proxies field.",
+            "Add mihomo nodes produced by a single subscription or collection subscription to the current mihomo config proxies field.",
           des: {
             source: "Source",
             sourceName: "Subscription",

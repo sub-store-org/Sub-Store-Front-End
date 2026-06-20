@@ -50,10 +50,10 @@
             </router-link>
           </li>
           <li>
-            <router-link to="/edit/files/UNTITLED-mihomoProfile" class="router-link">
+            <router-link to="/edit/files/UNTITLED-mihomoConfig" class="router-link">
               <img src="@/assets/icons/clashmeta_color.png" alt="">
-              <span>{{ $t(`filePage.type.mihomoProfile`) }}</span>
-              <small>{{ $t(`filePage.type.mihomoProfileTips`) }}</small>
+              <span>{{ $t(`filePage.type.mihomoConfig`) }}</span>
+              <small>{{ $t(`filePage.type.mihomoConfigTips`) }}</small>
             </router-link>
           </li>
         </ul>

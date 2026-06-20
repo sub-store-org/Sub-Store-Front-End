@@ -213,6 +213,17 @@
         </button>
       </div>
     </nut-cell>
+    <div v-if="actionTip" class="action-block-tip">
+      <span>{{ actionTip }}</span>
+      <a
+        v-if="actionTipUrl"
+        :href="actionTipUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ actionTipLinkText }}
+      </a>
+    </div>
     <nut-form v-if="showPasteboard" class="paste-action">
       <nut-form-item>
         <nut-textarea
@@ -243,6 +254,7 @@ import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { useClipboard } from '@vueuse/core';
 import useV3Clipboard from "vue-clipboard3";
+import { isMihomoConfigFileType } from "@/utils/fileType";
 // const { copy, isSupported, text } = useClipboard({ read: true });
 const { copy, isSupported } = useClipboard();
 const { toClipboard: copyFallback } = useV3Clipboard();
@@ -256,10 +268,13 @@ const collapsedElements = ref([]);
 const form = inject<any>('form');
 // 列表渲染的数据
 // 预览开关数组，数组第一项为 id，对应 list 中的同 id 项目，控制该 id 开启关闭预览
-const { checked, list, sourceType } = defineProps<{
+const { checked, list, sourceType, actionTip, actionTipUrl, actionTipLinkText } = defineProps<{
   checked: Array<[string, boolean]>;
   list: ActionModuleProps[];
   sourceType?: string;
+  actionTip?: string;
+  actionTipUrl?: string;
+  actionTipLinkText?: string;
 }>();
 
 
@@ -269,8 +284,8 @@ const FILE_ACTION_TYPES = [
   'Script Operator',
   'Response Transformer',
 ];
-const isMihomoProfileFile = computed(
-  () => sourceType === 'file' && form?.type === 'mihomoProfile',
+const isMihomoConfigFile = computed(
+  () => sourceType === 'file' && isMihomoConfigFileType(form?.type),
 );
 
 const allItems = computed(() => Object.keys(i18nFile.editorPage.subConfig.nodeActions).map(type => {
@@ -285,7 +300,7 @@ const columns = computed(() => {
     return allItems.value.filter(item => item.value !== ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR);
   }
 
-  const fileActionTypes = isMihomoProfileFile.value
+  const fileActionTypes = isMihomoConfigFile.value
     ? FILE_ACTION_TYPES
     : FILE_ACTION_TYPES.filter(
       type => type !== ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR,
@@ -380,9 +395,9 @@ const paste = async () => {
     }
     if (
       item.data.type === ADD_PROXIES_FROM_SUBSCRIPTION_OPERATOR &&
-      !isMihomoProfileFile.value
+      !isMihomoConfigFile.value
     ) {
-      throw new Error('该操作仅适用于 Mihomo 配置文件')
+      throw new Error('该操作仅适用于 mihomo 配置文件')
     }
     const data = [{
       ...item.data,
@@ -835,6 +850,22 @@ defineExpose({ exitAllEditName });
     svg {
       color: var(--unimportant-icon-color);
     }
+  }
+}
+
+.action-block-tip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 12px 12px;
+  margin-top: -4px;
+  color: var(--comment-text-color);
+  font-size: 12px;
+  line-height: 1.5;
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
   }
 }
 

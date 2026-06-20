@@ -15,6 +15,8 @@ interface SettingsBase {
   ageSecretKey: string;
   hasFetchedSettings: boolean;
   hasRemoteAppearanceSetting: boolean;
+  hasRemoteEditorGroupingMode: boolean;
+  hasCachedEditorGroupingMode: boolean;
   hasCachedAppearanceNavigationSetting: boolean;
   // ishostApi: string;
 }
