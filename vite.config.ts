@@ -149,6 +149,9 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     ],
     root: process.cwd(),
     resolve: { alias },
+    optimizeDeps: {
+      include: ["@codemirror/lang-yaml"],
+    },
     base: mode.command === "serve" ? "./" : env.VITE_PUBLIC_PATH,
     hmr: true,
     server: {

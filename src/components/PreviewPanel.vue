@@ -232,7 +232,7 @@
       icon: stash,
     },
     {
-      name: 'Mihomo',
+      name: 'mihomo',
       path: 'ClashMeta',
       icon: clashmeta,
     },
@@ -257,7 +257,7 @@
       icon: surge,
     },
     {
-      name: 'Surge(macOS)',
+      name: 'Surge Mac',
       path: 'SurgeMac',
       icon: surgeMac,
     },
