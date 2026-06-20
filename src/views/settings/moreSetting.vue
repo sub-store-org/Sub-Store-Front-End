@@ -147,17 +147,6 @@
       </nut-cell>
     </nut-cell-group>
     <nut-cell-group>
-      <nut-cell class="cell-item" :title="$t(`moreSettingPage.gistUpload.title`)" :desc="gistUploadName"
-        @click="()=>{showGistUploadPicker=true}" is-link>
-      </nut-cell>
-      <DesktopPicker v-model="gistUploadValue" v-model:visible="showGistUploadPicker" :columns="[
-        { text: $t(`moreSettingPage.gistUpload.base64`), value: 'base64' },
-        { text: $t(`moreSettingPage.gistUpload.plaintext`), value: 'plaintext' }
-      ]" :title="$t(`moreSettingPage.gistUpload.title`)" @confirm="gistUploadConfirm">
-      </DesktopPicker>
-    </nut-cell-group>
-
-    <nut-cell-group>
       <nut-cell :title="$t(`themeSettingPage.auto`)" class="cell-item">
         <template v-slot:link>
           <nut-switch class="my-switch" v-model="autoSwitch" size="mini" @change="autoSwitchIsChange" />
@@ -223,8 +212,8 @@
     // subProgressStyle,
   } = storeToRefs(globalStore);
   // 外观设置
-  const { changeAppearanceSetting, changeSettings } = settingsStore;
-  const { appearanceSetting, gistUpload } = storeToRefs(settingsStore);
+  const { changeAppearanceSetting } = settingsStore;
+  const { appearanceSetting } = storeToRefs(settingsStore);
   const { showNotify } = useAppNotifyStore();
   const { icon, env } = useBackend();
   const InputHostApi = ref('');
@@ -248,7 +237,6 @@
   // const isEditing = ref(false);
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
-  const gistUploadValue = ref(['base64']);
   const editorCommonDisplayModeValue = ref<EditorCommonDisplayMode[]>(['collapsed']);
   const manualSubscriptionsDisplayModeValue = ref<EditorSectionFoldMode[]>(['collapsed']);
   const editorGroupingModeValue = ref<EditorGroupingMode[]>(['edit-only']);
@@ -275,16 +263,6 @@
       subProgressStyle: selectedValue[0]
     }
     changeAppearanceSetting({ appearanceSetting: data });
-  };
-  const showGistUploadPicker = ref(false);
-
-  const gistUploadName = computed(() => {
-    return t(`moreSettingPage.gistUpload.${gistUploadValue.value}`)
-  })
-  const gistUploadConfirm = ({ selectedValue }) => {
-    changeSettings({
-      gistUpload: selectedValue[0]
-    });
   };
   const createItemPositionName = computed(() => {
     return t(`moreSettingPage.createItemPosition.${createItemPositionValue.value[0]}`);
@@ -649,7 +627,6 @@
     awtabBar3.value = appearanceSetting.value.istabBar3 ?? false;
     hidePublicLinkActionButton.value = appearanceSetting.value.hidePublicLinkActionButton ?? false;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
-    gistUploadValue.value = [gistUpload.value];
     editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];
     manualSubscriptionsDisplayModeValue.value = [appearanceSetting.value.manualSubscriptionsDisplayMode || 'collapsed'];
     editorGroupingModeValue.value = [appearanceSetting.value.editorGroupingMode || 'edit-only'];

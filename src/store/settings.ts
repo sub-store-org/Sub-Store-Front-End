@@ -33,6 +33,26 @@ const normalizeSettingInputValue = (value: unknown) => {
   return value === null || value === undefined ? "" : String(value);
 };
 
+const getSettingsErrorMessage = (data?: MyAxiosRes) => {
+  return data?.status === "failed" ? data.error?.message : "";
+};
+
+const createAppearanceSettingPatch = (
+  next?: SettingsPostData["appearanceSetting"],
+  current?: SettingsPostData["appearanceSetting"],
+) => {
+  if (!next) return next;
+
+  const patch: SettingsPostData["appearanceSetting"] = {};
+  (Object.keys(next) as Array<keyof NonNullable<SettingsPostData["appearanceSetting"]>>).forEach((key) => {
+    if (next[key] !== current?.[key]) {
+      Object.assign(patch, { [key]: next[key] });
+    }
+  });
+
+  return patch;
+};
+
 const getCachedListPageViewMode = (storageKey: string): ListPageViewMode | undefined => {
   const cachedMode = localStorage.getItem(storageKey);
   if (cachedMode === "single-column" || cachedMode === "dual-column") {
@@ -139,6 +159,7 @@ export const useSettingsStore = defineStore("settingsStore", {
     return {
       syncPlatform: "",
       gistToken: "",
+      ageSecretKey: "",
       githubProxy: "",
       githubApiUrl: "",
       githubApiTimeout: "",
@@ -258,6 +279,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       if (res?.data?.status === "success" && res?.data?.data) {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
+        this.ageSecretKey = res.data.data["age-secret-key"] || "";
         this.githubProxy = res.data.data.githubProxy || "";
         this.githubApiUrl = normalizeSettingInputValue(res.data.data.githubApiUrl);
         this.githubApiTimeout = normalizeSettingInputValue(res.data.data.githubApiTimeout);
@@ -303,6 +325,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       if (res?.data?.status === "success" && res?.data?.data) {
         this.syncPlatform = res.data.data.syncPlatform || "";
         this.gistToken = res.data.data.gistToken || "";
+        this.ageSecretKey = res.data.data["age-secret-key"] || "";
         this.githubProxy = res.data.data.githubProxy || "";
         this.githubApiUrl = normalizeSettingInputValue(res.data.data.githubApiUrl);
         this.githubApiTimeout = normalizeSettingInputValue(res.data.data.githubApiTimeout);
@@ -323,12 +346,12 @@ export const useSettingsStore = defineStore("settingsStore", {
         this.avatarUrl = res.data.data.avatarUrl || "";
         this.artifactStore = res.data.data.artifactStore || "";
         this.artifactStoreStatus = res.data.data.artifactStoreStatus || "";
-        this.gistUpload = res.data.data.gistUpload || "";
+        this.gistUpload = res.data.data.gistUpload || "base64";
         showNotify({ type: "success", title: t(`myPage.notify.save.succeed`) });
         return true;
       } else {
         showNotify({
-          title: `更新配置失败`,
+          title: getSettingsErrorMessage(res?.data) || `更新配置失败`,
           type: "danger",
         });
         return false;
@@ -423,10 +446,25 @@ export const useSettingsStore = defineStore("settingsStore", {
     async changeAppearanceSetting(data: SettingsPostData) {
       Toast.loading("保存外观设置中...", { cover: true, id: "theme__loading" });
       const { showNotify } = useAppNotifyStore();
-      const res = await settingsApi.setSettings(data);
+      const requestData = data.appearanceSetting
+        ? {
+            ...data,
+            appearanceSetting: createAppearanceSettingPatch(data.appearanceSetting, this.appearanceSetting),
+          }
+        : data;
+      const res = await settingsApi.setSettings(requestData);
       if (res?.data?.status === "success" && res?.data?.data) {
-        this.hasRemoteAppearanceSetting = hasRemoteAppearanceSetting(res.data.data.appearanceSetting);
-        this.applyAppearanceSetting(res.data.data.appearanceSetting);
+        const hasAppearanceSettingPatch = hasRemoteAppearanceSetting(requestData.appearanceSetting);
+        this.hasRemoteAppearanceSetting = hasRemoteAppearanceSetting(res.data.data.appearanceSetting)
+          || hasAppearanceSettingPatch;
+        this.applyAppearanceSetting(
+          hasAppearanceSettingPatch
+            ? {
+                ...this.appearanceSetting,
+                ...requestData.appearanceSetting,
+              }
+            : res.data.data.appearanceSetting,
+        );
       } else {
         showNotify({
           title: `保存外观设置失败`,

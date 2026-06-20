@@ -16,7 +16,7 @@ export function useSettingsApi() {
         data,
       });
     },
-    syncSettings: (query: 'download' | 'upload', options?: { keep?: string[], encode?: 'base64' | 'plaintext' }): AxiosPromise<MyAxiosRes> => {
+    syncSettings: (query: 'download' | 'upload', options?: { keep?: string[], encode?: GistUploadMode }): AxiosPromise<MyAxiosRes> => {
       return request({
         url: `/api/utils/backup`,
         method: 'get',

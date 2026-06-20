@@ -774,6 +774,7 @@ export default {
       haveNotDownload: "Not download yet",
       githubUser: "Please input GitHub username",
       gistToken: "Please input GitHub Token",
+      gistAgeSecretKey: "Enter Gist backup age decryption secret key",
       githubProxy: "Please input GitHub Proxy",
       githubApiUrl: "GitHub API URL (default: https://api.github.com)",
       githubApiTimeout: "GitHub API Request Timeout (in ms, default: 10000)",
@@ -1346,6 +1347,7 @@ export default {
       title: 'Gist Upload',
       base64: 'Base64 Encoded',
       plaintext: 'Plaintext(w/o GitHub Token)',
+      age: 'age Encrypted',
     },
     subProgress: {
       title: "Subscription Progress Style",
@@ -1460,6 +1462,7 @@ export default {
       type: "Type",
       generate: "Generate",
       applyPublic: "Fill in",
+      applyPair: "Fill both",
       derive: "From secret",
       copyPublic: "Copy",
       copySecret: "Copy",
@@ -1468,9 +1471,12 @@ export default {
       clearSecret: "Clear age decryption secret key",
       copied: "Copied",
       filled: "Filled in",
+      filledPair: "Secret and public keys filled in",
       error: "age key operation failed",
       tips:
         "Only native age X25519 and MLKEM768-X25519 keys are supported. The generated age decryption secret key is shown only in this dialog; save it securely. The age encryption public key can be written to the config field to encrypt final output.",
+      secretTips:
+        "Only native age X25519 and MLKEM768-X25519 keys are supported. The generated age decryption secret key is shown only in this dialog; save it securely. Gist age encryption derives the public key from this secret key on the backend.",
     },
   },
   magicPath: {

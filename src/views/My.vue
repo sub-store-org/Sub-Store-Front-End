@@ -162,7 +162,7 @@
         </div>
         <div class="config-input-wrapper" v-if="isGitHubConfigEditing">
           <nut-input
-            class="input"
+            class="input input-small-left-icon"
             v-model="userInput"
             :disabled="!isGitHubConfigEditing"
             :placeholder="$t(`myPage.placeholder.githubUser`)"
@@ -175,7 +175,7 @@
             </template> -->
           </nut-input>
           <nut-input
-            class="input"
+            class="input input-small-left-icon"
             v-model="tokenInput"
             :disabled="!isGitHubConfigEditing"
             :placeholder="$t(`myPage.placeholder.gistToken`)"
@@ -183,6 +183,52 @@
             input-align="left"
             :left-icon="iconKey"
           />
+          <nut-input
+            class="input picker-input"
+            :model-value="gistUploadName"
+            readonly
+            :placeholder="$t(`moreSettingPage.gistUpload.title`)"
+            type="text"
+            input-align="left"
+            :left-icon="iconGistUpload"
+            right-icon="rect-right"
+            @click="openGistUploadPicker"
+            @click-right-icon="openGistUploadPicker"
+          />
+          <DesktopPicker
+            v-model="gistUploadPickerValue"
+            v-model:visible="showGistUploadPicker"
+            :columns="gistUploadColumns"
+            :title="$t(`moreSettingPage.gistUpload.title`)"
+            @confirm="handleGistUploadConfirm"
+          />
+          <nut-input
+            v-if="isGistBackupAgeMode"
+            class="input"
+            v-model="ageSecretKeyInput"
+            :disabled="!isGitHubConfigEditing"
+            :placeholder="$t(`myPage.placeholder.gistAgeSecretKey`)"
+            type="text"
+            input-align="left"
+            :left-icon="iconEncryption"
+          >
+            <template #button>
+              <div class="input-action-icons">
+                <AgeKeyHelper
+                  v-if="isGitHubConfigEditing"
+                  v-model="ageSecretKeyInput"
+                  apply-mode="secret"
+                />
+                <button
+                  type="button"
+                  class="input-action-icon"
+                  @click="gistAgeSecretKeyTips"
+                >
+                  <nut-icon name="tips" />
+                </button>
+              </div>
+            </template>
+          </nut-input>
           <nut-input
             class="input"
             v-model="githubApiUrlInput"
@@ -617,10 +663,12 @@
 <script lang="ts" setup>
 import { useSettingsApi } from "@/api/settings";
 import avatar from "@/assets/icons/avatar.svg?url";
-import iconKey from "@/assets/icons/key-solid.png";
-import iconUser from "@/assets/icons/user-solid.png";
+import iconKey from "@/assets/icons/key-solid.svg";
+import iconUser from "@/assets/icons/user-solid.svg";
 import iconProxy from "@/assets/icons/proxy.svg";
 import icongithubProxy from "@/assets/icons/githubProxy.svg";
+import iconEncryption from "@/assets/icons/encryption.svg";
+import iconGistUpload from "@/assets/icons/gist-upload.svg";
 import iconUA from "@/assets/icons/user-agent.svg";
 import iconMax from "@/assets/icons/max.svg";
 import iconHeadersCacheTtl from "@/assets/icons/headersCacheTtl.svg";
@@ -642,6 +690,9 @@ import { useRouter } from "vue-router";
 import { useBackend } from "@/hooks/useBackend";
 import { useHostAPI } from '@/hooks/useHostAPI';
 import LanguageSwitcherButton from "@/components/LanguageSwitcherButton.vue";
+import AgeKeyHelper from "@/components/AgeKeyHelper.vue";
+import DesktopPicker from "@/components/DesktopPicker.vue";
+import { AGE_SECRET_KEY } from "@/utils/age";
 import { Dialog, Toast } from '@nutui/nutui';
 
 const { t } = useI18n();
@@ -651,10 +702,12 @@ const router = useRouter();
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host } = useHostAPI();
 const settingsStore = useSettingsStore();
-const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, backendRequestConcurrency, backendRequestConcurrencyWaitTime, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubApiTimeout, artifactSyncBatchSize, githubProxyRegex, gistUpload } =
+const { githubUser, gistToken, syncTime, defaultUserAgent, defaultFlowUserAgent, defaultProxy, defaultTimeout, backendRequestConcurrency, backendRequestConcurrencyWaitTime, cacheThreshold, resourceCacheTtl, headersCacheTtl, scriptCacheTtl, logsMaxCount, syncPlatform, githubProxy, githubApiUrl, githubApiTimeout, artifactSyncBatchSize, githubProxyRegex, gistUpload, ageSecretKey } =
   storeToRefs(settingsStore);
 
 const DEFAULT_GITHUB_API_URL = "https://api.github.com";
+const GIST_UPLOAD_MODES = ["base64", "age", "plaintext"] as const;
+type GistUploadMode = typeof GIST_UPLOAD_MODES[number];
 const avatarLoadFailed = ref(false);
 const avatarRenderNonce = ref(0);
 
@@ -761,6 +814,9 @@ const onClickAbout = () => {
 const syncPlatformInput = ref("");
 const userInput = ref("");
 const tokenInput = ref("");
+const gistUploadInput = ref<GistUploadMode>("base64");
+const gistUploadPickerValue = ref<GistUploadMode[]>(["base64"]);
+const ageSecretKeyInput = ref("");
 const githubProxyInput = ref("");
 const githubApiUrlInput = ref("");
 const githubApiTimeoutInput = ref("");
@@ -789,32 +845,83 @@ const isEditLoading = ref(false);
 const isInit = ref(false);
 const storageType = ref('gist');
 const fileInput = ref(null);
+const showGistUploadPicker = ref(false);
+
+const normalizeGistUploadMode = (value?: string): GistUploadMode => {
+  return GIST_UPLOAD_MODES.includes(value as GistUploadMode) ? value as GistUploadMode : "base64";
+};
+
+const gistUploadColumns = computed(() => GIST_UPLOAD_MODES.map((value) => ({
+  text: t(`moreSettingPage.gistUpload.${value}`),
+  value,
+})));
+
+const gistUploadName = computed(() => t(`moreSettingPage.gistUpload.${gistUploadInput.value}`));
+const isGistBackupAgeMode = computed(() => gistUploadInput.value === "age");
+
+const openGistUploadPicker = () => {
+  if (!isGitHubConfigEditing.value) return;
+  gistUploadPickerValue.value = [gistUploadInput.value];
+  showGistUploadPicker.value = true;
+};
+
+const handleGistUploadConfirm = ({ selectedValue }) => {
+  const mode = normalizeGistUploadMode(selectedValue?.[0]);
+  gistUploadInput.value = mode;
+  gistUploadPickerValue.value = [mode];
+};
+
+const createSettingsPayload = (type: string): SettingsPostData => {
+  if (type === "github") {
+    const payload: SettingsPostData = {
+      syncPlatform: syncPlatformInput.value,
+      githubUser: userInput.value,
+      gistToken: tokenInput.value,
+      gistUpload: gistUploadInput.value,
+      githubProxy: githubProxyInput.value,
+      githubApiUrl: githubApiUrlInput.value,
+      githubApiTimeout: githubApiTimeoutInput.value,
+      artifactSyncBatchSize: artifactSyncBatchSizeInput.value,
+      githubProxyRegex: githubProxyRegexInput.value,
+    };
+
+    if (gistUploadInput.value === "age") {
+      payload[AGE_SECRET_KEY] = ageSecretKeyInput.value;
+    }
+
+    return payload;
+  }
+
+  if (type === "request") {
+    return {
+      defaultUserAgent: uaInput.value,
+      defaultFlowUserAgent: flowUaInput.value,
+      defaultProxy: proxyInput.value,
+      defaultTimeout: timeoutInput.value,
+      githubApiTimeout: githubApiTimeoutInput.value,
+      backendRequestConcurrency: backendRequestConcurrencyInput.value,
+      backendRequestConcurrencyWaitTime: backendRequestConcurrencyWaitTimeInput.value,
+    };
+  }
+
+  if (type === "cache") {
+    return {
+      cacheThreshold: cacheThresholdInput.value,
+      resourceCacheTtl: resourceCacheTtlInput.value,
+      headersCacheTtl: headersCacheTtlInput.value,
+      scriptCacheTtl: scriptCacheTtlInput.value,
+      logsMaxCount: logsMaxCountInput.value,
+    };
+  }
+
+  return {};
+};
 
 const toggleEditMode = async (type) => {
   isEditLoading.value = true;
   try {
     if ((type === 'github' && isGitHubConfigEditing.value) || (type === 'request' && isRequestConfigEditing.value) || (type === 'cache' && isCacheConfigEditing.value)) {
-      const saveSucceeded = await settingsStore.changeSettings({
-        syncPlatform: syncPlatformInput.value,
-        githubUser: userInput.value,
-        gistToken: tokenInput.value,
-        githubProxy: githubProxyInput.value,
-        githubApiUrl: githubApiUrlInput.value,
-        githubApiTimeout: githubApiTimeoutInput.value,
-        artifactSyncBatchSize: artifactSyncBatchSizeInput.value,
-        githubProxyRegex: githubProxyRegexInput.value,
-        defaultUserAgent: uaInput.value,
-        defaultFlowUserAgent: flowUaInput.value,
-        defaultProxy: proxyInput.value,
-        defaultTimeout: timeoutInput.value,
-        backendRequestConcurrency: backendRequestConcurrencyInput.value,
-        backendRequestConcurrencyWaitTime: backendRequestConcurrencyWaitTimeInput.value,
-        cacheThreshold: cacheThresholdInput.value,
-        resourceCacheTtl: resourceCacheTtlInput.value,
-        headersCacheTtl: headersCacheTtlInput.value,
-        scriptCacheTtl: scriptCacheTtlInput.value,
-        logsMaxCount: logsMaxCountInput.value,
-      });
+      const saveSucceeded = await settingsStore.changeSettings(createSettingsPayload(type));
 
       if (saveSucceeded && type === 'github') {
         resetAvatarState(true);
@@ -829,6 +936,9 @@ const toggleEditMode = async (type) => {
       syncPlatformInput.value = syncPlatform.value;
       userInput.value = githubUser.value;
       tokenInput.value = gistToken.value;
+      gistUploadInput.value = normalizeGistUploadMode(gistUpload.value);
+      gistUploadPickerValue.value = [gistUploadInput.value];
+      ageSecretKeyInput.value = ageSecretKey.value;
       githubProxyInput.value = githubProxy.value;
       githubApiUrlInput.value = githubApiUrl.value || "";
       githubApiTimeoutInput.value = githubApiTimeout.value || "";
@@ -990,6 +1100,9 @@ const toggleSyncPlatform = () => {
 const setDisplayInfo = () => {
   syncPlatformInput.value = syncPlatform.value || "";
   userInput.value = githubUser.value || "";
+  gistUploadInput.value = normalizeGistUploadMode(gistUpload.value);
+  gistUploadPickerValue.value = [gistUploadInput.value];
+  ageSecretKeyInput.value = ageSecretKey.value || "";
   githubProxyInput.value = githubProxy.value || "";
   githubApiUrlInput.value = githubApiUrl.value || "";
   githubApiTimeoutInput.value = githubApiTimeout.value || "";
@@ -1089,7 +1202,7 @@ const upload = async() => {
   }
 }
 
-const sync = async (query: "download" | "upload", options?: { keep?: string[], encode?: 'base64' | 'plaintext' }) => {
+const sync = async (query: "download" | "upload", options?: { keep?: string[], encode?: GistUploadMode }) => {
   switch (query) {
     case "download":
       downloadIsLoading.value = true;
@@ -1138,7 +1251,29 @@ const sync = async (query: "download" | "upload", options?: { keep?: string[], e
   uploadIsLoading.value = false;
 };
 
+const ensureGitHubConfigReadyForSync = (action: "upload" | "download") => {
+  if (!isGitHubConfigEditing.value) {
+    return true;
+  }
+
+  Dialog({
+    title: action === "upload" ? "请先保存 GitHub 配置" : "请先处理 GitHub 配置",
+    content: `当前 GitHub 配置正在编辑中，未保存的 Gist 配置不会用于本次${action === "upload" ? "上传" : "下载"}。\n\n请先保存或取消编辑后再继续。`,
+    popClass: "auto-dialog",
+    textAlign: "left",
+    okText: "知道了",
+    noCancelBtn: true,
+    closeOnPopstate: true,
+    lockScroll: false,
+  });
+
+  return false;
+};
+
 const uploadBtn = () => {
+  if (!ensureGitHubConfigReadyForSync("upload")) {
+    return;
+  }
   const encode = gistUpload.value || 'base64';
   sync('upload', { encode });
   // Dialog({
@@ -1163,6 +1298,9 @@ const uploadBtn = () => {
   // });
 }
 const downloadBtn = () => {
+  if (!ensureGitHubConfigReadyForSync("download")) {
+    return;
+  }
   Dialog({
     title: '请选择',
     content: '若想保留本地当前已设置的 GitHub Token, 请选择保留(后端版本必须 >= 2.19.83)',
@@ -1214,6 +1352,18 @@ const githubApiTimeoutTips = () => {
   Dialog({
       title: 'GitHub API 请求超时',
       content: 'GitHub API 请求可能比较慢, 可单独设置更长的超时时间。\n\n1. 单位为毫秒, 默认 10000\n\n2. 仅影响 GitHub/Gist API 请求\n\n3. 与请求配置里的默认超时相互独立',
+      popClass: 'auto-dialog',
+      textAlign: 'left',
+      okText: 'OK',
+      noCancelBtn: true,
+      closeOnPopstate: true,
+      lockScroll: false,
+    });
+};
+const gistAgeSecretKeyTips = () => {
+  Dialog({
+      title: 'Gist 备份 age 解密私钥',
+      content: '后端需 >= 2.29.0\n\n1. 选择 age 加密时只需要配置 age 解密私钥\n\n2. 上传备份时会从此私钥推导 age 加密公钥用于加密\n\n3. 下载恢复时会用此私钥解密 age 加密备份\n\n4. 请妥善保存私钥，丢失后无法恢复已加密备份',
       popClass: 'auto-dialog',
       textAlign: 'left',
       okText: 'OK',
@@ -1511,8 +1661,58 @@ const setTag = (current) => {
             opacity: 0.2;
             filter: brightness(var(--img-brightness));
           }
+          &.input-small-left-icon {
+            :deep(img) {
+              width: 14px;
+              height: 14px;
+            }
+          }
           :deep(.nut-icon-tips:before) {
             cursor: pointer;
+          }
+          .input-action-icons {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            :deep(.age-key-helper) {
+              justify-content: center;
+            }
+          }
+          .input-action-icon {
+            display: inline-flex;
+            width: 22px;
+            height: 22px;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--second-text-color);
+            cursor: pointer;
+
+            &:hover {
+              opacity: 1;
+            }
+
+            :deep(.nut-icon) {
+              color: inherit;
+            }
+
+            :deep(.nut-icon-tips:before) {
+              cursor: pointer;
+            }
+          }
+
+          &.picker-input {
+            cursor: pointer;
+
+            :deep(.nut-input__text),
+            :deep(input),
+            :deep(img),
+            :deep(.nut-icon) {
+              cursor: pointer;
+            }
           }
 
           &:not(:first-child) {

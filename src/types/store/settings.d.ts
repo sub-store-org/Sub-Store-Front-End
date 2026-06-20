@@ -3,6 +3,7 @@ type ListPageViewMode = 'single-column' | 'dual-column';
 type EditorCommonDisplayMode = 'expanded' | 'collapsed' | 'hidden';
 type EditorSectionFoldMode = 'expanded' | 'collapsed';
 type EditorGroupingMode = 'edit-only' | 'disabled' | 'always';
+type GistUploadMode = 'base64' | 'plaintext' | 'age';
 
 type SettingsStoreState = SettingsBase & SettingsPostData;
 
@@ -11,6 +12,7 @@ interface SettingsBase {
   avatarUrl: string;
   artifactStore: string;
   artifactStoreStatus?: string;
+  ageSecretKey: string;
   hasFetchedSettings: boolean;
   hasRemoteAppearanceSetting: boolean;
   hasCachedAppearanceNavigationSetting: boolean;
@@ -20,6 +22,7 @@ interface SettingsBase {
 interface SettingsPostData {
   syncPlatform?: string;
   gistToken?: string;
+  "age-secret-key"?: string;
   githubProxy?: string;
   githubApiUrl?: string;
   githubApiTimeout?: string;
@@ -43,7 +46,7 @@ interface SettingsPostData {
     dark: CustomTheme;
     light: CustomTheme;
   };
-  gistUpload?: base64 | plaintext;
+  gistUpload?: GistUploadMode;
   appearanceSetting?: {
     isSimpleMode?: boolean; // 简洁模式
     isLeftRight?: boolean; // 卡片右滑呼出

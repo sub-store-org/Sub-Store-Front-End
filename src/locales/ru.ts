@@ -822,6 +822,7 @@ export default {
       "haveNotDownload": "Еще не скачивалось",
       "githubUser": "Введите имя пользователя GitHub",
       "gistToken": "Введите GitHub Personal Access Token (Gist)",
+      "gistAgeSecretKey": "Введите age decryption secret key для резервной копии Gist",
       "githubProxy": "Введите прокси для GitHub (если нужен)",
       "githubApiUrl": "GitHub API URL (по умолчанию: https://api.github.com)",
       "githubApiTimeout": "Таймаут запросов к GitHub API (в мс, по умолчанию: 10000)",
@@ -1381,7 +1382,8 @@ export default {
     "gistUpload": {
       "title": "Тип выгрузки в Gist",
       "base64": "Кодировать в Base64",
-      "plaintext": "Открытый текст (без GitHub Token)"
+      "plaintext": "Открытый текст (без GitHub Token)",
+      "age": "Шифрование age"
     },
     "subProgress": {
       "title": "Стиль индикатора прогресса подписки",
@@ -1492,6 +1494,7 @@ export default {
       "type": "Тип",
       "generate": "Создать",
       "applyPublic": "Заполнить",
+      "applyPair": "Заполнить оба",
       "derive": "Из secret",
       "copyPublic": "Копировать",
       "copySecret": "Копировать",
@@ -1500,8 +1503,10 @@ export default {
       "clearSecret": "Очистить age decryption secret key",
       "copied": "Скопировано",
       "filled": "Заполнено",
+      "filledPair": "Secret и public key заполнены",
       "error": "Ошибка операции age key",
-      "tips": "Поддерживаются только нативные age ключи X25519 и MLKEM768-X25519. Созданный age decryption secret key показывается только в этом окне; сохраните его безопасно. Age encryption public key можно записать в поле конфигурации для шифрования финального вывода."
+      "tips": "Поддерживаются только нативные age ключи X25519 и MLKEM768-X25519. Созданный age decryption secret key показывается только в этом окне; сохраните его безопасно. Age encryption public key можно записать в поле конфигурации для шифрования финального вывода.",
+      "secretTips": "Поддерживаются только нативные age ключи X25519 и MLKEM768-X25519. Созданный age decryption secret key показывается только в этом окне; сохраните его безопасно. Для Gist age encryption бэкенд выводит public key из этого secret key."
     }
   },
   "magicPath": {

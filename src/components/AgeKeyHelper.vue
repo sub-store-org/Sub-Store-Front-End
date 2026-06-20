@@ -55,6 +55,17 @@
               >
                 {{ $t("ageKey.helper.copySecret") }}
               </nut-button>
+              <nut-button
+                v-if="props.applyMode === 'secret'"
+                size="small"
+                type="primary"
+                shape="square"
+                class="age-key-action-button"
+                :disabled="!secretKey"
+                @click="fillSecretKey"
+              >
+                {{ $t("ageKey.helper.applyPublic") }}
+              </nut-button>
             </div>
           </div>
           <div class="age-key-textarea-wrapper">
@@ -78,7 +89,7 @@
           </div>
         </section>
 
-        <section class="age-key-section">
+        <section v-if="props.applyMode !== 'secret'" class="age-key-section">
           <div class="age-key-section-header">
             <div class="age-key-section-title">{{ $t("ageKey.publicKey.label") }}</div>
             <div class="age-key-section-actions">
@@ -104,6 +115,18 @@
                 {{ $t("ageKey.helper.copyPublic") }}
               </nut-button>
               <nut-button
+                v-if="props.applyMode === 'pair'"
+                size="small"
+                type="primary"
+                shape="square"
+                class="age-key-action-button"
+                :disabled="!secretKey || !publicKey"
+                @click="fillKeyPair"
+              >
+                {{ $t("ageKey.helper.applyPair") }}
+              </nut-button>
+              <nut-button
+                v-else
                 size="small"
                 type="primary"
                 shape="square"
@@ -136,7 +159,9 @@
           </div>
         </section>
 
-        <p class="age-helper-tips">{{ $t("ageKey.helper.tips") }}</p>
+        <p class="age-helper-tips">
+          {{ $t(props.applyMode === "secret" ? "ageKey.helper.secretTips" : "ageKey.helper.tips") }}
+        </p>
       </div>
       <template #footer>
         <nut-button size="small" type="primary" shape="round" class="age-key-close" @click="visible = false">
@@ -162,13 +187,17 @@ import {
   generateKeyPair,
 } from "@/utils/age";
 
-defineProps<{
+const props = withDefaults(defineProps<{
   modelValue?: string;
-}>();
+  applyMode?: "public" | "pair" | "secret";
+}>(), {
+  applyMode: "public",
+});
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
   (event: "apply", value: string): void;
+  (event: "apply-pair", value: { [AGE_SECRET_KEY]: string; [AGE_PUBLIC_KEY]: string }): void;
 }>();
 
 const { t } = useI18n();
@@ -224,6 +253,25 @@ const fillPublicKey = () => {
   Toast.text(t("ageKey.helper.filled"));
 };
 
+const fillSecretKey = () => {
+  const value = secretKey.value.trim();
+  emit("update:modelValue", value);
+  emit("apply", value);
+  Toast.text(t("ageKey.helper.filled"));
+};
+
+const fillKeyPair = () => {
+  const identity = secretKey.value.trim();
+  const recipient = publicKey.value.trim();
+  emit("update:modelValue", recipient);
+  emit("apply", recipient);
+  emit("apply-pair", {
+    [AGE_SECRET_KEY]: identity,
+    [AGE_PUBLIC_KEY]: recipient,
+  });
+  Toast.text(t("ageKey.helper.filledPair"));
+};
+
 const copyValue = async (value: string) => {
   try {
     await toClipboard(value);
@@ -251,6 +299,11 @@ const copyValue = async (value: string) => {
   background: transparent;
   color: var(--primary-color);
   cursor: pointer;
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .age-key-helper-body {
@@ -324,17 +377,34 @@ const copyValue = async (value: string) => {
 .age-key-textarea-wrapper {
   position: relative;
   width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--divider-color);
+  border-radius: 4px;
+  background: var(--card-color);
 }
 
 .age-key-textarea {
   width: 100%;
+  background: transparent !important;
   font-size: 11px;
   line-height: 1.4;
+  color: var(--primary-text-color);
+
+  :deep(.nut-textarea) {
+    background: transparent !important;
+  }
 
   :deep(.nut-textarea__textarea) {
+    background: transparent !important;
+    color: var(--primary-text-color);
+    caret-color: var(--primary-color);
     padding-right: 34px;
     font-size: 11px;
     line-height: 1.4;
+
+    &::placeholder {
+      color: var(--comment-text-color, #8a8a8a);
+    }
   }
 }
 
@@ -375,16 +445,20 @@ const copyValue = async (value: string) => {
   }
 }
 
-:global(.age-key-helper-dialog) {
+:global(.age-key-helper-dialog),
+:global(.nut-dialog.age-key-helper-dialog) {
   width: min(92vw, 560px) !important;
+  max-width: 560px !important;
 }
 
-:global(.age-key-helper-dialog .nut-dialog) {
+:global(.age-key-helper-dialog .nut-dialog),
+:global(.nut-dialog.age-key-helper-dialog) {
   width: 100%;
   max-width: none;
 }
 
-:global(.age-key-helper-dialog .nut-dialog__content) {
+:global(.age-key-helper-dialog .nut-dialog__content),
+:global(.nut-dialog.age-key-helper-dialog .nut-dialog__content) {
   width: 100%;
   max-height: 72vh;
   overflow-y: auto;
