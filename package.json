@@ -25,6 +25,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@lezer/common": "^1.2.1",
+    "@lezer/highlight": "1.2.0",
     "@lezer/javascript": "^1.4.13",
     "@nutui/nutui": "^3.3.8",
     "@replit/codemirror-indentation-markers": "^6.5.0",

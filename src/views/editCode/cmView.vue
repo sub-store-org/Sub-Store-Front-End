@@ -145,6 +145,8 @@
 <script setup>
 import { darkCode } from "./dark.js";
 import { lightCode } from "./light.js";
+import { javascript } from "@/views/editCode/lang-js";
+import { json } from "@codemirror/lang-json";
 import {
   canFormatEditorLanguage,
   detectEditorLanguage,
@@ -211,7 +213,15 @@ const { t } = useI18n();
 
 const settingsStore = useSettingsStore();
 const { theme } = storeToRefs(settingsStore);
-
+// 检测语言
+const SYNC_DEBOUNCE_MS = 1000;
+let syncTimer = null;
+const debouncedSyncLanguage = (docContent) => {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => {
+    syncLanguageForDocument(docContent);
+  }, SYNC_DEBOUNCE_MS);
+};
 const isDarkModeEnabled = ref(true);
 
 const Length = ref("");
@@ -398,21 +408,60 @@ const finishLanguageDetection = (requestId, status = "idle") => {
   languageDetectionStatus.value = status;
 };
 
+// const applyLanguage = async (language, requestId = ++languageRequestId) => {
+//   const nextLanguage = normalizeEditorLanguage(language, "plaintext");
+//   const resolvedLanguage =
+//     nextLanguage === "auto" ? "plaintext" : nextLanguage;
+
+//   if (view && activeLanguage.value === resolvedLanguage) return;
+//   const extension = await loadEditorLanguageExtension(resolvedLanguage);
+
+//   if (!view || requestId !== languageRequestId) return;
+//   activeLanguage.value = resolvedLanguage;
+//   view.dispatch({
+//     effects: [
+//       langs.reconfigure(extension),
+//       shikiSyntax.reconfigure(createShikiHighlight(resolvedLanguage)),
+//     ],
+//   });
+// };
+
 const applyLanguage = async (language, requestId = ++languageRequestId) => {
   const nextLanguage = normalizeEditorLanguage(language, "plaintext");
-  const resolvedLanguage =
-    nextLanguage === "auto" ? "plaintext" : nextLanguage;
-
-  if (view && activeLanguage.value === resolvedLanguage) return;
-  const extension = await loadEditorLanguageExtension(resolvedLanguage);
-
   if (!view || requestId !== languageRequestId) return;
-  activeLanguage.value = resolvedLanguage;
+  if (nextLanguage === activeLanguage.value) return;
+
+  activeLanguage.value = nextLanguage;
+
   view.dispatch({
-    effects: [
-      langs.reconfigure(extension),
-      shikiSyntax.reconfigure(createShikiHighlight(resolvedLanguage)),
-    ],
+    effects: [langs.reconfigure([]), shikiSyntax.reconfigure([])],
+  });
+
+  if (nextLanguage === "plaintext") {
+    return;
+  }
+
+  if (nextLanguage === "javascript") {
+    console.log("启用 JavaScript 语法高亮 2  - 使用 codemirror");
+    view.dispatch({
+      effects: langs.reconfigure(javascript()),
+    });
+    return;
+  }
+
+  if (nextLanguage === "json" || nextLanguage === "json5") {
+    console.log(`启用 ${nextLanguage} 语法高亮 3 - 使用 codemirror`);
+    view.dispatch({
+      effects: langs.reconfigure(json()),
+    });
+    return;
+  }
+
+  const extension = await loadEditorLanguageExtension(nextLanguage);
+  if (requestId !== languageRequestId) return;
+  console.log(`启用 ${getLanguageLabel(nextLanguage)} 语法高亮 4 - 使用 shiki`);
+  view.dispatch({
+    effects: [langs.reconfigure(extension), shikiSyntax.reconfigure(createShikiHighlight(nextLanguage))],
   });
 };
 
@@ -512,7 +561,8 @@ const CreateView = () => {
           Length.value = formatLength(docContent.length);
           docUpdate = false;
           if (selectedLanguage.value === "auto") {
-            syncLanguageForDocument(docContent);
+            // syncLanguageForDocument(docContent);
+            debouncedSyncLanguage(docContent);
           }
         }),
         hyperLink,
@@ -616,6 +666,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearLanguageDetectionTimer();
+  clearTimeout(syncTimer);
 });
 
 const openPanel = ref(
