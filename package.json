@@ -1,6 +1,6 @@
 {
   "name": "sub-store-front-end",
-  "version": "2.25.1",
+  "version": "2.25.2",
   "private": true,
   "scripts": {
     "dev": "vite --host",
@@ -80,5 +80,13 @@
     "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^0.35.2",
     "workbox-window": "^7.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@fortawesome/fontawesome-common-types",
+      "@fortawesome/fontawesome-svg-core",
+      "@fortawesome/free-regular-svg-icons",
+      "@fortawesome/free-solid-svg-icons"
+    ]
   }
 }
