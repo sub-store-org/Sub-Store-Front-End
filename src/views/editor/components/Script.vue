@@ -392,6 +392,14 @@ const handleLinkValueChange = () => {
   }
 };
 let placeholders
+const isMihomoProfileFile =
+  sourceType === "file" && (form as any)?.type === "mihomoProfile";
+const mihomoProfilePlaceholder = `// Mihomo Profile Override
+// $content already contains the base mihomo config generated from the selected source.
+// YAML and JavaScript override formats are supported.
+// YAML override docs: https://clashparty.org/docs/guide/override/yaml
+// JavaScript override docs: https://clashparty.org/docs/guide/override/javascript
+`;
 if (type === 'Response Transformer') {
   placeholders = `// Modify Response
 // 1. shortcut script
@@ -413,7 +421,7 @@ async function transformFunction(res, context) {
   return res
 }`
 } else if(sourceType === "file") {
-  placeholders = `// Example:
+  placeholders = `${isMihomoProfileFile ? `${mihomoProfilePlaceholder}\n` : ""}// Example:
 // $files: ['0', '1']
 // $content: '0\\n1'
 
