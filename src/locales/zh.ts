@@ -1005,9 +1005,9 @@ export default {
         },
       },
       includeUnsupportedProxy: {
-        label: '包含不支持的协议(详见文档)',
+        label: '包含不支持的协议',
         tips: {
-          title: '包含不支持的协议(详见文档)',
+          title: '包含不支持的协议',
           content: 'https://github.com/sub-store-org/Sub-Store/wiki/%E9%93%BE%E6%8E%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E'
         }
       },
