@@ -149,9 +149,10 @@ export default {
   },
   "filePage": {
     "type": {
-      "mihomoProfile": "Профиль Mihomo",
-      "mihomoProfileTips": "Поддерживается перезапись",
-      "mihomoProfileTips2": "Поддерживается перезапись (JavaScript/YAML)"
+      "mihomoConfig": "Конфиг mihomo",
+      "mihomoConfigTips": "Поддерживается перезапись",
+      "mihomoConfigTips2": "Поддерживается перезапись (JavaScript/YAML)",
+      "mihomoConfigScriptActionTips": "В скриптовых действиях можно использовать перезапись JavaScript/YAML"
     },
     "addFileTitle": "Создать файл",
     "importFileTitle": "Импорт данных файла",
@@ -185,6 +186,11 @@ export default {
     "source": {
       "local": "Локальный",
       "remote": "Удаленный"
+    },
+    "mode": {
+      "label": "Режим",
+      "config": "Использовать как конфиг mihomo",
+      "proxy": "Преобразовать в узлы mihomo"
     },
     "ignoreFailedRemoteFile": {
       "label": "Обработка ошибок удаленного файла",
@@ -809,7 +815,7 @@ export default {
         "Add Proxies From Subscription Operator": {
           "label": "Добавить узлы из подписки",
           "tipsTitle": "Подсказки по добавлению узлов из подписки",
-          "tipsDes": "Добавляет Mihomo-узлы из одиночной или групповой подписки в поле proxies текущего Mihomo-профиля.",
+          "tipsDes": "Добавляет mihomo-узлы из одиночной или групповой подписки в поле proxies текущего mihomo-конфига.",
           "des": {
             "source": "Источник",
             "sourceName": "Подписка",

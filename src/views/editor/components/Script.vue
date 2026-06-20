@@ -136,6 +136,7 @@ import {
   setEditorFoldState,
 } from "@/utils/editorFoldState";
 import cmView from "@/views/editCode/cmView.vue";
+import { isMihomoConfigFileType } from "@/utils/fileType";
 
 const { type, id, sourceType } = defineProps<{
   type: string;
@@ -416,9 +417,9 @@ const handleLinkValueChange = () => {
   }
 };
 let placeholders
-const isMihomoProfileFile =
-  sourceType === "file" && (form as any)?.type === "mihomoProfile";
-const mihomoProfilePlaceholder = `// Mihomo Profile Override
+const isMihomoConfigFile =
+  sourceType === "file" && isMihomoConfigFileType((form as any)?.type);
+const mihomoConfigPlaceholder = `// mihomo config override
 // $content already contains the base mihomo config generated from the selected source.
 // YAML and JavaScript override formats are supported.
 // YAML override docs: https://clashparty.org/docs/guide/override/yaml
@@ -445,7 +446,7 @@ async function transformFunction(res, context) {
   return res
 }`
 } else if(sourceType === "file") {
-  placeholders = `${isMihomoProfileFile ? `${mihomoProfilePlaceholder}\n` : ""}// Example:
+  placeholders = `${isMihomoConfigFile ? `${mihomoConfigPlaceholder}\n` : ""}// Example:
 // $files: ['0', '1']
 // $content: '0\\n1'
 

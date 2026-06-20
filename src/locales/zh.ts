@@ -153,9 +153,10 @@ export default {
   },
   filePage: {
     type: {
-      mihomoProfile: 'Mihomo 配置',
-      mihomoProfileTips: '可使用覆写',
-      mihomoProfileTips2: '可使用 JavaScript/YAML 覆写',
+      mihomoConfig: 'mihomo 配置',
+      mihomoConfigTips: '可使用覆写',
+      mihomoConfigTips2: '可使用 JavaScript/YAML 覆写',
+      mihomoConfigScriptActionTips: '脚本操作中可使用 JavaScript/YAML 覆写',
     },
     addFileTitle: '创建文件',
     importFileTitle: '导入 Sub-Store 文件数据',
@@ -189,6 +190,11 @@ export default {
     source: {
       local: '本地',
       remote: '远程',
+    },
+    mode: {
+      label: '模式',
+      config: '作为 mihomo 配置',
+      proxy: '转换为 mihomo 节点',
     },
     ignoreFailedRemoteFile: {
       label: '远程文件失败处理',
@@ -524,7 +530,7 @@ export default {
       actions: {
         label: '节点操作',
         addAction: {
-          title: '添加一个操作',
+          title: '添加操作',
           cancel: '取消',
           confirm: '确认',
         },
@@ -581,7 +587,7 @@ export default {
         'Add Proxies From Subscription Operator': {
           label: '从订阅添加节点',
           tipsTitle: '从订阅添加节点提示',
-          tipsDes: '将单条订阅或组合订阅产出的 Mihomo 节点写入当前 Mihomo 配置的 proxies 字段',
+          tipsDes: '将单条订阅或组合订阅产出的 mihomo 节点写入当前 mihomo 配置的 proxies 字段',
           des: {
             source: '来源',
             sourceName: '订阅',

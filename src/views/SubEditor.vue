@@ -1789,9 +1789,23 @@ const handleEditGlobalClick = () => {
 }
 .radio-wrapper {
   display: flex;
-  // justify-content: start;
   flex-wrap: wrap;
   justify-content: flex-end;
+
+  :deep(.nut-radiogroup) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+  }
+
+  :deep(.nut-radio) {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    line-height: 1;
+  }
 
   :deep(.nut-radio__button.false) {
     background: var(--divider-color);
@@ -1799,7 +1813,14 @@ const handleEditGlobalClick = () => {
     color: var(--second-text-color);
   }
   :deep(.nut-radio__button) {
-    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 30px;
+    padding: 0 9px;
+    line-height: 18px;
+    white-space: nowrap;
   }
 }
 
