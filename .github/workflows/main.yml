@@ -26,9 +26,9 @@ jobs:
           node-version-file: ".node-version"
       - name: Install dependencies
         run: |
-          npm install -g pnpm
+          corepack enable
           pnpm config set registry https://registry.npmmirror.com
-          pnpm i --no-frozen-lockfile
+          pnpm install --no-frozen-lockfile
       - name: build
         run: |
           pnpm build

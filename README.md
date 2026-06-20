@@ -25,7 +25,7 @@ Core functionalities:
 Commit message follows [@commitlint/config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular)
 
 #### Created in the following version:
-- pnpm v7.3.0
+- pnpm v11.0.9 via Corepack
 - Vite v2.9.9
 - Vue v3.2
 - Pinia v2
@@ -36,6 +36,9 @@ This project is using [Font Awesome](https://fontawesome.com/icons/check?s=regul
 
 #### Start 
 ```bash
+# enable the pinned package manager
+corepack enable
+
 # install dependencies
 pnpm i
 
