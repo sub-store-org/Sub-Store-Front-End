@@ -58,17 +58,30 @@
       </div>
     </div>
 
-    <!-- 参数编辑控制部分 -->
+    <!-- 参数控制部分 -->
     <div class="input-wrapper-title">
-      <!-- 参数编辑开关 -->
+      <!-- 参数区域展开开关 -->
       <div class="title-label">
-        <nut-checkbox v-model="showKeyValue" class="my-switch" />
         <button
-          class="switch-label"
+          class="params-toggle"
           type="button"
+          :aria-expanded="showKeyValue"
           @click="toggleShowKeyValue"
         >
-          {{ $t(`editorPage.subConfig.nodeActions['${type}'].paramsEdit`) }}
+          <nut-icon
+            class="params-toggle-icon"
+            :name="showKeyValue ? 'rect-down' : 'rect-right'"
+            size="12px"
+          />
+          <span>
+            {{
+              $t(
+                `editorPage.subConfig.nodeActions['${type}'].${
+                  showKeyValue ? 'paramsCollapse' : 'paramsExpand'
+                }`,
+              )
+            }}
+          </span>
         </button>
         <font-awesome-icon
           class="icon"
@@ -805,6 +818,34 @@ watch(
       font: inherit;
       padding: 0 0 0 4px;
       user-select: none;
+    }
+
+    .params-toggle {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font: inherit;
+      padding: 0;
+      user-select: none;
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      .params-toggle-icon {
+        color: var(--unimportant-icon-color);
+        flex-shrink: 0;
+      }
     }
 
     .icon {
