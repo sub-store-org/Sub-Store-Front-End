@@ -486,26 +486,56 @@ export default {
         "udp": {
           "label": "UDP-релей",
           "default": "По умолчанию",
-          "enabled": "Принудительно включить",
-          "disabled": "Принудительно выключить"
+          "enabled": "Включить",
+          "disabled": "Выключить"
         },
         "scert": {
           "label": "Пропуск проверки TLS",
           "default": "По умолчанию",
-          "enabled": "Принудительно включить",
-          "disabled": "Принудительно выключить"
+          "enabled": "Включить",
+          "disabled": "Выключить"
         },
         "tfo": {
           "label": "TCP Fast Open",
           "default": "По умолчанию",
-          "enabled": "Принудительно включить",
-          "disabled": "Принудительно выключить"
+          "enabled": "Включить",
+          "disabled": "Выключить"
         },
         "vmess aead": {
-          "label": "Vmess AEAD",
+          "label": "VMess AEAD",
           "default": "По умолчанию",
-          "enabled": "Принудительно включить",
-          "disabled": "Принудительно выключить"
+          "enabled": "Включить",
+          "disabled": "Выключить"
+        },
+        "reuse": {
+          "label": "Повторное использование соединения",
+          "default": "По умолчанию",
+          "enabled": "Включить",
+          "disabled": "Выключить"
+        },
+        "block-quic": {
+          "label": "Блокировать QUIC",
+          "default": "По умолчанию",
+          "auto": "Авто",
+          "enabled": "Включить",
+          "disabled": "Выключить"
+        },
+        "ecn": {
+          "label": "ECN",
+          "default": "По умолчанию",
+          "enabled": "Включить",
+          "disabled": "Выключить"
+        },
+        "ip-version": {
+          "label": "Версия IP",
+          "default": "По умолчанию",
+          "options": {
+            "dual": "Двойной стек",
+            "v4Only": "Только IPv4",
+            "v6Only": "Только IPv6",
+            "preferV4": "Предпочитать IPv4",
+            "preferV6": "Предпочитать IPv6"
+          }
         }
       },
       "actions": {
