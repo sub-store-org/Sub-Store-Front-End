@@ -559,6 +559,7 @@ export default {
       // },
       actions: {
         label: '节点操作',
+        fileLabel: '文件操作',
         addAction: {
           title: '添加操作',
           cancel: '取消',

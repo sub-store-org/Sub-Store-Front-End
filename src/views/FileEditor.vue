@@ -450,7 +450,6 @@
         class="editor-tab-content editor-actions-content"
         :class="{
           'editor-tab-fixed-offset': editorTabsEnabled,
-          'file-actions-tab-offset': editorTabsEnabled,
         }"
       >
         <ActionBlock
@@ -1419,10 +1418,6 @@ const handleEditGlobalClick = () => {
     margin-left: 4px;
     color: var(--primary-text-color);
   }
-}
-
-.file-actions-tab-offset {
-  padding-top: 45px;
 }
 
 .bottom-btn-wrapper {

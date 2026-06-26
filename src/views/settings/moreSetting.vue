@@ -237,7 +237,7 @@
   // const isEditing = ref(false);
   const isInit = ref(false);
   const subProgressStyleValue = ref(['hidden']);
-  const editorCommonDisplayModeValue = ref<EditorCommonDisplayMode[]>(['collapsed']);
+  const editorCommonDisplayModeValue = ref<EditorCommonDisplayMode[]>(['expanded']);
   const manualSubscriptionsDisplayModeValue = ref<EditorSectionFoldMode[]>(['collapsed']);
   const editorGroupingModeValue = ref<EditorGroupingMode[]>(['edit-only']);
 
@@ -275,10 +275,10 @@
     changeAppearanceSetting({ appearanceSetting: data });
   };
   const editorCommonDisplayModeName = computed(() => {
-    return t(`moreSettingPage.editorDisplayMode.${editorCommonDisplayModeValue.value[0] || 'collapsed'}`);
+    return t(`moreSettingPage.editorDisplayMode.${editorCommonDisplayModeValue.value[0] || 'expanded'}`);
   });
   const editorCommonDisplayModeConfirm = ({ selectedValue }) => {
-    const editorCommonDisplayMode = selectedValue[0] || 'collapsed';
+    const editorCommonDisplayMode = selectedValue[0] || 'expanded';
     const data = {
       ...appearanceSetting.value,
       editorCommonDisplayMode,
@@ -627,7 +627,7 @@
     awtabBar3.value = appearanceSetting.value.istabBar3 ?? false;
     hidePublicLinkActionButton.value = appearanceSetting.value.hidePublicLinkActionButton ?? false;
     subProgressStyleValue.value = [appearanceSetting.value.subProgressStyle];
-    editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'collapsed'];
+    editorCommonDisplayModeValue.value = [appearanceSetting.value.editorCommonDisplayMode || 'expanded'];
     manualSubscriptionsDisplayModeValue.value = [appearanceSetting.value.manualSubscriptionsDisplayMode || 'collapsed'];
     editorGroupingModeValue.value = [appearanceSetting.value.editorGroupingMode || 'edit-only'];
     // SimpleSwitch.value = isSimpleMode.value;

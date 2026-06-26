@@ -155,7 +155,7 @@ const normalizeEditorCommonDisplayMode = (
     return appearanceSetting.isEditorCommon ? "expanded" : "hidden";
   }
 
-  return "collapsed";
+  return "expanded";
 };
 
 const normalizeManualSubscriptionsDisplayMode = (
@@ -216,7 +216,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         isShowIcon: true,
         isSimpleShowRemark: false,
         isEditorCommon: true,
-        editorCommonDisplayMode: "collapsed",
+        editorCommonDisplayMode: "expanded",
         manualSubscriptionsDisplayMode: "collapsed",
         editorGroupingMode: getCachedEditorGroupingMode() ?? "edit-only",
         isSimpleReicon: false,
@@ -413,7 +413,7 @@ export const useSettingsStore = defineStore("settingsStore", {
       const cachedHideShareTab = getCachedAppearanceBoolean(TAB_BAR3_CACHE_STORAGE_KEY, "istabBar3");
       const editorCommonDisplayMode = hasLocalEditorCommonSetting
         ? (isEditorCommon ? "expanded" : "hidden")
-        : "collapsed";
+        : "expanded";
       const editorGroupingMode = this.appearanceSetting.editorGroupingMode || "edit-only";
       const hasLocalLegacyAppearanceSetting = hasLocalAppearanceSetting();
       const shouldSyncEditorGroupingMode = this.hasCachedEditorGroupingMode

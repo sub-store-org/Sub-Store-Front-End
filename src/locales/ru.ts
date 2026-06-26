@@ -540,6 +540,7 @@ export default {
       },
       "actions": {
         "label": "Действия над узлами",
+        "fileLabel": "Действия с файлами",
         "addAction": {
           "title": "Добавить действие",
           "cancel": "Отмена",

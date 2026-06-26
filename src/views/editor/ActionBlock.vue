@@ -1,7 +1,7 @@
 <template>
   <div class="form-block-wrapper">
-    <div v-if="sourceType !== 'file'" class="sticky-title-wrapper actions-title-wrapper">
-      <p>{{ $t(`editorPage.subConfig.actions.label`) }}</p>
+    <div class="sticky-title-wrapper actions-title-wrapper">
+      <p>{{ $t(actionsTitleKey) }}</p>
       <font-awesome-icon
         v-if="isCollapsed"
         @click.stop="setCollapsed(false)"
@@ -14,7 +14,7 @@
         class="toggle fa-toggle"
         icon="fa-solid fa-toggle-off"
       />
-      <button @click="popActionsHelp">
+      <button v-if="sourceType !== 'file'" @click="popActionsHelp">
         <font-awesome-icon icon="fa-solid fa-circle-question" />
         {{ $t(`editorPage.subConfig.basic.nodeActionsHelp`) }}
       </button>
@@ -286,6 +286,11 @@ const FILE_ACTION_TYPES = [
 ];
 const isMihomoConfigFile = computed(
   () => sourceType === 'file' && isMihomoConfigFileType(form?.type),
+);
+const actionsTitleKey = computed(() =>
+  sourceType === 'file'
+    ? 'editorPage.subConfig.actions.fileLabel'
+    : 'editorPage.subConfig.actions.label',
 );
 
 const allItems = computed(() => Object.keys(i18nFile.editorPage.subConfig.nodeActions).map(type => {

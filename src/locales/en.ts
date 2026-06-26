@@ -571,6 +571,7 @@ export default {
       // },
       actions: {
         label: "Node Actions",
+        fileLabel: "File Actions",
         addAction: {
           title: "Add action",
           cancel: "Cancel",
