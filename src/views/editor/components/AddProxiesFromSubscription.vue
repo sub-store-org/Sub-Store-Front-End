@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 
 import DesktopPicker from "@/components/DesktopPicker.vue";
 import { useSubsStore } from "@/store/subs";
@@ -153,7 +153,7 @@ const toggleIncludeUnsupportedProxy = () => {
   includeUnsupportedProxy.value = !includeUnsupportedProxy.value;
 };
 
-onMounted(() => {
+const initArgs = () => {
   const item = getActionItem();
   if (!item) return;
 
@@ -173,12 +173,13 @@ onMounted(() => {
       : false;
   position.value = item.args?.position || "replace";
   syncArgs();
-});
+};
+
+initArgs();
 
 watch(
   [sourceTypeValue, sourceName, includeUnsupportedProxy, position],
   syncArgs,
-  { immediate: true },
 );
 </script>
 
