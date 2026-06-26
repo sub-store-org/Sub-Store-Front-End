@@ -270,6 +270,7 @@
   import { useBackend } from "@/hooks/useBackend";
   import clashmetaIcon from '@/assets/icons/clashmeta_color.png';
   import { isMihomoConfigFileType } from "@/utils/fileType";
+  import { formatPreviewError } from "@/utils/previewError";
 
   const { copy, isSupported } = useClipboard();
   const { toClipboard: copyFallback } = useV3Clipboard();
@@ -429,11 +430,11 @@
       if (res?.data?.status === 'success') {
         previewData.value = res.data.data;
       } else {
-        previewData.value = null;
+        previewData.value = { processed: formatPreviewError(res) };
       }
     } catch (e) {
       console.error(e);
-      previewData.value = null;
+      previewData.value = { processed: formatPreviewError(e) };
     }
     Toast.hide('compare');
   };
@@ -466,7 +467,7 @@
       subsStore.setOneData('files', name, latestFile);
     } catch (e) {
       console.error(e);
-      previewData.value = null;
+      previewData.value = { processed: formatPreviewError(e) };
       Toast.hide('compare');
     }
   };

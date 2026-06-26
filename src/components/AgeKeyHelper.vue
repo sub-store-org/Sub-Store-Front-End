@@ -386,6 +386,7 @@ const copyValue = async (value: string) => {
 .age-key-textarea {
   width: 100%;
   background: transparent !important;
+  padding: 0 !important;
   font-size: 11px;
   line-height: 1.4;
   color: var(--primary-text-color);
@@ -395,15 +396,21 @@ const copyValue = async (value: string) => {
   }
 
   :deep(.nut-textarea__textarea) {
+    box-sizing: border-box;
     background: transparent !important;
     color: var(--primary-text-color);
     caret-color: var(--primary-color);
-    padding-right: 34px;
-    font-size: 11px;
-    line-height: 1.4;
+    padding: 8px 34px 8px 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: left !important;
+    word-break: break-word;
 
     &::placeholder {
       color: var(--comment-text-color, #8a8a8a);
+      font-size: 12px;
+      line-height: 1.45;
+      opacity: 1;
     }
   }
 }

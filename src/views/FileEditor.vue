@@ -574,6 +574,7 @@ import {
   MIHOMO_CONFIG_FILE_TYPE,
   normalizeFileType,
 } from "@/utils/fileType";
+import { formatPreviewError } from "@/utils/previewError";
 
 const cmStore = useCodeStore();
 const { t, locale } = useI18n();
@@ -1041,11 +1042,11 @@ const fetchPreviewData = async () => {
     if (res?.data?.status === "success") {
       previewData.value = res.data.data;
     } else {
-      previewData.value = null;
+      previewData.value = { processed: formatPreviewError(res) };
     }
   } catch (e) {
     console.error(e);
-    previewData.value = null;
+    previewData.value = { processed: formatPreviewError(e) };
   }
   Toast.hide("compare");
 };
