@@ -178,7 +178,6 @@ onMounted(() => {
 watch(
   [sourceTypeValue, sourceName, includeUnsupportedProxy, position],
   syncArgs,
-  { immediate: true },
 );
 </script>
 
