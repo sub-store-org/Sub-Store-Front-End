@@ -20,13 +20,51 @@
         v-if="value === 'Custom'"
         class="radio-wrapper options-radio custom-dns-input-option"
       >
-        <p class="des-label">自定义 DNS(全平台支持 DoH, Node.js 额外支持 TCP/UDP DNS)</p>
-        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--custom-dns">
-          <nut-input
-            placeholder="请输入 DoH 或 [udp://]1.1.1.1[:53] 或 tcp://1.1.1.1[:53] (括号内可省略)"
+        <p class="des-label">
+          {{ $t(`editorPage.subConfig.nodeActions['${type}'].customDns`) }}
+        </p>
+        <div
+          v-if="shouldUseCompactCustomDnsTextarea"
+          class="input-wrapper compact-textarea-wrapper compact-textarea-wrapper--custom-dns"
+        >
+          <nut-textarea
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].customDnsPlaceholder`)"
+            :rows="2"
+            :autosize="{ minHeight: 40 }"
             v-model="rdoUrl"
           />
         </div>
+        <div
+          v-else
+          class="input-wrapper compact-input-wrapper compact-input-wrapper--custom-dns"
+        >
+          <nut-input
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].customDnsPlaceholder`)"
+            v-model="rdoUrl"
+          />
+        </div>
+      </div>
+      <div
+        v-if="value === 'Custom'"
+        class="radio-wrapper options-radio tls-skip-cert-option"
+      >
+        <p class="des-label">
+          {{
+            $t(`editorPage.subConfig.nodeActions['${type}'].tlsSkipCertVerify`)
+          }}
+        </p>
+        <nut-radiogroup direction="horizontal" v-model="rdoTlsSkipCertVerify">
+          <nut-radio
+            v-for="(key, index) in rdoTlsSkipCertVerifyOpt"
+            :label="key"
+            :key="index"
+            >{{
+              $t(
+                `editorPage.subConfig.nodeActions['${type}'].tlsSkipCertVerifyOptions[${index}]`
+              )
+            }}
+          </nut-radio>
+        </nut-radiogroup>
       </div>
       <div class="radio-wrapper options-radio edns-input-option">
         <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DNS 会携带此参数, 可能会影响解析结果)</p>
@@ -102,8 +140,9 @@
   import semverGt from 'semver/functions/gt';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { storeToRefs } from 'pinia';
+  import { useWideScreenNarrowMode } from '@/hooks/useWideScreenNarrowMode';
   import { useGlobalStore } from '@/store/global';
-  import { inject, onMounted, ref, watch } from 'vue';
+  import { computed, inject, onMounted, ref, watch } from 'vue';
   import tw from '@/assets/icons/tw.png';
 
   const globalStore = useGlobalStore();
@@ -111,6 +150,10 @@
   const { showNotify } = useAppNotifyStore();
 
   const { env } = storeToRefs(globalStore);
+  const { isWideScreen, isWideScreenNarrowModeActive } = useWideScreenNarrowMode();
+  const shouldUseCompactCustomDnsTextarea = computed(
+    () => !isWideScreen.value || isWideScreenNarrowModeActive.value
+  );
 
   const { type, id } = defineProps<{
     type: string;
@@ -131,6 +174,7 @@
   const rdoTypeOpt = ['IPv4', 'IPv6'];
   const rdoFilterOpt = ['disabled', 'removeFailed', 'IPOnly', 'IPv4Only', 'IPv6Only'];
   const rdoCacheOpt = ['enabled' , 'disabled'];
+  const rdoTlsSkipCertVerifyOpt = ['disabled', 'enabled'];
 
   const value = ref();
   const rdoNewVersion = ref(true);
@@ -150,6 +194,7 @@
   const rdoType = ref('IPv4');
   const rdoFilter = ref('disabled');
   const rdoCache = ref('enabled');
+  const rdoTlsSkipCertVerify = ref('disabled');
   const rdoUrl = ref('');
   const rdoEdns = ref('');
   const rdoConcurrency = ref('');
@@ -200,13 +245,15 @@
           value.value = item.args ?? 'asc';
           break;
         case 'Resolve Domain Operator':
-          value.value = item.args?.provider ?? 'Google';
+          value.value = item.args?.provider ?? 'Custom';
           rdoType.value = item.args?.type ?? 'IPv4';
           if (rdoType.value === 'IP4P') {
             rdoType.value = 'IPv6';
           }
           rdoFilter.value = item.args?.filter ?? 'disabled';
           rdoCache.value = item.args?.cache ?? 'enabled';
+          rdoTlsSkipCertVerify.value =
+            item.args?.tlsSkipCertVerify ?? 'disabled';
           rdoUrl.value = item.args?.url ?? '';
           rdoEdns.value = item.args?.edns;
           rdoConcurrency.value = getInitialRdoConcurrency(item.args?.concurrency);
@@ -216,7 +263,17 @@
   });
 
   // 值变化时实时修改 form 的数据
-  watch([value, rdoFilter, rdoCache, rdoUrl, rdoEdns, rdoConcurrency, rdoType, foTw], () => {
+  watch([
+    value,
+    rdoFilter,
+    rdoCache,
+    rdoTlsSkipCertVerify,
+    rdoUrl,
+    rdoEdns,
+    rdoConcurrency,
+    rdoType,
+    foTw,
+  ], () => {
     if (['IPv6', 'IP4P'].includes(rdoType.value) && ['IP-API'].includes(value.value)) {
       showNotify({
         title: `${value.value} 不支持 ${rdoType.value}`,
@@ -240,6 +297,7 @@
           type: rdoType.value,
           filter: rdoFilter.value,
           cache: rdoCache.value,
+          tlsSkipCertVerify: rdoTlsSkipCertVerify.value,
           url: rdoUrl.value,
           edns: rdoEdns.value,
           concurrency: normalizeRdoConcurrency(),
@@ -319,11 +377,39 @@
   .compact-input-wrapper--edns {
     max-width: 520px;
   }
+  .compact-input-wrapper--custom-dns {
+    max-width: 760px;
+  }
+  .compact-textarea-wrapper {
+    :deep(.nut-textarea) {
+      width: 100%;
+      padding: 2px 8px;
+      background: transparent;
+      border-bottom: 1px solid var(--lowest-text-color);
+      color: var(--second-text-color);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    :deep(.nut-textarea__textarea) {
+      min-height: 40px;
+      color: inherit;
+      font-size: 12px;
+      line-height: 18px;
+      overflow: hidden;
+      word-break: break-word;
+    }
+  }
+  .compact-textarea-wrapper--custom-dns {
+    width: 100%;
+    max-width: 760px;
+  }
   .compact-input-wrapper--concurrency {
     flex: 0 1 280px;
     max-width: 280px;
   }
   .custom-dns-input-option,
+  .tls-skip-cert-option,
   .edns-input-option {
     .des-label {
       margin-bottom: 2px;

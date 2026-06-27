@@ -606,6 +606,10 @@ export default {
             "Включено",
             "Отключено"
           ],
+          "customDns": "DNS по умолчанию (DoH на всех платформах; DoT и TCP/UDP DNS дополнительно в Node.js)",
+          "customDnsPlaceholder": "Введите DoH, [udp://]1.1.1.1[:53], tcp://1.1.1.1[:53] или tls://223.5.5.5[:853] (скобки необязательны)",
+          "tlsSkipCertVerify": "Сертификат сервера DoH/DoT",
+          "tlsSkipCertVerifyOptions": ["Проверять", "Не проверять"],
           "concurrency": "Конкурентность запросов",
           "concurrencyPlaceholder": "По умолчанию 10. Рекомендуется ставить не более 20",
           "tipsTitle": "Подсказки по резолву",
