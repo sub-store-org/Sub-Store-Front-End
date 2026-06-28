@@ -23,23 +23,11 @@
         <p class="des-label">
           {{ $t(`editorPage.subConfig.nodeActions['${type}'].customDns`) }}
         </p>
-        <div
-          v-if="shouldUseCompactCustomDnsTextarea"
-          class="input-wrapper compact-textarea-wrapper compact-textarea-wrapper--custom-dns"
-        >
+        <div class="input-wrapper compact-textarea-wrapper compact-textarea-wrapper--custom-dns">
           <nut-textarea
             :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].customDnsPlaceholder`)"
             :rows="2"
             :autosize="{ minHeight: 40 }"
-            v-model="rdoUrl"
-          />
-        </div>
-        <div
-          v-else
-          class="input-wrapper compact-input-wrapper compact-input-wrapper--custom-dns"
-        >
-          <nut-input
-            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].customDnsPlaceholder`)"
             v-model="rdoUrl"
           />
         </div>
@@ -66,10 +54,33 @@
           </nut-radio>
         </nut-radiogroup>
       </div>
+      <div
+        v-if="value === 'Custom'"
+        class="radio-wrapper options-radio inline-input-option"
+      >
+        <p class="des-label">{{ $t(`editorPage.subConfig.nodeActions['${type}'].dnsConcurrency`) }}</p>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--concurrency">
+          <nut-input
+            type="number"
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].dnsConcurrencyPlaceholder`)"
+            v-model="rdoDnsConcurrency"
+          />
+        </div>
+      </div>
       <div class="radio-wrapper options-radio edns-input-option">
         <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DNS 会携带此参数, 可能会影响解析结果)</p>
         <div class="input-wrapper compact-input-wrapper compact-input-wrapper--edns">
           <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
+        </div>
+      </div>
+      <div class="radio-wrapper options-radio inline-input-option">
+        <p class="des-label">{{ $t(`editorPage.subConfig.nodeActions['${type}'].timeout`) }}</p>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--concurrency">
+          <nut-input
+            type="number"
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].timeoutPlaceholder`)"
+            v-model="rdoTimeout"
+          />
         </div>
       </div>
       <div class="radio-wrapper options-radio inline-input-option">
@@ -82,7 +93,7 @@
           />
         </div>
       </div>
-      <div class="radio-wrapper options-radio">
+      <div class="radio-wrapper options-radio rdo-type-option">
         <p class="des-label" style="cursor: pointer" @click="rdoTypeInfo">解析类型(IPv6 兼容 IP4P <font-awesome-icon icon="fa-solid fa-circle-question"/>)</p>
         <nut-radiogroup direction="horizontal" v-model="rdoType">
           <nut-radio v-for="(key, index) in rdoTypeOpt" :label="key" :key="index"
@@ -114,6 +125,19 @@
           </nut-radio>
         </nut-radiogroup>
       </div>
+      <div
+        v-if="rdoCache === 'enabled'"
+        class="radio-wrapper options-radio inline-input-option"
+      >
+        <p class="des-label">{{ $t(`editorPage.subConfig.nodeActions['${type}'].cacheTtl`) }}</p>
+        <div class="input-wrapper compact-input-wrapper compact-input-wrapper--concurrency">
+          <nut-input
+            type="number"
+            :placeholder="$t(`editorPage.subConfig.nodeActions['${type}'].cacheTtlPlaceholder`)"
+            v-model="rdoCacheTtl"
+          />
+        </div>
+      </div>
     </template>
     <template v-if="type === 'Flag Operator' && foNewVersion && value === 'add'">
       <div class="radio-wrapper options-radio">
@@ -140,9 +164,8 @@
   import semverGt from 'semver/functions/gt';
   import { useAppNotifyStore } from '@/store/appNotify';
   import { storeToRefs } from 'pinia';
-  import { useWideScreenNarrowMode } from '@/hooks/useWideScreenNarrowMode';
   import { useGlobalStore } from '@/store/global';
-  import { computed, inject, onMounted, ref, watch } from 'vue';
+  import { inject, onMounted, ref, watch } from 'vue';
   import tw from '@/assets/icons/tw.png';
 
   const globalStore = useGlobalStore();
@@ -150,10 +173,6 @@
   const { showNotify } = useAppNotifyStore();
 
   const { env } = storeToRefs(globalStore);
-  const { isWideScreen, isWideScreenNarrowModeActive } = useWideScreenNarrowMode();
-  const shouldUseCompactCustomDnsTextarea = computed(
-    () => !isWideScreen.value || isWideScreenNarrowModeActive.value
-  );
 
   const { type, id } = defineProps<{
     type: string;
@@ -197,7 +216,10 @@
   const rdoTlsSkipCertVerify = ref('disabled');
   const rdoUrl = ref('');
   const rdoEdns = ref('');
+  const rdoDnsConcurrency = ref('');
   const rdoConcurrency = ref('');
+  const rdoTimeout = ref('');
+  const rdoCacheTtl = ref('');
 
   const normalizeRdoConcurrency = () => {
     const value = `${rdoConcurrency.value ?? ''}`.trim();
@@ -205,6 +227,33 @@
   };
 
   const getInitialRdoConcurrency = (value) => {
+    return `${value ?? ''}`.trim();
+  };
+
+  const normalizeRdoDnsConcurrency = () => {
+    const value = `${rdoDnsConcurrency.value ?? ''}`.trim();
+    return value || undefined;
+  };
+
+  const getInitialRdoDnsConcurrency = (value) => {
+    return `${value ?? ''}`.trim();
+  };
+
+  const normalizeRdoTimeout = () => {
+    const value = `${rdoTimeout.value ?? ''}`.trim();
+    return value || undefined;
+  };
+
+  const getInitialRdoTimeout = (value) => {
+    return `${value ?? ''}`.trim();
+  };
+
+  const normalizeRdoCacheTtl = () => {
+    const value = `${rdoCacheTtl.value ?? ''}`.trim();
+    return value || undefined;
+  };
+
+  const getInitialRdoCacheTtl = (value) => {
     return `${value ?? ''}`.trim();
   };
 
@@ -256,7 +305,12 @@
             item.args?.tlsSkipCertVerify ?? 'disabled';
           rdoUrl.value = item.args?.url ?? '';
           rdoEdns.value = item.args?.edns;
+          rdoDnsConcurrency.value = getInitialRdoDnsConcurrency(
+            item.args?.dnsConcurrency
+          );
           rdoConcurrency.value = getInitialRdoConcurrency(item.args?.concurrency);
+          rdoTimeout.value = getInitialRdoTimeout(item.args?.timeout);
+          rdoCacheTtl.value = getInitialRdoCacheTtl(item.args?.cacheTtl);
           break;
       }
     }
@@ -270,7 +324,10 @@
     rdoTlsSkipCertVerify,
     rdoUrl,
     rdoEdns,
+    rdoDnsConcurrency,
     rdoConcurrency,
+    rdoTimeout,
+    rdoCacheTtl,
     rdoType,
     foTw,
   ], () => {
@@ -300,7 +357,13 @@
           tlsSkipCertVerify: rdoTlsSkipCertVerify.value,
           url: rdoUrl.value,
           edns: rdoEdns.value,
+          dnsConcurrency: normalizeRdoDnsConcurrency(),
           concurrency: normalizeRdoConcurrency(),
+          timeout: normalizeRdoTimeout(),
+          cacheTtl:
+            rdoCache.value === 'enabled'
+              ? normalizeRdoCacheTtl()
+              : undefined,
         };
         break;
     }
@@ -408,6 +471,12 @@
     flex: 0 1 280px;
     max-width: 280px;
   }
+  .custom-dns-input-option {
+    margin-top: 8px;
+  }
+  .tls-skip-cert-option {
+    margin-top: 10px;
+  }
   .custom-dns-input-option,
   .tls-skip-cert-option,
   .edns-input-option {
@@ -430,5 +499,8 @@
       flex: 1;
       min-width: 0;
     }
+  }
+  .rdo-type-option {
+    margin-top: 10px;
   }
 </style>
