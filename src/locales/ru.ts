@@ -606,7 +606,7 @@ export default {
             "Включено",
             "Отключено"
           ],
-          "customDns": "Custom DNS (по одному в строке; DoH на всех платформах; DoT и TCP/UDP DNS дополнительно в Node.js)",
+          "customDns": "Custom DNS (DoH на всех платформах; DoT и TCP/UDP DNS дополнительно в Node.js)",
           "customDnsPlaceholder": "По одному DNS в строке: DoH, [udp://]1.1.1.1[:53], tcp://1.1.1.1[:53] или tls://223.5.5.5[:853] (скобки необязательны)",
           "tlsSkipCertVerify": "Сертификат сервера DoH/DoT",
           "tlsSkipCertVerifyOptions": ["Проверять", "Не проверять"],

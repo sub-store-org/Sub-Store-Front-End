@@ -621,7 +621,7 @@ export default {
             "IPv6 Only",
           ],
           cache: ["Enabled", "Disabled"],
-          customDns: "Custom DNS (one per line; DoH on all platforms; DoT and TCP/UDP DNS additionally in Node.js)",
+          customDns: "Custom DNS (DoH on all platforms; DoT and TCP/UDP DNS additionally in Node.js)",
           customDnsPlaceholder: "One DNS per line: DoH, [udp://]1.1.1.1[:53], tcp://1.1.1.1[:53], or tls://223.5.5.5[:853] (brackets are optional)",
           tlsSkipCertVerify: "DoH/DoT Server Certificate",
           tlsSkipCertVerifyOptions: ["Verify", "Do Not Verify"],
