@@ -37,7 +37,7 @@
             </p>
           </div>
         </div>
-        <div v-else class="avatar-wrapper">
+        <div v-else class="avatar-wrapper gist-avatar-wrapper">
           <nut-avatar
             :key="avatarDisplayKey"
             :class="{ 'avatar-fallback': isAvatarFallback }"
@@ -1784,6 +1784,10 @@ const setTag = (current) => {
             flex-direction: column;
             color: var(--comment-text-color);
           }
+        }
+
+        &.gist-avatar-wrapper p.title {
+          font-size: 16px;
         }
       }
 
