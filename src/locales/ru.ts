@@ -394,6 +394,7 @@ export default {
           "label": "Источник",
           "remote": "Удаленный URL",
           "local": "Локальный",
+          "api": "API-подписка",
           "mergeSources": "Слияние источников",
           "noMerge": "Отключено",
           "localFirst": "Сначала локальные",
@@ -425,6 +426,12 @@ export default {
             "title": "Содержимое подписки",
             "content": "1. Однострочные прокси-протоколы/JSON/JSON5/YAML/URI  2. Полный Base64/YAML"
           }
+        },
+        "apiConfig": {
+          "label": "Параметры API в YAML",
+          "placeholder": "Введите YAML параметров provider (без subscribeUrl)\n\nПример:\ncfgUrls:\n  - https://example.com/config.json\nusername:\npassword:\nheaders:\n  User-Agent: NetFlow/v3.0.6 clash-verge Platform/linux\ndecrypt: null",
+          "isEmpty": "YAML параметров API не может быть пустым",
+          "tutorial": "Открыть инструкцию по получению параметров"
         },
         "icon": {
           "label": "Иконка",

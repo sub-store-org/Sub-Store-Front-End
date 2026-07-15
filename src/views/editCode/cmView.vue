@@ -46,6 +46,15 @@
             type="file"
             @change="importFile"
           />
+          <button
+            v-if="tutorialUrl"
+            type="button"
+            :title="tutorialTitle"
+            :aria-label="tutorialTitle"
+            @click="openTutorial"
+          >
+            <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
+          </button>
         </div>
         <div class="cm-toolbar-right">
           <button
@@ -265,6 +274,14 @@ const props = defineProps({
   enableImport: {
     type: Boolean,
     default: true,
+  },
+  tutorialUrl: {
+    type: String,
+    default: "",
+  },
+  tutorialTitle: {
+    type: String,
+    default: "",
   },
   toolbarActions: {
     type: Array,
@@ -728,6 +745,11 @@ const openFilePicker = () => {
   fileInput.value?.click?.();
 };
 
+const openTutorial = () => {
+  if (!props.tutorialUrl) return;
+  window.open(props.tutorialUrl, "_blank", "noopener,noreferrer");
+};
+
 const importFile = async (event) => {
   const file = event.target.files?.[0];
   event.target.value = "";
@@ -821,6 +843,10 @@ const pasteNav = async () => {
 }
 
 .cmviewRef {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   border-radius: 16px;
 }
 
@@ -848,13 +874,23 @@ const pasteNav = async () => {
 }
 
 .cm-placeholder {
+  box-sizing: border-box;
   color: var(--comment-text-color);
-  display: inline-block;
+  display: block;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
   vertical-align: top;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cm-editor-host,
+.cm-editor {
+  max-width: 100%;
+  min-width: 0;
 }
 
 .ͼ1 .cm-button {

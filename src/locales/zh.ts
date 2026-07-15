@@ -404,6 +404,7 @@ export default {
           label: '来源',
           remote: '远程订阅',
           local: '本地订阅',
+          api: 'API订阅',
           mergeSources: '合并来源',
           noMerge: '不合并',
           localFirst: '本地优先',
@@ -435,6 +436,12 @@ export default {
             title: '本地订阅节点',
             content: '1. 换行输入多个单行的代理协议/JSON/JSON5/YAML/URI  2. 完整 Base64/YAML',
           },
+        },
+        apiConfig: {
+          label: 'API 参数 YAML',
+          placeholder: '填写参数 YAML（点击上方按钮查看获取教程）\n\n例如：\ncfgUrls:\n  - https://example.com/config.json\nusername:\npassword:\nheaders:\n  User-Agent: NetFlow/v3.0.6 clash-verge Platform/linux\ndecrypt: null',
+          isEmpty: 'API 参数 YAML 不能为空',
+          tutorial: '查看参数获取教程',
         },
         icon: {
           label: '图标链接',

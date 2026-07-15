@@ -492,7 +492,8 @@ const flow = computed(() => {
       props.sub.source === "local" &&
       !["localFirst", "remoteFirst"].includes(props.sub.mergeSources);
     if (localOnly && !props.sub.subUserinfo) return t("subPage.subItem.local");
-    if (isFlowFetching.value && !urlList.includes(props.sub.url))
+    const flowKey = props.sub.source === "api" ? props.sub.name : props.sub.url;
+    if (isFlowFetching.value && !urlList.includes(flowKey))
       return t("subPage.subItem.loading");
 
     const target = toRaw(

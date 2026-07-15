@@ -409,6 +409,7 @@ export default {
             "Click on the right icon, Include all subscriptions that contain one of these tag(s) (separated by comma)",
         },
         source: {
+          api: "API Subscription",
           label: "Source",
           remote: "Remote URL",
           local: "Local",
@@ -446,6 +447,12 @@ export default {
             content:
               "1. Multiple single-line proxy protocols/JSON/JSON5/YAML/URI  2. Complete Base64/YAML",
           },
+        },
+        apiConfig: {
+          label: "API Parameters YAML",
+          placeholder: "Enter the provider parameters YAML (without subscribeUrl)\n\nExample:\ncfgUrls:\n  - https://example.com/config.json\nusername:\npassword:\nheaders:\n  User-Agent: NetFlow/v3.0.6 clash-verge Platform/linux\ndecrypt: null",
+          isEmpty: "API parameters YAML cannot be empty",
+          tutorial: "View parameter export tutorial",
         },
         icon: {
           label: "Icon",

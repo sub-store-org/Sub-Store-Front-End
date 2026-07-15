@@ -163,6 +163,9 @@
                 <nut-radio shape="button" label="local">
                   {{ $t(`editorPage.subConfig.basic.source.local`) }}
                 </nut-radio>
+                <nut-radio shape="button" label="api">
+                  {{ $t(`editorPage.subConfig.basic.source.api`) }}
+                </nut-radio>
               </nut-radiogroup>
             </div>
           </nut-form-item>
@@ -204,9 +207,16 @@
             />
           </nut-form-item>
           <nut-form-item
-            v-else-if="form.source === 'local'"
+            v-else-if="form.source === 'local' || form.source === 'api'"
             :label="undefined"
             prop="content"
+            :required="form.source === 'api'"
+            :rules="form.source === 'api' ? [
+              {
+                required: true,
+                message: $t(`editorPage.subConfig.basic.apiConfig.isEmpty`),
+              },
+            ] : []"
           >
             <!-- <nut-textarea
               class="textarea-wrapper"
@@ -222,8 +232,12 @@
               <cmView
                 :isReadOnly="false"
                 id="SubEditer"
-                :placeholder="$t(`editorPage.subConfig.basic.content.tips.content`)"
+                :placeholder="form.source === 'api'
+                  ? $t(`editorPage.subConfig.basic.apiConfig.placeholder`)
+                  : $t(`editorPage.subConfig.basic.content.tips.content`)"
                 :editor-language="form.editorLanguage"
+                :tutorial-url="form.source === 'api' ? 'https://alecthw.github.io/sub-cfg-export/' : ''"
+                :tutorial-title="$t(`editorPage.subConfig.basic.apiConfig.tutorial`)"
                 @update:editor-language="setEditorLanguage"
               />
             </div>
@@ -292,6 +306,7 @@
           </nut-form-item>
 
           <nut-form-item
+            v-if="form.source !== 'api'"
             :label="$t(`editorPage.subConfig.basic.source.mergeSources`)"
             prop="mergeSources"
           >
@@ -1329,7 +1344,7 @@ const submit = () => {
     if (configName === "UNTITLED") {
       res = await subsApi.createSub(editType, data);
       await subsStore.fetchSubsData();
-      if (data.source === "remote") await initStores(false, true, false);
+      if (["remote", "api"].includes(data.source)) await initStores(false, true, false);
     } else {
       let apiType = "";
       if (editType === "subs") {

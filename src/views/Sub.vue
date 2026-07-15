@@ -311,6 +311,7 @@ const sortFailed = ref(false);
 const hasUntagged = ref(false);
 const hasLocal = ref(false);
 const hasRemote = ref(false);
+const hasApi = ref(false);
 const tagNavBarHeight = computed(() => {
   return navBarHeight.value;
 });
@@ -320,13 +321,19 @@ const getTag = () => {
 const tag = ref(getTag());
 const tags = computed(() => {
   if(!hasSubs.value && !hasCollections.value) return [];
+  hasUntagged.value = false;
+  hasLocal.value = false;
+  hasRemote.value = false;
+  hasApi.value = false;
   // 从 subs 和 collections 中获取所有的 tag, 去重
   const set = new Set();
   subs.value.forEach(sub => {
     if(sub.source === 'remote') {
       hasRemote.value = true;
-    } else {
+    } else if (sub.source === 'local') {
       hasLocal.value = true;
+    } else if (sub.source === 'api') {
+      hasApi.value = true;
     }
     if (Array.isArray(sub.tag) && sub.tag.length > 0) {
       sub.tag.forEach(i => {
@@ -347,7 +354,7 @@ const tags = computed(() => {
   });
 
   let tags: any[] = Array.from(set);
-  if(tags.length === 0 && !hasRemote.value && !hasLocal.value) return [];
+  if(tags.length === 0 && !hasRemote.value && !hasLocal.value && !hasApi.value) return [];
   tags = tags.map(i => ({ label: i, value: i }));
   
   const result = [{ label: t("specificWord.all"), value: "all" }, ...tags];
@@ -355,6 +362,7 @@ const tags = computed(() => {
   if(hasLocal.value) result.push({ label: t("editorPage.subConfig.basic.source.local"), value: "local" });
   if(tags.length > 0 && hasUntagged.value) result.push({ label: t("specificWord.untagged"), value: "untagged" });
 
+  if(hasApi.value) result.push({ label: t("editorPage.subConfig.basic.source.api"), value: "api" });
   if (!result.find(i => i.value === tag.value)) {
     tag.value = 'all';
   }
@@ -547,6 +555,7 @@ const shouldShowElementByTag = (element) => {
   if(tag.value === 'untagged') return !Array.isArray(element.tag) || element.tag.length === 0;
   if(tag.value === 'remote') return element.source === 'remote';
   if(tag.value === 'local') return element.source === 'local';
+  if(tag.value === 'api') return element.source === 'api';
   return element.tag?.includes(tag.value);
 };
 const shouldShowElement = (element) => {

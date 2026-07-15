@@ -36,7 +36,7 @@ interface Sub {
   displayName?: string;
   remark?: string;
   url?: string;
-  source: 'remote' | 'local';
+  source: 'remote' | 'local' | 'api';
   icon?: string;
   isIconColor?: boolean;
   iconFit?: ImageFit | null;
