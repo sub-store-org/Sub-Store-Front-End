@@ -124,7 +124,7 @@ export default {
         sync: {
           title: "What is Sync?",
           content:
-            "Upload your subscriptions/files to a private Gist, which can be accessed at any time on devices that do not run the Sub Store (e.g. routers, etc.).",
+            "Upload your subscriptions/files to a private Gist, which can be accessed at any time on devices that do not run the Sub-Store (e.g. routers, etc.).",
         },
         subEditor: {
           title: "Download no subscription?",
@@ -1534,7 +1534,7 @@ export default {
     currentHostApi: "Current Backend API",
     yhostapi: "Default:https://sub.store ",
     serverDesc:
-      "Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save",
+      "Configure the back-end server address, such as the back-end service set up on VPS or Render. After the configuration, restart the Sub-Store to take effect. To delete the api, use the original default backend to manually delete the address and click Save",
     InputHostApi: {
       title: "Link validation failed invalid link",
       content:

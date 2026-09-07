@@ -66,8 +66,8 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
         // minify: true,
         // includeAssets: ['favicon.svg'],
         manifest: {
-          name: "Sub Store",
-          short_name: "Sub Store",
+          name: "Sub-Store",
+          short_name: "Sub-Store",
           description: "A sub-converter running in a Progressive Web App",
           id: "/",
           start_url: "/",
@@ -100,6 +100,12 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
               sizes: "512x512",
               type: "image/png",
               purpose: "any",
+            },
+            {
+              src: "maskable-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
             },
           ],
         },

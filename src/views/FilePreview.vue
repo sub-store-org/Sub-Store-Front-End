@@ -308,7 +308,7 @@ watchEffect(async () => {
     }
   }
   if (route.query.name) {
-    document.title = `${route.query.name} - Sub Store`
+    document.title = `${route.query.name} - Sub-Store`
   }
 })
 

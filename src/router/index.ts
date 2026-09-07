@@ -375,7 +375,7 @@ router.afterEach(async (to, from) => {
   }
 });
 router.beforeEach((to, from) => {
-  document.title = 'Sub Store';
+  document.title = 'Sub-Store';
   // console.log(`beforeEach ${from.path} => ${to.path}`)
   if (to?.path !== '/subs') {
     useSubsStore().cancelFetchFlows();

@@ -124,7 +124,7 @@ export default {
         sync: {
           title: '什么是同步？',
           content:
-            '将订阅/文件上传到私有 Gist，在无法运行 Sub Store 的设备（例如路由器等）上也可以随时访问。',
+            '将订阅/文件上传到私有 Gist，在无法运行 Sub-Store 的设备（例如路由器等）上也可以随时访问。',
         },
         subEditor: {
           title: '下载不了订阅？',
@@ -1487,7 +1487,7 @@ export default {
     currentHostApi: '当前后端 API',
     yhostapi: '默认:https://sub.store ',
     serverDesc: `配置后端服务器地址，例如 VPS 或 Render 上搭建的后端服务。
-                配置后需要重启 Sub Store 以生效。如需删除 api，
+                配置后需要重启 Sub-Store 以生效。如需删除 api，
                 使用原本的’默认后端‘需要手动删除地址后点击保存。可以跳转链接 查看 小一佬的后端搭建教程：`,
     InputHostApi: {
       title: '链接验证失败 或无效链接',
