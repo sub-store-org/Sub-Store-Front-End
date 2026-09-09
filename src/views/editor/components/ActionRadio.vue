@@ -20,7 +20,7 @@
         v-if="value === 'Custom'"
         class="radio-wrapper options-radio custom-dns-input-option"
       >
-        <p class="des-label">
+        <p class="des-label" style="white-space: pre-line">
           {{ $t(`editorPage.subConfig.nodeActions['${type}'].customDns`) }}
         </p>
         <div class="input-wrapper compact-textarea-wrapper compact-textarea-wrapper--custom-dns">
@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="radio-wrapper options-radio edns-input-option">
-        <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DNS 会携带此参数, 可能会影响解析结果)</p>
+        <p class="des-label">EDNS(Google, Ali, Tencent, 自定义 DNS 会携带此参数, Loon DNS API 除外, 可能会影响解析结果)</p>
         <div class="input-wrapper compact-input-wrapper compact-input-wrapper--edns">
           <nut-input placeholder="请输入纯 IP, 默认为 223.6.6.6" v-model="rdoEdns" />
         </div>

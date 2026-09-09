@@ -618,8 +618,8 @@ export default {
             "Включено",
             "Отключено"
           ],
-          "customDns": "Custom DNS (DoH на всех платформах; DoT и TCP/UDP DNS дополнительно в Node.js)",
-          "customDnsPlaceholder": "По одному DNS в строке: DoH, [udp://]1.1.1.1[:53], tcp://1.1.1.1[:53] или tls://223.5.5.5[:853] (скобки необязательны)",
+          "customDns": "Custom DNS:\nВсе платформы поддерживают DoH\nNode.js поддерживает DoH, DoT и TCP/UDP DNS\nLoon (Build ≥ 988) поддерживает DoH/DoH3/DoQ и UDP DNS, auto (текущий DNS), system (системный DNS). Кроме DoH, EDNS и настройка проверки сертификата не поддерживаются",
+          "customDnsPlaceholder": "По одному DNS в строке: DoH, [udp://]1.1.1.1[:53], tcp://1.1.1.1[:53], tls://223.5.5.5[:853], h3://dns.example[:443]/dns-query, quic://dns.adguard-dns.com[:853], auto или system (части в скобках необязательны; поддерживаемые форматы для каждой среды указаны выше)",
           "tlsSkipCertVerify": "Сертификат сервера DoH/DoT",
           "tlsSkipCertVerifyOptions": ["Проверять", "Не проверять"],
           "dnsConcurrency": "Параллельность нескольких DNS",
