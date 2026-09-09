@@ -95,7 +95,7 @@
   import clashmeta from '@/assets/icons/clashmeta.png';
   import logoIcon from '@/assets/icons/logo.png';
   import { copyText } from '@/utils/clipboard';
-  import { useI18n } from 'vue-i18n';
+  import i18n from '@/locales';
   import { useAppNotifyStore } from '@/store/appNotify';
   import SvgIcon from '@/components/SvgIcon.vue';
   import { useHostAPI } from '@/hooks/useHostAPI';
@@ -110,7 +110,7 @@
   const prettyYaml = ref(false);
   const noFlow = ref(false);
   const { showNotify } = useAppNotifyStore();
-  const { t } = useI18n();
+  const { t } = i18n.global;
   const {
     name,
     displayName,
