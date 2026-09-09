@@ -256,11 +256,10 @@
   import { openManagedDeleteDialog } from '@/utils/archive';
   import FilePreview from '@/views/FilePreview.vue';
   import { Dialog, Toast } from '@nutui/nutui';
-  import { useClipboard } from '@vueuse/core';
   import dayjs from 'dayjs';
   import { storeToRefs } from 'pinia';
   import { computed, ref, toRaw } from 'vue';
-  import useV3Clipboard from 'vue-clipboard3';
+  import { copyText } from '@/utils/clipboard';
   import { useI18n } from 'vue-i18n';
   import { useRouter, useRoute } from 'vue-router';
   import { useHostAPI } from '@/hooks/useHostAPI';
@@ -269,9 +268,6 @@
   import { isMihomoConfigFileType } from "@/utils/fileType";
   import { formatPreviewError } from "@/utils/previewError";
   import { downloadBlobResponse } from '@/utils/download';
-
-  const { copy, isSupported } = useClipboard();
-  const { toClipboard: copyFallback } = useV3Clipboard();
 
   const { t } = useI18n();
   const { env } = useBackend();
@@ -645,12 +641,12 @@
     const path = `/api/file/${encodeURIComponent(name)}`;
     const url = `${host.value}${path}`;
 
-    if (isSupported) {
-      await copy(url);
-    } else {
-      await copyFallback(url);
+    try {
+      await copyText(url);
+      showNotify({ title: t('filePage.copyNotify.succeed', { path }) });
+    } catch (error) {
+      Toast.fail(t("filePage.copyNotify.failed", { e: error?.message ?? String(error) }));
     }
-    showNotify({ title: t('filePage.copyNotify.succeed', { path }) });
   };
 
 

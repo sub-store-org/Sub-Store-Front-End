@@ -268,14 +268,11 @@ import { ref, inject, reactive, watch, nextTick, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { storeToRefs } from 'pinia';
-import { useClipboard, useMediaQuery } from '@vueuse/core';
-import useV3Clipboard from "vue-clipboard3";
+import { useMediaQuery } from '@vueuse/core';
+import { copyText } from "@/utils/clipboard";
 import { isMihomoConfigFileType } from "@/utils/fileType";
 import { useSettingsStore } from '@/store/settings';
 import { WIDE_SCREEN_NARROW_MODE_QUERY } from '@/hooks/useWideScreenNarrowMode';
-// const { copy, isSupported, text } = useClipboard({ read: true });
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
@@ -397,12 +394,12 @@ const onButtonClick = (item) => {
 const copyItem = async element => {
   const item = form.process.find(item => item.id === element.id);
   const data = JSON.stringify({ source: sourceType, data: item })
-  if (isSupported) {
-    await copy(data);
-  } else {
-    await copyFallback(data);
+  try {
+    await copyText(data);
+    Toast.text(`已复制数据 可用于导入`);
+  } catch (error) {
+    Toast.fail(t("globalNotify.copyFailed", { e: error?.message ?? String(error) }));
   }
-  Toast.text(`已复制数据 可用于导入`);
 
 };
 const cancelPaste = async () => {

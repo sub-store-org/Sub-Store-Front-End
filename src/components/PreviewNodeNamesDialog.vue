@@ -50,9 +50,8 @@
 
 <script lang="ts" setup>
 import { Toast } from '@nutui/nutui';
-import { useClipboard } from '@vueuse/core';
 import { computed } from 'vue';
-import useV3Clipboard from 'vue-clipboard3';
+import { copyText as writeClipboardText } from '@/utils/clipboard';
 import { useI18n } from 'vue-i18n';
 import {
   formatPreviewNodeInfoPrompt,
@@ -69,8 +68,6 @@ const props = defineProps<{
 const emit = defineEmits(['close']);
 
 const { t } = useI18n();
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 
 const sideLabel = computed(() => {
   return props.side === 'after'
@@ -92,11 +89,7 @@ const promptText = computed(() => {
 
 const copyText = async (text: string, successText: string) => {
   try {
-    if (isSupported) {
-      await copy(text);
-    } else {
-      await copyFallback(text);
-    }
+    await writeClipboardText(text);
     Toast.text(successText);
   } catch (e) {
     Toast.fail(t('comparePage.nodeNames.copyFailed', { e: e?.message ?? e }));

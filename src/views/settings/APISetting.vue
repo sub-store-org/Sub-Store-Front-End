@@ -224,8 +224,7 @@ import { useBackend } from '@/hooks/useBackend';
 import { useHostAPI } from '@/hooks/useHostAPI';
 import axios from 'axios';
 
-import { useClipboard } from '@vueuse/core';
-import useV3Clipboard from 'vue-clipboard3';
+import { copyText } from '@/utils/clipboard';
 import { storeToRefs } from 'pinia';
 import { useAppNotifyStore } from '@/store/appNotify';
 import { useSettingsStore } from '@/store/settings';
@@ -233,8 +232,6 @@ import { createGithubProxyUrlRewriter } from '@/utils/githubProxy';
 import { isValidShareBaseUrl, normalizeShareBaseUrl } from '@/utils/share';
 
 const { t } = useI18n();
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
 const { icon, env, isEnvReady } = useBackend();
@@ -280,12 +277,12 @@ const copyApi = async (api: HostAPI) => {
   if (api.shareBaseUrl) {
     url.searchParams.set('shareBaseUrl', api.shareBaseUrl);
   }
-  if (isSupported) {
-    await copy(url.toString());
-  } else {
-    await copyFallback(url.toString());
+  try {
+    await copyText(url.toString());
+    showNotify({ title: url.toString() });
+  } catch (error) {
+    Toast.fail(t("globalNotify.copyFailed", { e: error?.message ?? String(error) }));
   }
-  showNotify({ title: url.toString() });
 };
 
 const startEditApiName = (api: HostAPI) => {

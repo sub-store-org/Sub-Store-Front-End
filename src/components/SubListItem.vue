@@ -321,11 +321,10 @@
 
 <script lang="ts" setup>
 import { Dialog, Toast } from "@nutui/nutui";
-import { useClipboard } from "@vueuse/core";
 import dayjs from "dayjs";
 import { storeToRefs } from "pinia";
 import { computed, createVNode, ref, toRaw } from "vue";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText } from "@/utils/clipboard";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
@@ -356,8 +355,6 @@ const props = defineProps<{
   isDualColumn?: boolean;
 }>();
 const emit = defineEmits(["update:visible", "share"]);
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 
@@ -979,12 +976,12 @@ const onClickCopyLink = async () => {
     props.type === "collection" ? "collection/" : ""
   }${encodeURIComponent(name)}`;
 
-  if (isSupported) {
-    await copy(url);
-  } else {
-    await copyFallback(url);
+  try {
+    await copyText(url);
+    showNotify({ title: t(`subPage.copyNotify.${shareBtnVisible.value ? "succeedWithShare" : "succeed"}`) });
+  } catch (error) {
+    Toast.fail(t("subPage.copyNotify.failed", { e: error?.message ?? String(error) }));
   }
-  showNotify({ title: t(`subPage.copyNotify.${shareBtnVisible.value ? "succeedWithShare" : "succeed"}`) });
 };
 
 const onClickRefresh = async () => {

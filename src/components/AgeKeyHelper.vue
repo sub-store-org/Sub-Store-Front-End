@@ -174,7 +174,7 @@
 
 <script setup lang="ts">
 import { Toast } from "@nutui/nutui";
-import useClipboard from "vue-clipboard3";
+import { copyText } from "@/utils/clipboard";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -201,7 +201,6 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const { toClipboard } = useClipboard();
 const visible = ref(false);
 const isBusy = ref(false);
 const keyType = ref<AgeKeyType>(AGE_KEY_TYPES.X25519);
@@ -274,7 +273,7 @@ const fillKeyPair = () => {
 
 const copyValue = async (value: string) => {
   try {
-    await toClipboard(value);
+    await copyText(value);
     Toast.text(t("ageKey.helper.copied"));
   } catch (error) {
     handleError(error);

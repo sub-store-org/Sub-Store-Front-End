@@ -435,11 +435,11 @@
 
 <script setup lang="ts">
 import { Dialog, Toast } from "@nutui/nutui";
-import { useClipboard, usePreferredDark } from "@vueuse/core";
+import { usePreferredDark } from "@vueuse/core";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
 import { storeToRefs } from "pinia";
 import { computed, reactive, ref, watch } from "vue";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText } from "@/utils/clipboard";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
@@ -526,9 +526,7 @@ const {
 const { showNotify } = useAppNotifyStore();
 const { currentUrl: host, currentShareBaseUrl } = useHostAPI();
 const { env } = useBackend();
-const { copy, isSupported } = useClipboard();
 const preferredDark = usePreferredDark();
-const { toClipboard: copyFallback } = useV3Clipboard();
 const padding = computed(() => `${bottomSafeArea.value}px`);
 
 const getRouteParam = (value: string | string[] | null | undefined) => {
@@ -1389,19 +1387,12 @@ const handleCopyShare = async (isNotify: boolean = true) => {
   }
 
   try {
-    if (isSupported) {
-      await copy(form.shareUrl);
-    } else {
-      await copyFallback(form.shareUrl);
-    }
+    await copyText(form.shareUrl);
   } catch (error) {
-    try {
-      await copyFallback(form.shareUrl);
-    } catch (fallbackError) {
-      console.error(error);
-      console.error(fallbackError);
-      return false;
+    if (isNotify) {
+      Toast.fail(t("globalNotify.copyFailed", { e: error?.message ?? String(error) }));
     }
+    return false;
   }
 
   if (isNotify) {

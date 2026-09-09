@@ -30,6 +30,7 @@ export default {
     }
   },
   "globalNotify": {
+    "copyFailed": "Не удалось скопировать\n{e}",
     "refresh": {
       "succeed": "Обновление завершено",
       "flowFailed": "Ошибка обновления {name}!",

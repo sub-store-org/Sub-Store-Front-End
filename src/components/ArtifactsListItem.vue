@@ -215,18 +215,15 @@ import { createGithubProxyUrlRewriter } from "@/utils/githubProxy";
 import { resolveImageFit } from "@/utils/iconFit";
 import { isMobile } from "@/utils/isMobile";
 import { Dialog, Toast } from "@nutui/nutui";
-import { useClipboard } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { computed, ref, toRaw, watch, watchEffect } from "vue";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText } from "@/utils/clipboard";
 import { useI18n } from "vue-i18n";
 import { useGlobalStore } from "@/store/global";
 import { useHostAPI } from "@/hooks/useHostAPI";
 import { useBackend } from "@/hooks/useBackend";
 import { openManagedDeleteDialog } from "@/utils/archive";
 const globalStore = useGlobalStore();
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 
 const { t } = useI18n();
 const { currentUrl: host } = useHostAPI();
@@ -546,12 +543,12 @@ const swipeController = () => {
 };
 
 const onClickCopyLink = async () => {
-  if (isSupported) {
-    await copy(encodeURI(artifactUrl.value));
-  } else {
-    await copyFallback(encodeURI(artifactUrl.value));
+  try {
+    await copyText(encodeURI(artifactUrl.value));
+    showNotify({ title: t("syncPage.copyNotify.succeed"), type: "success" });
+  } catch (error) {
+    Toast.fail(t("syncPage.copyNotify.failed", { e: error?.message ?? String(error) }));
   }
-  showNotify({ title: t("syncPage.copyNotify.succeed"), type: "success" });
 };
 
 const onDeleteConfirm = async (mode: DeleteMode = "permanent") => {

@@ -31,6 +31,7 @@ export default {
     },
   },
   globalNotify: {
+    copyFailed: "Copy failed\n{e}",
     refresh: {
       succeed: "Refresh Completed",
       flowFailed: "Refresh of {name} failed!",

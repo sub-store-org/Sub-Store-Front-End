@@ -196,7 +196,7 @@ import { closeBrackets, autocompletion } from "@codemirror/autocomplete";
 import { Compartment, EditorState } from "@codemirror/state";
 import { hyperLink } from "@/views/editCode/link";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText as writeClipboardText } from "@/utils/clipboard";
 import copyimg from "@/views/editCode/svg/copy.svg";
 import del from "@/views/editCode/svg/del.svg";
 import paste from "@/views/editCode/svg/zt.svg";
@@ -210,7 +210,6 @@ import { useCodeStore } from "@/store/codeStore";
 import { storeToRefs } from "pinia";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useI18n } from "vue-i18n";
-const { toClipboard } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 const { t } = useI18n();
 
@@ -771,11 +770,17 @@ async function formatCode() {
 }
 
 const copyText = async () => {
-  const x = await toClipboard(cmStore.EditCode[props.id]);
-  if (x) {
+  const text = cmStore.EditCode[props.id] ?? "";
+  try {
+    await writeClipboardText(text);
     showNotify({
       type: "success",
-      title: "已复制字符串数: " + x?.text?.length,
+      title: "已复制字符串数: " + text.length,
+    });
+  } catch (error) {
+    showNotify({
+      type: "danger",
+      title: t("globalNotify.copyFailed", { e: error?.message ?? String(error) }),
     });
   }
 };

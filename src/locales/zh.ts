@@ -31,6 +31,7 @@ export default {
     },
   },
   globalNotify: {
+    copyFailed: '复制失败\n{e}',
     refresh: {
       succeed: '数据刷新完成',
       flowFailed: '刷新 {name} 失败！',

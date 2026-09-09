@@ -70,8 +70,7 @@ import { useSubsStore } from "@/store/subs";
 import { Toast } from "@nutui/nutui";
 import { computed, ref, watch, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
-import { useClipboard } from "@vueuse/core";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText } from "@/utils/clipboard";
 import { useAppNotifyStore } from "@/store/appNotify";
 import { useLogsOverlayStore } from "@/store/logsOverlay";
 import cmView from "@/views/editCode/cmView.vue";
@@ -80,8 +79,6 @@ import { useRoute } from 'vue-router';
 
 const cmStore = useCodeStore();
 const logsOverlayStore = useLogsOverlayStore();
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 const { showNotify } = useAppNotifyStore();
 
 const { t } = useI18n();
@@ -337,12 +334,12 @@ const openLogsOverlay = () => {
   logsOverlayStore.open();
 };
 const copyUrl = async () => {
-  if (isSupported) {
-    await copy(url);
-  } else {
-    await copyFallback(url);
+  try {
+    await copyText(url);
+    showNotify({ title: `已复制链接: ${url}` });
+  } catch (error) {
+    Toast.fail(t("globalNotify.copyFailed", { e: error?.message ?? String(error) }));
   }
-  showNotify({ title: `已复制链接: ${url}` });
 };
 </script>
 

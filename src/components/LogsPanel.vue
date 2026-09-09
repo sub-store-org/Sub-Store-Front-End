@@ -265,11 +265,10 @@ import { useSystemStore } from "@/store/system";
 import { useWideScreenNarrowMode } from "@/hooks/useWideScreenNarrowMode";
 import { semverGte } from "@/utils/semver";
 import { Dialog, Toast } from "@nutui/nutui";
-import { useClipboard } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import useV3Clipboard from "vue-clipboard3";
+import { copyText as writeClipboardText } from "@/utils/clipboard";
 
 const props = withDefaults(
   defineProps<{
@@ -282,8 +281,6 @@ const props = withDefaults(
 
 const { t } = useI18n();
 const logsApi = useLogsApi();
-const { copy, isSupported } = useClipboard();
-const { toClipboard: copyFallback } = useV3Clipboard();
 const globalStore = useGlobalStore();
 const systemStore = useSystemStore();
 const settingsStore = useSettingsStore();
@@ -666,11 +663,7 @@ const formatLogForCopy = (log: DebugLogEntry) => {
 
 const copyText = async (text: string) => {
   try {
-    if (isSupported) {
-      await copy(text);
-    } else {
-      await copyFallback(text);
-    }
+    await writeClipboardText(text);
     Toast.text(t("logsPage.notify.copySucceed"));
   } catch (e) {
     Toast.fail(t("logsPage.notify.copyFailed", { e: formatError(e) }));
