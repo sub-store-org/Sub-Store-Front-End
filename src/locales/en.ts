@@ -695,6 +695,7 @@ export default {
             'GOST Relay',
             'ZeroTier',
             'Tailscale',
+            'EasyTier',
             "WireGuard",
             "SSH",
             "External Proxy Program",
