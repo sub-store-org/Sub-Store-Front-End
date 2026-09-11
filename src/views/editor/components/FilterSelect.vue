@@ -84,6 +84,7 @@
         'gost-relay',
         'zerotier',
         'tailscale',
+        'easytier',
         'wireguard',
         'ssh',
         'external',
