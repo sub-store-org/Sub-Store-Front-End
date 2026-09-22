@@ -76,6 +76,7 @@
         'sudoku',
         'masque',
         'masque-surge',
+        'masque-sing-box',
         'shadowquic',
         'naive',
         'anytls',
