@@ -8,14 +8,18 @@ export const isShareType = (value: unknown): value is 'sub' | 'col' | 'file' => 
 
 export const SHARE_EDITOR_CREATE_ID = 'UNTITLED';
 export const SHARE_EXPIRATION_DATETIME_BACKEND_VERSION = '2.22.6';
+export const SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION = '2.42.5';
 
 export type ShareExpirationMode = 'duration' | 'datetime' | 'count';
-export type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year';
+export type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year' | 'lifetime';
+// 长期有效不对应具体时长, 只有这些单位能换算成 expiresIn
+export type ShareTimedExpirationUnit = Exclude<ShareExpirationUnit, 'lifetime'>;
+export const SHARE_LIFETIME_EXPIRATION_UNIT = 'lifetime';
 
 const DEFAULT_SHARE_EXPIRATION_MODE: ShareExpirationMode = 'duration';
 const DEFAULT_SHARE_EXPIRATION_UNIT: ShareExpirationUnit = 'day';
 const SHARE_DISPLAY_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm';
-const SHARE_DURATION_MS_UNIT_MAP: Record<ShareExpirationUnit, number> = {
+const SHARE_DURATION_MS_UNIT_MAP: Record<ShareTimedExpirationUnit, number> = {
   day: 24 * 60 * 60 * 1000,
   month: 30 * 24 * 60 * 60 * 1000,
   season: 90 * 24 * 60 * 60 * 1000,
@@ -29,12 +33,12 @@ const formatDurationValue = (value: number) => {
 
 const parseMillisecondsDuration = (
   durationMs: number,
-): { value: number; unit: ShareExpirationUnit } | null => {
+): { value: number; unit: ShareTimedExpirationUnit } | null => {
   if (!Number.isFinite(durationMs) || durationMs <= 0) {
     return null;
   }
 
-  const exactUnits: ShareExpirationUnit[] = ['year', 'season', 'month', 'day'];
+  const exactUnits: ShareTimedExpirationUnit[] = ['year', 'season', 'month', 'day'];
   for (const unit of exactUnits) {
     const unitMs = SHARE_DURATION_MS_UNIT_MAP[unit];
     if (Number.isInteger(durationMs / unitMs)) {
@@ -72,7 +76,18 @@ export const isShareExpirationMode = (value: unknown): value is ShareExpirationM
 };
 
 export const isShareExpirationUnit = (value: unknown): value is ShareExpirationUnit => {
-  return value === 'day' || value === 'month' || value === 'season' || value === 'year';
+  return value === 'day'
+    || value === 'month'
+    || value === 'season'
+    || value === 'year'
+    || value === SHARE_LIFETIME_EXPIRATION_UNIT;
+};
+
+export const isShareLifetimeExpiration = (share?: {
+  mode?: ShareExpirationMode | null;
+  expiresUnit?: string | null;
+} | null) => {
+  return share?.mode === 'duration' && share?.expiresUnit === SHARE_LIFETIME_EXPIRATION_UNIT;
 };
 
 const getValidTimestamp = (value?: number | string | null) => {
@@ -93,6 +108,10 @@ export const isValidShareExactDatetime = (value?: number | string | null) => {
 
 export const supportsShareExpirationDatetime = (backendVersion?: string | null) => {
   return semverGte(backendVersion, SHARE_EXPIRATION_DATETIME_BACKEND_VERSION);
+};
+
+export const supportsShareExpirationLifetime = (backendVersion?: string | null) => {
+  return semverGte(backendVersion, SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION);
 };
 
 const createDefaultShareExpirationFormState = (): ShareExpirationFormState => {
@@ -142,7 +161,7 @@ export const resolveShareDisplayIconState = ({
   };
 };
 
-const parseShareDuration = (input: string): { value: number; unit: ShareExpirationUnit } | null => {
+const parseShareDuration = (input: string): { value: number; unit: ShareTimedExpirationUnit } | null => {
   if (!input) {
     return null;
   }
@@ -303,6 +322,15 @@ export const getShareExpirationFormState = ({
 
   if (nextMode === 'count') {
     return getCountState(count);
+  }
+
+  if (isShareLifetimeExpiration({ mode: nextMode, expiresUnit })) {
+    return {
+      mode: 'duration',
+      expiresValue: '',
+      expiresUnit: SHARE_LIFETIME_EXPIRATION_UNIT,
+      exactDatetime: null,
+    };
   }
 
   const storedDurationState = getDurationStateFromStoredInput(expiresValue, expiresUnit);

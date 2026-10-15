@@ -105,6 +105,7 @@
 
           <template v-if="isDurationExpirationMode">
             <nut-form-item
+              v-if="!isLifetimeExpirationUnit"
               :label="$t(`sharePage.createShare.expiresValue.label`)"
               prop="expiresValue"
               required
@@ -475,9 +476,13 @@ import {
   parseShareEditorRouteIdentity,
   resolveShareDisplayIconState,
   SHARE_EXPIRATION_DATETIME_BACKEND_VERSION,
+  SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION,
+  SHARE_LIFETIME_EXPIRATION_UNIT,
   supportsShareExpirationDatetime,
+  supportsShareExpirationLifetime,
   type ShareExpirationMode,
   type ShareExpirationUnit,
+  type ShareTimedExpirationUnit,
 } from "@/utils/share";
 import { normalizeTagArray, stringifyTagInput } from "@/utils/shareTags";
 import { normalizeOptionalImageFit, resolveImageFit, type ImageFit } from "@/utils/iconFit";
@@ -629,6 +634,7 @@ const submitButtonLabel = computed(() => {
 const isExactExpirationMode = computed(() => form.expirationMode === "datetime");
 const isDurationExpirationMode = computed(() => form.expirationMode === "duration");
 const isCountExpirationMode = computed(() => form.expirationMode === "count");
+const isLifetimeExpirationUnit = computed(() => form.expiresUnit === SHARE_LIFETIME_EXPIRATION_UNIT);
 const shouldShowShareUrlRow = computed(() => isEditMode.value);
 const shouldShowShareQrCode = computed(() => {
   return isEditMode.value && Boolean(form.shareUrl);
@@ -781,6 +787,10 @@ const expiresUnitList = computed(() => [
   {
     label: t("sharePage.createShare.unit.year"),
     value: "year",
+  },
+  {
+    label: t("sharePage.createShare.unit.lifetime"),
+    value: SHARE_LIFETIME_EXPIRATION_UNIT,
   },
 ]);
 
@@ -1246,8 +1256,8 @@ const normalizeExpiresValue = (expireValue: string) => {
   return String(Number(Number.parseFloat(expireValue).toFixed(2)));
 };
 
-const genExpiresIn = (expireValue: string, expireUnit: ShareExpirationUnit) => {
-  const unitMap: Record<ShareExpirationUnit, { multiplier: number; suffix: string }> = {
+const genExpiresIn = (expireValue: string, expireUnit: ShareTimedExpirationUnit) => {
+  const unitMap: Record<ShareTimedExpirationUnit, { multiplier: number; suffix: string }> = {
     day: {
       multiplier: 1,
       suffix: "d",
@@ -1270,7 +1280,51 @@ const genExpiresIn = (expireValue: string, expireUnit: ShareExpirationUnit) => {
   return `${value * unitConfig.multiplier}${unitConfig.suffix}`;
 };
 
-const getDurationExpirationOptions = (): ShareToken["options"] | null => {
+const getDurationExpirationOptions = async (): Promise<ShareToken["options"] | null> => {
+  if (form.expiresUnit === SHARE_LIFETIME_EXPIRATION_UNIT) {
+    let verifiedEnv: { version?: string | null } | null = null;
+    try {
+      verifiedEnv = await ensureEnvLoaded({
+        forceRefresh: true,
+        strict: true,
+      });
+    } catch (error) {
+      console.error(error);
+      focusShareContentTab();
+      showNotify({
+        title: t("sharePage.editor.lifetimeBackendCheckFailed.title"),
+        content: t("sharePage.editor.lifetimeBackendCheckFailed.desc"),
+        type: "danger",
+        duration: 3600,
+      });
+      return null;
+    }
+
+    if (!supportsShareExpirationLifetime(verifiedEnv?.version)) {
+      focusShareContentTab();
+      showNotify({
+        title: t("sharePage.editor.lifetimeBackendRequired.title"),
+        content: t("sharePage.editor.lifetimeBackendRequired.desc", {
+          currentVersion: verifiedEnv?.version || t("specificWord.unknown"),
+          minVersion: SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION,
+        }),
+        type: "danger",
+        duration: 3600,
+      });
+      return null;
+    }
+
+    if (!isDurationExpirationMode.value || form.expiresUnit !== SHARE_LIFETIME_EXPIRATION_UNIT) {
+      return null;
+    }
+
+    // 长期有效: 不传 expiresIn, 需显式声明 mode 让后端按长期有效保存
+    return {
+      mode: "duration",
+      expiresUnit: SHARE_LIFETIME_EXPIRATION_UNIT,
+    };
+  }
+
   if (!form.expiresValue) {
     focusShareContentTab();
     Toast.warn(t("sharePage.createShare.expiresValue.empty"));
@@ -1419,7 +1473,7 @@ const getSubmitParams = async (): Promise<ShareToken | null> => {
   } else if (isCountExpirationMode.value) {
     options = getCountExpirationOptions();
   } else {
-    options = getDurationExpirationOptions();
+    options = await getDurationExpirationOptions();
   }
   if (!options) {
     return null;

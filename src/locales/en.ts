@@ -1235,6 +1235,7 @@ export default {
         month: "Month",
         season: "Season",
         year: "Year",
+        lifetime: "Lifetime",
       },
       copyBtn: "Copy Link",
     },
@@ -1262,6 +1263,14 @@ export default {
       datetimeBackendCheckFailed: {
         title: "Unable to verify backend version right now",
         desc: "Check the current backend connection and try saving the exact expiration date and time again.",
+      },
+      lifetimeBackendRequired: {
+        title: "This backend does not support lifetime shares yet",
+        desc: "The current backend version is {currentVersion}. Upgrade to {minVersion} or later before saving a lifetime share.",
+      },
+      lifetimeBackendCheckFailed: {
+        title: "Unable to verify backend version right now",
+        desc: "Check the current backend connection and try saving the lifetime share again.",
       },
       failNotify: "Update share failed",
     },
