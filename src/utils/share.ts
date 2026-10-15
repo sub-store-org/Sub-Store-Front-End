@@ -8,6 +8,7 @@ export const isShareType = (value: unknown): value is 'sub' | 'col' | 'file' => 
 
 export const SHARE_EDITOR_CREATE_ID = 'UNTITLED';
 export const SHARE_EXPIRATION_DATETIME_BACKEND_VERSION = '2.22.6';
+export const SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION = '2.42.5';
 
 export type ShareExpirationMode = 'duration' | 'datetime' | 'count';
 export type ShareExpirationUnit = 'day' | 'month' | 'season' | 'year' | 'lifetime';
@@ -107,6 +108,10 @@ export const isValidShareExactDatetime = (value?: number | string | null) => {
 
 export const supportsShareExpirationDatetime = (backendVersion?: string | null) => {
   return semverGte(backendVersion, SHARE_EXPIRATION_DATETIME_BACKEND_VERSION);
+};
+
+export const supportsShareExpirationLifetime = (backendVersion?: string | null) => {
+  return semverGte(backendVersion, SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION);
 };
 
 const createDefaultShareExpirationFormState = (): ShareExpirationFormState => {

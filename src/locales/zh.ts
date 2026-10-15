@@ -1218,6 +1218,14 @@ export default {
         title: "暂时无法验证后端版本",
         desc: "请检查当前后端连接是否正常，然后重试保存指定到期日期时间。",
       },
+      lifetimeBackendRequired: {
+        title: "当前后端暂不支持长期有效",
+        desc: "检测到后端版本为 {currentVersion}，需要升级到 {minVersion} 或更高版本后，才能保存长期有效的分享。",
+      },
+      lifetimeBackendCheckFailed: {
+        title: "暂时无法验证后端版本",
+        desc: "请检查当前后端连接是否正常，然后重试保存长期有效的分享。",
+      },
       failNotify: "更新分享失败",
     },
     copyShare: {

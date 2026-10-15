@@ -476,8 +476,10 @@ import {
   parseShareEditorRouteIdentity,
   resolveShareDisplayIconState,
   SHARE_EXPIRATION_DATETIME_BACKEND_VERSION,
+  SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION,
   SHARE_LIFETIME_EXPIRATION_UNIT,
   supportsShareExpirationDatetime,
+  supportsShareExpirationLifetime,
   type ShareExpirationMode,
   type ShareExpirationUnit,
   type ShareTimedExpirationUnit,
@@ -1278,8 +1280,44 @@ const genExpiresIn = (expireValue: string, expireUnit: ShareTimedExpirationUnit)
   return `${value * unitConfig.multiplier}${unitConfig.suffix}`;
 };
 
-const getDurationExpirationOptions = (): ShareToken["options"] | null => {
+const getDurationExpirationOptions = async (): Promise<ShareToken["options"] | null> => {
   if (form.expiresUnit === SHARE_LIFETIME_EXPIRATION_UNIT) {
+    let verifiedEnv: { version?: string | null } | null = null;
+    try {
+      verifiedEnv = await ensureEnvLoaded({
+        forceRefresh: true,
+        strict: true,
+      });
+    } catch (error) {
+      console.error(error);
+      focusShareContentTab();
+      showNotify({
+        title: t("sharePage.editor.lifetimeBackendCheckFailed.title"),
+        content: t("sharePage.editor.lifetimeBackendCheckFailed.desc"),
+        type: "danger",
+        duration: 3600,
+      });
+      return null;
+    }
+
+    if (!supportsShareExpirationLifetime(verifiedEnv?.version)) {
+      focusShareContentTab();
+      showNotify({
+        title: t("sharePage.editor.lifetimeBackendRequired.title"),
+        content: t("sharePage.editor.lifetimeBackendRequired.desc", {
+          currentVersion: verifiedEnv?.version || t("specificWord.unknown"),
+          minVersion: SHARE_EXPIRATION_LIFETIME_BACKEND_VERSION,
+        }),
+        type: "danger",
+        duration: 3600,
+      });
+      return null;
+    }
+
+    if (!isDurationExpirationMode.value || form.expiresUnit !== SHARE_LIFETIME_EXPIRATION_UNIT) {
+      return null;
+    }
+
     // 长期有效: 不传 expiresIn, 需显式声明 mode 让后端按长期有效保存
     return {
       mode: "duration",
@@ -1435,7 +1473,7 @@ const getSubmitParams = async (): Promise<ShareToken | null> => {
   } else if (isCountExpirationMode.value) {
     options = getCountExpirationOptions();
   } else {
-    options = getDurationExpirationOptions();
+    options = await getDurationExpirationOptions();
   }
   if (!options) {
     return null;
