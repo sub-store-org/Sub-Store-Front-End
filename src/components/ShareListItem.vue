@@ -134,6 +134,7 @@ import {
   formatShareTimestamp,
   getShareEditPath,
   getSharePublicUrl,
+  isShareLifetimeExpiration,
   resolveShareDisplayIconState,
 } from "@/utils/share";
 import { normalizeTagArray } from "@/utils/shareTags";
@@ -216,6 +217,10 @@ const leftTime = computed(() => {
       && usedCount >= 0
       ? `${t("sharePage.countUsage")} ${Math.min(usedCount, count)}/${count}`
       : t("sharePage.expired");
+  }
+
+  if (isShareLifetimeExpiration(props?.data)) {
+    return t("sharePage.createShare.unit.lifetime");
   }
 
   return props?.data?.exp

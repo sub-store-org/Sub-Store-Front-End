@@ -1280,7 +1280,8 @@ export default {
         "day": "Дн.",
         "month": "Мес.",
         "season": "Квартал",
-        "year": "Год"
+        "year": "Год",
+        "lifetime": "Бессрочно"
       },
       "copyBtn": "Копировать ссылку"
     },

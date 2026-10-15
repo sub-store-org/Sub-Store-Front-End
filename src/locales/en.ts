@@ -1235,6 +1235,7 @@ export default {
         month: "Month",
         season: "Season",
         year: "Year",
+        lifetime: "Lifetime",
       },
       copyBtn: "Copy Link",
     },

@@ -1189,6 +1189,7 @@ export default {
         month: "月",
         season: "季",
         year: "年",
+        lifetime: "长期有效",
       },
       copyBtn: "复制链接",
     },
