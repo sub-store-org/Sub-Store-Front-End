@@ -23,8 +23,8 @@
       </div>
       <div class="sub-item-content">
         <div class="sub-item-title-wrapper">
-          <h3 class="sub-item-title">
-            {{ displayName }}
+          <h3 class="sub-item-title" :title="displayName">
+            <span class="sub-item-name">{{ displayName }}</span>
             <span v-for="item in tag" :key="item" class="tag">
               <nut-tag>{{ item }}</nut-tag>
             </span>
@@ -671,19 +671,27 @@ watch(isSyncOpen, async () => {
       gap: 2px;
 
       .sub-item-title {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        word-wrap: break-word;
-        word-break: break-all;
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
         overflow: hidden;
         font-size: 16px;
         color: var(--primary-text-color);
 
+        .sub-item-name {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
         .tag {
           display: inline-flex;
+          flex: 0 0 auto;
           margin: 0 1px;
-          vertical-align: middle;
 
           :deep(.nut-tag) {
             padding: 2px 3px;
