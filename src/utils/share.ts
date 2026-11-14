@@ -497,6 +497,14 @@ export const getSharePublicUrl = ({
   return `${publicHost}/share/${type}/${encodeURIComponent(name)}?token=${encodeURIComponent(token)}`;
 };
 
+export const getShareSecretPath = (backend?: string, configuredPath?: string) => {
+  if (configuredPath !== undefined) {
+    return configuredPath;
+  }
+
+  return backend && backend !== 'Node' ? '/' : '';
+};
+
 export const normalizeShareBaseUrl = (value?: string | null) => {
   return typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
 };

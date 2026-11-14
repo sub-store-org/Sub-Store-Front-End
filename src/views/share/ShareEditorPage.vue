@@ -471,6 +471,7 @@ import {
   getShareEditPath,
   getShareExpirationFormState,
   getSharePublicUrl,
+  getShareSecretPath,
   isShareType,
   isValidShareExactDatetime,
   parseShareEditorRouteIdentity,
@@ -662,7 +663,10 @@ const datetimePickerLocale = computed(() => {
 const currentTag = computed(() => form.tag || "");
 const normalizedSourceName = computed(() => form.sourceName.trim());
 const secretPath = computed(() => {
-  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
+  return getShareSecretPath(
+    env.value?.backend,
+    env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH,
+  );
 });
 
 const normalizedFormToken = computed(() => {

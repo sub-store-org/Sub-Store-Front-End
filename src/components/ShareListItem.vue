@@ -134,6 +134,7 @@ import {
   formatShareTimestamp,
   getShareEditPath,
   getSharePublicUrl,
+  getShareSecretPath,
   isShareLifetimeExpiration,
   resolveShareDisplayIconState,
 } from "@/utils/share";
@@ -368,7 +369,10 @@ const onClickDelete = () => {
 };
 
 const secretPath = computed(() => {
-  return env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH || "";
+  return getShareSecretPath(
+    env.value?.backend,
+    env.value?.meta?.node?.env?.SUB_STORE_FRONTEND_BACKEND_PATH,
+  );
 });
 
 const getShareUrl = () => {
