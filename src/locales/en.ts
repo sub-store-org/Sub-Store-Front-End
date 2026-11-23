@@ -557,6 +557,7 @@ export default {
         ecn: {
           label: "ECN",
           default: "Default",
+          auto: "Auto",
           enabled: "Enable",
           disabled: "Disable",
         },

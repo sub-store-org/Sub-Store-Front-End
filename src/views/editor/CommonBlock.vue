@@ -184,7 +184,17 @@
         { value: 'off', labelKey: 'disabled' },
       ],
     },
-    { key: 'ecn', localePath: '.ecn', emptyValue: 'DEFAULT' },
+    {
+      key: 'ecn',
+      localePath: '.ecn',
+      emptyValue: 'DEFAULT',
+      defaultValue: 'auto',
+      radioOptions: [
+        { value: 'auto', labelKey: 'auto' },
+        { value: 'on', labelKey: 'enabled' },
+        { value: 'off', labelKey: 'disabled' },
+      ],
+    },
     {
       key: 'ip-version',
       localePath: "['ip-version']",
@@ -285,7 +295,12 @@
     },
   );
   watchEffect(() => {
-    ensureQuickArgs();
+    const args = ensureQuickArgs();
+    if (args.ecn === 'ENABLED') {
+      args.ecn = 'on';
+    } else if (args.ecn === 'DISABLED') {
+      args.ecn = 'off';
+    }
   });
 </script>
 

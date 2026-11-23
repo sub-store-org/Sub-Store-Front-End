@@ -535,6 +535,7 @@ export default {
         "ecn": {
           "label": "ECN",
           "default": "По умолчанию",
+          "auto": "Авто",
           "enabled": "Включить",
           "disabled": "Выключить"
         },

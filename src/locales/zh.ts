@@ -545,6 +545,7 @@ export default {
         ecn: {
           label: 'ECN',
           default: '默认',
+          auto: '自动',
           enabled: '开启',
           disabled: '关闭',
         },
