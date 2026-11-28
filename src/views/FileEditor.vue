@@ -171,9 +171,9 @@
             >
               <div class="radio-wrapper">
                 <nut-radiogroup
-                  v-model="form.sourceType"
+                  :model-value="form.sourceType"
                   direction="horizontal"
-                  @change="handleTypeChange"
+                  @update:model-value="handleSourceTypeChange"
                 >
                   <nut-radio shape="button" label="subscription">
                     {{ $t(`specificWord.singleSub`) }}
@@ -873,9 +873,14 @@ const sourceNameColumns = computed(() => {
     };
   });
 });
-const handleTypeChange = (val) => {
-  form.sourceName = "";
-  if (mihomoConfigFileSourceTypes.includes(val) && !form.mode) {
+const sourceNamesByType = new Map<string, string>();
+const handleSourceTypeChange = (sourceType: string) => {
+  if (mihomoConfigSubscriptionSourceTypes.includes(form.sourceType)) {
+    sourceNamesByType.set(form.sourceType, form.sourceName ?? "");
+  }
+  form.sourceType = sourceType;
+  form.sourceName = sourceNamesByType.get(sourceType) ?? "";
+  if (mihomoConfigFileSourceTypes.includes(sourceType) && !form.mode) {
     form.mode = "config";
   }
 };
